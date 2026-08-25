@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>एडमिन CMS — 90I न्यूज़</title>
+  <title>एडमिन CMS — THE 90I NEWS</title>
   <link rel="stylesheet" href="assets/styles.css">
   <style>
     .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
@@ -17,6 +17,8 @@
     .form-group label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 14px; }
     .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; box-sizing: border-box; }
     .btn { padding: 10px 20px; border: none; background: var(--primary-red); color: #fff; cursor: pointer; font-weight: 700; border-radius: 3px; }
+    .btn-edit { background: #2563eb; color:#fff; padding: 6px 12px; font-size: 12px; margin-right: 6px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
+    .btn-del { background: #dc2626; color:#fff; padding: 6px 12px; font-size: 12px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
     .editor-toolbar { margin-bottom: 6px; background: #eee; padding: 6px; border-radius: 3px; }
     .editor-toolbar button { padding: 4px 10px; margin-right: 4px; cursor: pointer; }
     .table { width: 100%; border-collapse: collapse; background: #fff; }
@@ -50,7 +52,7 @@
     <p style="font-size: 12px; color: #888;">कंटेंट मैनेजमेंट सिस्टम</p>
     <ul>
       <li><a href="#" onclick="showTab('addNews')">➕ नया समाचार जोड़ें</a></li>
-      <li><a href="#" onclick="showTab('manageNews')">📑 समाचार प्रबंधन</a></li>
+      <li><a href="#" onclick="showTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
       <li><a href="#" onclick="showTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
       <li><a href="#" onclick="showTab('cloudSettings')">☁️ GitHub क्लाउड सेटिंग्स</a></li>
       <li><a href="#" onclick="handleLogout()">🚪 लॉगआउट</a></li>
@@ -59,8 +61,10 @@
 
   <main class="admin-main">
     <div id="tabAddNews" class="card">
-      <h2>नया समाचार प्रकाशित करें</h2>
-      <form id="newsForm" onsubmit="handlePublishNews(event)" style="margin-top: 15px;">
+      <h2 id="formHeading">नया समाचार प्रकाशित करें</h2>
+      <form id="newsForm" onsubmit="handlePublishOrUpdateNews(event)" style="margin-top: 15px;">
+        <input type="hidden" id="editArticleId" value="">
+        
         <div class="form-group">
           <label>शीर्षक (Article Title)</label>
           <input type="text" id="newsTitle" class="form-control" required oninput="autoGenerateSlug()">
@@ -105,7 +109,7 @@
 
         <div class="grid-2form">
           <div class="form-group">
-            <label>मुख्य फ़ोटो अपलोड करें (Featured Image)</label>
+            <label>मुख्य फ़ोटो (Featured Image)</label>
             <input type="file" id="newsImageFile" class="form-control" accept="image/*" onchange="previewSelectedImage(event, 'newsImgPreview')">
             <input type="hidden" id="newsImageData">
             <img id="newsImgPreview" class="preview-box">
@@ -148,13 +152,15 @@
           <label><input type="checkbox" id="newsFeatured" checked> मुख्य पृष्ठ (Lead Story) पर रखें</label>
         </div>
 
-        <button type="submit" class="btn">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
+        <button type="submit" id="submitBtn" class="btn">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
+        <button type="button" id="cancelEditBtn" class="btn" style="background:#6b7280; display:none; margin-left:10px;" onclick="cancelEditMode()">रद्द करें (Cancel)</button>
       </form>
     </div>
 
     <div id="tabManageNews" class="card" style="display: none;">
       <h2>प्रकाशित समाचार प्रबंधन</h2>
-      <div style="overflow-x: auto; margin-top: 15px;">
+      <p style="font-size: 13px; color: #666; margin-bottom: 12px;">किसी भी समाचार में संशोधन (Correction) के लिए 'संपादित करें' या हटाने के लिए 'हटाएं' चुनें:</p>
+      <div style="overflow-x: auto;">
         <table class="table">
           <thead>
             <tr>
@@ -235,6 +241,7 @@
   }
 
   function autoGenerateSlug() {
+    if (document.getElementById('editArticleId').value) return; 
     const title = document.getElementById('newsTitle').value;
     const clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
     document.getElementById('newsSlug').value = clean ? `${clean}-${Date.now().toString().slice(-4)}` : `news-${Date.now().toString().slice(-6)}`;
@@ -261,7 +268,7 @@
     }
   }
 
-  async function handlePublishNews(e) {
+  async function handlePublishOrUpdateNews(e) {
     e.preventDefault();
     const token = (localStorage.getItem('90i_gh_token') || '').trim();
     if (!token) {
@@ -276,6 +283,7 @@
       return;
     }
 
+    const editId = document.getElementById('editArticleId').value;
     const title = document.getElementById('newsTitle').value;
     const slug = document.getElementById('newsSlug').value;
     const category = document.getElementById('newsCategory').value;
@@ -290,39 +298,55 @@
     const seoDescription = document.getElementById('newsSeoDesc').value || excerpt;
     const seoKeywords = document.getElementById('newsSeoKeywords').value;
 
-    const newArticle = {
-      id: Date.now(),
-      title,
-      slug,
-      category,
-      author,
-      tags,
-      excerpt,
-      image: imageFile,
-      imageCaption,
-      content,
-      breaking,
-      featured,
-      seoTitle,
-      seoDescription,
-      seoKeywords,
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toTimeString().slice(0, 5),
-      permalink: `article.html?slug=${slug}`
-    };
-
-    const data = await loadData() || {};
-    data['90i_news'] = data['90i_news'] || [];
-    data['90i_news'].unshift(newArticle);
+    const owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
+    const repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
+    let currentData = {};
 
     try {
-      await syncToGitHub(data, token);
-      alert("समाचार सफलतापूर्वक प्रकाशित और क्लाउड पर सिंक हो गया!");
-      document.getElementById('newsForm').reset();
-      document.getElementById('richEditor').innerHTML = '';
-      document.getElementById('newsImgPreview').style.display = 'none';
-      document.getElementById('newsImageData').value = '';
+      const liveRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/data/90i-data.json?ref=main&_nocache=${Date.now()}`, {
+        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (liveRes.ok) {
+        const fileData = await liveRes.json();
+        const decodedStr = decodeURIComponent(escape(window.atob(fileData.content)));
+        currentData = JSON.parse(decodedStr);
+      }
+    } catch(err) {
+      currentData = await loadData() || {};
+    }
+
+    currentData['90i_news'] = currentData['90i_news'] || [];
+
+    if (editId) {
+      const index = currentData['90i_news'].findIndex(n => String(n.id) === String(editId));
+      if (index !== -1) {
+        currentData['90i_news'][index] = {
+          ...currentData['90i_news'][index],
+          title, slug, category, author, tags, excerpt,
+          image: imageFile, imageCaption, content,
+          breaking, featured, seoTitle, seoDescription, seoKeywords,
+          permalink: `article.html?slug=${slug}`
+        };
+      }
+    } else {
+      const newArticle = {
+        id: Date.now(),
+        title, slug, category, author, tags, excerpt,
+        image: imageFile, imageCaption, content,
+        breaking, featured, seoTitle, seoDescription, seoKeywords,
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toTimeString().slice(0, 5),
+        permalink: `article.html?slug=${slug}`
+      };
+      currentData['90i_news'].unshift(newArticle);
+    }
+
+    try {
+      await syncToGitHub(currentData, token);
+      alert(editId ? "संशोधन (Correction) सफलतापूर्वक सुरक्षित हो गया!" : "समाचार सफलतापूर्वक प्रकाशित हो गया!");
+      cancelEditMode();
       loadAdminNewsList();
+      showTab('manageNews');
     } catch (err) {
       alert("क्लाउड सिंक विफल: " + err.message);
     }
@@ -337,17 +361,67 @@
         <td><strong>${n.title}</strong></td>
         <td>${n.category}</td>
         <td>${n.date}</td>
-        <td><button class="btn" style="padding: 4px 8px; font-size: 12px;" onclick="deleteNews(${n.id})">हटाएं</button></td>
+        <td style="white-space:nowrap;">
+          <button class="btn-edit" onclick="startEditNews(${n.id})">✏️ संपादित करें</button>
+          <button class="btn-del" onclick="deleteNews(${n.id})">🗑️ हटाएं</button>
+        </td>
       </tr>
     `).join('');
+  }
+
+  async function startEditNews(id) {
+    const data = await loadData();
+    const article = (data.news || []).find(n => n.id === id);
+    if (!article) return;
+
+    document.getElementById('editArticleId').value = article.id;
+    document.getElementById('newsTitle').value = article.title;
+    document.getElementById('newsSlug').value = article.slug;
+    document.getElementById('newsCategory').value = article.category;
+    document.getElementById('newsAuthor').value = article.author || '90I डिजिटल डेस्क';
+    document.getElementById('newsTags').value = (article.tags || []).join(', ');
+    document.getElementById('newsExcerpt').value = article.excerpt;
+    document.getElementById('newsImageCaption').value = article.imageCaption || '';
+    document.getElementById('newsSeoTitle').value = article.seoTitle || '';
+    document.getElementById('newsSeoDesc').value = article.seoDescription || '';
+    document.getElementById('newsSeoKeywords').value = article.seoKeywords || '';
+    document.getElementById('richEditor').innerHTML = article.content || '';
+    document.getElementById('newsBreaking').checked = !!article.breaking;
+    document.getElementById('newsFeatured').checked = !!article.featured;
+
+    if (article.image) {
+      document.getElementById('newsImageData').value = article.image;
+      const preview = document.getElementById('newsImgPreview');
+      preview.src = article.image;
+      preview.style.display = 'block';
+    }
+
+    document.getElementById('formHeading').innerText = "समाचार में संशोधन करें (Correction / Edit)";
+    document.getElementById('submitBtn').innerText = "💾 अपडेट सुरक्षित करें (Save Correction)";
+    document.getElementById('cancelEditBtn').style.display = "inline-block";
+
+    showTab('addNews');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function cancelEditMode() {
+    document.getElementById('newsForm').reset();
+    document.getElementById('editArticleId').value = '';
+    document.getElementById('richEditor').innerHTML = '';
+    document.getElementById('newsImgPreview').style.display = 'none';
+    document.getElementById('newsImageData').value = '';
+    document.getElementById('formHeading').innerText = "नया समाचार प्रकाशित करें";
+    document.getElementById('submitBtn').innerText = "🚀 क्लाउड पर प्रकाशित करें (Publish)";
+    document.getElementById('cancelEditBtn').style.display = "none";
   }
 
   async function deleteNews(id) {
     if (!confirm("क्या आप वाकई इस लेख को हटाना चाहते हैं?")) return;
     const token = localStorage.getItem('90i_gh_token');
     const data = await loadData();
-    data['90i_news'] = data['90i_news'].filter(n => n.id !== id);
+    data['90i_news'] = (data.news || []).filter(n => n.id !== id);
     await syncToGitHub(data, token);
+    alert("समाचार हटा दिया गया!");
     loadAdminNewsList();
   }
 
@@ -377,10 +451,4 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
-    document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
-    document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
-    checkAuth();
-  });
-</script>
-</body>
-</html>
+    document.getElementById('ghOwner').value = localStorage.getItem('9
