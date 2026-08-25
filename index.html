@@ -7,91 +7,210 @@
   <link rel="stylesheet" href="assets/styles.css">
   <link rel="manifest" href="site.webmanifest">
   <style>
-    .site-branding { text-align: center; padding: 16px 0; background: #fff; }
-    .site-logo-main { max-height: 85px; width: auto; object-fit: contain; margin: 0 auto; display: block; }
-    .share-suite { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
-    .share-btn { padding: 6px 12px; border-radius: 4px; color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; }
+    /* TOI-Style Top Header */
+    .toi-header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 8px 0; }
+    .header-flex { display: flex; justify-content: space-between; align-items: center; }
+    .header-left { display: flex; align-items: center; gap: 15px; }
+    .site-logo-main { max-height: 58px; width: auto; object-fit: contain; }
+    .header-right { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+    .live-badge { background: var(--primary-red); color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; text-transform: uppercase; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    .header-action-btn { border: 1px solid #ddd; padding: 5px 10px; border-radius: 4px; text-decoration: none; color: #333; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    
+    /* Sticky Sub Nav */
+    .sub-navbar { background: #f8f9fa; border-bottom: 2px solid var(--primary-red); overflow-x: auto; white-space: nowrap; }
+    .sub-nav-list { display: flex; list-style: none; margin: 0; padding: 0; }
+    .sub-nav-list li a { display: inline-block; padding: 10px 14px; color: #222; text-decoration: none; font-size: 14px; font-weight: 700; }
+    .sub-nav-list li a:hover, .sub-nav-list li a.active { color: var(--primary-red); }
+
+    /* Article Sharing Buttons */
+    .share-suite { display: flex; gap: 6px; margin: 10px 0; flex-wrap: wrap; }
+    .share-btn { padding: 5px 10px; border-radius: 4px; color: #fff; text-decoration: none; font-size: 12px; font-weight: 700; }
     .btn-wa { background: #25D366; }
     .btn-fb { background: #1877F2; }
-    .btn-tw { background: #000000; }
-    .btn-insta { background: #E1306C; }
+    .btn-tw { background: #000; }
     .btn-tg { background: #0088cc; }
-    .read-more-btn { display: inline-block; margin-top: 12px; background: var(--primary-red); color: #fff; padding: 8px 16px; border-radius: 4px; font-weight: 700; text-decoration: none; }
+    .read-more-btn { display: inline-block; margin-top: 10px; background: var(--primary-red); color: #fff; padding: 8px 14px; border-radius: 4px; font-weight: 700; text-decoration: none; font-size: 13px; }
+
+    /* Right Sticky Widget Box */
+    .widget-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .widget-title { font-size: 16px; font-weight: 800; border-left: 4px solid var(--primary-red); padding-left: 8px; margin-bottom: 12px; }
+
+    /* Rich TOI-Style Footer */
+    .rich-footer { background: #111; color: #bbb; padding: 40px 0 20px 0; margin-top: 50px; font-size: 14px; }
+    .footer-grid-4 { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 30px; margin-bottom: 30px; }
+    .footer-col h4 { color: #fff; font-size: 16px; margin-bottom: 15px; position: relative; padding-bottom: 6px; border-bottom: 1px solid #333; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 8px; }
+    .footer-links li a { color: #aaa; text-decoration: none; transition: 0.2s; }
+    .footer-links li a:hover { color: #fff; padding-left: 4px; }
+    
+    /* Footer Social Buttons */
+    .footer-social-box { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 15px; }
+    .ft-social-btn { padding: 6px 12px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; }
+    .ft-wa { background: #25D366; }
+    .ft-fb { background: #1877F2; }
+    .ft-tw { background: #000; border: 1px solid #444; }
+    .ft-insta { background: #E1306C; }
+    .ft-yt { background: #FF0000; }
+    
+    .contact-form-footer input, .contact-form-footer textarea { width: 100%; padding: 8px; margin-bottom: 8px; background: #222; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+    .btn-footer-submit { background: var(--primary-red); color: #fff; border: none; padding: 8px 15px; font-weight: 700; border-radius: 4px; cursor: pointer; width: 100%; }
+    .footer-bottom-bar { border-top: 1px solid #222; padding-top: 15px; text-align: center; font-size: 12px; color: #777; }
+
+    @media (max-width: 768px) {
+      .footer-grid-4 { grid-template-columns: 1fr; gap: 20px; }
+      .header-right { display: none; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Top Announcement Strip -->
   <div class="topbar">
     <div class="container topbar-content">
-      <div id="liveDate">बुधवार, 26 अगस्त 2026</div>
+      <div id="liveDate">बुधवार, 26 अगस्त 2026 | पूर्णिया, बिहार</div>
       <div>
-        <a href="epaper.html" style="margin-right: 12px;">ई-पेपर</a>
-        <a href="contact.html">संपर्क</a>
+        <a href="epaper.html" style="margin-right: 10px; color:#fff; text-decoration:none;">📰 ई-पेपर</a>
+        <a href="#footerContact" style="color:#fff; text-decoration:none;">✉️ सूचना / टिप भेजें</a>
       </div>
     </div>
   </div>
 
-  <header class="main-header">
-    <div class="container site-branding">
-      <a href="index.html">
-        <img src="assets/logo.png" alt="90I न्यूज़" class="site-logo-main">
-      </a>
+  <!-- TOI Style Header: Left Logo & Right Actions -->
+  <header class="toi-header">
+    <div class="container header-flex">
+      <div class="header-left">
+        <a href="index.html">
+          <img src="assets/logo.png" alt="90I न्यूज़" class="site-logo-main">
+        </a>
+      </div>
+      <div class="header-right">
+        <span class="live-badge">● LIVE</span>
+        <a href="search.html" class="header-action-btn">🔍 खोजें</a>
+        <a href="admin.html" class="header-action-btn">👤 CMS लॉगिन</a>
+      </div>
     </div>
   </header>
 
-  <nav class="navbar">
+  <!-- Navigation Menu Bar -->
+  <nav class="sub-navbar">
     <div class="container">
-      <ul class="nav-menu" id="categoryNav">
+      <ul class="sub-nav-list" id="categoryNav">
         <li><a href="index.html" class="active">होम</a></li>
       </ul>
     </div>
   </nav>
 
+  <!-- Breaking News Strip -->
   <div class="breaking-ticker">
     <div class="container" style="display: flex; height: 100%; width: 100%;">
-      <div class="breaking-label">ब्रेकिंग</div>
+      <div class="breaking-label">ब्रेकिंग न्यूज़</div>
       <div class="ticker-content" id="tickerContainer">
         <span>समाचार लोड हो रहे हैं...</span>
       </div>
     </div>
   </div>
 
-  <main class="container main-grid">
+  <!-- Main Grid Layout -->
+  <main class="container main-grid" style="margin-top: 20px;">
+    
+    <!-- Left Column: Lead Story & Feeds -->
     <section>
+      <!-- Hero / Lead Story -->
       <div id="leadStoryContainer"></div>
 
+      <!-- Latest Section -->
       <div class="section-title" style="margin-top: 25px;"><span>ताज़ा समाचार</span></div>
       <div class="grid-2col" id="latestNewsGrid"></div>
 
+      <!-- Bihar Special -->
       <div class="section-title" style="margin-top: 30px;">
         <span>बिहार विशेष</span>
-        <a href="category.html?cat=बिहार" style="font-size: 13px; color: var(--primary-red);">और पढ़ें &raquo;</a>
+        <a href="category.html?cat=बिहार" style="font-size: 13px; color: var(--primary-red);">सभी देखें &raquo;</a>
       </div>
       <div class="grid-2col" id="biharNewsGrid"></div>
     </section>
 
+    <!-- Right Column: Sidebar Widgets -->
     <aside>
-      <div class="sidebar-box">
-        <h3 class="section-title">सोशल मीडिया</h3>
-        <div class="share-suite">
-          <a href="https://wa.me/" target="_blank" class="share-btn btn-wa">WhatsApp</a>
-          <a href="https://facebook.com/" target="_blank" class="share-btn btn-fb">Facebook</a>
-          <a href="https://instagram.com/" target="_blank" class="share-btn btn-insta">Instagram</a>
-          <a href="https://twitter.com/" target="_blank" class="share-btn btn-tw">Twitter (X)</a>
-        </div>
-      </div>
-
-      <div class="sidebar-box">
-        <h3 class="section-title">ट्रेंडिंग</h3>
+      <!-- Live Trending Topics -->
+      <div class="widget-box">
+        <div class="widget-title">ट्रेंडिंग खबरें</div>
         <div id="trendingList"></div>
       </div>
+
+      <!-- Special E-Paper Banner -->
+      <div class="widget-box" style="background: #fff8f8; border-color: #fbcfe8;">
+        <div class="widget-title" style="border-color: #e11d48;">90I ई-पेपर संस्करण</div>
+        <p style="font-size: 13px; color: #555; margin-bottom: 10px;">आज का डिजिटल समाचार पत्र PDF प्रारूप में पढ़ें।</p>
+        <a href="epaper.html" class="read-more-btn" style="display:block; text-align:center;">ई-पेपर डाउनलोड करें</a>
+      </div>
     </aside>
+
   </main>
 
-  <footer class="site-footer">
+  <!-- Black Footer with Social Connect Links & Working Form -->
+  <footer class="rich-footer" id="footerContact">
     <div class="container">
-      <div class="footer-bottom">
-        &copy; 2026 90I न्यूज़. सर्वाधिकार सुरक्षित। | <a href="admin.html" style="color: #888;">CMS एडमिन</a>
+      <div class="footer-grid-4">
+        
+        <!-- Col 1: About Platform & Social Media Follow Links -->
+        <div class="footer-col">
+          <img src="assets/logo.png" alt="90I News" style="max-height: 48px; background:#fff; padding:4px; border-radius:4px; margin-bottom:12px;">
+          <p style="font-size: 13px; line-height: 1.6; color: #999;">
+            90I न्यूज़ बिहार और देश का स्वतंत्र, निष्पक्ष और प्रमाणिक डिजिटल न्यूज़ पोर्टल है।
+          </p>
+          
+          <h4 style="margin-top: 15px; margin-bottom: 8px; font-size: 14px; border: none; padding: 0;">सोशल मीडिया पर फॉलो करें</h4>
+          <div class="footer-social-box">
+            <a href="https://wa.me/" target="_blank" class="ft-social-btn ft-wa">WhatsApp</a>
+            <a href="https://facebook.com/" target="_blank" class="ft-social-btn ft-fb">Facebook</a>
+            <a href="https://instagram.com/" target="_blank" class="ft-social-btn ft-insta">Instagram</a>
+            <a href="https://twitter.com/" target="_blank" class="ft-social-btn ft-tw">Twitter</a>
+            <a href="https://youtube.com/" target="_blank" class="ft-social-btn ft-yt">YouTube</a>
+          </div>
+        </div>
+
+        <!-- Col 2: Categories -->
+        <div class="footer-col">
+          <h4>प्रमुख श्रेणियां</h4>
+          <ul class="footer-links">
+            <li><a href="category.html?cat=बिहार">बिहार न्यूज़</a></li>
+            <li><a href="category.html?cat=राजनीति">राजनीति</a></li>
+            <li><a href="category.html?cat=शिक्षा">शिक्षा एवं रोजगार</a></li>
+            <li><a href="category.html?cat=राष्ट्रीय">देश - विदेश</a></li>
+            <li><a href="category.html?cat=खेल">खेल जगत</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Legal & Policies -->
+        <div class="footer-col">
+          <h4>नीतियां एवं नियम</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">हमारे बारे में (About Us)</a></li>
+            <li><a href="privacy.html">गोपनीयता नीति (Privacy Policy)</a></li>
+            <li><a href="terms.html">नियम व शर्तें (Terms of Service)</a></li>
+            <li><a href="contact.html">शिकायत निवारण (Grievance)</a></li>
+            <li><a href="admin.html">संपादकीय / CMS लॉगिन</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Contact / News Tip Form -->
+        <div class="footer-col">
+          <h4>न्यूज़ टिप / संदेश भेजें</h4>
+          <form class="contact-form-footer" onsubmit="handleFooterContact(event)">
+            <input type="text" id="ftName" placeholder="आपका नाम" required>
+            <input type="text" id="ftContact" placeholder="मोबाइल नंबर / ईमेल" required>
+            <textarea id="ftMessage" rows="2" placeholder="अपनी खबर या संदेश यहाँ लिखें..." required></textarea>
+            <button type="submit" class="btn-footer-submit">संदेश सबमिट करें</button>
+          </form>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom-bar">
+        &copy; 2026 90I न्यूज़ डिजिटल मीडिया नेटवर्क. सर्वाधिकार सुरक्षित। | सच • सटीक • निर्भीक
       </div>
     </div>
   </footer>
@@ -102,6 +221,7 @@
       const data = await loadData();
       if (!data) return;
 
+      // Populate Nav
       const navEl = document.getElementById('categoryNav');
       const cats = (data.categories && data.categories.length > 0) ? data.categories : ['बिहार', 'राष्ट्रीय', 'झारखंड', 'राजनीति', 'शिक्षा', 'खेल', 'मनोरंजन'];
       cats.forEach(cat => {
@@ -110,6 +230,7 @@
         navEl.appendChild(li);
       });
 
+      // Breaking Ticker
       const breakingArticles = (data.news || []).filter(n => n.breaking);
       const tickerEl = document.getElementById('tickerContainer');
       if (breakingArticles.length > 0) {
@@ -120,6 +241,7 @@
         tickerEl.innerHTML = `<a href="article.html?slug=${data.news[0].slug}">${data.news[0].title}</a>`;
       }
 
+      // Lead News Section
       const leadNews = (data.news || []).find(n => n.featured) || (data.news && data.news[0]);
       if (leadNews) {
         const articleUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}article.html?slug=${leadNews.slug}`;
@@ -137,7 +259,7 @@
             </div>
 
             <a href="article.html?slug=${leadNews.slug}">
-              <img src="${leadNews.image}" alt="${leadNews.title}" loading="lazy" style="width: 100%; max-height: 420px; object-fit: cover; margin: 10px 0;">
+              <img src="${leadNews.image}" alt="${leadNews.title}" loading="lazy" style="width: 100%; max-height: 420px; object-fit: cover; margin: 10px 0; border-radius:4px;">
             </a>
             <p style="font-size: 16px; line-height: 1.6; color: #333;">${leadNews.excerpt}</p>
             <a href="article.html?slug=${leadNews.slug}" class="read-more-btn">पूरा समाचार पढ़ें &raquo;</a>
@@ -145,23 +267,25 @@
         `;
       }
 
+      // Latest Grid
       const gridEl = document.getElementById('latestNewsGrid');
       (data.news || []).slice(1, 5).forEach(item => {
         const card = document.createElement('div');
         card.className = 'news-card-sm';
         card.innerHTML = `
           <a href="article.html?slug=${item.slug}">
-            <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 160px; width: 100%; object-fit: cover;">
+            <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 160px; width: 100%; object-fit: cover; border-radius:4px;">
           </a>
           <div style="margin-top: 8px;">
             <span class="badge-category">${item.category}</span>
-            <h3><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
-            <div class="news-meta" style="margin-top: 4px;">${formatDateHindi(item.date)}</div>
+            <h3 style="font-size:15px; margin: 4px 0;"><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
+            <div class="news-meta">${formatDateHindi(item.date)}</div>
           </div>
         `;
         gridEl.appendChild(card);
       });
 
+      // Bihar Grid
       const biharGrid = document.getElementById('biharNewsGrid');
       const biharStories = (data.news || []).filter(n => n.category === 'बिहार').slice(0, 4);
       biharStories.forEach(item => {
@@ -169,25 +293,51 @@
         card.className = 'news-card-sm';
         card.innerHTML = `
           <a href="article.html?slug=${item.slug}">
-            <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 160px; width: 100%; object-fit: cover;">
+            <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 160px; width: 100%; object-fit: cover; border-radius:4px;">
           </a>
           <div style="margin-top: 8px;">
-            <h3><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
-            <div class="news-meta" style="margin-top: 4px;">${formatDateHindi(item.date)}</div>
+            <h3 style="font-size:15px; margin: 4px 0;"><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
+            <div class="news-meta">${formatDateHindi(item.date)}</div>
           </div>
         `;
         biharGrid.appendChild(card);
       });
 
+      // Trending
       const trendEl = document.getElementById('trendingList');
       if (data.news && data.news.length > 0) {
         trendEl.innerHTML = data.news.slice(0, 5).map((n, i) => `
-          <p style="font-size: 14px; margin-bottom: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;">
-            <strong>#${i+1}</strong> <a href="article.html?slug=${n.slug}">${n.title}</a>
+          <p style="font-size: 13px; margin-bottom: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 6px;">
+            <strong style="color:var(--primary-red);">#${i+1}</strong> <a href="article.html?slug=${n.slug}" style="text-decoration:none; color:#222; font-weight:600;">${n.title}</a>
           </p>
         `).join('');
       }
     });
+
+    async function handleFooterContact(e) {
+      e.preventDefault();
+      const name = document.getElementById('ftName').value;
+      const contact = document.getElementById('ftContact').value;
+      const message = document.getElementById('ftMessage').value;
+      
+      const newMsg = {
+        name, contact, message, date: new Date().toISOString().split('T')[0]
+      };
+
+      const data = await loadData() || {};
+      data['90i_contacts'] = data['90i_contacts'] || [];
+      data['90i_contacts'].unshift(newMsg);
+
+      const token = localStorage.getItem('90i_gh_token');
+      if (token) {
+        try {
+          await syncToGitHub(data, token);
+        } catch(err){}
+      }
+      alert("धन्यवाद! आपका संदेश सफलतापूर्वक भेज दिया गया है।");
+      e.target.reset();
+    }
   </script>
 </body>
 </html>
+
