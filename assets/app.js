@@ -1,5 +1,5 @@
 /**
- * THE 90I NEWS - Core Engine & Cloud Sync
+ * THE 90I NEWS - Direct GitHub API Sync Engine
  */
 const CONFIG = {
   DATA_PATH: 'data/90i-data.json',
@@ -41,15 +41,17 @@ function utf8ToBase64(str) {
 }
 
 async function syncToGitHub(updatedData, token) {
-  const owner = localStorage.getItem('90i_gh_owner') || CONFIG.DEFAULT_OWNER;
-  const repo = localStorage.getItem('90i_gh_repo') || CONFIG.DEFAULT_REPO;
-  const branch = localStorage.getItem('90i_gh_branch') || CONFIG.DEFAULT_BRANCH;
+  const owner = (localStorage.getItem('90i_gh_owner') || CONFIG.DEFAULT_OWNER).trim();
+  const repo = (localStorage.getItem('90i_gh_repo') || CONFIG.DEFAULT_REPO).trim();
+  const branch = (localStorage.getItem('90i_gh_branch') || CONFIG.DEFAULT_BRANCH).trim();
   const path = 'data/90i-data.json';
+  const cleanToken = token.trim();
 
+  // 1. Fetch current file SHA & info
   const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
   const getRes = await fetch(getUrl, {
     headers: { 
-      'Authorization': `token ${token}`,
+      'Authorization': `Bearer ${cleanToken}`,
       'Accept': 'application/vnd.github.v3+json'
     }
   });
@@ -60,24 +62,26 @@ async function syncToGitHub(updatedData, token) {
     sha = fileInfo.sha;
   } else {
     const errInfo = await getRes.json();
-    throw new Error(errInfo.message || 'Repo connectivity error');
+    throw new Error(`Repository Check Failed: ${errInfo.message || 'Repo ya File nahi mili'}`);
   }
 
+  // 2. Encode UTF-8 JSON
   const jsonString = JSON.stringify(updatedData, null, 2);
   const contentEncoded = utf8ToBase64(jsonString);
   const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   
   const body = {
-    message: `CMS Update [${new Date().toISOString()}]`,
+    message: `CMS News Update [${new Date().toISOString()}]`,
     content: contentEncoded,
     branch: branch
   };
   if (sha) body.sha = sha;
 
+  // 3. Commit update to GitHub
   const putRes = await fetch(putUrl, {
     method: 'PUT',
     headers: {
-      'Authorization': `token ${token}`,
+      'Authorization': `Bearer ${cleanToken}`,
       'Content-Type': 'application/json',
       'Accept': 'application/vnd.github.v3+json'
     },
@@ -86,7 +90,7 @@ async function syncToGitHub(updatedData, token) {
 
   if (!putRes.ok) {
     const errObj = await putRes.json();
-    throw new Error(errObj.message || "Failed to commit");
+    throw new Error(errObj.message || "Commit failed");
   }
   return true;
 }
@@ -135,4 +139,3 @@ function formatDateHindi(dateStr) {
     return dateStr;
   }
 }
-
