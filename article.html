@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>समाचार — THE 90I NEWS</title>
+  <title>समाचार — 90I न्यूज़</title>
   <link rel="stylesheet" href="assets/styles.css">
   <style>
-    .share-bar { display: flex; gap: 8px; margin: 18px 0; flex-wrap: wrap; }
-    .share-btn { padding: 7px 12px; border-radius: 4px; color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; cursor: pointer; border: none; }
+    .site-logo-main { max-height: 75px; width: auto; object-fit: contain; margin: 0 auto; display: block; }
+    .share-suite { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+    .share-btn { padding: 8px 14px; border-radius: 4px; color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; cursor: pointer; border: none; }
     .btn-wa { background: #25D366; }
     .btn-fb { background: #1877F2; }
     .btn-tw { background: #000000; }
+    .btn-insta { background: #E1306C; }
     .btn-tg { background: #0088cc; }
     .btn-copy { background: #555555; }
   </style>
@@ -18,17 +20,27 @@
 <body>
   <div class="reading-progress" id="progressBar"></div>
 
-  <header class="main-header">
-    <div class="container site-branding">
-      <h1 class="site-title"><a href="index.html">THE 90I NEWS</a></h1>
+  <header class="main-header" style="background: #fff; border-bottom: 1px solid #ddd; padding: 12px 0;">
+    <div class="container" style="text-align: center;">
+      <a href="index.html">
+        <img src="assets/logo.png" alt="90I न्यूज़" class="site-logo-main">
+      </a>
     </div>
   </header>
 
-  <main class="container" style="max-width: 860px; margin-top: 30px; margin-bottom: 60px;">
+  <main class="container" style="max-width: 860px; margin-top: 25px; margin-bottom: 60px;">
     <article id="articleContainer">
       <p>समाचार लोड हो रहा है...</p>
     </article>
   </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        &copy; 2026 90I न्यूज़. सर्वाधिकार सुरक्षित। | <a href="index.html" style="color: #fff;">होम पेज पर जाएं</a>
+      </div>
+    </div>
+  </footer>
 
   <script src="assets/app.js"></script>
   <script>
@@ -37,7 +49,7 @@
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('slug');
 
-      const article = data?.news.find(n => n.slug === slug) || data?.news[0];
+      const article = (data && data.news) ? (data.news.find(n => n.slug === slug) || data.news[0]) : null;
 
       if (!article) {
         document.getElementById('articleContainer').innerHTML = `
@@ -47,7 +59,7 @@
         return;
       }
 
-      document.title = `${article.seoTitle || article.title} — THE 90I NEWS`;
+      document.title = `${article.seoTitle || article.title} — 90I न्यूज़`;
       const currentUrl = window.location.href;
 
       document.getElementById('articleContainer').innerHTML = `
@@ -59,18 +71,19 @@
           </div>
         </div>
 
-        <div class="share-bar">
+        <div class="share-suite">
           <a class="share-btn btn-wa" href="https://api.whatsapp.com/send?text=${encodeURIComponent(article.title + ' ' + currentUrl)}" target="_blank">WhatsApp</a>
           <a class="share-btn btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank">Facebook</a>
           <a class="share-btn btn-tw" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(currentUrl)}" target="_blank">Twitter (X)</a>
-          <a class="share-btn btn-tg" href="https://t.me/share/url?url=${encodeURIComponent(currentUrl)}" target="_blank">Telegram</a>
-          <button class="share-btn btn-copy" onclick="copyArticleLink()">🔗 लिंक कॉपी करें</button>
+          <a class="share-btn btn-insta" href="https://instagram.com/" target="_blank">Instagram</a>
+          <a class="share-btn btn-tg" href="https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(article.title)}" target="_blank">Telegram</a>
+          <button class="share-btn btn-copy" onclick="copyArticleLink()">🔗 लिंक कॉपी</button>
         </div>
 
-        <img src="${article.image}" alt="${article.title}" style="width: 100%; max-height: 460px; object-fit: cover; margin: 15px 0;">
+        <img src="${article.image}" alt="${article.title}" style="width: 100%; max-height: 480px; object-fit: cover; margin: 15px 0;">
         ${article.imageCaption ? `<p style="font-size: 13px; color: var(--text-muted); text-align: center; margin-top: -8px; margin-bottom: 15px;">${article.imageCaption}</p>` : ''}
         
-        <div class="article-body" style="font-size: 18px; line-height: 1.8;">
+        <div class="article-body" style="font-size: 18px; line-height: 1.8; color: #222;">
           ${sanitizeHtml(article.content)}
         </div>
       `;
