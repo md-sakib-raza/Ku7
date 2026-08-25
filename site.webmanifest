@@ -1,0 +1,8 @@
+{
+  "name": "THE 90I NEWS",
+  "short_name": "90I NEWS",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#c90000"
+}
