@@ -22,6 +22,7 @@
     .table { width: 100%; border-collapse: collapse; background: #fff; }
     .table th, .table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
     .grid-2form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .preview-box { max-height: 120px; max-width: 200px; border: 1px solid #ddd; border-radius: 4px; margin-top: 8px; display: none; object-fit: cover; }
     @media (max-width: 768px) {
       .admin-layout { grid-template-columns: 1fr; }
       .grid-2form { grid-template-columns: 1fr; }
@@ -104,10 +105,13 @@
           <textarea id="newsExcerpt" class="form-control" rows="2" required></textarea>
         </div>
 
+        <!-- Direct Image Upload (Photo URL ki jagah File Picker) -->
         <div class="grid-2form">
           <div class="form-group">
-            <label>मुख्य फ़ोटो URL (Featured Image URL)</label>
-            <input type="url" id="newsImage" class="form-control" placeholder="https://..." required>
+            <label>मुख्य फ़ोटो अपलोड करें (Featured Image)</label>
+            <input type="file" id="newsImageFile" class="form-control" accept="image/*" onchange="previewSelectedImage(event, 'newsImgPreview')">
+            <input type="hidden" id="newsImageData">
+            <img id="newsImgPreview" class="preview-box">
           </div>
           <div class="form-group">
             <label>फ़ोटो कैप्शन (Image Caption)</label>
@@ -170,7 +174,7 @@
       </div>
     </div>
 
-    <!-- 3. Site Settings -->
+    <!-- 3. Site Settings (Direct Logo File Upload) -->
     <div id="tabSiteSettings" class="card" style="display: none;">
       <h2>वेबसाइट सेटिंग्स एवं Logo कस्टमाइज़ेशन</h2>
       <form onsubmit="handleSaveSiteSettings(event)" style="margin-top: 15px;">
@@ -182,10 +186,15 @@
           <label>टैगलाइन</label>
           <input type="text" id="cfgTagline" class="form-control" value="सच | सटीक | निर्भीक">
         </div>
+        
+        <!-- Logo Direct File Upload -->
         <div class="form-group">
-          <label>वेबसाइट लोगो URL (Logo Image URL)</label>
-          <input type="url" id="cfgLogoUrl" class="form-control" placeholder="https://... (छोड़ने पर टेक्स्ट लोगो दिखेगा)">
+          <label>वेबसाइट लोगो अपलोड करें (Logo Image)</label>
+          <input type="file" id="cfgLogoFile" class="form-control" accept="image/*" onchange="previewSelectedImage(event, 'logoPreview')">
+          <input type="hidden" id="cfgLogoData">
+          <img id="logoPreview" class="preview-box">
         </div>
+
         <div class="form-group">
           <label>संपर्क ईमेल</label>
           <input type="email" id="cfgEmail" class="form-control" value="contact@the90inews.com">
@@ -297,6 +306,25 @@
     document.execCommand(cmd, false, null);
   }
 
+  // Image Upload Preview and Data-URL converter
+  function previewSelectedImage(event, previewId) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById(previewId);
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        if (previewId === 'newsImgPreview') {
+          document.getElementById('newsImageData').value = e.target.result;
+        } else if (previewId === 'logoPreview') {
+          document.getElementById('cfgLogoData').value = e.target.result;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   async function handlePublishNews(e) {
     e.preventDefault();
     const token = localStorage.getItem('90i_gh_token');
@@ -306,13 +334,18 @@
       return;
     }
 
+    const imageFile = document.getElementById('newsImageData').value;
+    if (!imageFile) {
+      alert("कृपया मुख्य फ़ोटो अपलोड करें!");
+      return;
+    }
+
     const title = document.getElementById('newsTitle').value;
     const slug = document.getElementById('newsSlug').value;
     const category = document.getElementById('newsCategory').value;
     const author = document.getElementById('newsAuthor').value;
     const tags = document.getElementById('newsTags').value.split(',').map(t => t.trim()).filter(Boolean);
     const excerpt = document.getElementById('newsExcerpt').value;
-    const image = document.getElementById('newsImage').value;
     const imageCaption = document.getElementById('newsImageCaption').value;
     const content = sanitizeHtml(document.getElementById('richEditor').innerHTML);
     const breaking = document.getElementById('newsBreaking').checked;
@@ -329,7 +362,7 @@
       author,
       tags,
       excerpt,
-      image,
+      image: imageFile,
       imageCaption,
       content,
       breaking,
@@ -351,6 +384,8 @@
       alert("समाचार सफलतापूर्वक प्रकाशित और क्लाउड पर सिंक हो गया!");
       document.getElementById('newsForm').reset();
       document.getElementById('richEditor').innerHTML = '';
+      document.getElementById('newsImgPreview').style.display = 'none';
+      document.getElementById('newsImageData').value = '';
       loadAdminNewsList();
     } catch (err) {
       alert("क्लाउड सिंक विफल: " + err.message);
@@ -385,12 +420,18 @@
     const s = data?.settings || {};
     document.getElementById('cfgSiteTitle').value = s.siteTitle || 'THE 90I NEWS';
     document.getElementById('cfgTagline').value = s.tagline || 'सच | सटीक | निर्भीक';
-    document.getElementById('cfgLogoUrl').value = s.logoUrl || '';
     document.getElementById('cfgEmail').value = s.contactEmail || '';
     document.getElementById('cfgFb').value = s.socialFb || '';
     document.getElementById('cfgTw').value = s.socialTw || '';
     document.getElementById('cfgInsta').value = s.socialInsta || '';
     document.getElementById('cfgWa').value = s.socialWa || '';
+
+    if (s.logoUrl) {
+      const preview = document.getElementById('logoPreview');
+      preview.src = s.logoUrl;
+      preview.style.display = 'block';
+      document.getElementById('cfgLogoData').value = s.logoUrl;
+    }
   }
 
   async function handleSaveSiteSettings(e) {
@@ -404,7 +445,7 @@
     data['90i_settings'] = {
       siteTitle: document.getElementById('cfgSiteTitle').value,
       tagline: document.getElementById('cfgTagline').value,
-      logoUrl: document.getElementById('cfgLogoUrl').value,
+      logoUrl: document.getElementById('cfgLogoData').value || '',
       contactEmail: document.getElementById('cfgEmail').value,
       socialFb: document.getElementById('cfgFb').value,
       socialTw: document.getElementById('cfgTw').value,
@@ -413,7 +454,7 @@
     };
     try {
       await syncToGitHub(data, token);
-      alert("वेबसाइट सेटिंग्स क्लाउड पर सुरक्षित हो गईं!");
+      alert("वेबसाइट सेटिंग्स और Logo सुरक्षित हो गए!");
     } catch (err) {
       alert("त्रुटि: " + err.message);
     }
@@ -450,6 +491,4 @@
     checkAuth();
   });
 </script>
-</body>
-</html>
-
+</bo
