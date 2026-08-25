@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE 90I NEWS — सच | सटीक | निर्भीक</title>
+  <meta name="description" content="THE 90I NEWS — बिहार, झारखंड, देश-दुनिया, राजनीति एवं स्थानीय समाचारों का विश्वसनीय डिजिटल मंच।">
+  <link rel="canonical" href="https://md-sakib-raza.github.io/Kxj/">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="manifest" href="site.webmanifest">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="container topbar-content">
+      <div id="liveDate">मंगलवार, 25 अगस्त 2026</div>
+      <div>
+        <a href="epaper.html" style="margin-right: 12px;">ई-पेपर</a>
+        <a href="contact.html">संपर्क करें</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="container site-branding">
+      <h1 class="site-title"><a href="index.html">THE 90I NEWS</a></h1>
+      <p class="site-tagline">सच | सटीक | निर्भीक</p>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <ul class="nav-menu" id="categoryNav">
+        <li><a href="index.html" class="active">होम</a></li>
+        <!-- Dynamic Categories from JSON -->
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Breaking News Ticker -->
+  <div class="breaking-ticker">
+    <div class="container" style="display: flex; height: 100%; width: 100%;">
+      <div class="breaking-label">ब्रेकिंग</div>
+      <div class="ticker-content" id="tickerContainer">
+        <span>समाचार लोड हो रहे हैं...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container main-grid">
+    <!-- Left: Lead & Categorized News -->
+    <section>
+      <!-- Hero / Lead Story -->
+      <div id="leadStoryContainer"></div>
+
+      <!-- Category Segments -->
+      <div class="section-title">
+        <span>ताज़ा समाचार</span>
+      </div>
+      <div class="grid-2col" id="latestNewsGrid"></div>
+    </section>
+
+    <!-- Right: Sidebar -->
+    <aside>
+      <div class="sidebar-box">
+        <h3 class="section-title">ट्रेंडिंग</h3>
+        <div id="trendingList"></div>
+      </div>
+      <div class="sidebar-box">
+        <h3 class="section-title">ई-पेपर संस्करण</h3>
+        <p style="font-size: 14px; margin-bottom: 10px;">आज का डिजिटल संस्करण पढ़ने के लिए नीचे क्लिक करें।</p>
+        <a href="epaper.html" class="badge-category" style="padding: 8px 12px; text-decoration: none;">ई-पेपर पढ़ें</a>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3 style="color: #fff; margin-bottom: 12px;">THE 90I NEWS</h3>
+          <p style="font-size: 14px; color: #aaa;">सच, निष्पक्ष और सटीक पत्रकारिता का डिजिटल माध्यम।</p>
+        </div>
+        <div>
+          <h4 style="color: #fff; margin-bottom: 12px;">त्वरित लिंक</h4>
+          <ul style="list-style: none; font-size: 14px;">
+            <li><a href="about.html">हमारे बारे में</a></li>
+            <li><a href="contact.html">संपर्क सूत्र</a></li>
+            <li><a href="privacy.html">गोपनीयता नीति</a></li>
+            <li><a href="terms.html">नियम एवं शर्तें</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: #fff; margin-bottom: 12px;">प्रशासन</h4>
+          <ul style="list-style: none; font-size: 14px;">
+            <li><a href="admin.html">एडमिन लॉगिन</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 THE 90I NEWS. सर्वाधिकार सुरक्षित।
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await loadData();
+      if (!data) return;
+
+      // 1. Populate Navigation
+      const navEl = document.getElementById('categoryNav');
+      data.categories.forEach(cat => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="category.html?cat=${encodeURIComponent(cat)}">${cat}</a>`;
+        navEl.appendChild(li);
+      });
+
+      // 2. Breaking Ticker
+      const breakingArticles = data.news.filter(n => n.breaking);
+      const tickerEl = document.getElementById('tickerContainer');
+      if (breakingArticles.length > 0) {
+        tickerEl.innerHTML = breakingArticles.map(a => 
+          `<a href="article.html?slug=${a.slug}">${a.title}</a>`
+        ).join(' • ');
+      }
+
+      // 3. Lead News
+      const leadNews = data.news.find(n => n.featured) || data.news[0];
+      if (leadNews) {
+        document.getElementById('leadStoryContainer').innerHTML = `
+          <div class="news-card-lead">
+            <span class="badge-category">${leadNews.category}</span>
+            <h2 class="lead-title"><a href="article.html?slug=${leadNews.slug}">${leadNews.title}</a></h2>
+            <div class="news-meta">${formatDateHindi(leadNews.date)} | ${leadNews.author}</div>
+            <img src="${leadNews.image}" alt="${leadNews.title}" loading="lazy" style="width: 100%; max-height: 400px; object-fit: cover; margin-bottom: 12px;">
+            <p>${leadNews.excerpt}</p>
+          </div>
+        `;
+      }
+
+      // 4. Latest News Grid
+      const gridEl = document.getElementById('latestNewsGrid');
+      data.news.slice(1, 7).forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'news-card-sm';
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 180px; width: 100%; object-fit: cover;">
+          <div style="margin-top: 8px;">
+            <span class="badge-category">${item.category}</span>
+            <h3><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
+            <div class="news-meta" style="margin-top: 4px;">${formatDateHindi(item.date)}</div>
+          </div>
+        `;
+        gridEl.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>
+
