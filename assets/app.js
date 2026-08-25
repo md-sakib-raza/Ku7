@@ -1,14 +1,13 @@
 /**
- * THE 90I NEWS - Core Frontend & Cloud Sync Engine
+ * THE 90I NEWS - Core Engine & Cloud Sync
  */
 const CONFIG = {
   DATA_PATH: 'data/90i-data.json',
-  DEFAULT_REPO: 'Kxj',
+  DEFAULT_REPO: 'Ku7',
   DEFAULT_OWNER: 'md-sakib-raza',
   DEFAULT_BRANCH: 'main'
 };
 
-// Global Store
 let APP_STATE = {
   news: [],
   gallery: [],
@@ -18,11 +17,10 @@ let APP_STATE = {
   settings: {}
 };
 
-// Helper: Fetch Cloud Data
 async function loadData() {
   try {
     const res = await fetch(`${CONFIG.DATA_PATH}?v=${new Date().getTime()}`);
-    if (!res.ok) throw new Error("Data fetch failed");
+    if (!res.ok) throw new Error("Fetch failed");
     const data = await res.json();
     APP_STATE.news = data['90i_news'] || [];
     APP_STATE.gallery = data['90i_gallery'] || [];
@@ -32,37 +30,41 @@ async function loadData() {
     APP_STATE.settings = data['90i_settings'] || {};
     return APP_STATE;
   } catch (err) {
-    console.warn("Using offline / fallback storage if available", err);
     const cached = localStorage.getItem('90i_offline_cache');
-    if (cached) {
-      APP_STATE = JSON.parse(cached);
-      return APP_STATE;
-    }
+    if (cached) return JSON.parse(cached);
     return null;
   }
 }
 
-// GitHub Contents API: Publish / Update Data
+function utf8ToBase64(str) {
+  return window.btoa(unescape(encodeURIComponent(str)));
+}
+
 async function syncToGitHub(updatedData, token) {
   const owner = localStorage.getItem('90i_gh_owner') || CONFIG.DEFAULT_OWNER;
   const repo = localStorage.getItem('90i_gh_repo') || CONFIG.DEFAULT_REPO;
   const branch = localStorage.getItem('90i_gh_branch') || CONFIG.DEFAULT_BRANCH;
   const path = 'data/90i-data.json';
 
-  // 1. Fetch current file SHA
   const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
   const getRes = await fetch(getUrl, {
-    headers: { 'Authorization': `Bearer ${token}` }
+    headers: { 
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json'
+    }
   });
   
   let sha = null;
   if (getRes.ok) {
     const fileInfo = await getRes.json();
     sha = fileInfo.sha;
+  } else {
+    const errInfo = await getRes.json();
+    throw new Error(errInfo.message || 'Repo connectivity error');
   }
 
-  // 2. Prepare payload
-  const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2))));
+  const jsonString = JSON.stringify(updatedData, null, 2);
+  const contentEncoded = utf8ToBase64(jsonString);
   const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   
   const body = {
@@ -72,34 +74,34 @@ async function syncToGitHub(updatedData, token) {
   };
   if (sha) body.sha = sha;
 
-  // 3. Commit update
   const putRes = await fetch(putUrl, {
     method: 'PUT',
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      'Authorization': `token ${token}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.github.v3+json'
     },
     body: JSON.stringify(body)
   });
 
   if (!putRes.ok) {
     const errObj = await putRes.json();
-    throw new Error(errObj.message || "Failed to commit to GitHub repository");
+    throw new Error(errObj.message || "Failed to commit");
   }
   return true;
 }
 
-// Utility: Generate Clean SEO Slug
 function generateSlug(text) {
+  if (!text) return `news-${Date.now()}`;
   return text
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/[\s\W-]+/g, '-')
+    .replace(/[^\u0900-\u097F\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
     .replace(/^-+|-+$/g, '') || `news-${Date.now()}`;
 }
 
-// Utility: Safe HTML Sanitizer
 function sanitizeHtml(html) {
   const temp = document.createElement('div');
   temp.innerHTML = html;
@@ -121,7 +123,6 @@ function sanitizeHtml(html) {
   return temp.innerHTML;
 }
 
-// Global Date Formatter (Hindi)
 function formatDateHindi(dateStr) {
   try {
     const date = new Date(dateStr);
@@ -135,20 +136,3 @@ function formatDateHindi(dateStr) {
   }
 }
 
-// Theme Handling
-function initTheme() {
-  const current = localStorage.getItem('90i_theme') || 'light';
-  document.documentElement.setAttribute('data-theme', current);
-}
-
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', current);
-  localStorage.setItem('90i_theme', current);
-}
-
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
-});
-    
