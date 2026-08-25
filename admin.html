@@ -8,7 +8,7 @@
   <style>
     .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
     .admin-sidebar { background: #111; color: #fff; padding: 20px; }
-    .admin-sidebar ul { list-style: none; margin-top: 20px; }
+    .admin-sidebar ul { list-style: none; margin-top: 20px; padding: 0; }
     .admin-sidebar li a { display: block; color: #ddd; padding: 10px 0; border-bottom: 1px solid #222; text-decoration: none; font-size: 14px; }
     .admin-sidebar li a:hover { color: var(--primary-red); }
     .admin-main { padding: 25px; background: #f4f6f9; }
@@ -236,7 +236,8 @@
 
   function showTab(tab) {
     ['addNews', 'manageNews', 'inboxMessages', 'cloudSettings'].forEach(t => {
-      document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = (t === tab) ? 'block' : 'none';
+      const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (el) el.style.display = (t === tab) ? 'block' : 'none';
     });
   }
 
@@ -451,4 +452,4 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
-    document.getElementById('ghOwner').value = localStorage.getItem('9
+    document.getElementById('
