@@ -3,44 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THE 90I NEWS — सच | सटीक | निर्भीक</title>
-  <meta name="description" content="THE 90I NEWS — बिहार, झारखंड, देश-दुनिया, राजनीति एवं स्थानीय समाचारों का विश्वसनीय डिजिटल मंच।">
-  <link rel="canonical" href="https://md-sakib-raza.github.io/Kxj/">
+  <title>90I न्यूज़ — सच | सटीक | निर्भीक</title>
   <link rel="stylesheet" href="assets/styles.css">
   <link rel="manifest" href="site.webmanifest">
+  <style>
+    .site-branding { text-align: center; padding: 16px 0; background: #fff; }
+    .site-logo-main { max-height: 85px; width: auto; object-fit: contain; margin: 0 auto; display: block; }
+    .share-suite { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+    .share-btn { padding: 6px 12px; border-radius: 4px; color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; }
+    .btn-wa { background: #25D366; }
+    .btn-fb { background: #1877F2; }
+    .btn-tw { background: #000000; }
+    .btn-insta { background: #E1306C; }
+    .btn-tg { background: #0088cc; }
+    .read-more-btn { display: inline-block; margin-top: 12px; background: var(--primary-red); color: #fff; padding: 8px 16px; border-radius: 4px; font-weight: 700; text-decoration: none; }
+  </style>
 </head>
 <body>
 
-  <!-- Top Bar -->
   <div class="topbar">
     <div class="container topbar-content">
-      <div id="liveDate">मंगलवार, 25 अगस्त 2026</div>
+      <div id="liveDate">बुधवार, 26 अगस्त 2026</div>
       <div>
         <a href="epaper.html" style="margin-right: 12px;">ई-पेपर</a>
-        <a href="contact.html">संपर्क करें</a>
+        <a href="contact.html">संपर्क</a>
       </div>
     </div>
   </div>
 
-  <!-- Header -->
   <header class="main-header">
     <div class="container site-branding">
-      <h1 class="site-title"><a href="index.html">THE 90I NEWS</a></h1>
-      <p class="site-tagline">सच | सटीक | निर्भीक</p>
+      <a href="index.html">
+        <img src="assets/logo.png" alt="90I न्यूज़" class="site-logo-main">
+      </a>
     </div>
   </header>
 
-  <!-- Navigation -->
   <nav class="navbar">
     <div class="container">
       <ul class="nav-menu" id="categoryNav">
         <li><a href="index.html" class="active">होम</a></li>
-        <!-- Dynamic Categories from JSON -->
       </ul>
     </div>
   </nav>
 
-  <!-- Breaking News Ticker -->
   <div class="breaking-ticker">
     <div class="container" style="display: flex; height: 100%; width: 100%;">
       <div class="breaking-label">ब्रेकिंग</div>
@@ -50,60 +56,42 @@
     </div>
   </div>
 
-  <!-- Main Content -->
   <main class="container main-grid">
-    <!-- Left: Lead & Categorized News -->
     <section>
-      <!-- Hero / Lead Story -->
       <div id="leadStoryContainer"></div>
 
-      <!-- Category Segments -->
-      <div class="section-title">
-        <span>ताज़ा समाचार</span>
-      </div>
+      <div class="section-title" style="margin-top: 25px;"><span>ताज़ा समाचार</span></div>
       <div class="grid-2col" id="latestNewsGrid"></div>
+
+      <div class="section-title" style="margin-top: 30px;">
+        <span>बिहार विशेष</span>
+        <a href="category.html?cat=बिहार" style="font-size: 13px; color: var(--primary-red);">और पढ़ें &raquo;</a>
+      </div>
+      <div class="grid-2col" id="biharNewsGrid"></div>
     </section>
 
-    <!-- Right: Sidebar -->
     <aside>
+      <div class="sidebar-box">
+        <h3 class="section-title">सोशल मीडिया</h3>
+        <div class="share-suite">
+          <a href="https://wa.me/" target="_blank" class="share-btn btn-wa">WhatsApp</a>
+          <a href="https://facebook.com/" target="_blank" class="share-btn btn-fb">Facebook</a>
+          <a href="https://instagram.com/" target="_blank" class="share-btn btn-insta">Instagram</a>
+          <a href="https://twitter.com/" target="_blank" class="share-btn btn-tw">Twitter (X)</a>
+        </div>
+      </div>
+
       <div class="sidebar-box">
         <h3 class="section-title">ट्रेंडिंग</h3>
         <div id="trendingList"></div>
       </div>
-      <div class="sidebar-box">
-        <h3 class="section-title">ई-पेपर संस्करण</h3>
-        <p style="font-size: 14px; margin-bottom: 10px;">आज का डिजिटल संस्करण पढ़ने के लिए नीचे क्लिक करें।</p>
-        <a href="epaper.html" class="badge-category" style="padding: 8px 12px; text-decoration: none;">ई-पेपर पढ़ें</a>
-      </div>
     </aside>
   </main>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-grid">
-        <div>
-          <h3 style="color: #fff; margin-bottom: 12px;">THE 90I NEWS</h3>
-          <p style="font-size: 14px; color: #aaa;">सच, निष्पक्ष और सटीक पत्रकारिता का डिजिटल माध्यम।</p>
-        </div>
-        <div>
-          <h4 style="color: #fff; margin-bottom: 12px;">त्वरित लिंक</h4>
-          <ul style="list-style: none; font-size: 14px;">
-            <li><a href="about.html">हमारे बारे में</a></li>
-            <li><a href="contact.html">संपर्क सूत्र</a></li>
-            <li><a href="privacy.html">गोपनीयता नीति</a></li>
-            <li><a href="terms.html">नियम एवं शर्तें</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 style="color: #fff; margin-bottom: 12px;">प्रशासन</h4>
-          <ul style="list-style: none; font-size: 14px;">
-            <li><a href="admin.html">एडमिन लॉगिन</a></li>
-          </ul>
-        </div>
-      </div>
       <div class="footer-bottom">
-        &copy; 2026 THE 90I NEWS. सर्वाधिकार सुरक्षित।
+        &copy; 2026 90I न्यूज़. सर्वाधिकार सुरक्षित। | <a href="admin.html" style="color: #888;">CMS एडमिन</a>
       </div>
     </div>
   </footer>
@@ -114,44 +102,57 @@
       const data = await loadData();
       if (!data) return;
 
-      // 1. Populate Navigation
       const navEl = document.getElementById('categoryNav');
-      data.categories.forEach(cat => {
+      const cats = (data.categories && data.categories.length > 0) ? data.categories : ['बिहार', 'राष्ट्रीय', 'झारखंड', 'राजनीति', 'शिक्षा', 'खेल', 'मनोरंजन'];
+      cats.forEach(cat => {
         const li = document.createElement('li');
         li.innerHTML = `<a href="category.html?cat=${encodeURIComponent(cat)}">${cat}</a>`;
         navEl.appendChild(li);
       });
 
-      // 2. Breaking Ticker
-      const breakingArticles = data.news.filter(n => n.breaking);
+      const breakingArticles = (data.news || []).filter(n => n.breaking);
       const tickerEl = document.getElementById('tickerContainer');
       if (breakingArticles.length > 0) {
         tickerEl.innerHTML = breakingArticles.map(a => 
           `<a href="article.html?slug=${a.slug}">${a.title}</a>`
         ).join(' • ');
+      } else if (data.news && data.news.length > 0) {
+        tickerEl.innerHTML = `<a href="article.html?slug=${data.news[0].slug}">${data.news[0].title}</a>`;
       }
 
-      // 3. Lead News
-      const leadNews = data.news.find(n => n.featured) || data.news[0];
+      const leadNews = (data.news || []).find(n => n.featured) || (data.news && data.news[0]);
       if (leadNews) {
+        const articleUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}article.html?slug=${leadNews.slug}`;
         document.getElementById('leadStoryContainer').innerHTML = `
           <div class="news-card-lead">
             <span class="badge-category">${leadNews.category}</span>
             <h2 class="lead-title"><a href="article.html?slug=${leadNews.slug}">${leadNews.title}</a></h2>
             <div class="news-meta">${formatDateHindi(leadNews.date)} | ${leadNews.author}</div>
-            <img src="${leadNews.image}" alt="${leadNews.title}" loading="lazy" style="width: 100%; max-height: 400px; object-fit: cover; margin-bottom: 12px;">
-            <p>${leadNews.excerpt}</p>
+            
+            <div class="share-suite">
+              <a class="share-btn btn-wa" href="https://api.whatsapp.com/send?text=${encodeURIComponent(leadNews.title + ' ' + articleUrl)}" target="_blank">WhatsApp</a>
+              <a class="share-btn btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" target="_blank">Facebook</a>
+              <a class="share-btn btn-tw" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(leadNews.title)}&url=${encodeURIComponent(articleUrl)}" target="_blank">Twitter</a>
+              <a class="share-btn btn-tg" href="https://t.me/share/url?url=${encodeURIComponent(articleUrl)}&text=${encodeURIComponent(leadNews.title)}" target="_blank">Telegram</a>
+            </div>
+
+            <a href="article.html?slug=${leadNews.slug}">
+              <img src="${leadNews.image}" alt="${leadNews.title}" loading="lazy" style="width: 100%; max-height: 420px; object-fit: cover; margin: 10px 0;">
+            </a>
+            <p style="font-size: 16px; line-height: 1.6; color: #333;">${leadNews.excerpt}</p>
+            <a href="article.html?slug=${leadNews.slug}" class="read-more-btn">पूरा समाचार पढ़ें &raquo;</a>
           </div>
         `;
       }
 
-      // 4. Latest News Grid
       const gridEl = document.getElementById('latestNewsGrid');
-      data.news.slice(1, 7).forEach(item => {
+      (data.news || []).slice(1, 5).forEach(item => {
         const card = document.createElement('div');
         card.className = 'news-card-sm';
         card.innerHTML = `
-          <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 180px; width: 100%; object-fit: cover;">
+          <a href="article.html?slug=${item.slug}">
+            <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 160px; width: 100%; object-fit: cover;">
+          </a>
           <div style="margin-top: 8px;">
             <span class="badge-category">${item.category}</span>
             <h3><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
@@ -160,8 +161,33 @@
         `;
         gridEl.appendChild(card);
       });
+
+      const biharGrid = document.getElementById('biharNewsGrid');
+      const biharStories = (data.news || []).filter(n => n.category === 'बिहार').slice(0, 4);
+      biharStories.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'news-card-sm';
+        card.innerHTML = `
+          <a href="article.html?slug=${item.slug}">
+            <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 160px; width: 100%; object-fit: cover;">
+          </a>
+          <div style="margin-top: 8px;">
+            <h3><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
+            <div class="news-meta" style="margin-top: 4px;">${formatDateHindi(item.date)}</div>
+          </div>
+        `;
+        biharGrid.appendChild(card);
+      });
+
+      const trendEl = document.getElementById('trendingList');
+      if (data.news && data.news.length > 0) {
+        trendEl.innerHTML = data.news.slice(0, 5).map((n, i) => `
+          <p style="font-size: 14px; margin-bottom: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;">
+            <strong>#${i+1}</strong> <a href="article.html?slug=${n.slug}">${n.title}</a>
+          </p>
+        `).join('');
+      }
     });
   </script>
 </body>
 </html>
-
