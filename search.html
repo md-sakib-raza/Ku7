@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>खोज — THE 90I NEWS</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="container site-branding">
+      <h1 class="site-title"><a href="index.html">THE 90I NEWS</a></h1>
+    </div>
+  </header>
+
+  <main class="container" style="margin-top: 30px; margin-bottom: 50px;">
+    <div style="margin-bottom: 24px;">
+      <input type="text" id="searchInput" placeholder="समाचार खोजें..." style="padding: 10px; width: 70%; max-width: 400px; border: 1px solid #ccc; font-family: inherit;">
+      <button onclick="runSearch()" class="badge-category" style="padding: 11px 16px; border: none; cursor: pointer;">खोजें</button>
+    </div>
+
+    <h2 class="section-title" id="searchResultTitle">परिणाम</h2>
+    <div class="grid-2col" id="searchGrid"></div>
+  </main>
+
+  <script src="assets/app.js"></script>
+  <script>
+    let newsData = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await loadData();
+      newsData = data?.news || [];
+      const query = new URLSearchParams(window.location.search).get('q');
+      if (query) {
+        document.getElementById('searchInput').value = query;
+        performSearch(query);
+      }
+    });
+
+    function runSearch() {
+      const q = document.getElementById('searchInput').value.trim();
+      performSearch(q);
+    }
+
+    function performSearch(query) {
+      if (!query) return;
+      document.getElementById('searchResultTitle').innerText = `'${query}' के लिए परिणाम`;
+
+      const results = newsData.filter(item => 
+        item.title.toLowerCase().includes(query.toLowerCase()) ||
+        item.excerpt.toLowerCase().includes(query.toLowerCase()) ||
+        item.category.toLowerCase().includes(query.toLowerCase())
+      );
+
+      const grid = document.getElementById('searchGrid');
+      if (results.length === 0) {
+        grid.innerHTML = '<p>कोई परिणाम नहीं मिला।</p>';
+        return;
+      }
+
+      grid.innerHTML = results.map(item => `
+        <div class="news-card-sm">
+          <img src="${item.image}" alt="${item.title}" style="height: 180px; width: 100%; object-fit: cover;">
+          <div style="margin-top: 8px;">
+            <span class="badge-category">${item.category}</span>
+            <h3><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
+            <div class="news-meta" style="margin-top: 4px;">${formatDateHindi(item.date)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
