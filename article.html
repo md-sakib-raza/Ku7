@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>आर्टिकल — THE 90I NEWS</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <!-- Dynamic OpenGraph & Meta will be injected by script -->
+</head>
+<body>
+  <div class="reading-progress" id="progressBar"></div>
+
+  <header class="main-header">
+    <div class="container site-branding">
+      <h1 class="site-title"><a href="index.html">THE 90I NEWS</a></h1>
+    </div>
+  </header>
+
+  <main class="container" style="max-width: 860px; margin-top: 30px; margin-bottom: 60px;">
+    <article id="articleContainer">
+      <p>समाचार लोड हो रहा है...</p>
+    </article>
+  </main>
+
+  <script src="assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await loadData();
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('slug');
+
+      const article = data?.news.find(n => n.slug === slug) || data?.news[0];
+
+      if (!article) {
+        document.getElementById('articleContainer').innerHTML = `
+          <h2>यह लेख उपलब्ध नहीं है।</h2>
+          <p><a href="index.html">होम पेज पर वापस जाएं</a></p>
+        `;
+        return;
+      }
+
+      // Set Dynamic Meta and Schema.org
+      document.title = `${article.title} — THE 90I NEWS`;
+      
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": article.title,
+        "image": [article.image],
+        "datePublished": `${article.date}T${article.time || '00:00'}:00Z`,
+        "dateModified": article.dateModified || `${article.date}T00:00:00Z`,
+        "author": [{
+          "@type": "Person",
+          "name": article.author
+        }],
+        "publisher": {
+          "@type": "Organization",
+          "name": "THE 90I NEWS"
+        },
+        "description": article.excerpt
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(schema);
+      document.head.appendChild(script);
+
+      // Render Article Content
+      document.getElementById('articleContainer').innerHTML = `
+        <div class="article-header">
+          <span class="badge-category">${article.category}</span>
+          <h1>${article.title}</h1>
+          <div class="news-meta">
+            प्रकाशित: ${formatDateHindi(article.date)} | लेखक: ${article.author}
+          </div>
+        </div>
+        <img src="${article.image}" alt="${article.title}" style="width: 100%; max-height: 480px; object-fit: cover; margin: 20px 0;">
+        ${article.imageCaption ? `<p style="font-size: 13px; color: var(--text-muted); text-align: center;">${article.imageCaption}</p>` : ''}
+        <div class="article-body">
+          ${sanitizeHtml(article.content)}
+        </div>
+      `;
+
+      // Scroll Progress Bar
+      window.addEventListener('scroll', () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (window.scrollY / total) * 100;
+        document.getElementById('progressBar').style.width = `${progress}%`;
+      });
+    });
+  </script>
+</body>
+</html>
+
