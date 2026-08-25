@@ -1,4 +1,4 @@
-/**
+  /**
  * THE 90I NEWS - Direct GitHub API Sync Engine
  */
 const CONFIG = {
@@ -45,13 +45,17 @@ async function syncToGitHub(updatedData, token) {
   const repo = (localStorage.getItem('90i_gh_repo') || CONFIG.DEFAULT_REPO).trim();
   const branch = (localStorage.getItem('90i_gh_branch') || CONFIG.DEFAULT_BRANCH).trim();
   const path = 'data/90i-data.json';
-  const cleanToken = token.trim();
+  const cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
+
+  if (!cleanToken) {
+    throw new Error("GitHub Token missing hai. Cloud Settings mein Token save karein.");
+  }
 
   // 1. Fetch current file SHA & info
   const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
   const getRes = await fetch(getUrl, {
     headers: { 
-      'Authorization': `Bearer ${cleanToken}`,
+      'Authorization': `token ${cleanToken}`,
       'Accept': 'application/vnd.github.v3+json'
     }
   });
@@ -62,7 +66,7 @@ async function syncToGitHub(updatedData, token) {
     sha = fileInfo.sha;
   } else {
     const errInfo = await getRes.json();
-    throw new Error(`Repository Check Failed: ${errInfo.message || 'Repo ya File nahi mili'}`);
+    throw new Error(`Repo: ${owner}/${repo} | Error: ${errInfo.message || 'Not Found'}`);
   }
 
   // 2. Encode UTF-8 JSON
@@ -81,7 +85,7 @@ async function syncToGitHub(updatedData, token) {
   const putRes = await fetch(putUrl, {
     method: 'PUT',
     headers: {
-      'Authorization': `Bearer ${cleanToken}`,
+      'Authorization': `token ${cleanToken}`,
       'Content-Type': 'application/json',
       'Accept': 'application/vnd.github.v3+json'
     },
