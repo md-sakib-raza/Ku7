@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>फोटो गैलरी — THE 90I NEWS</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="container site-branding">
+      <h1 class="site-title"><a href="index.html">THE 90I NEWS</a></h1>
+    </div>
+  </header>
+  <main class="container" style="margin-top: 30px;">
+    <h2 class="section-title">फोटो गैलरी</h2>
+    <div class="grid-2col" id="galleryGrid"></div>
+  </main>
+  <script src="assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await loadData();
+      const grid = document.getElementById('galleryGrid');
+      if (data && data.gallery.length > 0) {
+        grid.innerHTML = data.gallery.map(g => `
+          <div class="news-card-sm">
+            <img src="${g.image}" alt="${g.title}" style="height: 220px; width: 100%; object-fit: cover;">
+            <h3 style="margin-top: 8px;">${g.title}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">${g.caption || ''}</p>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>
