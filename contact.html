@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>संपर्क करें — THE 90I NEWS</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="container site-branding">
+      <h1 class="site-title"><a href="index.html">THE 90I NEWS</a></h1>
+    </div>
+  </header>
+  <main class="container" style="max-width: 600px; margin: 40px auto;">
+    <h2 class="section-title">संपर्क सूत्र</h2>
+    <form style="background: var(--card-bg); padding: 20px; border: 1px solid var(--border-color);" onsubmit="event.preventDefault(); alert('संदेश प्राप्त हुआ!');">
+      <div style="margin-bottom: 12px;">
+        <label>नाम</label>
+        <input type="text" style="width: 100%; padding: 8px;" required>
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label>ईमेल / फ़ोन</label>
+        <input type="text" style="width: 100%; padding: 8px;" required>
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label>संदेश</label>
+        <textarea style="width: 100%; padding: 8px;" rows="4" required></textarea>
+      </div>
+      <button class="badge-category" style="border: none; padding: 10px 16px; cursor: pointer;">भेजें</button>
+    </form>
+  </main>
+</body>
+</html>
+
