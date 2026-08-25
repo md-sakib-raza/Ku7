@@ -33,29 +33,31 @@
 </head>
 <body>
 
+<!-- Login Screen Form -->
 <div id="loginView" style="max-width: 380px; margin: 80px auto; padding: 24px; background: #fff; border: 1px solid #ddd; border-radius: 6px;">
   <h2 style="margin-bottom: 16px; text-align: center; color: var(--primary-red);">90I न्यूज़ CMS</h2>
   <div class="form-group">
     <label>यूज़रनेम / ईमेल</label>
-    <input type="text" id="adminUser" class="form-control" placeholder="Admin username">
+    <input type="text" id="adminUser" class="form-control" placeholder="mdsakibraza.066@gmail.com">
   </div>
   <div class="form-group">
     <label>पासवर्ड</label>
-    <input type="password" id="adminPass" class="form-control" placeholder="Password">
+    <input type="password" id="adminPass" class="form-control" placeholder="••••••••••••">
   </div>
-  <button class="btn" style="width: 100%;" onclick="handleLogin()">लॉगिन करें</button>
+  <button type="button" class="btn" style="width: 100%;" onclick="handleLogin()">लॉगिन करें</button>
 </div>
 
+<!-- Admin Dashboard Panel -->
 <div id="dashboardView" class="admin-layout" style="display: none;">
   <aside class="admin-sidebar">
     <h3 style="color:var(--primary-red);">90I न्यूज़</h3>
     <p style="font-size: 12px; color: #888;">कंटेंट मैनेजमेंट सिस्टम</p>
     <ul>
-      <li><a href="#" onclick="showTab('addNews')">➕ नया समाचार जोड़ें</a></li>
-      <li><a href="#" onclick="showTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
-      <li><a href="#" onclick="showTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
-      <li><a href="#" onclick="showTab('cloudSettings')">☁️ GitHub क्लाउड सेटिंग्स</a></li>
-      <li><a href="#" onclick="handleLogout()">🚪 लॉगआउट</a></li>
+      <li><a href="#" onclick="showTab('addNews'); return false;">➕ नया समाचार जोड़ें</a></li>
+      <li><a href="#" onclick="showTab('manageNews'); return false;">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
+      <li><a href="#" onclick="showTab('inboxMessages'); return false;">📬 संपर्क संदेश (Inbox)</a></li>
+      <li><a href="#" onclick="showTab('cloudSettings'); return false;">☁️ GitHub क्लाउड सेटिंग्स</a></li>
+      <li><a href="#" onclick="handleLogout(); return false;">🚪 लॉगआउट</a></li>
     </ul>
   </aside>
 
@@ -215,9 +217,19 @@
 
 <script src="assets/app.js"></script>
 <script>
+  const VALID_USER = "mdsakibraza.066@gmail.com";
+  const VALID_PASS = "changeme1238";
+
   function handleLogin() {
-    sessionStorage.setItem('90i_admin_logged', 'true');
-    checkAuth();
+    const userField = document.getElementById('adminUser').value.trim();
+    const passField = document.getElementById('adminPass').value.trim();
+
+    if (userField === VALID_USER && passField === VALID_PASS) {
+      sessionStorage.setItem('90i_admin_logged', 'true');
+      checkAuth();
+    } else {
+      alert("गलत यूज़रनेम या पासवर्ड!");
+    }
   }
 
   function handleLogout() {
@@ -227,8 +239,10 @@
 
   function checkAuth() {
     if (sessionStorage.getItem('90i_admin_logged') === 'true') {
-      document.getElementById('loginView').style.display = 'none';
-      document.getElementById('dashboardView').style.display = 'grid';
+      const loginEl = document.getElementById('loginView');
+      const dashEl = document.getElementById('dashboardView');
+      if (loginEl) loginEl.style.display = 'none';
+      if (dashEl) dashEl.style.display = 'grid';
       loadAdminNewsList();
       loadInboxList();
     }
@@ -363,8 +377,8 @@
         <td>${n.category}</td>
         <td>${n.date}</td>
         <td style="white-space:nowrap;">
-          <button class="btn-edit" onclick="startEditNews(${n.id})">✏️ संपादित करें</button>
-          <button class="btn-del" onclick="deleteNews(${n.id})">🗑️ हटाएं</button>
+          <button type="button" class="btn-edit" onclick="startEditNews(${n.id})">✏️ संपादित करें</button>
+          <button type="button" class="btn-del" onclick="deleteNews(${n.id})">🗑️ हटाएं</button>
         </td>
       </tr>
     `).join('');
@@ -436,20 +450,4 @@
     tbody.innerHTML = data.contacts.map(c => `
       <tr>
         <td><strong>${c.name}</strong></td>
-        <td>${c.contact || ''}</td>
-        <td>${c.message}</td>
-        <td>${c.date || ''}</td>
-      </tr>
-    `).join('');
-  }
-
-  function saveCloudSettings() {
-    localStorage.setItem('90i_gh_token', document.getElementById('ghToken').value.trim());
-    localStorage.setItem('90i_gh_owner', document.getElementById('ghOwner').value.trim());
-    localStorage.setItem('90i_gh_repo', document.getElementById('ghRepo').value.trim());
-    alert("क्लाउड सेटिंग्स सुरक्षित हो गईं!");
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
-    document.getElementById('
+        <td>${c.contact || 
