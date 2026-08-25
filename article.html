@@ -6,38 +6,153 @@
   <title>समाचार — 90I न्यूज़</title>
   <link rel="stylesheet" href="assets/styles.css">
   <style>
-    .site-logo-main { max-height: 75px; width: auto; object-fit: contain; margin: 0 auto; display: block; }
-    .share-suite { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
-    .share-btn { padding: 8px 14px; border-radius: 4px; color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; cursor: pointer; border: none; }
+    body { background: #fff; color: #121212; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    
+    /* TOI Top Header */
+    .toi-header { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 10px 0; }
+    .toi-header-inner { display: flex; justify-content: space-between; align-items: center; }
+    .site-logo { max-height: 52px; width: auto; }
+    .toi-header-right { display: flex; align-items: center; gap: 10px; }
+    .live-dot { background: var(--primary-red); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 3px; }
+
+    /* TOI Article Layout Grid */
+    .article-layout { display: grid; grid-template-columns: 1fr 320px; gap: 35px; margin-top: 20px; margin-bottom: 50px; }
+    
+    /* Article Header */
+    .breadcrumb { font-size: 12px; color: #777; margin-bottom: 10px; }
+    .breadcrumb a { color: #555; text-decoration: none; }
+    .article-headline { font-size: 32px; line-height: 1.28; font-weight: 800; color: #111; margin-bottom: 12px; font-family: Georgia, 'Times New Roman', serif; }
+    .article-byline { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eaeaea; padding-bottom: 12px; margin-bottom: 15px; font-size: 13px; color: #666; }
+    
+    /* TOI Quick Actions Bar */
+    .toi-action-bar { display: flex; justify-content: space-between; align-items: center; background: #fafafa; border: 1px solid #eee; padding: 8px 14px; border-radius: 4px; margin-bottom: 18px; }
+    .share-pill { display: flex; gap: 6px; }
+    .share-btn { padding: 5px 10px; border-radius: 3px; color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; }
     .btn-wa { background: #25D366; }
     .btn-fb { background: #1877F2; }
-    .btn-tw { background: #000000; }
-    .btn-insta { background: #E1306C; }
+    .btn-tw { background: #000; }
     .btn-tg { background: #0088cc; }
-    .btn-copy { background: #555555; }
+    .font-resizer span { font-weight: 800; font-size: 13px; cursor: pointer; padding: 4px 8px; border: 1px solid #ddd; background: #fff; border-radius: 3px; }
+
+    /* Article Lead Image */
+    .lead-img-box { margin-bottom: 20px; }
+    .lead-img-box img { width: 100%; max-height: 480px; object-fit: cover; border-radius: 4px; }
+    .img-caption { font-size: 12px; color: #666; margin-top: 6px; border-left: 2px solid var(--primary-red); padding-left: 8px; }
+
+    /* Article Content Typography */
+    .article-body-content { font-size: 19px; line-height: 1.85; color: #2b2b2b; }
+    .article-body-content p { margin-bottom: 18px; }
+
+    /* Sidebar Widgets */
+    .sidebar-widget { border: 1px solid #e5e7eb; border-radius: 6px; padding: 15px; margin-bottom: 20px; }
+    .widget-heading { font-size: 15px; font-weight: 800; border-left: 4px solid var(--primary-red); padding-left: 8px; margin-bottom: 12px; text-transform: uppercase; }
+
+    /* Rich Black Footer */
+    .rich-footer { background: #111; color: #bbb; padding: 40px 0 20px 0; margin-top: 50px; font-size: 14px; }
+    .footer-grid-4 { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 30px; margin-bottom: 30px; }
+    .footer-col h4 { color: #fff; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 6px; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 8px; }
+    .footer-links li a { color: #aaa; text-decoration: none; }
+    .footer-links li a:hover { color: #fff; }
+    .footer-social-box { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .ft-btn { padding: 6px 12px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; }
+    .ft-wa { background: #25D366; } .ft-fb { background: #1877F2; } .ft-tw { background: #000; border: 1px solid #444; } .ft-insta { background: #E1306C; }
+
+    @media (max-width: 850px) {
+      .article-layout { grid-template-columns: 1fr; }
+      .footer-grid-4 { grid-template-columns: 1fr; }
+      .article-headline { font-size: 24px; }
+    }
   </style>
 </head>
 <body>
-  <div class="reading-progress" id="progressBar"></div>
 
-  <header class="main-header" style="background: #fff; border-bottom: 1px solid #ddd; padding: 12px 0;">
-    <div class="container" style="text-align: center;">
+  <!-- TOI Header -->
+  <header class="toi-header">
+    <div class="container toi-header-inner">
       <a href="index.html">
-        <img src="assets/logo.png" alt="90I न्यूज़" class="site-logo-main">
+        <img src="assets/logo.png" alt="90I न्यूज़" class="site-logo">
       </a>
+      <div class="toi-header-right">
+        <span class="live-dot">● LIVE</span>
+        <a href="index.html" style="font-weight: 700; text-decoration: none; color: var(--primary-red); font-size: 14px;">होम पेज</a>
+      </div>
     </div>
   </header>
 
-  <main class="container" style="max-width: 860px; margin-top: 25px; margin-bottom: 60px;">
-    <article id="articleContainer">
-      <p>समाचार लोड हो रहा है...</p>
-    </article>
-  </main>
+  <!-- Article + Sidebar Layout -->
+  <div class="container article-layout">
+    
+    <!-- Left Column: News Body -->
+    <main>
+      <div id="articleContent">
+        <p>समाचार लोड हो रहा है...</p>
+      </div>
+    </main>
 
-  <footer class="site-footer">
+    <!-- Right Column: Sidebar (Trending & Live) -->
+    <aside>
+      <div class="sidebar-widget">
+        <div class="widget-heading">ट्रेंडिंग न्यूज़</div>
+        <div id="sideTrending"></div>
+      </div>
+
+      <div class="sidebar-widget" style="background: #fdf2f2; border-color: #fecaca;">
+        <div class="widget-heading" style="border-color: #dc2626;">ई-पेपर संस्करण</div>
+        <p style="font-size: 13px; color: #444; margin-bottom: 10px;">आज का अखबार ऑनलाइन PDF में पढ़ें।</p>
+        <a href="epaper.html" style="display:block; text-align:center; background:var(--primary-red); color:#fff; padding:8px; border-radius:4px; text-decoration:none; font-weight:700; font-size:13px;">ई-पेपर खोलें</a>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- TOI Style Black Footer -->
+  <footer class="rich-footer">
     <div class="container">
-      <div class="footer-bottom">
-        &copy; 2026 90I न्यूज़. सर्वाधिकार सुरक्षित। | <a href="index.html" style="color: #fff;">होम पेज पर जाएं</a>
+      <div class="footer-grid-4">
+        <div class="footer-col">
+          <img src="assets/logo.png" alt="90I News" style="max-height: 44px; background:#fff; padding:4px; border-radius:4px; margin-bottom:12px;">
+          <p style="font-size: 13px; color: #999; line-height: 1.6;">
+            90I न्यूज़ — बिहार और देश का प्रमाणिक एवं स्वतंत्र डिजिटल न्यूज़ नेटवर्क।
+          </p>
+          <div class="footer-social-box">
+            <a href="https://wa.me/" target="_blank" class="ft-btn ft-wa">WhatsApp</a>
+            <a href="https://facebook.com/" target="_blank" class="ft-btn ft-fb">Facebook</a>
+            <a href="https://instagram.com/" target="_blank" class="ft-btn ft-insta">Instagram</a>
+            <a href="https://twitter.com/" target="_blank" class="ft-btn ft-tw">Twitter</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>प्रमुख श्रेणियां</h4>
+          <ul class="footer-links">
+            <li><a href="category.html?cat=बिहार">बिहार न्यूज़</a></li>
+            <li><a href="category.html?cat=राजनीति">राजनीति</a></li>
+            <li><a href="category.html?cat=शिक्षा">शिक्षा एवं रोजगार</a></li>
+            <li><a href="category.html?cat=खेल">खेल समाचार</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>नीतियां एवं शर्तें</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">हमारे बारे में</a></li>
+            <li><a href="privacy.html">गोपनीयता नीति</a></li>
+            <li><a href="terms.html">नियम व शर्तें</a></li>
+            <li><a href="contact.html">संपर्क करें</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>संपादकीय / CMS</h4>
+          <p style="font-size: 13px; color: #888; margin-bottom: 10px;">एडमिन CMS पैनल में प्रवेश करें:</p>
+          <a href="admin.html" style="background:#222; border:1px solid #444; color:#fff; padding:8px 14px; border-radius:4px; text-decoration:none; display:inline-block; font-weight:700; font-size:13px;">CMS लॉगिन &raquo;</a>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid #222; padding-top: 15px; text-align: center; font-size: 12px; color: #777;">
+        &copy; 2026 90I न्यूज़ डिजिटल नेटवर्क. सर्वाधिकार सुरक्षित।
       </div>
     </div>
   </footer>
@@ -52,7 +167,7 @@
       const article = (data && data.news) ? (data.news.find(n => n.slug === slug) || data.news[0]) : null;
 
       if (!article) {
-        document.getElementById('articleContainer').innerHTML = `
+        document.getElementById('articleContent').innerHTML = `
           <h2>यह लेख उपलब्ध नहीं है।</h2>
           <p><a href="index.html">होम पेज पर वापस जाएं</a></p>
         `;
@@ -62,42 +177,58 @@
       document.title = `${article.seoTitle || article.title} — 90I न्यूज़`;
       const currentUrl = window.location.href;
 
-      document.getElementById('articleContainer').innerHTML = `
-        <div class="article-header">
-          <span class="badge-category">${article.category}</span>
-          <h1 style="margin: 12px 0; font-size: 28px; line-height: 1.3;">${article.title}</h1>
-          <div class="news-meta">
-            प्रकाशित: ${formatDateHindi(article.date)} ${article.time ? '| ' + article.time : ''} | लेखक: ${article.author}
+      document.getElementById('articleContent').innerHTML = `
+        <div class="breadcrumb">
+          <a href="index.html">होम</a> &raquo; <a href="category.html?cat=${encodeURIComponent(article.category)}">${article.category}</a> &raquo; <span>समाचार</span>
+        </div>
+
+        <h1 class="article-headline">${article.title}</h1>
+
+        <div class="article-byline">
+          <div><strong>${article.author}</strong> | 90I डिजिटल डेस्क</div>
+          <div>${formatDateHindi(article.date)} ${article.time ? '| ' + article.time : ''}</div>
+        </div>
+
+        <!-- TOI Action Bar -->
+        <div class="toi-action-bar">
+          <div class="share-pill">
+            <a class="share-btn btn-wa" href="https://api.whatsapp.com/send?text=${encodeURIComponent(article.title + ' ' + currentUrl)}" target="_blank">WhatsApp</a>
+            <a class="share-btn btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank">Facebook</a>
+            <a class="share-btn btn-tw" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(currentUrl)}" target="_blank">Twitter</a>
+            <a class="share-btn btn-tg" href="https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(article.title)}" target="_blank">Telegram</a>
+          </div>
+          <div class="font-resizer">
+            <span onclick="adjustFontSize(1)">A+</span>
+            <span onclick="adjustFontSize(-1)">A-</span>
           </div>
         </div>
 
-        <div class="share-suite">
-          <a class="share-btn btn-wa" href="https://api.whatsapp.com/send?text=${encodeURIComponent(article.title + ' ' + currentUrl)}" target="_blank">WhatsApp</a>
-          <a class="share-btn btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank">Facebook</a>
-          <a class="share-btn btn-tw" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(currentUrl)}" target="_blank">Twitter (X)</a>
-          <a class="share-btn btn-insta" href="https://instagram.com/" target="_blank">Instagram</a>
-          <a class="share-btn btn-tg" href="https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(article.title)}" target="_blank">Telegram</a>
-          <button class="share-btn btn-copy" onclick="copyArticleLink()">🔗 लिंक कॉपी</button>
+        <div class="lead-img-box">
+          <img src="${article.image}" alt="${article.title}">
+          ${article.imageCaption ? `<div class="img-caption">${article.imageCaption}</div>` : ''}
         </div>
 
-        <img src="${article.image}" alt="${article.title}" style="width: 100%; max-height: 480px; object-fit: cover; margin: 15px 0;">
-        ${article.imageCaption ? `<p style="font-size: 13px; color: var(--text-muted); text-align: center; margin-top: -8px; margin-bottom: 15px;">${article.imageCaption}</p>` : ''}
-        
-        <div class="article-body" style="font-size: 18px; line-height: 1.8; color: #222;">
+        <div class="article-body-content" id="articleBody">
           ${sanitizeHtml(article.content)}
         </div>
       `;
 
-      window.addEventListener('scroll', () => {
-        const total = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = (window.scrollY / total) * 100;
-        document.getElementById('progressBar').style.width = `${progress}%`;
-      });
+      // Sidebar Trending
+      const sideEl = document.getElementById('sideTrending');
+      if (data.news && data.news.length > 0) {
+        sideEl.innerHTML = data.news.slice(0, 5).map((n, i) => `
+          <p style="font-size: 13px; margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 6px;">
+            <strong style="color:var(--primary-red);">#${i+1}</strong> <a href="article.html?slug=${n.slug}" style="text-decoration:none; color:#222; font-weight:600;">${n.title}</a>
+          </p>
+        `).join('');
+      }
     });
 
-    function copyArticleLink() {
-      navigator.clipboard.writeText(window.location.href);
-      alert("आर्टिकल लिंक कॉपी हो गया!");
+    let currentSize = 19;
+    function adjustFontSize(delta) {
+      currentSize += delta;
+      const el = document.getElementById('articleBody');
+      if (el) el.style.fontSize = `${currentSize}px`;
     }
   </script>
 </body>
