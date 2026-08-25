@@ -105,7 +105,7 @@
           <textarea id="newsExcerpt" class="form-control" rows="2" required></textarea>
         </div>
 
-        <!-- Direct Image Upload (Photo URL ki jagah File Picker) -->
+        <!-- Direct Image Upload -->
         <div class="grid-2form">
           <div class="form-group">
             <label>मुख्य फ़ोटो अपलोड करें (Featured Image)</label>
@@ -187,7 +187,6 @@
           <input type="text" id="cfgTagline" class="form-control" value="सच | सटीक | निर्भीक">
         </div>
         
-        <!-- Logo Direct File Upload -->
         <div class="form-group">
           <label>वेबसाइट लोगो अपलोड करें (Logo Image)</label>
           <input type="file" id="cfgLogoFile" class="form-control" accept="image/*" onchange="previewSelectedImage(event, 'logoPreview')">
@@ -306,7 +305,6 @@
     document.execCommand(cmd, false, null);
   }
 
-  // Image Upload Preview and Data-URL converter
   function previewSelectedImage(event, previewId) {
     const file = event.target.files[0];
     if (file) {
@@ -327,7 +325,7 @@
 
   async function handlePublishNews(e) {
     e.preventDefault();
-    const token = localStorage.getItem('90i_gh_token');
+    const token = (localStorage.getItem('90i_gh_token') || '').trim();
     if (!token) {
       alert("कृपया पहले 'GitHub क्लाउड सेटिंग्स' में अपना टोकन दर्ज करें!");
       showTab('cloudSettings');
@@ -375,7 +373,7 @@
       permalink: `article.html?slug=${slug}`
     };
 
-    const data = await loadData();
+    const data = await loadData() || {};
     data['90i_news'] = data['90i_news'] || [];
     data['90i_news'].unshift(newArticle);
 
@@ -436,12 +434,12 @@
 
   async function handleSaveSiteSettings(e) {
     e.preventDefault();
-    const token = localStorage.getItem('90i_gh_token');
+    const token = (localStorage.getItem('90i_gh_token') || '').trim();
     if (!token) {
       alert("पहले टोकन दर्ज करें!");
       return;
     }
-    const data = await loadData();
+    const data = await loadData() || {};
     data['90i_settings'] = {
       siteTitle: document.getElementById('cfgSiteTitle').value,
       tagline: document.getElementById('cfgTagline').value,
@@ -478,9 +476,9 @@
   }
 
   function saveCloudSettings() {
-    localStorage.setItem('90i_gh_token', document.getElementById('ghToken').value);
-    localStorage.setItem('90i_gh_owner', document.getElementById('ghOwner').value);
-    localStorage.setItem('90i_gh_repo', document.getElementById('ghRepo').value);
+    localStorage.setItem('90i_gh_token', document.getElementById('ghToken').value.trim());
+    localStorage.setItem('90i_gh_owner', document.getElementById('ghOwner').value.trim());
+    localStorage.setItem('90i_gh_repo', document.getElementById('ghRepo').value.trim());
     alert("क्लाउड सेटिंग्स सुरक्षित हो गईं!");
   }
 
@@ -491,4 +489,5 @@
     checkAuth();
   });
 </script>
-</bo
+</body>
+</html>
