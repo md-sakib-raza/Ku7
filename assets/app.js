@@ -1,5 +1,5 @@
-  /**
- * THE 90I NEWS - Direct GitHub API Sync Engine
+/**
+ * THE 90I NEWS - Engine
  */
 const CONFIG = {
   DATA_PATH: 'data/90i-data.json',
@@ -47,17 +47,11 @@ async function syncToGitHub(updatedData, token) {
   const path = 'data/90i-data.json';
   const cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
 
-  if (!cleanToken) {
-    throw new Error("GitHub Token missing hai. Cloud Settings mein Token save karein.");
-  }
+  if (!cleanToken) throw new Error("Token missing hai!");
 
-  // 1. Fetch current file SHA & info
   const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
   const getRes = await fetch(getUrl, {
-    headers: { 
-      'Authorization': `token ${cleanToken}`,
-      'Accept': 'application/vnd.github.v3+json'
-    }
+    headers: { 'Authorization': `token ${cleanToken}`, 'Accept': 'application/vnd.github.v3+json' }
   });
   
   let sha = null;
@@ -66,10 +60,9 @@ async function syncToGitHub(updatedData, token) {
     sha = fileInfo.sha;
   } else {
     const errInfo = await getRes.json();
-    throw new Error(`Repo: ${owner}/${repo} | Error: ${errInfo.message || 'Not Found'}`);
+    throw new Error(`Repo Error: ${errInfo.message || 'Not Found'}`);
   }
 
-  // 2. Encode UTF-8 JSON
   const jsonString = JSON.stringify(updatedData, null, 2);
   const contentEncoded = utf8ToBase64(jsonString);
   const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
@@ -81,7 +74,6 @@ async function syncToGitHub(updatedData, token) {
   };
   if (sha) body.sha = sha;
 
-  // 3. Commit update to GitHub
   const putRes = await fetch(putUrl, {
     method: 'PUT',
     headers: {
@@ -99,21 +91,21 @@ async function syncToGitHub(updatedData, token) {
   return true;
 }
 
+// Clean URL Slug Generator (English/Romanized + ID)
 function generateSlug(text) {
   if (!text) return `news-${Date.now()}`;
-  return text
-    .toString()
+  const clean = text
     .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
     .trim()
-    .replace(/[^\u0900-\u097F\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '') || `news-${Date.now()}`;
+    .replace(/[\s_-]+/g, '-');
+  return (clean ? `${clean}-${Date.now().toString().slice(-6)}` : `news-${Date.now().toString().slice(-6)}`);
 }
 
 function sanitizeHtml(html) {
   const temp = document.createElement('div');
   temp.innerHTML = html;
-  const allowedTags = ['B', 'STRONG', 'I', 'EM', 'U', 'P', 'DIV', 'BR', 'SPAN'];
+  const allowedTags = ['B', 'STRONG', 'I', 'EM', 'U', 'P', 'DIV', 'BR', 'SPAN', 'BLOCKQUOTE'];
   
   function clean(node) {
     for (let i = node.childNodes.length - 1; i >= 0; i--) {
