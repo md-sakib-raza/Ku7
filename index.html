@@ -7,13 +7,13 @@
   <link rel="stylesheet" href="assets/styles.css">
   <link rel="manifest" href="site.webmanifest">
   <style>
-    /* TOI-Style Top Header */
+    /* Header Layout */
     .toi-header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 10px 0; }
     .header-flex { display: flex; justify-content: space-between; align-items: center; }
     .header-left { display: flex; align-items: center; flex: 1; }
     .site-logo-main { max-height: 52px; width: auto; object-fit: contain; }
     
-    /* Center Big Title: THE 90I NEWS */
+    /* Center Branding Typography */
     .header-center-title { flex: 2; text-align: center; }
     .main-brand-text { font-size: 30px; font-weight: 900; letter-spacing: 1px; font-family: 'Arial Black', Impact, sans-serif; text-decoration: none; display: inline-block; }
     .color-the { color: #111; }
@@ -25,7 +25,7 @@
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     .header-action-btn { border: 1px solid #ddd; padding: 5px 10px; border-radius: 4px; text-decoration: none; color: #333; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
     
-    /* Sub Navigation */
+    /* Sub Nav */
     .sub-navbar { background: #f8f9fa; border-bottom: 2px solid var(--primary-red); overflow-x: auto; white-space: nowrap; }
     .sub-nav-list { display: flex; list-style: none; margin: 0; padding: 0; }
     .sub-nav-list li a { display: inline-block; padding: 10px 14px; color: #222; text-decoration: none; font-size: 14px; font-weight: 700; }
@@ -40,14 +40,14 @@
     .btn-tg { background: #0088cc; }
     .read-more-btn { display: inline-block; margin-top: 10px; background: var(--primary-red); color: #fff; padding: 8px 14px; border-radius: 4px; font-weight: 700; text-decoration: none; font-size: 13px; }
 
-    /* Widgets */
+    /* Sidebar Widgets */
     .widget-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .widget-title { font-size: 16px; font-weight: 800; border-left: 4px solid var(--primary-red); padding-left: 8px; margin-bottom: 12px; }
 
-    /* Black Rich Footer */
+    /* Footer */
     .rich-footer { background: #111; color: #bbb; padding: 40px 0 20px 0; margin-top: 50px; font-size: 14px; }
     .footer-grid-4 { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 30px; margin-bottom: 30px; }
-    .footer-col h4 { color: #fff; font-size: 16px; margin-bottom: 15px; position: relative; padding-bottom: 6px; border-bottom: 1px solid #333; }
+    .footer-col h4 { color: #fff; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 6px; }
     .footer-links { list-style: none; padding: 0; margin: 0; }
     .footer-links li { margin-bottom: 8px; }
     .footer-links li a { color: #aaa; text-decoration: none; transition: 0.2s; }
@@ -86,7 +86,7 @@
     </div>
   </div>
 
-  <!-- Main Header with Left Logo, Center Title & Right Actions -->
+  <!-- Header -->
   <header class="toi-header">
     <div class="container header-flex">
       <div class="header-left">
@@ -95,7 +95,6 @@
         </a>
       </div>
       
-      <!-- Requested Center Typography Title -->
       <div class="header-center-title">
         <a href="index.html" class="main-brand-text">
           <span class="color-the">THE</span> <span class="color-90i">90I</span> <span class="color-news">NEWS</span>
@@ -110,7 +109,7 @@
     </div>
   </header>
 
-  <!-- Navigation Menu Bar -->
+  <!-- Sub Navigation -->
   <nav class="sub-navbar">
     <div class="container">
       <ul class="sub-nav-list" id="categoryNav">
@@ -119,7 +118,7 @@
     </div>
   </nav>
 
-  <!-- Breaking News Strip -->
+  <!-- Breaking News Ticker -->
   <div class="breaking-ticker">
     <div class="container" style="display: flex; height: 100%; width: 100%;">
       <div class="breaking-label">ब्रेकिंग न्यूज़</div>
@@ -129,16 +128,18 @@
     </div>
   </div>
 
-  <!-- Main Grid Layout -->
+  <!-- Main Content Grid -->
   <main class="container main-grid" style="margin-top: 20px;">
     
-    <!-- Left Column -->
     <section>
+      <!-- Hero / Lead Story -->
       <div id="leadStoryContainer"></div>
 
+      <!-- Latest Section -->
       <div class="section-title" style="margin-top: 25px;"><span>ताज़ा समाचार</span></div>
       <div class="grid-2col" id="latestNewsGrid"></div>
 
+      <!-- Bihar Special -->
       <div class="section-title" style="margin-top: 30px;">
         <span>बिहार विशेष</span>
         <a href="category.html?cat=बिहार" style="font-size: 13px; color: var(--primary-red);">सभी देखें &raquo;</a>
@@ -146,7 +147,7 @@
       <div class="grid-2col" id="biharNewsGrid"></div>
     </section>
 
-    <!-- Right Sidebar Widgets -->
+    <!-- Sidebar -->
     <aside>
       <div class="widget-box">
         <div class="widget-title">ट्रेंडिंग खबरें</div>
@@ -162,7 +163,7 @@
 
   </main>
 
-  <!-- Black Footer with Social Links & Form -->
+  <!-- Black Footer -->
   <footer class="rich-footer" id="footerContact">
     <div class="container">
       <div class="footer-grid-4">
@@ -170,7 +171,7 @@
         <div class="footer-col">
           <img src="assets/logo.png" alt="90I News" style="max-height: 48px; background:#fff; padding:4px; border-radius:4px; margin-bottom:12px;">
           <p style="font-size: 13px; line-height: 1.6; color: #999;">
-            90I न्यूज़ बिहार और देश का स्वतंत्र, निष्पक्ष और प्रमाणिक डिजिटल न्यूज़ पोर्टल है।
+            THE 90I NEWS — बिहार और देश का स्वतंत्र, निष्पक्ष और प्रमाणिक डिजिटल न्यूज़ पोर्टल।
           </p>
           
           <h4 style="margin-top: 15px; margin-bottom: 8px; font-size: 14px; border: none; padding: 0;">सोशल मीडिया पर फॉलो करें</h4>
@@ -229,7 +230,6 @@
       const data = await loadData();
       if (!data) return;
 
-      // Populate Nav
       const navEl = document.getElementById('categoryNav');
       const cats = (data.categories && data.categories.length > 0) ? data.categories : ['बिहार', 'राजनीति', 'शिक्षा', 'राष्ट्रीय', 'झारखंड', 'खेल', 'मनोरंजन'];
       cats.forEach(cat => {
@@ -238,7 +238,6 @@
         navEl.appendChild(li);
       });
 
-      // Breaking Ticker
       const breakingArticles = (data.news || []).filter(n => n.breaking);
       const tickerEl = document.getElementById('tickerContainer');
       if (breakingArticles.length > 0) {
@@ -249,7 +248,6 @@
         tickerEl.innerHTML = `<a href="article.html?slug=${data.news[0].slug}">${data.news[0].title}</a>`;
       }
 
-      // Lead News Section
       const leadNews = (data.news || []).find(n => n.featured) || (data.news && data.news[0]);
       if (leadNews) {
         const articleUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}article.html?slug=${leadNews.slug}`;
@@ -275,7 +273,6 @@
         `;
       }
 
-      // Latest Grid
       const gridEl = document.getElementById('latestNewsGrid');
       (data.news || []).slice(1, 5).forEach(item => {
         const card = document.createElement('div');
@@ -293,7 +290,6 @@
         gridEl.appendChild(card);
       });
 
-      // Bihar Grid
       const biharGrid = document.getElementById('biharNewsGrid');
       const biharStories = (data.news || []).filter(n => n.category === 'बिहार').slice(0, 4);
       biharStories.forEach(item => {
@@ -311,7 +307,6 @@
         biharGrid.appendChild(card);
       });
 
-      // Trending
       const trendEl = document.getElementById('trendingList');
       if (data.news && data.news.length > 0) {
         trendEl.innerHTML = data.news.slice(0, 5).map((n, i) => `
