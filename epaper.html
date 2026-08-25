@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ई-पेपर — THE 90I NEWS</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff; color: #000; }
+      .epaper-sheet { border: none !important; box-shadow: none !important; }
+    }
+    .epaper-sheet {
+      background: #fff;
+      border: 2px solid #222;
+      padding: 24px;
+      margin: 20px auto;
+      max-width: 1000px;
+    }
+    .epaper-header {
+      border-bottom: 3px double #222;
+      text-align: center;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .columns-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print" style="background: #222; color: #fff; padding: 10px 0; text-align: center;">
+    <button onclick="window.print()" class="badge-category" style="cursor: pointer; border: none; padding: 8px 16px;">प्रिंट / PDF डाउनलोड करें</button>
+    <a href="index.html" style="color: #fff; margin-left: 20px;">होम पेज पर जाएं</a>
+  </div>
+
+  <div class="container epaper-sheet">
+    <div class="epaper-header">
+      <h1 style="font-size: 48px; color: var(--primary-red);">THE 90I NEWS</h1>
+      <p style="font-weight: bold; font-size: 14px;">डिजिटल ई-पेपर संस्करण • पूर्णिया / बिहार</p>
+    </div>
+
+    <div class="columns-3" id="epaperStories">
+      <!-- Stories will load dynamically -->
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await loadData();
+      const storiesEl = document.getElementById('epaperStories');
+      if (data && data.news.length > 0) {
+        storiesEl.innerHTML = data.news.slice(0, 6).map(item => `
+          <div style="border-right: 1px solid #ddd; padding-right: 12px;">
+            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 6px;">${item.title}</h3>
+            <img src="${item.image}" alt="" style="width: 100%; height: 120px; object-fit: cover; margin-bottom: 6px;">
+            <p style="font-size: 13px; line-height: 1.4;">${item.excerpt}</p>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>
