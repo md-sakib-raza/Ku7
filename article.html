@@ -3,31 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="pageTitle">समाचार — THE 90I NEWS</title>
+  <title id="metaDocTitle">समाचार — THE 90I NEWS</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.7; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.8; }
     
-    header { background: #0f172a; border-bottom: 3px solid #dc2626; padding: 15px 20px; }
-    .header-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    header { background: #0f172a; border-bottom: 3px solid #dc2626; padding: 14px 20px; }
+    .header-inner { max-width: 1080px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
     .header-logo { color: #fff; font-size: 22px; font-weight: 800; text-decoration: none; }
     .header-logo span { color: #dc2626; }
+    .header-nav a { color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: 700; margin-left: 15px; }
 
-    .container { max-width: 850px; margin: 25px auto; padding: 0 15px; }
-    .article-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+    .main-layout { max-width: 1080px; margin: 25px auto; padding: 0 15px; display: grid; grid-template-columns: 1fr 320px; gap: 25px; }
+    .article-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
     
-    .category-badge { display: inline-block; background: #dc2626; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 12px; }
+    .category-tag { display: inline-block; background: #dc2626; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; text-transform: uppercase; }
     .article-title { font-size: 26px; font-weight: 800; color: #0f172a; line-height: 1.35; margin-bottom: 12px; }
     
-    .meta-info { font-size: 13px; color: #64748b; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px; display: flex; gap: 15px; }
-    .featured-image { width: 100%; max-height: 450px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; }
-    .image-caption { font-size: 12px; color: #64748b; text-align: center; margin-bottom: 20px; font-style: italic; }
+    .meta-bar { font-size: 13px; color: #64748b; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 15px; }
+    .lead-img { width: 100%; max-height: 420px; object-fit: cover; border-radius: 6px; margin-bottom: 6px; }
+    .img-caption { font-size: 12px; color: #64748b; text-align: center; margin-bottom: 20px; font-style: italic; }
     
-    .article-content { font-size: 17px; color: #334155; }
-    .article-content p { margin-bottom: 16px; }
+    .article-body { font-size: 17px; color: #334155; }
+    .article-body p { margin-bottom: 16px; }
     
-    .back-btn { display: inline-block; margin-top: 25px; padding: 10px 18px; background: #0f172a; color: #fff; text-decoration: none; font-weight: 700; border-radius: 6px; font-size: 13px; }
-    .back-btn:hover { background: #dc2626; }
+    /* Social Share Bar */
+    .share-bar { margin: 20px 0; padding: 12px 16px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .share-label { font-size: 13px; font-weight: 700; color: #334155; margin-right: 5px; }
+    .share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 5px; color: #fff; text-decoration: none; font-size: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; }
+    .share-whatsapp { background: #25D366; }
+    .share-facebook { background: #1877F2; }
+    .share-twitter { background: #000; }
+    .share-native { background: #dc2626; }
+    .share-copy { background: #475569; }
+    .share-btn:hover { opacity: 0.9; }
+
+    /* Sidebar */
+    .sidebar-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; }
+    .sidebar-title { font-size: 16px; font-weight: 800; color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 6px; margin-bottom: 12px; }
+    .side-news-item { border-bottom: 1px solid #f1f5f9; padding: 10px 0; font-size: 14px; font-weight: 600; }
+    .side-news-item a { text-decoration: none; color: #1e293b; }
+    .side-news-item a:hover { color: #dc2626; }
+
+    .back-home { display: inline-block; margin-top: 20px; padding: 10px 18px; background: #0f172a; color: #fff; text-decoration: none; font-weight: 700; border-radius: 6px; font-size: 13px; }
+    .back-home:hover { background: #dc2626; }
+
+    @media (max-width: 768px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .article-title { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
@@ -35,18 +59,32 @@
   <header>
     <div class="header-inner">
       <a href="index.html" class="header-logo">THE <span>90I</span> NEWS</a>
-      <a href="index.html" style="color:#cbd5e1; font-size:13px; text-decoration:none; font-weight:700;">🏠 होम पेज</a>
+      <div class="header-nav">
+        <a href="index.html">🏠 होम</a>
+        <a href="admin.html">🔐 CMS लॉगिन</a>
+      </div>
     </div>
   </header>
 
-  <main class="container">
-    <article id="articleContainer" class="article-card">
-      <p style="text-align:center; color:#64748b;">समाचार लोड हो रहा है...</p>
-    </article>
-  </main>
+  <div class="main-layout">
+    <main>
+      <article id="articleContainer" class="article-box">
+        <p style="text-align:center; color:#64748b;">समाचार लोड हो रहा है...</p>
+      </article>
+    </main>
+
+    <aside>
+      <div class="sidebar-box">
+        <div class="sidebar-title">ताजा एवं ट्रेंडिंग खबरें</div>
+        <div id="sideTrendingList">
+          <p style="font-size:12px; color:#64748b;">लोड हो रहा है...</p>
+        </div>
+      </div>
+    </aside>
+  </div>
 
 <script>
-  async function loadFullArticle() {
+  async function loadArticleContent() {
     var params = new URLSearchParams(window.location.search);
     var slug = params.get('slug');
     var id = params.get('id');
@@ -55,10 +93,10 @@
     try {
       var res = await fetch('data/90i-data.json?_t=' + Date.now());
       if (res.ok) {
-        var data = await res.json();
-        articles = data['90i_news'] || [];
+        var d = await res.json();
+        articles = d['90i_news'] || [];
       }
-    } catch (e) {}
+    } catch(e) {}
 
     if (articles.length === 0) {
       var local = localStorage.getItem('90i_local_news_data');
@@ -68,45 +106,87 @@
     }
 
     var article = null;
-    if (slug) {
-      article = articles.find(function(a) { return a.slug === slug; });
-    } else if (id) {
-      article = articles.find(function(a) { return String(a.id) === String(id); });
-    }
-
-    if (!article && articles.length > 0) {
-      article = articles[0]; // fallback to latest
-    }
+    if (slug) article = articles.find(function(a) { return a.slug === slug; });
+    else if (id) article = articles.find(function(a) { return String(a.id) === String(id); });
+    
+    if (!article && articles.length > 0) article = articles[0];
 
     var container = document.getElementById('articleContainer');
     if (!article) {
-      container.innerHTML = '<div style="text-align:center; padding:40px;"><h2>समाचार नहीं मिला!</h2><p style="color:#64748b; margin-top:8px;">हो सकता है यह खबर हटा दी गई हो।</p><a href="index.html" class="back-btn">मुख्य पृष्ठ पर जाएं</a></div>';
+      container.innerHTML = '<div style="text-align:center; padding:30px;"><h2>समाचार उपलब्ध नहीं है!</h2><p style="color:#64748b; margin-top:8px;">यह खबर हटा दी गई हो सकती है।</p><a href="index.html" class="back-home">मुख्य पृष्ठ पर जाएं</a></div>';
       return;
     }
 
-    document.getElementById('pageTitle').innerText = article.title + ' — THE 90I NEWS';
+    document.getElementById('metaDocTitle').innerText = article.title + ' — THE 90I NEWS';
 
-    var html = '<span class="category-badge">' + (article.category || 'ताजा खबर') + '</span>';
+    var currentUrl = encodeURIComponent(window.location.href);
+    var currentTitle = encodeURIComponent(article.title);
+
+    var shareBarHtml = 
+      '<div class="share-bar">' +
+        '<span class="share-label">📢 शेयर करें:</span>' +
+        '<a class="share-btn share-whatsapp" href="https://api.whatsapp.com/send?text=' + currentTitle + '%20' + currentUrl + '" target="_blank">📱 WhatsApp</a>' +
+        '<a class="share-btn share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' + currentUrl + '" target="_blank">📘 Facebook</a>' +
+        '<a class="share-btn share-twitter" href="https://twitter.com/intent/tweet?text=' + currentTitle + '&url=' + currentUrl + '" target="_blank">✖ Twitter</a>' +
+        '<button type="button" class="share-btn share-native" onclick="triggerNativeShare(\'' + article.title.replace(/'/g, "\\'") + '\')">📲 शेयर</button>' +
+        '<button type="button" class="share-btn share-copy" onclick="copyArticleLink()">📋 लिंक कॉपी</button>' +
+      '</div>';
+
+    var html = '<span class="category-tag">' + (article.category || 'ताजा खबर') + '</span>';
     html += '<h1 class="article-title">' + article.title + '</h1>';
-    html += '<div class="meta-info">';
+    html += '<div class="meta-bar">';
     html += '<span>✍️ ' + (article.author || '90I डिजिटल डेस्क') + '</span>';
     html += '<span>📅 ' + (article.date || '') + ' ' + (article.time || '') + '</span>';
     html += '</div>';
 
+    // Top Share Bar
+    html += shareBarHtml;
+
     if (article.image) {
-      html += '<img src="' + article.image + '" class="featured-image" alt="' + article.title + '">';
+      html += '<img src="' + article.image + '" class="lead-img" alt="' + article.title + '">';
       if (article.imageCaption) {
-        html += '<p class="image-caption">' + article.imageCaption + '</p>';
+        html += '<p class="img-caption">' + article.imageCaption + '</p>';
       }
     }
 
-    html += '<div class="article-content">' + (article.content || article.excerpt || '') + '</div>';
-    html += '<a href="index.html" class="back-btn">⬅ वापस होम पेज पर जाएं</a>';
+    html += '<div class="article-body">' + (article.content || article.excerpt || '') + '</div>';
+
+    // Bottom Share Bar
+    html += shareBarHtml;
+    html += '<a href="index.html" class="back-home">⬅ मुख्य पृष्ठ पर वापस जाएं</a>';
 
     container.innerHTML = html;
+
+    // Sidebar Trending Loader
+    var sideBox = document.getElementById('sideTrendingList');
+    if (sideBox && articles.length > 1) {
+      sideBox.innerHTML = articles.slice(0, 5).map(function(item) {
+        return '<div class="side-news-item"><a href="article.html?slug=' + item.slug + '">' + item.title + '</a></div>';
+      }).join('');
+    }
   }
 
-  window.addEventListener('DOMContentLoaded', loadFullArticle);
+  function triggerNativeShare(title) {
+    if (navigator.share) {
+      navigator.share({
+        title: title,
+        text: title + ' — पढ़ें THE 90I NEWS पर',
+        url: window.location.href
+      }).catch(function(err) {});
+    } else {
+      copyArticleLink();
+    }
+  }
+
+  function copyArticleLink() {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+      alert("✅ लिंक कॉपी हो गया! अब आप इसे कहीं भी शेयर कर सकते हैं।");
+    }).catch(function() {
+      alert("लिंक: " + window.location.href);
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', loadArticleContent);
 </script>
 </body>
 </html>
