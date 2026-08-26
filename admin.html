@@ -9,7 +9,7 @@
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
     
     /* Login Box */
-    #loginScreen { max-width: 380px; margin: 80px auto; padding: 25px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
+    #loginScreen { max-width: 380px; margin: 80px auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
     #loginScreen h2 { color: #dc2626; margin-bottom: 5px; font-size: 24px; font-weight: 800; }
     #loginScreen p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
 
@@ -54,7 +54,6 @@
     }
   </style>
 
-  <!-- Login Logic -->
   <script>
     function checkLoginNow() {
       var email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
@@ -76,9 +75,9 @@
       document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
       document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
 
-      if (typeof loadAdminNewsList === 'function') loadAdminNewsList();
-      if (typeof loadInboxList === 'function') loadInboxList();
-      if (typeof loadSiteSettingsUI === 'function') loadSiteSettingsUI();
+      loadAdminNewsList();
+      loadInboxList();
+      loadSiteSettingsUI();
     }
 
     function doLogout() {
@@ -95,17 +94,17 @@
 </head>
 <body>
 
-  <!-- Login Box -->
+  <!-- Clean Blank Login Screen -->
   <div id="loginScreen">
     <h2>THE 90I NEWS</h2>
     <p>एडमिन CMS — सुरक्षित लॉगिन पोर्टल</p>
     <div class="form-group">
       <label>ईमेल आईडी:</label>
-      <input type="email" id="loginEmail" class="form-control" value="mdsakibraza.066@gmail.com">
+      <input type="email" id="loginEmail" class="form-control" placeholder="उदा. name@example.com">
     </div>
     <div class="form-group">
       <label>पासवर्ड:</label>
-      <input type="password" id="loginPassword" class="form-control" value="changeme1238">
+      <input type="password" id="loginPassword" class="form-control" placeholder="पासवर्ड दर्ज करें...">
     </div>
     <button type="button" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;" onclick="checkLoginNow()">🔓 लॉगिन करें</button>
   </div>
@@ -212,9 +211,9 @@
         <div class="form-group">
           <label>मुख्य समाचार सामग्री (Article Body)</label>
           <div class="editor-toolbar">
-            <button type="button" onclick="applyFormat(event, 'bold')"><b>B (Bold)</b></button>
-            <button type="button" onclick="applyFormat(event, 'italic')"><i>I (Italic)</i></button>
-            <button type="button" onclick="applyFormat(event, 'underline')"><u>U (Underline)</u></button>
+            <button type="button" onclick="applyFormat(event, 'bold')"><b>B</b></button>
+            <button type="button" onclick="applyFormat(event, 'italic')"><i>I</i></button>
+            <button type="button" onclick="applyFormat(event, 'underline')"><u>U</u></button>
           </div>
           <div id="richEditor" contenteditable="true" placeholder="यहाँ पूरी खबर विस्तार से लिखें..."></div>
         </div>
@@ -316,7 +315,6 @@
     </main>
   </div>
 
-<!-- Core CMS Functions -->
 <script>
   function switchTab(tabName) {
     var tabs = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
@@ -342,16 +340,29 @@
   async function loadData() {
     try {
       var res = await fetch('data/90i-data.json?_nocache=' + Date.now());
-      if (!res.ok) return { news: [], contacts: [], settings: {} };
-      var data = await res.json();
-      return {
-        news: data['90i_news'] || [],
-        contacts: data['90i_contacts'] || [],
-        settings: data['90i_settings'] || {}
-      };
-    } catch (e) {
-      return { news: [], contacts: [], settings: {} };
+      if (res.ok) {
+        var data = await res.json();
+        localStorage.setItem('cached_90i_data', JSON.stringify(data));
+        return {
+          news: data['90i_news'] || [],
+          contacts: data['90i_contacts'] || [],
+          settings: data['90i_settings'] || {}
+        };
+      }
+    } catch (e) {}
+
+    var localBackup = localStorage.getItem('cached_90i_data');
+    if (localBackup) {
+      try {
+        var d = JSON.parse(localBackup);
+        return {
+          news: d['90i_news'] || [],
+          contacts: d['90i_contacts'] || [],
+          settings: d['90i_settings'] || {}
+        };
+      } catch(err) {}
     }
+    return { news: [], contacts: [], settings: {} };
   }
 
   function utf8ToBase64(str) {
@@ -364,7 +375,12 @@
     var path = 'data/90i-data.json';
     var cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
 
-    if (!cleanToken) throw new Error("GitHub Token Missing! कृपया 'GitHub सेटिंग्स' में जाकर टोकन दर्ज करें।");
+    localStorage.setItem('cached_90i_data', JSON.stringify(updatedData));
+
+    if (!cleanToken) {
+      alert("⚠️ GitHub Token दर्ज नहीं है! डेटा सिर्फ लोकल रूप से सेव हुआ है। कृपया GitHub सेटिंग्स में टोकन डालें।");
+      return true;
+    }
 
     var getUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_nocache=' + Date.now();
     var getRes = await fetch(getUrl, {
@@ -382,7 +398,7 @@
     var putUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path;
     
     var body = {
-      message: 'CMS Update [' + new Date().toISOString() + ']',
+      message: 'CMS Live Update [' + new Date().toISOString() + ']',
       content: contentEncoded,
       branch: 'main'
     };
@@ -420,16 +436,4 @@
     if (file) {
       var reader = new FileReader();
       reader.onload = function(e) {
-        var preview = document.getElementById('newsImgPreview');
-        preview.src = e.target.result;
-        preview.style.display = 'block';
-        document.getElementById('newsImageData').value = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  function previewLogoImage(event) {
-    var file = event.target.files[0];
-    if (file) {
-      
+        var preview = document.getElementById('newsImgPre
