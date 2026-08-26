@@ -8,12 +8,12 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
     
-    /* Login Screen */
-    #loginScreen { max-width: 380px; margin: 90px auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
+    /* Login Box */
+    #loginScreen { max-width: 380px; margin: 80px auto; padding: 25px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
     #loginScreen h2 { color: #dc2626; margin-bottom: 5px; font-size: 24px; font-weight: 800; }
     #loginScreen p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
 
-    /* Admin Panel Layout */
+    /* Admin Panel */
     #adminPanel { display: none; }
     .admin-header { background: #0f172a; color: #fff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #dc2626; }
     .admin-header h2 { color: #dc2626; font-size: 20px; font-weight: 800; }
@@ -53,25 +53,64 @@
       .admin-container { padding: 0 10px; }
     }
   </style>
+
+  <!-- Login Logic -->
+  <script>
+    function checkLoginNow() {
+      var email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
+      var pass = (document.getElementById('loginPassword').value || '').trim();
+
+      if (email === "mdsakibraza.066@gmail.com" && pass === "changeme1238") {
+        sessionStorage.setItem('90i_user_auth', 'YES');
+        showAdminView();
+      } else {
+        alert("❌ गलत ईमेल या पासवर्ड!");
+      }
+    }
+
+    function showAdminView() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+
+      document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
+      document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
+      document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
+
+      if (typeof loadAdminNewsList === 'function') loadAdminNewsList();
+      if (typeof loadInboxList === 'function') loadInboxList();
+      if (typeof loadSiteSettingsUI === 'function') loadSiteSettingsUI();
+    }
+
+    function doLogout() {
+      sessionStorage.removeItem('90i_user_auth');
+      location.reload();
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      if (sessionStorage.getItem('90i_user_auth') === 'YES') {
+        showAdminView();
+      }
+    });
+  </script>
 </head>
 <body>
 
-  <!-- Secure Login Screen -->
+  <!-- Login Box -->
   <div id="loginScreen">
     <h2>THE 90I NEWS</h2>
-    <p>एडमिन CMS — सुरक्षित लॉगिन</p>
+    <p>एडमिन CMS — सुरक्षित लॉगिन पोर्टल</p>
     <div class="form-group">
       <label>ईमेल आईडी:</label>
-      <input type="email" id="loginEmail" class="form-control" placeholder="उदा. name@example.com">
+      <input type="email" id="loginEmail" class="form-control" value="mdsakibraza.066@gmail.com">
     </div>
     <div class="form-group">
       <label>पासवर्ड:</label>
-      <input type="password" id="loginPassword" class="form-control" placeholder="पासवर्ड लिखें...">
+      <input type="password" id="loginPassword" class="form-control" value="changeme1238">
     </div>
-    <button type="button" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;" onclick="performAuth()">🔓 लॉगिन करें</button>
+    <button type="button" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;" onclick="checkLoginNow()">🔓 लॉगिन करें</button>
   </div>
 
-  <!-- Protected Admin Panel -->
+  <!-- Admin Panel -->
   <div id="adminPanel">
     <header class="admin-header">
       <div>
@@ -80,7 +119,7 @@
       </div>
       <div style="display:flex; gap:15px; align-items:center;">
         <a href="index.html" target="_blank" style="color:#f87171; font-size:13px; text-decoration:none; font-weight:700;">🌐 वेबसाइट देखें</a>
-        <a href="javascript:void(0)" onclick="performLogout()" style="color:#fff; font-size:13px; text-decoration:none; font-weight:700;">🚪 लॉगआउट</a>
+        <a href="javascript:void(0)" onclick="doLogout()" style="color:#fff; font-size:13px; text-decoration:none; font-weight:700;">🚪 लॉगआउट</a>
       </div>
     </header>
 
@@ -173,9 +212,9 @@
         <div class="form-group">
           <label>मुख्य समाचार सामग्री (Article Body)</label>
           <div class="editor-toolbar">
-            <button type="button" onclick="applyFormat(event, 'bold')"><b>B</b></button>
-            <button type="button" onclick="applyFormat(event, 'italic')"><i>I</i></button>
-            <button type="button" onclick="applyFormat(event, 'underline')"><u>U</u></button>
+            <button type="button" onclick="applyFormat(event, 'bold')"><b>B (Bold)</b></button>
+            <button type="button" onclick="applyFormat(event, 'italic')"><i>I (Italic)</i></button>
+            <button type="button" onclick="applyFormat(event, 'underline')"><u>U (Underline)</u></button>
           </div>
           <div id="richEditor" contenteditable="true" placeholder="यहाँ पूरी खबर विस्तार से लिखें..."></div>
         </div>
@@ -277,58 +316,19 @@
     </main>
   </div>
 
+<!-- Core CMS Functions -->
 <script>
-  const AUTH_EMAIL = "mdsakibraza.066@gmail.com";
-  const AUTH_PASS = "changeme1238";
-
-  function performAuth() {
-    const email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
-    const pass = (document.getElementById('loginPassword').value || '').trim();
-
-    if (email === AUTH_EMAIL.toLowerCase() && pass === AUTH_PASS) {
-      localStorage.setItem('90i_auth_active', 'TRUE');
-      openAdminPanel();
-    } else {
-      alert("❌ गलत ईमेल या पासवर्ड!");
-    }
-  }
-
-  function openAdminPanel() {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
-
-    document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
-    document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
-    document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
-
-    loadAdminNewsList();
-    loadInboxList();
-    loadSiteSettingsUI();
-  }
-
-  function performLogout() {
-    localStorage.removeItem('90i_auth_active');
-    location.reload();
-  }
-
-  window.onload = function() {
-    if (localStorage.getItem('90i_auth_active') === 'TRUE') {
-      openAdminPanel();
-    }
-  };
-
   function switchTab(tabName) {
-    const tabs = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
-    tabs.forEach(t => {
-      const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
-      const btn = document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1));
-      if (el) el.style.display = (t === tabName) ? 'block' : 'none';
+    var tabs = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
+    for (var i = 0; i < tabs.length; i++) {
+      var el = document.getElementById('tab' + tabs[i].charAt(0).toUpperCase() + tabs[i].slice(1));
+      var btn = document.getElementById('nav' + tabs[i].charAt(0).toUpperCase() + tabs[i].slice(1));
+      if (el) el.style.display = (tabs[i] === tabName) ? 'block' : 'none';
       if (btn) {
-        if (t === tabName) btn.classList.add('active');
+        if (tabs[i] === tabName) btn.classList.add('active');
         else btn.classList.remove('active');
       }
-    });
-
+    }
     if (tabName === 'manageNews') loadAdminNewsList();
     if (tabName === 'inboxMessages') loadInboxList();
   }
@@ -341,9 +341,9 @@
 
   async function loadData() {
     try {
-      const res = await fetch('data/90i-data.json?_nocache=' + Date.now());
+      var res = await fetch('data/90i-data.json?_nocache=' + Date.now());
       if (!res.ok) return { news: [], contacts: [], settings: {} };
-      const data = await res.json();
+      var data = await res.json();
       return {
         news: data['90i_news'] || [],
         contacts: data['90i_contacts'] || [],
@@ -359,39 +359,39 @@
   }
 
   async function syncToGitHub(updatedData, token) {
-    const owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
-    const repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
-    const path = 'data/90i-data.json';
-    const cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
+    var owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
+    var repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
+    var path = 'data/90i-data.json';
+    var cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
 
     if (!cleanToken) throw new Error("GitHub Token Missing! कृपया 'GitHub सेटिंग्स' में जाकर टोकन दर्ज करें।");
 
-    const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=main&_nocache=${Date.now()}`;
-    const getRes = await fetch(getUrl, {
-      headers: { 'Authorization': `token ${cleanToken}`, 'Accept': 'application/vnd.github.v3+json' }
+    var getUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_nocache=' + Date.now();
+    var getRes = await fetch(getUrl, {
+      headers: { 'Authorization': 'token ' + cleanToken, 'Accept': 'application/vnd.github.v3+json' }
     });
     
-    let sha = null;
+    var sha = null;
     if (getRes.ok) {
-      const fileInfo = await getRes.json();
+      var fileInfo = await getRes.json();
       sha = fileInfo.sha;
     }
 
-    const jsonString = JSON.stringify(updatedData, null, 2);
-    const contentEncoded = utf8ToBase64(jsonString);
-    const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    var jsonString = JSON.stringify(updatedData, null, 2);
+    var contentEncoded = utf8ToBase64(jsonString);
+    var putUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path;
     
-    const body = {
-      message: `CMS Update [${new Date().toISOString()}]`,
+    var body = {
+      message: 'CMS Update [' + new Date().toISOString() + ']',
       content: contentEncoded,
       branch: 'main'
     };
     if (sha) body.sha = sha;
 
-    const putRes = await fetch(putUrl, {
+    var putRes = await fetch(putUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `token ${cleanToken}`,
+        'Authorization': 'token ' + cleanToken,
         'Content-Type': 'application/json',
         'Accept': 'application/vnd.github.v3+json'
       },
@@ -399,7 +399,7 @@
     });
 
     if (!putRes.ok) {
-      const errObj = await putRes.json();
+      var errObj = await putRes.json();
       throw new Error(errObj.message || "Commit failed");
     }
     return true;
@@ -407,20 +407,20 @@
 
   function autoGenerateSlug() {
     if (document.getElementById('editArticleId').value) return; 
-    const title = document.getElementById('newsTitle').value;
-    const clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
-    document.getElementById('newsSlug').value = clean ? `${clean}-${Date.now().toString().slice(-4)}` : `news-${Date.now().toString().slice(-6)}`;
+    var title = document.getElementById('newsTitle').value;
+    var clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
+    document.getElementById('newsSlug').value = clean ? clean + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
     if (!document.getElementById('newsSeoTitle').value) {
       document.getElementById('newsSeoTitle').value = title;
     }
   }
 
   function previewSelectedImage(event) {
-    const file = event.target.files[0];
+    var file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
+      var reader = new FileReader();
       reader.onload = function(e) {
-        const preview = document.getElementById('newsImgPreview');
+        var preview = document.getElementById('newsImgPreview');
         preview.src = e.target.result;
         preview.style.display = 'block';
         document.getElementById('newsImageData').value = e.target.result;
@@ -430,11 +430,6 @@
   }
 
   function previewLogoImage(event) {
-    const file = event.target.files[0];
+    var file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const preview = document.getElementById('logoImgPreview');
-        preview.src = e.target.result;
-        preview.style.display = 'block';
-        doc
+      
