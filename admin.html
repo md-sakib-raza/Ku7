@@ -13,16 +13,17 @@
     #loginScreen h2 { color: #dc2626; margin-bottom: 5px; font-size: 24px; font-weight: 800; }
     #loginScreen p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
 
-    /* Admin Panel */
+    /* Admin Panel Layout */
     #adminPanel { display: none; }
-    .admin-header { background: #0f172a; color: #fff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #dc2626; }
-    .admin-header h2 { color: #dc2626; font-size: 20px; font-weight: 800; }
+    .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
     
-    .nav-tabs-bar { background: #1e293b; padding: 8px 15px; display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
-    .nav-tab-btn { background: #334155; color: #e2e8f0; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
-    .nav-tab-btn.active, .nav-tab-btn:hover { background: #dc2626; color: #fff; }
+    .admin-sidebar { background: #0f172a; color: #fff; padding: 20px; }
+    .admin-sidebar h3 { color: #dc2626; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .admin-sidebar ul { list-style: none; margin-top: 25px; }
+    .admin-sidebar li a { display: block; color: #cbd5e1; padding: 12px 14px; border-bottom: 1px solid #1e293b; text-decoration: none; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 6px; margin-bottom: 6px; transition: 0.2s; }
+    .admin-sidebar li a:hover, .admin-sidebar li a.active-tab { background: #dc2626; color: #fff; }
 
-    .admin-container { max-width: 1050px; margin: 20px auto; padding: 0 15px; }
+    .admin-main { padding: 25px; background: #f1f5f9; }
     .card { background: #fff; padding: 22px; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 25px; }
     
     .form-group { margin-bottom: 15px; text-align: left; }
@@ -35,10 +36,13 @@
     .btn-edit { background: #2563eb; color:#fff; padding: 7px 12px; font-size: 12px; margin-right: 6px; border:none; border-radius:4px; cursor:pointer; font-weight:700; }
     .btn-del { background: #dc2626; color:#fff; padding: 7px 12px; font-size: 12px; border:none; border-radius:4px; cursor:pointer; font-weight:700; }
     
-    .editor-toolbar { margin-bottom: 8px; background: #f1f5f9; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; gap: 8px; }
+    /* Formatting Toolbar */
+    .editor-toolbar { margin-bottom: 8px; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; gap: 8px; }
     .editor-toolbar button { padding: 8px 16px; font-size: 14px; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-weight: 800; }
+    .editor-toolbar button:active { background: #e2e8f0; }
     
     #richEditor { min-height: 220px; border: 1px solid #cbd5e1; padding: 14px; background: #fff; border-radius: 6px; outline: none; font-size: 15px; line-height: 1.6; }
+    #richEditor:focus { border-color: #dc2626; }
     
     .table-responsive { overflow-x: auto; margin-top: 15px; border-radius: 6px; border: 1px solid #e2e8f0; }
     .table { width: 100%; border-collapse: collapse; background: #fff; }
@@ -49,52 +53,15 @@
     .preview-box { max-height: 140px; max-width: 220px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 8px; display: none; object-fit: cover; }
     
     @media (max-width: 768px) {
+      .admin-layout { grid-template-columns: 1fr; }
       .grid-2form { grid-template-columns: 1fr; }
-      .admin-container { padding: 0 10px; }
+      .admin-main { padding: 15px; }
     }
   </style>
-
-  <script>
-    function checkLoginNow() {
-      var email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
-      var pass = (document.getElementById('loginPassword').value || '').trim();
-
-      if (email === "mdsakibraza.066@gmail.com" && pass === "changeme1238") {
-        sessionStorage.setItem('90i_user_auth', 'YES');
-        showAdminView();
-      } else {
-        alert("❌ गलत ईमेल या पासवर्ड!");
-      }
-    }
-
-    function showAdminView() {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('adminPanel').style.display = 'block';
-
-      document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
-      document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
-      document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
-
-      loadAdminNewsList();
-      loadInboxList();
-      loadSiteSettingsUI();
-    }
-
-    function doLogout() {
-      sessionStorage.removeItem('90i_user_auth');
-      location.reload();
-    }
-
-    window.addEventListener('DOMContentLoaded', function() {
-      if (sessionStorage.getItem('90i_user_auth') === 'YES') {
-        showAdminView();
-      }
-    });
-  </script>
 </head>
 <body>
 
-  <!-- Clean Blank Login Screen -->
+  <!-- Clean Login Screen -->
   <div id="loginScreen">
     <h2>THE 90I NEWS</h2>
     <p>एडमिन CMS — सुरक्षित लॉगिन पोर्टल</p>
@@ -106,237 +73,288 @@
       <label>पासवर्ड:</label>
       <input type="password" id="loginPassword" class="form-control" placeholder="पासवर्ड दर्ज करें...">
     </div>
-    <button type="button" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;" onclick="checkLoginNow()">🔓 लॉगिन करें</button>
+    <button type="button" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;" onclick="handleAdminLogin()">🔓 लॉगिन करें</button>
   </div>
 
-  <!-- Admin Panel -->
+  <!-- Admin CMS Dashboard -->
   <div id="adminPanel">
-    <header class="admin-header">
-      <div>
-        <h2>THE 90I NEWS</h2>
-        <p style="font-size: 11px; color: #94a3b8;">कंटेंट मैनेजमेंट सिस्टम</p>
-      </div>
-      <div style="display:flex; gap:15px; align-items:center;">
-        <a href="index.html" target="_blank" style="color:#f87171; font-size:13px; text-decoration:none; font-weight:700;">🌐 वेबसाइट देखें</a>
-        <a href="javascript:void(0)" onclick="doLogout()" style="color:#fff; font-size:13px; text-decoration:none; font-weight:700;">🚪 लॉगआउट</a>
-      </div>
-    </header>
-
-    <nav class="nav-tabs-bar">
-      <button type="button" id="navAddNews" class="nav-tab-btn active" onclick="switchTab('addNews')">➕ नया समाचार</button>
-      <button type="button" id="navManageNews" class="nav-tab-btn" onclick="switchTab('manageNews')">📑 समाचार प्रबंधन</button>
-      <button type="button" id="navSiteSettings" class="nav-tab-btn" onclick="switchTab('siteSettings')">🎨 वेबसाइट सेटिंग्स (Logo)</button>
-      <button type="button" id="navInboxMessages" class="nav-tab-btn" onclick="switchTab('inboxMessages')">📬 संपर्क संदेश</button>
-      <button type="button" id="navCloudSettings" class="nav-tab-btn" onclick="switchTab('cloudSettings')">☁️ GitHub सेटिंग्स</button>
-    </nav>
-
-    <main class="admin-container">
+    <div class="admin-layout">
       
-      <!-- 1. Add / Edit News Tab -->
-      <div id="tabAddNews" class="card">
-        <h3 id="formHeading" style="margin-bottom:16px; font-size:18px; color:#0f172a;">नया समाचार प्रकाशित करें</h3>
-        <input type="hidden" id="editArticleId" value="">
+      <!-- Left Sidebar (All circle items working) -->
+      <aside class="admin-sidebar">
+        <h3>THE 90I NEWS</h3>
+        <p style="font-size: 12px; color: #94a3b8;">कंटेंट मैनेजमेंट सिस्टम</p>
         
-        <div class="form-group">
-          <label>शीर्षक (Article Title)</label>
-          <input type="text" id="newsTitle" class="form-control" placeholder="समाचार का मुख्य शीर्षक लिखें..." oninput="autoGenerateSlug()">
-        </div>
+        <ul>
+          <li><a id="sideBtn_addNews" class="active-tab" href="javascript:void(0)" onclick="openTab('addNews')">➕ नया समाचार जोड़ें</a></li>
+          <li><a id="sideBtn_manageNews" href="javascript:void(0)" onclick="openTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
+          <li><a id="sideBtn_siteSettings" href="javascript:void(0)" onclick="openTab('siteSettings')">🎨 वेबसाइट सेटिंग्स (Logo)</a></li>
+          <li><a id="sideBtn_inboxMessages" href="javascript:void(0)" onclick="openTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
+          <li><a id="sideBtn_cloudSettings" href="javascript:void(0)" onclick="openTab('cloudSettings')">☁️ GitHub सेटिंग्स</a></li>
+          <li><a href="index.html" target="_blank">🌐 वेबसाइट देखें</a></li>
+          <li><a href="javascript:void(0)" onclick="handleAdminLogout()" style="color:#f87171;">🚪 लॉगआउट</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Area -->
+      <main class="admin-main">
         
-        <div class="grid-2form">
+        <!-- 1. Add / Edit News Tab -->
+        <div id="tab_addNews" class="card">
+          <h3 id="formHeading" style="margin-bottom:16px; font-size:18px; color:#0f172a;">नया समाचार प्रकाशित करें</h3>
+          <input type="hidden" id="editArticleId" value="">
+          
           <div class="form-group">
-            <label>परमालिंक / स्लग (Clean English Slug)</label>
-            <input type="text" id="newsSlug" class="form-control" placeholder="purnia-news-update">
+            <label>शीर्षक (Article Title)</label>
+            <input type="text" id="newsTitle" class="form-control" placeholder="समाचार का मुख्य शीर्षक लिखें..." oninput="autoGenerateSlug()">
           </div>
+          
+          <div class="grid-2form">
+            <div class="form-group">
+              <label>परमालिंक / स्लग (Clean English Slug)</label>
+              <input type="text" id="newsSlug" class="form-control" placeholder="purnia-news-update">
+            </div>
+            <div class="form-group">
+              <label>श्रेणी (Category)</label>
+              <select id="newsCategory" class="form-control">
+                <option>बिहार</option>
+                <option>राजनीति</option>
+                <option>शिक्षा</option>
+                <option>राष्ट्रीय</option>
+                <option>झारखंड</option>
+                <option>खेल</option>
+                <option>व्यापार</option>
+                <option>टेक्नोलॉजी</option>
+                <option>मनोरंजन</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2form">
+            <div class="form-group">
+              <label>लेखक (Author)</label>
+              <input type="text" id="newsAuthor" class="form-control" value="90I डिजिटल डेस्क">
+            </div>
+            <div class="form-group">
+              <label>टैग्स (Tags - अल्पविराम से अलग करें)</label>
+              <input type="text" id="newsTags" class="form-control" placeholder="बिहार, पूर्णिया, ताजा खबर">
+            </div>
+          </div>
+
           <div class="form-group">
-            <label>श्रेणी (Category)</label>
-            <select id="newsCategory" class="form-control">
-              <option>बिहार</option>
-              <option>राजनीति</option>
-              <option>शिक्षा</option>
-              <option>राष्ट्रीय</option>
-              <option>झारखंड</option>
-              <option>खेल</option>
-              <option>व्यापार</option>
-              <option>टेक्नोलॉजी</option>
-              <option>मनोरंजन</option>
-            </select>
+            <label>संक्षिप्त विवरण (Summary / Excerpt)</label>
+            <textarea id="newsExcerpt" class="form-control" rows="2" placeholder="समाचार का 1-2 लाइन का सारांश..."></textarea>
+          </div>
+
+          <div class="grid-2form">
+            <div class="form-group">
+              <label>मुख्य फ़ोटो (Featured Image)</label>
+              <input type="file" id="newsImageFile" class="form-control" accept="image/*" onchange="previewSelectedImage(event)">
+              <input type="hidden" id="newsImageData">
+              <img id="newsImgPreview" class="preview-box">
+            </div>
+            <div class="form-group">
+              <label>फ़ोटो कैप्शन (Image Caption)</label>
+              <input type="text" id="newsImageCaption" class="form-control" placeholder="तस्वीर का विवरण लिखें">
+            </div>
+          </div>
+
+          <fieldset style="border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; border-radius: 6px; background: #f8fafc;">
+            <legend style="font-weight: 700; color: #dc2626; padding: 0 6px; font-size:13px;">SEO एवं सोशल मेटा डेटा</legend>
+            <div class="form-group">
+              <label>SEO मेटा टाइटल (Meta Title)</label>
+              <input type="text" id="newsSeoTitle" class="form-control" placeholder="Google Search Title">
+            </div>
+            <div class="form-group">
+              <label>SEO मेटा डिस्क्रिप्शन (Meta Description)</label>
+              <textarea id="newsSeoDesc" class="form-control" rows="2" placeholder="Google Search Description"></textarea>
+            </div>
+            <div class="form-group">
+              <label>SEO कीवर्ड्स (Keywords)</label>
+              <input type="text" id="newsSeoKeywords" class="form-control" placeholder="news, bihar, breaking">
+            </div>
+          </fieldset>
+
+          <!-- B / I / U Toolbar with Touch Protection -->
+          <div class="form-group">
+            <label>मुख्य समाचार सामग्री (Article Body)</label>
+            <div class="editor-toolbar">
+              <button type="button" onmousedown="formatText(event, 'bold')" ontouchstart="formatText(event, 'bold')"><b>B (Bold)</b></button>
+              <button type="button" onmousedown="formatText(event, 'italic')" ontouchstart="formatText(event, 'italic')"><i>I (Italic)</i></button>
+              <button type="button" onmousedown="formatText(event, 'underline')" ontouchstart="formatText(event, 'underline')"><u>U (Underline)</u></button>
+            </div>
+            <div id="richEditor" contenteditable="true" placeholder="यहाँ पूरी खबर विस्तार से लिखें..."></div>
+          </div>
+
+          <div class="form-group" style="margin: 15px 0;">
+            <label><input type="checkbox" id="newsBreaking"> ब्रेकिंग न्यूज़ टिकर में दिखाएं</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <label><input type="checkbox" id="newsFeatured" checked> मुख्य पृष्ठ (Lead Story) पर रखें</label>
+          </div>
+
+          <button type="button" id="submitBtn" class="btn" onclick="publishNewsData()">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
+          <button type="button" id="cancelEditBtn" class="btn" style="background:#64748b; display:none; margin-left:10px;" onclick="cancelEditMode()">रद्द करें (Cancel)</button>
+        </div>
+
+        <!-- 2. Manage News Tab -->
+        <div id="tab_manageNews" class="card" style="display: none;">
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">प्रकाशित समाचार प्रबंधन</h3>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">गलती सुधारने (Correction) के लिए 'संपादित करें' या हटाने के लिए 'हटाएं' चुनें:</p>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>शीर्षक</th>
+                  <th>श्रेणी</th>
+                  <th>तारीख</th>
+                  <th>कार्रवाई</th>
+                </tr>
+              </thead>
+              <tbody id="newsTableBody">
+                <tr><td colspan="4" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <div class="grid-2form">
-          <div class="form-group">
-            <label>लेखक (Author)</label>
-            <input type="text" id="newsAuthor" class="form-control" value="90I डिजिटल डेस्क">
-          </div>
-          <div class="form-group">
-            <label>टैग्स (Tags - अल्पविराम से अलग करें)</label>
-            <input type="text" id="newsTags" class="form-control" placeholder="बिहार, पूर्णिया, ताजा खबर">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>संक्षिप्त विवरण (Summary / Excerpt)</label>
-          <textarea id="newsExcerpt" class="form-control" rows="2" placeholder="समाचार का 1-2 लाइन का सारांश..."></textarea>
-        </div>
-
-        <div class="grid-2form">
-          <div class="form-group">
-            <label>मुख्य फ़ोटो (Featured Image)</label>
-            <input type="file" id="newsImageFile" class="form-control" accept="image/*" onchange="previewSelectedImage(event)">
-            <input type="hidden" id="newsImageData">
-            <img id="newsImgPreview" class="preview-box">
-          </div>
-          <div class="form-group">
-            <label>फ़ोटो कैप्शन (Image Caption)</label>
-            <input type="text" id="newsImageCaption" class="form-control" placeholder="तस्वीर का विवरण लिखें">
+        <!-- 3. Logo & Branding Settings Tab -->
+        <div id="tab_siteSettings" class="card" style="display: none;">
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">🎨 वेबसाइट लोगो एवं ब्रांडिंग सेटिंग्स</h3>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">अपनी वेबसाइट का नाम, टैगलाइन और मुख्य लोगो बदलें:</p>
+          
+          <div style="max-width: 600px;">
+            <div class="form-group">
+              <label>वेबसाइट का नाम (Site Title)</label>
+              <input type="text" id="siteTitleInput" class="form-control" value="THE 90I NEWS">
+            </div>
+            <div class="form-group">
+              <label>वेबसाइट टैगलाइन (Tagline / Slogan)</label>
+              <input type="text" id="siteTaglineInput" class="form-control" value="सच | सटीक | निर्भीक">
+            </div>
+            <div class="form-group">
+              <label>लोगो फ़ोटो अपलोड करें (Upload Logo Image)</label>
+              <input type="file" id="siteLogoFile" class="form-control" accept="image/*" onchange="previewLogoImage(event)">
+              <input type="hidden" id="siteLogoData">
+              <img id="logoImgPreview" class="preview-box">
+            </div>
+            <button class="btn" type="button" onclick="saveSiteBranding()">💾 ब्रांडिंग अपडेट करें</button>
           </div>
         </div>
 
-        <fieldset style="border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; border-radius: 6px; background: #f8fafc;">
-          <legend style="font-weight: 700; color: #dc2626; padding: 0 6px; font-size:13px;">SEO एवं सोशल मेटा डेटा</legend>
-          <div class="form-group">
-            <label>SEO मेटा टाइटल (Meta Title)</label>
-            <input type="text" id="newsSeoTitle" class="form-control" placeholder="Google Search Title">
+        <!-- 4. Inbox Tab -->
+        <div id="tab_inboxMessages" class="card" style="display: none;">
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">पाठक न्यूज़ टिप एवं संदेश (Inbox)</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>नाम</th>
+                  <th>संपर्क</th>
+                  <th>संदेश</th>
+                  <th>तारीख</th>
+                </tr>
+              </thead>
+              <tbody id="inboxTableBody">
+                <tr><td colspan="4" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>
+              </tbody>
+            </table>
           </div>
-          <div class="form-group">
-            <label>SEO मेटा डिस्क्रिप्शन (Meta Description)</label>
-            <textarea id="newsSeoDesc" class="form-control" rows="2" placeholder="Google Search Description"></textarea>
-          </div>
-          <div class="form-group">
-            <label>SEO कीवर्ड्स (Keywords)</label>
-            <input type="text" id="newsSeoKeywords" class="form-control" placeholder="news, bihar, breaking">
-          </div>
-        </fieldset>
-
-        <div class="form-group">
-          <label>मुख्य समाचार सामग्री (Article Body)</label>
-          <div class="editor-toolbar">
-            <button type="button" onclick="applyFormat(event, 'bold')"><b>B</b></button>
-            <button type="button" onclick="applyFormat(event, 'italic')"><i>I</i></button>
-            <button type="button" onclick="applyFormat(event, 'underline')"><u>U</u></button>
-          </div>
-          <div id="richEditor" contenteditable="true" placeholder="यहाँ पूरी खबर विस्तार से लिखें..."></div>
         </div>
 
-        <div class="form-group" style="margin: 15px 0;">
-          <label><input type="checkbox" id="newsBreaking"> ब्रेकिंग न्यूज़ टिकर में दिखाएं</label>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <label><input type="checkbox" id="newsFeatured" checked> मुख्य पृष्ठ (Lead Story) पर रखें</label>
+        <!-- 5. GitHub Settings Tab -->
+        <div id="tab_cloudSettings" class="card" style="display: none;">
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">GitHub क्लाउड सेटिंग्स</h3>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">वेबसाइट पर सीधे लाइव पब्लिश करने के लिए अपना पर्सनल टोकन सेव रखें:</p>
+          <div style="max-width: 600px;">
+            <div class="form-group">
+              <label>GitHub Personal Access Token (repo scope)</label>
+              <input type="password" id="ghToken" class="form-control" placeholder="ghp_xxxxxxxxxxxx">
+            </div>
+            <div class="form-group">
+              <label>Repository Owner</label>
+              <input type="text" id="ghOwner" class="form-control" value="md-sakib-raza">
+            </div>
+            <div class="form-group">
+              <label>Repository Name</label>
+              <input type="text" id="ghRepo" class="form-control" value="Ku7">
+            </div>
+            <button class="btn" type="button" onclick="saveGithubSettings()">💾 सेटिंग्स सुरक्षित करें</button>
+          </div>
         </div>
 
-        <button type="button" id="submitBtn" class="btn" onclick="handlePublishOrUpdateNews()">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
-        <button type="button" id="cancelEditBtn" class="btn" style="background:#64748b; display:none; margin-left:10px;" onclick="cancelEditMode()">रद्द करें (Cancel)</button>
-      </div>
-
-      <!-- 2. Manage News Tab -->
-      <div id="tabManageNews" class="card" style="display: none;">
-        <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">प्रकाशित समाचार प्रबंधन</h3>
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>शीर्षक</th>
-                <th>श्रेणी</th>
-                <th>तारीख</th>
-                <th>कार्रवाई</th>
-              </tr>
-            </thead>
-            <tbody id="newsTableBody">
-              <tr><td colspan="4" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- 3. Website Logo & Branding Settings Tab -->
-      <div id="tabSiteSettings" class="card" style="display: none;">
-        <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">🎨 वेबसाइट लोगो एवं ब्रांडिंग सेटिंग्स</h3>
-        <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">अपनी वेबसाइट का नाम, टैगलाइन और मुख्य लोगो बदलें:</p>
-        
-        <div style="max-width: 600px;">
-          <div class="form-group">
-            <label>वेबसाइट का नाम (Site Title)</label>
-            <input type="text" id="siteTitleInput" class="form-control" value="THE 90I NEWS">
-          </div>
-          <div class="form-group">
-            <label>वेबसाइट टैगलाइन (Tagline / Slogan)</label>
-            <input type="text" id="siteTaglineInput" class="form-control" value="सच | सटीक | निर्भीक">
-          </div>
-          <div class="form-group">
-            <label>लोगो फ़ोटो अपलोड करें (Upload Logo Image)</label>
-            <input type="file" id="siteLogoFile" class="form-control" accept="image/*" onchange="previewLogoImage(event)">
-            <input type="hidden" id="siteLogoData">
-            <img id="logoImgPreview" class="preview-box">
-          </div>
-          <button class="btn" type="button" onclick="saveSiteBrandingSettings()">💾 ब्रांडिंग अपडेट करें</button>
-        </div>
-      </div>
-
-      <!-- 4. Inbox Tab -->
-      <div id="tabInboxMessages" class="card" style="display: none;">
-        <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">पाठक न्यूज़ टिप एवं संदेश (Inbox)</h3>
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>नाम</th>
-                <th>संपर्क</th>
-                <th>संदेश</th>
-                <th>तारीख</th>
-              </tr>
-            </thead>
-            <tbody id="inboxTableBody">
-              <tr><td colspan="4" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- 5. GitHub Settings Tab -->
-      <div id="tabCloudSettings" class="card" style="display: none;">
-        <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">GitHub क्लाउड सेटिंग्स</h3>
-        <div style="max-width: 600px;">
-          <div class="form-group">
-            <label>GitHub Personal Access Token (repo scope)</label>
-            <input type="password" id="ghToken" class="form-control" placeholder="ghp_xxxxxxxxxxxx">
-          </div>
-          <div class="form-group">
-            <label>Repository Owner</label>
-            <input type="text" id="ghOwner" class="form-control" value="md-sakib-raza">
-          </div>
-          <div class="form-group">
-            <label>Repository Name</label>
-            <input type="text" id="ghRepo" class="form-control" value="Ku7">
-          </div>
-          <button class="btn" type="button" onclick="saveCloudSettings()">💾 सेटिंग्स सुरक्षित करें</button>
-        </div>
-      </div>
-
-    </main>
+      </main>
+    </div>
   </div>
 
 <script>
-  function switchTab(tabName) {
-    var tabs = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
-    for (var i = 0; i < tabs.length; i++) {
-      var el = document.getElementById('tab' + tabs[i].charAt(0).toUpperCase() + tabs[i].slice(1));
-      var btn = document.getElementById('nav' + tabs[i].charAt(0).toUpperCase() + tabs[i].slice(1));
-      if (el) el.style.display = (tabs[i] === tabName) ? 'block' : 'none';
-      if (btn) {
-        if (tabs[i] === tabName) btn.classList.add('active');
-        else btn.classList.remove('active');
+  // 1. Authentication
+  function handleAdminLogin() {
+    var email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
+    var pass = (document.getElementById('loginPassword').value || '').trim();
+
+    if (email === "mdsakibraza.066@gmail.com" && pass === "changeme1238") {
+      sessionStorage.setItem('90i_auth_session', 'ACTIVE');
+      initAdminPanel();
+    } else {
+      alert("❌ गलत ईमेल या पासवर्ड!");
+    }
+  }
+
+  function initAdminPanel() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+
+    document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
+    document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
+    document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
+
+    loadAdminNewsList();
+    loadInboxList();
+    loadSiteSettingsUI();
+  }
+
+  function handleAdminLogout() {
+    sessionStorage.removeItem('90i_auth_session');
+    location.reload();
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    if (sessionStorage.getItem('90i_auth_session') === 'ACTIVE') {
+      initAdminPanel();
+    }
+  });
+
+  // 2. Tab Navigation (Left Sidebar Controller)
+  function openTab(tabName) {
+    var tabList = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
+    for (var i = 0; i < tabList.length; i++) {
+      var tabId = 'tab_' + tabList[i];
+      var btnId = 'sideBtn_' + tabList[i];
+      
+      var targetTab = document.getElementById(tabId);
+      var targetBtn = document.getElementById(btnId);
+
+      if (targetTab) {
+        targetTab.style.display = (tabList[i] === tabName) ? 'block' : 'none';
+      }
+      if (targetBtn) {
+        if (tabList[i] === tabName) targetBtn.classList.add('active-tab');
+        else targetBtn.classList.remove('active-tab');
       }
     }
+
     if (tabName === 'manageNews') loadAdminNewsList();
     if (tabName === 'inboxMessages') loadInboxList();
   }
 
-  function applyFormat(e, cmd) {
+  // 3. Mobile Safe Text Formatter (B / I / U)
+  function formatText(e, command) {
     e.preventDefault();
-    document.execCommand(cmd, false, null);
+    document.execCommand(command, false, null);
     document.getElementById('richEditor').focus();
   }
 
+  // 4. Data Loading
   async function loadData() {
     try {
       var res = await fetch('data/90i-data.json?_nocache=' + Date.now());
@@ -369,6 +387,7 @@
     return window.btoa(unescape(encodeURIComponent(str)));
   }
 
+  // 5. GitHub Cloud Sync
   async function syncToGitHub(updatedData, token) {
     var owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
     var repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
@@ -405,35 +424,4 @@
     if (sha) body.sha = sha;
 
     var putRes = await fetch(putUrl, {
-      method: 'PUT',
-      headers: {
-        'Authorization': 'token ' + cleanToken,
-        'Content-Type': 'application/json',
-        'Accept': 'application/vnd.github.v3+json'
-      },
-      body: JSON.stringify(body)
-    });
-
-    if (!putRes.ok) {
-      var errObj = await putRes.json();
-      throw new Error(errObj.message || "Commit failed");
-    }
-    return true;
-  }
-
-  function autoGenerateSlug() {
-    if (document.getElementById('editArticleId').value) return; 
-    var title = document.getElementById('newsTitle').value;
-    var clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
-    document.getElementById('newsSlug').value = clean ? clean + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
-    if (!document.getElementById('newsSeoTitle').value) {
-      document.getElementById('newsSeoTitle').value = title;
-    }
-  }
-
-  function previewSelectedImage(event) {
-    var file = event.target.files[0];
-    if (file) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var preview = document.getElementById('newsImgPre
+      method: 'PUT
