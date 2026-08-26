@@ -8,12 +8,10 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
     
-    /* Login Box */
-    #loginScreen { max-width: 380px; margin: 80px auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
-    #loginScreen h2 { color: #dc2626; margin-bottom: 5px; font-size: 24px; font-weight: 800; }
+    #loginScreen { max-width: 380px; margin: 60px auto; padding: 25px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
+    #loginScreen h2 { color: #dc2626; font-size: 24px; font-weight: 800; margin-bottom: 4px; }
     #loginScreen p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
 
-    /* Admin Panel */
     #adminPanel { display: none; }
     .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
     
@@ -58,22 +56,24 @@
 </head>
 <body>
 
-  <!-- 1. Pure Login Form -->
+  <!-- Robust Login Form -->
   <div id="loginScreen">
     <h2>THE 90I NEWS</h2>
     <p>एडमिन CMS — सुरक्षित लॉगिन पोर्टल</p>
-    <div class="form-group">
-      <label>ईमेल आईडी:</label>
-      <input type="email" id="txtEmail" class="form-control" autocomplete="off" placeholder="name@example.com">
-    </div>
-    <div class="form-group">
-      <label>पासवर्ड:</label>
-      <input type="password" id="txtPass" class="form-control" autocomplete="off" placeholder="पासवर्ड दर्ज करें...">
-    </div>
-    <button type="button" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;" onclick="verifyUserLogin()">🔓 लॉगिन करें</button>
+    <form onsubmit="handleFormLogin(event)">
+      <div class="form-group">
+        <label>ईमेल आईडी:</label>
+        <input type="email" id="txtEmail" class="form-control" placeholder="name@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>पासवर्ड:</label>
+        <input type="password" id="txtPass" class="form-control" placeholder="पासवर्ड दर्ज करें..." required>
+      </div>
+      <button type="submit" class="btn" style="width: 100%; margin-top: 6px;">🔓 लॉगिन करें</button>
+    </form>
   </div>
 
-  <!-- 2. Master Dashboard -->
+  <!-- Master Admin Dashboard -->
   <div id="adminPanel">
     <div class="admin-layout">
       
@@ -82,13 +82,13 @@
         <p style="font-size: 12px; color: #94a3b8;">कंटेंट मैनेजमेंट सिस्टम</p>
         
         <ul>
-          <li><button type="button" id="btnTab_addNews" class="tab-active" onclick="showDashboardSection('addNews')">➕ नया समाचार जोड़ें</button></li>
-          <li><button type="button" id="btnTab_manageNews" onclick="showDashboardSection('manageNews')">📑 समाचार प्रबंधन (Edit/Delete)</button></li>
-          <li><button type="button" id="btnTab_siteSettings" onclick="showDashboardSection('siteSettings')">🎨 वेबसाइट लोगो एवं सेटिंग्स</button></li>
-          <li><button type="button" id="btnTab_inboxMessages" onclick="showDashboardSection('inboxMessages')">📬 संपर्क संदेश (Inbox)</button></li>
-          <li><button type="button" id="btnTab_cloudSettings" onclick="showDashboardSection('cloudSettings')">☁️ GitHub सेटिंग्स</button></li>
+          <li><button type="button" id="btnTab_addNews" class="tab-active" onclick="switchTab('addNews')">➕ नया समाचार जोड़ें</button></li>
+          <li><button type="button" id="btnTab_manageNews" onclick="switchTab('manageNews')">📑 समाचार प्रबंधन (Edit/Delete)</button></li>
+          <li><button type="button" id="btnTab_siteSettings" onclick="switchTab('siteSettings')">🎨 वेबसाइट लोगो एवं सेटिंग्स</button></li>
+          <li><button type="button" id="btnTab_inboxMessages" onclick="switchTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</button></li>
+          <li><button type="button" id="btnTab_cloudSettings" onclick="switchTab('cloudSettings')">☁️ GitHub सेटिंग्स</button></li>
           <li><a href="index.html" target="_blank" style="display:block; padding:12px 14px; color:#cbd5e1; text-decoration:none; font-size:14px;">🌐 वेबसाइट देखें</a></li>
-          <li><button type="button" onclick="userLogout()" style="color:#f87171;">🚪 लॉगआउट</button></li>
+          <li><button type="button" onclick="doLogout()" style="color:#f87171;">🚪 लॉगआउट</button></li>
         </ul>
       </aside>
 
@@ -101,7 +101,7 @@
           
           <div class="form-group">
             <label>शीर्षक (Article Title)</label>
-            <input type="text" id="newsTitle" class="form-control" placeholder="समाचार का मुख्य शीर्षक लिखें..." oninput="generateArticleSlug()">
+            <input type="text" id="newsTitle" class="form-control" placeholder="समाचार का मुख्य शीर्षक लिखें..." oninput="autoSlug()">
           </div>
           
           <div class="grid-2form">
@@ -125,26 +125,15 @@
             </div>
           </div>
 
-          <div class="grid-2form">
-            <div class="form-group">
-              <label>लेखक (Author)</label>
-              <input type="text" id="newsAuthor" class="form-control" value="90I डिजिटल डेस्क">
-            </div>
-            <div class="form-group">
-              <label>टैग्स (Tags - अल्पविराम से अलग करें)</label>
-              <input type="text" id="newsTags" class="form-control" placeholder="बिहार, पूर्णिया, ताजा खबर">
-            </div>
-          </div>
-
           <div class="form-group">
-            <label>संक्षिप्त विवरण (Summary / Excerpt)</label>
-            <textarea id="newsExcerpt" class="form-control" rows="2" placeholder="समाचार का 1-2 लाइन का सारांश..."></textarea>
+            <label>संक्षिप्त विवरण / सारांश (Summary / Excerpt)</label>
+            <textarea id="newsExcerpt" class="form-control" rows="2" placeholder="समाचार का मुख्य सारांश..."></textarea>
           </div>
 
           <div class="grid-2form">
             <div class="form-group">
               <label>मुख्य फ़ोटो (Featured Image)</label>
-              <input type="file" id="newsImageFile" class="form-control" accept="image/*" onchange="handleImagePick(event)">
+              <input type="file" id="newsImageFile" class="form-control" accept="image/*" onchange="pickImage(event)">
               <input type="hidden" id="newsImageData">
               <img id="newsImgPreview" class="preview-box">
             </div>
@@ -154,55 +143,31 @@
             </div>
           </div>
 
-          <fieldset style="border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; border-radius: 6px; background: #f8fafc;">
-            <legend style="font-weight: 700; color: #dc2626; padding: 0 6px; font-size:13px;">SEO एवं सोशल मेटा डेटा</legend>
-            <div class="form-group">
-              <label>SEO मेटा टाइटल (Meta Title)</label>
-              <input type="text" id="newsSeoTitle" class="form-control" placeholder="Google Search Title">
-            </div>
-            <div class="form-group">
-              <label>SEO मेटा डिस्क्रिप्शन (Meta Description)</label>
-              <textarea id="newsSeoDesc" class="form-control" rows="2" placeholder="Google Search Description"></textarea>
-            </div>
-            <div class="form-group">
-              <label>SEO कीवर्ड्स (Keywords)</label>
-              <input type="text" id="newsSeoKeywords" class="form-control" placeholder="news, bihar, breaking">
-            </div>
-          </fieldset>
-
           <div class="form-group">
             <label>मुख्य समाचार सामग्री (Article Body)</label>
             <div class="editor-toolbar">
-              <button type="button" onmousedown="executeFormat(event, 'bold')" ontouchstart="executeFormat(event, 'bold')"><b>B (Bold)</b></button>
-              <button type="button" onmousedown="executeFormat(event, 'italic')" ontouchstart="executeFormat(event, 'italic')"><i>I (Italic)</i></button>
-              <button type="button" onmousedown="executeFormat(event, 'underline')" ontouchstart="executeFormat(event, 'underline')"><u>U (Underline)</u></button>
+              <button type="button" onmousedown="fmtText(event, 'bold')" ontouchstart="fmtText(event, 'bold')"><b>B</b></button>
+              <button type="button" onmousedown="fmtText(event, 'italic')" ontouchstart="fmtText(event, 'italic')"><i>I</i></button>
+              <button type="button" onmousedown="fmtText(event, 'underline')" ontouchstart="fmtText(event, 'underline')"><u>U</u></button>
             </div>
             <div id="richEditor" contenteditable="true" placeholder="यहाँ पूरी खबर विस्तार से लिखें..."></div>
           </div>
 
           <div class="form-group" style="margin: 15px 0;">
             <label><input type="checkbox" id="newsBreaking"> ब्रेकिंग न्यूज़ टिकर में दिखाएं</label>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <label><input type="checkbox" id="newsFeatured" checked> मुख्य पृष्ठ (Lead Story) पर रखें</label>
           </div>
 
-          <button type="button" id="submitBtn" class="btn" onclick="saveAndPublishNews()">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
-          <button type="button" id="cancelEditBtn" class="btn" style="background:#64748b; display:none; margin-left:10px;" onclick="cancelEditMode()">रद्द करें (Cancel)</button>
+          <button type="button" id="submitBtn" class="btn" onclick="publishNews()">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
+          <button type="button" id="cancelEditBtn" class="btn" style="background:#64748b; display:none; margin-left:10px;" onclick="cancelEdit()">रद्द करें (Cancel)</button>
         </div>
 
         <!-- Tab 2: Manage News -->
         <div id="sec_manageNews" class="card" style="display: none;">
           <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">प्रकाशित समाचार प्रबंधन</h3>
-          <p style="font-size:13px; color:#64748b; margin-bottom:12px;">संशोधन (Edit) या हटाने (Delete) के लिए विकल्प चुनें:</p>
           <div class="table-responsive">
             <table class="table">
               <thead>
-                <tr>
-                  <th>शीर्षक</th>
-                  <th>श्रेणी</th>
-                  <th>तारीख</th>
-                  <th>कार्रवाई</th>
-                </tr>
+                <tr><th>शीर्षक</th><th>श्रेणी</th><th>तारीख</th><th>कार्रवाई</th></tr>
               </thead>
               <tbody id="newsTableBody">
                 <tr><td colspan="4" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>
@@ -216,38 +181,29 @@
           <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">🎨 वेबसाइट लोगो एवं ब्रांडिंग सेटिंग्स</h3>
           <div style="max-width: 600px;">
             <div class="form-group">
-              <label>वेबसाइट का नाम (Site Title)</label>
+              <label>वेबसाइट का नाम</label>
               <input type="text" id="siteTitleInput" class="form-control" value="THE 90I NEWS">
             </div>
             <div class="form-group">
-              <label>वेबसाइट टैगलाइन (Tagline / Slogan)</label>
-              <input type="text" id="siteTaglineInput" class="form-control" value="सच | सटीक | निर्भीक">
-            </div>
-            <div class="form-group">
-              <label>लोगो फ़ोटो अपलोड करें (Upload Logo Image)</label>
-              <input type="file" id="siteLogoFile" class="form-control" accept="image/*" onchange="handleLogoPick(event)">
+              <label>लोगो अपलोड करें</label>
+              <input type="file" class="form-control" accept="image/*" onchange="pickLogo(event)">
               <input type="hidden" id="siteLogoData">
               <img id="logoImgPreview" class="preview-box">
             </div>
-            <button class="btn" type="button" onclick="saveSiteBrandingData()">💾 ब्रांडिंग अपडेट करें</button>
+            <button class="btn" type="button" onclick="saveBranding()">💾 ब्रांडिंग अपडेट करें</button>
           </div>
         </div>
 
         <!-- Tab 4: Inbox -->
         <div id="sec_inboxMessages" class="card" style="display: none;">
-          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">पाठक न्यूज़ टिप एवं संदेश (Inbox)</h3>
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">पाठक संदेश (Inbox)</h3>
           <div class="table-responsive">
             <table class="table">
               <thead>
-                <tr>
-                  <th>नाम</th>
-                  <th>संपर्क</th>
-                  <th>संदेश</th>
-                  <th>तारीख</th>
-                </tr>
+                <tr><th>नाम</th><th>संपर्क</th><th>संदेश</th><th>तारीख</th></tr>
               </thead>
               <tbody id="inboxTableBody">
-                <tr><td colspan="4" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>
+                <tr><td colspan="4" style="text-align:center;">कोई संदेश नहीं है।</td></tr>
               </tbody>
             </table>
           </div>
@@ -258,18 +214,10 @@
           <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">GitHub क्लाउड सेटिंग्स</h3>
           <div style="max-width: 600px;">
             <div class="form-group">
-              <label>GitHub Personal Access Token (repo scope)</label>
-              <input type="password" id="ghToken" class="form-control" placeholder="ghp_xxxxxxxxxxxx">
+              <label>GitHub Personal Access Token</label>
+              <input type="password" id="ghToken" class="form-control" placeholder="ghp_xxxxxxxx">
             </div>
-            <div class="form-group">
-              <label>Repository Owner</label>
-              <input type="text" id="ghOwner" class="form-control" value="md-sakib-raza">
-            </div>
-            <div class="form-group">
-              <label>Repository Name</label>
-              <input type="text" id="ghRepo" class="form-control" value="Ku7">
-            </div>
-            <button class="btn" type="button" onclick="saveGhSettingsData()">💾 सेटिंग्स सुरक्षित करें</button>
+            <button class="btn" type="button" onclick="saveToken()">💾 टोकन सुरक्षित करें</button>
           </div>
         </div>
 
@@ -278,149 +226,224 @@
   </div>
 
 <script>
-  function verifyUserLogin() {
+  function handleFormLogin(e) {
+    if (e) e.preventDefault();
     var email = (document.getElementById('txtEmail').value || '').trim().toLowerCase();
     var pass = (document.getElementById('txtPass').value || '').trim();
 
     if (email === "mdsakibraza.066@gmail.com" && pass === "changeme1238") {
-      sessionStorage.setItem('90i_auth', 'LOGGED_IN');
-      initDashboard();
+      localStorage.setItem('90i_auth_session', 'ACTIVE');
+      openPanel();
     } else {
       alert("❌ गलत ईमेल या पासवर्ड!");
     }
   }
 
-  function initDashboard() {
+  function openPanel() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
-
     document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
-    document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
-    document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
-
-    loadAdminNewsList();
-    loadInboxList();
-    loadSiteSettingsUI();
+    loadNewsTable();
+    loadInbox();
+    loadBrandingUI();
   }
 
-  function userLogout() {
-    sessionStorage.removeItem('90i_auth');
+  function doLogout() {
+    localStorage.removeItem('90i_auth_session');
     location.reload();
   }
 
   window.addEventListener('DOMContentLoaded', function() {
-    if (sessionStorage.getItem('90i_auth') === 'LOGGED_IN') {
-      initDashboard();
+    if (localStorage.getItem('90i_auth_session') === 'ACTIVE') {
+      openPanel();
     }
   });
 
-  function showDashboardSection(name) {
-    var secs = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
-    for (var i = 0; i < secs.length; i++) {
-      var s = secs[i];
-      var secEl = document.getElementById('sec_' + s);
-      var btnEl = document.getElementById('btnTab_' + s);
-      
-      if (secEl) secEl.style.display = (s === name) ? 'block' : 'none';
-      if (btnEl) {
-        if (s === name) btnEl.classList.add('tab-active');
-        else btnEl.classList.remove('tab-active');
+  function switchTab(name) {
+    var tabs = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
+    tabs.forEach(function(t) {
+      document.getElementById('sec_' + t).style.display = (t === name) ? 'block' : 'none';
+      var btn = document.getElementById('btnTab_' + t);
+      if (btn) {
+        if (t === name) btn.classList.add('tab-active');
+        else btn.classList.remove('tab-active');
       }
-    }
-    if (name === 'manageNews') loadAdminNewsList();
-    if (name === 'inboxMessages') loadInboxList();
+    });
+    if (name === 'manageNews') loadNewsTable();
+    if (name === 'inboxMessages') loadInbox();
   }
 
-  function executeFormat(e, cmd) {
+  function fmtText(e, cmd) {
     e.preventDefault();
     document.execCommand(cmd, false, null);
     document.getElementById('richEditor').focus();
   }
 
-  async function loadData() {
+  async function fetchDbData() {
     try {
       var res = await fetch('data/90i-data.json?_t=' + Date.now());
       if (res.ok) {
-        var data = await res.json();
-        localStorage.setItem('90i_local_news_data', JSON.stringify(data));
-        return {
-          news: data['90i_news'] || [],
-          contacts: data['90i_contacts'] || [],
-          settings: data['90i_settings'] || {}
-        };
+        var json = await res.json();
+        localStorage.setItem('cached_db', JSON.stringify(json));
+        return json;
       }
-    } catch (e) {}
-
-    var localBackup = localStorage.getItem('90i_local_news_data');
-    if (localBackup) {
-      try {
-        var d = JSON.parse(localBackup);
-        return { news: d['90i_news'] || [], contacts: d['90i_contacts'] || [], settings: d['90i_settings'] || {} };
-      } catch(err) {}
-    }
-    return { news: [], contacts: [], settings: {} };
+    } catch(e) {}
+    var cached = localStorage.getItem('cached_db');
+    if (cached) return JSON.parse(cached);
+    return { "90i_news": [], "90i_contacts": [], "90i_settings": {} };
   }
 
-  function utf8ToBase64(str) {
-    return window.btoa(unescape(encodeURIComponent(str)));
-  }
+  async function pushToGit(data) {
+    var token = (localStorage.getItem('90i_gh_token') || '').trim();
+    if (!token) { alert("⚠️ पहले GitHub सेटिंग्स में टोकन सुरक्षित करें!"); return; }
 
-  async function syncToGitHub(updatedData, token) {
-    var owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
-    var repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
-    var path = 'data/90i-data.json';
-    var cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
+    var owner = "md-sakib-raza";
+    var repo = "Ku7";
+    var path = "data/90i-data.json";
 
-    localStorage.setItem('90i_local_news_data', JSON.stringify(updatedData));
-
-    if (!cleanToken) {
-      alert("⚠️ GitHub Token दर्ज नहीं है! कृपया GitHub सेटिंग्स में टोकन डालें।");
-      return true;
-    }
-
-    var getUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now();
-    var getRes = await fetch(getUrl, {
-      headers: { 'Authorization': 'token ' + cleanToken, 'Accept': 'application/vnd.github.v3+json' }
+    var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
+      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
     });
-    
-    var sha = null;
-    if (getRes.ok) {
-      var fileInfo = await getRes.json();
-      sha = fileInfo.sha;
-    }
+    var sha = getRes.ok ? (await getRes.json()).sha : null;
 
-    var jsonString = JSON.stringify(updatedData, null, 2);
-    var contentEncoded = utf8ToBase64(jsonString);
-    var putUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path;
-    
-    var body = {
-      message: 'CMS Live Update [' + new Date().toISOString() + ']',
-      content: contentEncoded,
-      branch: 'main'
-    };
-    if (sha) body.sha = sha;
+    var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
 
-    var putRes = await fetch(putUrl, {
+    var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
       method: 'PUT',
-      headers: {
-        'Authorization': 'token ' + cleanToken,
-        'Content-Type': 'application/json',
-        'Accept': 'application/vnd.github.v3+json'
-      },
-      body: JSON.stringify(body)
+      headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: "Live CMS Update", content: contentB64, branch: "main", sha: sha })
     });
 
-    if (!putRes.ok) {
-      var errObj = await putRes.json();
-      throw new Error(errObj.message || "Commit failed");
-    }
-    return true;
+    if (!putRes.ok) throw new Error("Push Failed");
+    localStorage.setItem('cached_db', JSON.stringify(data));
   }
 
-  function generateArticleSlug() {
-    if (document.getElementById('editArticleId').value) return; 
-    var title = document.getElementById('newsTitle').value;
-    var clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
+  function autoSlug() {
+    if (document.getElementById('editArticleId').value) return;
+    var t = document.getElementById('newsTitle').value;
+    var clean = t.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
     document.getElementById('newsSlug').value = clean ? clean + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
-    if (!document.getElementById('newsSeoTitle').value) {
-  
+  }
+
+  function pickImage(e) {
+    var f = e.target.files[0];
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(evt) {
+        document.getElementById('newsImageData').value = evt.target.result;
+        var p = document.getElementById('newsImgPreview');
+        p.src = evt.target.result;
+        p.style.display = 'block';
+      };
+      r.readAsDataURL(f);
+    }
+  }
+
+  function pickLogo(e) {
+    var f = e.target.files[0];
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(evt) {
+        document.getElementById('siteLogoData').value = evt.target.result;
+        var p = document.getElementById('logoImgPreview');
+        p.src = evt.target.result;
+        p.style.display = 'block';
+      };
+      r.readAsDataURL(f);
+    }
+  }
+
+  async function loadBrandingUI() {
+    var db = await fetchDbData();
+    if (db && db['90i_settings'] && db['90i_settings'].siteTitle) {
+      document.getElementById('siteTitleInput').value = db['90i_settings'].siteTitle;
+    }
+  }
+
+  async function saveBranding() {
+    var title = document.getElementById('siteTitleInput').value.trim();
+    var logo = document.getElementById('siteLogoData').value.trim();
+    var db = await fetchDbData();
+    db['90i_settings'] = db['90i_settings'] || {};
+    db['90i_settings'].siteTitle = title;
+    if (logo) db['90i_settings'].siteLogo = logo;
+    await pushToGit(db);
+    alert("🎨 ब्रांडिंग अपडेट हो गई!");
+  }
+
+  async function publishNews() {
+    var title = document.getElementById('newsTitle').value.trim();
+    if (!title) { alert("शीर्षक आवश्यक है!"); return; }
+
+    var db = await fetchDbData();
+    db['90i_news'] = db['90i_news'] || [];
+
+    var editId = document.getElementById('editArticleId').value;
+    var slug = document.getElementById('newsSlug').value || ('news-' + Date.now());
+    var cat = document.getElementById('newsCategory').value;
+    var excerpt = document.getElementById('newsExcerpt').value;
+    var img = document.getElementById('newsImageData').value;
+    var caption = document.getElementById('newsImageCaption').value;
+    var body = document.getElementById('richEditor').innerHTML;
+    var breaking = document.getElementById('newsBreaking').checked;
+
+    if (editId) {
+      var idx = db['90i_news'].findIndex(function(n) { return String(n.id) === String(editId); });
+      if (idx !== -1) {
+        db['90i_news'][idx].title = title;
+        db['90i_news'][idx].slug = slug;
+        db['90i_news'][idx].category = cat;
+        db['90i_news'][idx].excerpt = excerpt;
+        if (img) db['90i_news'][idx].image = img;
+        db['90i_news'][idx].imageCaption = caption;
+        db['90i_news'][idx].content = body;
+        db['90i_news'][idx].breaking = breaking;
+      }
+    } else {
+      var item = {
+        id: Date.now(),
+        title: title,
+        slug: slug,
+        category: cat,
+        excerpt: excerpt,
+        image: img || '',
+        imageCaption: caption,
+        content: body,
+        breaking: breaking,
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toTimeString().slice(0, 5),
+        permalink: 'article.html?slug=' + slug
+      };
+      db['90i_news'].unshift(item);
+    }
+
+    try {
+      await pushToGit(db);
+      alert("🎉 सफलतापूर्वक प्रकाशित हो गया!");
+      cancelEdit();
+      switchTab('manageNews');
+    } catch(err) {
+      alert("त्रुटि: " + err.message);
+    }
+  }
+
+  async function loadNewsTable() {
+    var db = await fetchDbData();
+    var list = db['90i_news'] || [];
+    var tb = document.getElementById('newsTableBody');
+    if (!list.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई समाचार नहीं है।</td></tr>'; return; }
+    tb.innerHTML = list.map(function(n) {
+      return '<tr>' +
+        '<td><b>' + n.title + '</b></td>' +
+        '<td>' + n.category + '</td>' +
+        '<td>' + n.date + '</td>' +
+        '<td>' +
+          '<button type="button" class="btn-edit" onclick="editNews(' + n.id + ')">✏️</button>' +
+          '<button type="button" class="btn-del" onclick="delNews(' + n.id + ')">🗑️</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  async function editNews(id) {
+    var db = await fetchDbDa
