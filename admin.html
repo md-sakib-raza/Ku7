@@ -4,28 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>एडमिन CMS — THE 90I NEWS</title>
-  <link rel="stylesheet" href="assets/styles.css">
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
-    .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f4f6f9; color: #333; }
+    
+    /* Login Box */
+    #loginView { max-width: 360px; margin: 80px auto; padding: 25px; background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center; }
+    #loginView h2 { color: #dc2626; margin-bottom: 15px; }
+    
+    /* Layout */
+    .admin-layout { display: none; grid-template-columns: 240px 1fr; min-height: 100vh; }
     .admin-sidebar { background: #111; color: #fff; padding: 20px; }
-    .admin-sidebar ul { list-style: none; margin-top: 20px; padding: 0; }
+    .admin-sidebar h3 { color: #dc2626; margin-bottom: 5px; }
+    .admin-sidebar ul { list-style: none; margin-top: 20px; }
     .admin-sidebar li a { display: block; color: #ddd; padding: 10px 0; border-bottom: 1px solid #222; text-decoration: none; font-size: 14px; cursor: pointer; }
     .admin-sidebar li a:hover { color: #dc2626; }
     .admin-main { padding: 25px; background: #f4f6f9; }
+    
+    /* Forms & Cards */
     .card { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; }
-    .form-group { margin-bottom: 15px; }
+    .form-group { margin-bottom: 15px; text-align: left; }
     .form-group label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 14px; }
-    .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; box-sizing: border-box; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
     .btn { padding: 10px 20px; border: none; background: #dc2626; color: #fff; cursor: pointer; font-weight: 700; border-radius: 3px; }
     .btn-edit { background: #2563eb; color:#fff; padding: 6px 12px; font-size: 12px; margin-right: 6px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
     .btn-del { background: #dc2626; color:#fff; padding: 6px 12px; font-size: 12px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
+    
     .editor-toolbar { margin-bottom: 6px; background: #eee; padding: 6px; border-radius: 3px; }
     .editor-toolbar button { padding: 4px 10px; margin-right: 4px; cursor: pointer; }
     .table { width: 100%; border-collapse: collapse; background: #fff; }
     .table th, .table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
     .grid-2form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .preview-box { max-height: 120px; max-width: 200px; border: 1px solid #ddd; border-radius: 4px; margin-top: 8px; display: none; object-fit: cover; }
+    
     @media (max-width: 768px) {
       .admin-layout { grid-template-columns: 1fr; }
       .grid-2form { grid-template-columns: 1fr; }
@@ -34,31 +45,32 @@
 </head>
 <body>
 
-<!-- Only Password Login Box -->
-<div id="loginView" style="max-width: 360px; margin: 100px auto; padding: 25px; background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-  <h2 style="margin-bottom: 16px; text-align: center; color: #dc2626;">THE 90I NEWS CMS</h2>
+<!-- Login Form Box -->
+<div id="loginView">
+  <h2>THE 90I NEWS CMS</h2>
   <div class="form-group">
     <label>एडमिन पासवर्ड दर्ज करें:</label>
     <input type="password" id="adminPassOnly" class="form-control" placeholder="पासवर्ड लिखें...">
   </div>
-  <button type="button" class="btn" style="width: 100%;" onclick="handleOnlyPassLogin()">लॉगिन करें</button>
+  <button type="button" id="loginBtn" class="btn" style="width: 100%;">लॉगिन करें</button>
 </div>
 
-<!-- Admin Dashboard Panel -->
-<div id="dashboardView" class="admin-layout" style="display: none;">
+<!-- CMS Dashboard Panel -->
+<div id="dashboardView" class="admin-layout">
   <aside class="admin-sidebar">
-    <h3 style="color:#dc2626;">THE 90I NEWS</h3>
+    <h3>THE 90I NEWS</h3>
     <p style="font-size: 12px; color: #888;">कंटेंट मैनेजमेंट सिस्टम</p>
     <ul>
       <li><a onclick="showTab('addNews')">➕ नया समाचार जोड़ें</a></li>
       <li><a onclick="showTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
       <li><a onclick="showTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
       <li><a onclick="showTab('cloudSettings')">☁️ GitHub क्लाउड सेटिंग्स</a></li>
-      <li><a onclick="handleLogout()">🚪 लॉगआउट</a></li>
+      <li><a onclick="doLogout()">🚪 लॉगआउट</a></li>
     </ul>
   </aside>
 
   <main class="admin-main">
+    <!-- Add / Edit News Tab -->
     <div id="tabAddNews" class="card">
       <h2 id="formHeading">नया समाचार प्रकाशित करें</h2>
       <form id="newsForm" onsubmit="handlePublishOrUpdateNews(event)" style="margin-top: 15px;">
@@ -72,7 +84,7 @@
         <div class="grid-2form">
           <div class="form-group">
             <label>परमालिंक / स्लग (Clean English Slug)</label>
-            <input type="text" id="newsSlug" class="form-control" placeholder="purnia-university-news" required>
+            <input type="text" id="newsSlug" class="form-control" placeholder="purnia-news" required>
           </div>
           <div class="form-group">
             <label>श्रेणी (Category)</label>
@@ -96,7 +108,7 @@
             <input type="text" id="newsAuthor" class="form-control" value="90I डिजिटल डेस्क">
           </div>
           <div class="form-group">
-            <label>टैग्स (Tags)</label>
+            <label>टैग्स (Tags - अल्पविराम से अलग करें)</label>
             <input type="text" id="newsTags" class="form-control" placeholder="बिहार, पूर्णिया, ताजा खबर">
           </div>
         </div>
@@ -156,6 +168,7 @@
       </form>
     </div>
 
+    <!-- Manage News Tab -->
     <div id="tabManageNews" class="card" style="display: none;">
       <h2>प्रकाशित समाचार प्रबंधन</h2>
       <p style="font-size: 13px; color: #666; margin-bottom: 12px;">गलती सुधारने (Correction) के लिए 'संपादित करें' या हटाने के लिए 'हटाएं' चुनें:</p>
@@ -174,6 +187,7 @@
       </div>
     </div>
 
+    <!-- Inbox Tab -->
     <div id="tabInboxMessages" class="card" style="display: none;">
       <h2>संपर्क संदेश एवं पाठक न्यूज़ टिप (Inbox)</h2>
       <div style="overflow-x: auto; margin-top: 15px;">
@@ -191,6 +205,7 @@
       </div>
     </div>
 
+    <!-- Cloud Settings Tab -->
     <div id="tabCloudSettings" class="card" style="display: none;">
       <h2>GitHub क्लाउड सेटिंग्स</h2>
       <div style="max-width: 600px; margin-top: 15px;">
@@ -213,51 +228,36 @@
 </div>
 
 <script>
-  const CORRECT_PASS = "changeme1238";
-
-  function handleOnlyPassLogin() {
-    const inputPass = (document.getElementById('adminPassOnly').value || '').trim();
-    if (inputPass === CORRECT_PASS) {
-      sessionStorage.setItem('90i_admin_logged', 'true');
-      checkAuth();
-    } else {
-      alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
-    }
-  }
-
-  function handleLogout() {
-    sessionStorage.removeItem('90i_admin_logged');
-    location.reload();
-  }
-
-  function checkAuth() {
-    if (sessionStorage.getItem('90i_admin_logged') === 'true') {
+  // Direct Event Listener for Login
+  document.getElementById('loginBtn').onclick = function() {
+    var pass = (document.getElementById('adminPassOnly').value || '').trim();
+    if (pass === "changeme1238") {
       document.getElementById('loginView').style.display = 'none';
       document.getElementById('dashboardView').style.display = 'grid';
       loadAdminNewsList();
       loadInboxList();
+    } else {
+      alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
     }
-  }
-
-  window.onload = function() {
-    document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
-    document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
-    document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
-    checkAuth();
   };
 
+  function doLogout() {
+    location.reload();
+  }
+
   function showTab(tabName) {
-    ['addNews', 'manageNews', 'inboxMessages', 'cloudSettings'].forEach(t => {
-      const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
-      if (el) el.style.display = (t === tabName) ? 'block' : 'none';
-    });
+    var tabs = ['addNews', 'manageNews', 'inboxMessages', 'cloudSettings'];
+    for (var i = 0; i < tabs.length; i++) {
+      var el = document.getElementById('tab' + tabs[i].charAt(0).toUpperCase() + tabs[i].slice(1));
+      if (el) el.style.display = (tabs[i] === tabName) ? 'block' : 'none';
+    }
   }
 
   async function loadData() {
     try {
-      const res = await fetch(`data/90i-data.json?_nocache=${Date.now()}`);
+      var res = await fetch('data/90i-data.json?_nocache=' + Date.now());
       if (!res.ok) return { news: [], contacts: [] };
-      const data = await res.json();
+      var data = await res.json();
       return {
         news: data['90i_news'] || [],
         contacts: data['90i_contacts'] || []
@@ -272,39 +272,39 @@
   }
 
   async function syncToGitHub(updatedData, token) {
-    const owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
-    const repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
-    const path = 'data/90i-data.json';
-    const cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
+    var owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
+    var repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
+    var path = 'data/90i-data.json';
+    var cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
 
     if (!cleanToken) throw new Error("GitHub Token Missing!");
 
-    const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=main&_nocache=${Date.now()}`;
-    const getRes = await fetch(getUrl, {
-      headers: { 'Authorization': `token ${cleanToken}`, 'Accept': 'application/vnd.github.v3+json' }
+    var getUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_nocache=' + Date.now();
+    var getRes = await fetch(getUrl, {
+      headers: { 'Authorization': 'token ' + cleanToken, 'Accept': 'application/vnd.github.v3+json' }
     });
     
-    let sha = null;
+    var sha = null;
     if (getRes.ok) {
-      const fileInfo = await getRes.json();
+      var fileInfo = await getRes.json();
       sha = fileInfo.sha;
     }
 
-    const jsonString = JSON.stringify(updatedData, null, 2);
-    const contentEncoded = utf8ToBase64(jsonString);
-    const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    var jsonString = JSON.stringify(updatedData, null, 2);
+    var contentEncoded = utf8ToBase64(jsonString);
+    var putUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path;
     
-    const body = {
-      message: `CMS Update [${new Date().toISOString()}]`,
+    var body = {
+      message: 'CMS Update [' + new Date().toISOString() + ']',
       content: contentEncoded,
       branch: 'main'
     };
     if (sha) body.sha = sha;
 
-    const putRes = await fetch(putUrl, {
+    var putRes = await fetch(putUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `token ${cleanToken}`,
+        'Authorization': 'token ' + cleanToken,
         'Content-Type': 'application/json',
         'Accept': 'application/vnd.github.v3+json'
       },
@@ -312,7 +312,7 @@
     });
 
     if (!putRes.ok) {
-      const errObj = await putRes.json();
+      var errObj = await putRes.json();
       throw new Error(errObj.message || "Commit failed");
     }
     return true;
@@ -320,9 +320,9 @@
 
   function autoGenerateSlug() {
     if (document.getElementById('editArticleId').value) return; 
-    const title = document.getElementById('newsTitle').value;
-    const clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
-    document.getElementById('newsSlug').value = clean ? `${clean}-${Date.now().toString().slice(-4)}` : `news-${Date.now().toString().slice(-6)}`;
+    var title = document.getElementById('newsTitle').value;
+    var clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
+    document.getElementById('newsSlug').value = clean ? clean + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
     if (!document.getElementById('newsSeoTitle').value) {
       document.getElementById('newsSeoTitle').value = title;
     }
@@ -333,11 +333,11 @@
   }
 
   function previewSelectedImage(event) {
-    const file = event.target.files[0];
+    var file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
+      var reader = new FileReader();
       reader.onload = function(e) {
-        const preview = document.getElementById('newsImgPreview');
+        var preview = document.getElementById('newsImgPreview');
         preview.src = e.target.result;
         preview.style.display = 'block';
         document.getElementById('newsImageData').value = e.target.result;
@@ -348,45 +348,45 @@
 
   async function handlePublishOrUpdateNews(e) {
     e.preventDefault();
-    const token = (localStorage.getItem('90i_gh_token') || '').trim();
+    var token = (localStorage.getItem('90i_gh_token') || '').trim();
     if (!token) {
       alert("पहले 'GitHub क्लाउड सेटिंग्स' में अपना टोकन दर्ज करें!");
       showTab('cloudSettings');
       return;
     }
 
-    const imageFile = document.getElementById('newsImageData').value;
+    var imageFile = document.getElementById('newsImageData').value;
     if (!imageFile) {
       alert("कृपया मुख्य फ़ोटो अपलोड करें!");
       return;
     }
 
-    const editId = document.getElementById('editArticleId').value;
-    const title = document.getElementById('newsTitle').value;
-    const slug = document.getElementById('newsSlug').value;
-    const category = document.getElementById('newsCategory').value;
-    const author = document.getElementById('newsAuthor').value;
-    const tags = document.getElementById('newsTags').value.split(',').map(t => t.trim()).filter(Boolean);
-    const excerpt = document.getElementById('newsExcerpt').value;
-    const imageCaption = document.getElementById('newsImageCaption').value;
-    const content = document.getElementById('richEditor').innerHTML;
-    const breaking = document.getElementById('newsBreaking').checked;
-    const featured = document.getElementById('newsFeatured').checked;
-    const seoTitle = document.getElementById('newsSeoTitle').value || title;
-    const seoDescription = document.getElementById('newsSeoDesc').value || excerpt;
-    const seoKeywords = document.getElementById('newsSeoKeywords').value;
+    var editId = document.getElementById('editArticleId').value;
+    var title = document.getElementById('newsTitle').value;
+    var slug = document.getElementById('newsSlug').value;
+    var category = document.getElementById('newsCategory').value;
+    var author = document.getElementById('newsAuthor').value;
+    var tags = document.getElementById('newsTags').value.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+    var excerpt = document.getElementById('newsExcerpt').value;
+    var imageCaption = document.getElementById('newsImageCaption').value;
+    var content = document.getElementById('richEditor').innerHTML;
+    var breaking = document.getElementById('newsBreaking').checked;
+    var featured = document.getElementById('newsFeatured').checked;
+    var seoTitle = document.getElementById('newsSeoTitle').value || title;
+    var seoDescription = document.getElementById('newsSeoDesc').value || excerpt;
+    var seoKeywords = document.getElementById('newsSeoKeywords').value;
 
-    const owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
-    const repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
-    let currentData = {};
+    var owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
+    var repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
+    var currentData = {};
 
     try {
-      const liveRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/data/90i-data.json?ref=main&_nocache=${Date.now()}`, {
-        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+      var liveRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/data/90i-data.json?ref=main&_nocache=' + Date.now(), {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
       });
       if (liveRes.ok) {
-        const fileData = await liveRes.json();
-        const decodedStr = decodeURIComponent(escape(window.atob(fileData.content)));
+        var fileData = await liveRes.json();
+        var decodedStr = decodeURIComponent(escape(window.atob(fileData.content)));
         currentData = JSON.parse(decodedStr);
       }
     } catch(err) {
@@ -396,25 +396,24 @@
     currentData['90i_news'] = currentData['90i_news'] || [];
 
     if (editId) {
-      const index = currentData['90i_news'].findIndex(n => String(n.id) === String(editId));
+      var index = currentData['90i_news'].findIndex(function(n) { return String(n.id) === String(editId); });
       if (index !== -1) {
-        currentData['90i_news'][index] = {
-          ...currentData['90i_news'][index],
-          title, slug, category, author, tags, excerpt,
-          image: imageFile, imageCaption, content,
-          breaking, featured, seoTitle, seoDescription, seoKeywords,
-          permalink: `article.html?slug=${slug}`
-        };
+        currentData['90i_news'][index] = Object.assign({}, currentData['90i_news'][index], {
+          title: title, slug: slug, category: category, author: author, tags: tags, excerpt: excerpt,
+          image: imageFile, imageCaption: imageCaption, content: content,
+          breaking: breaking, featured: featured, seoTitle: seoTitle, seoDescription: seoDescription, seoKeywords: seoKeywords,
+          permalink: 'article.html?slug=' + slug
+        });
       }
     } else {
-      const newArticle = {
+      var newArticle = {
         id: Date.now(),
-        title, slug, category, author, tags, excerpt,
-        image: imageFile, imageCaption, content,
-        breaking, featured, seoTitle, seoDescription, seoKeywords,
+        title: title, slug: slug, category: category, author: author, tags: tags, excerpt: excerpt,
+        image: imageFile, imageCaption: imageCaption, content: content,
+        breaking: breaking, featured: featured, seoTitle: seoTitle, seoDescription: seoDescription, seoKeywords: seoKeywords,
         date: new Date().toISOString().split('T')[0],
         time: new Date().toTimeString().slice(0, 5),
-        permalink: `article.html?slug=${slug}`
+        permalink: 'article.html?slug=' + slug
       };
       currentData['90i_news'].unshift(newArticle);
     }
@@ -431,25 +430,25 @@
   }
 
   async function loadAdminNewsList() {
-    const data = await loadData();
-    const tbody = document.getElementById('newsTableBody');
+    var data = await loadData();
+    var tbody = document.getElementById('newsTableBody');
     if (!data || !data.news) return;
-    tbody.innerHTML = data.news.map(n => `
-      <tr>
-        <td><strong>${n.title}</strong></td>
-        <td>${n.category}</td>
-        <td>${n.date}</td>
-        <td style="white-space:nowrap;">
-          <button type="button" class="btn-edit" onclick="startEditNews(${n.id})">✏️ संपादित करें</button>
-          <button type="button" class="btn-del" onclick="deleteNews(${n.id})">🗑️ हटाएं</button>
-        </td>
-      </tr>
-    `).join('');
+    tbody.innerHTML = data.news.map(function(n) {
+      return '<tr>' +
+        '<td><strong>' + n.title + '</strong></td>' +
+        '<td>' + n.category + '</td>' +
+        '<td>' + n.date + '</td>' +
+        '<td style="white-space:nowrap;">' +
+          '<button type="button" class="btn-edit" onclick="startEditNews(' + n.id + ')">✏️ संपादित करें</button>' +
+          '<button type="button" class="btn-del" onclick="deleteNews(' + n.id + ')">🗑️ हटाएं</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
   }
 
   async function startEditNews(id) {
-    const data = await loadData();
-    const article = (data.news || []).find(n => n.id === id);
+    var data = await loadData();
+    var article = (data.news || []).find(function(n) { return n.id === id; });
     if (!article) return;
 
     document.getElementById('editArticleId').value = article.id;
@@ -464,5 +463,4 @@
     document.getElementById('newsSeoDesc').value = article.seoDescription || '';
     document.getElementById('newsSeoKeywords').value = article.seoKeywords || '';
     document.getElementById('richEditor').innerHTML = article.content || '';
-    document.getElementById('newsBreaking').checked = !!article.breaking;
-    docume
+    document.getElementById('newsBreaking').check
