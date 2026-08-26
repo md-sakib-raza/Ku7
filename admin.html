@@ -9,11 +9,12 @@
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f4f6f9; color: #333; }
     
     /* Login Box */
-    #loginView { max-width: 360px; margin: 80px auto; padding: 25px; background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center; }
-    #loginView h2 { color: #dc2626; margin-bottom: 15px; }
+    #loginScreen { max-width: 380px; margin: 80px auto; padding: 25px; background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    #loginScreen h2 { color: #dc2626; text-align: center; margin-bottom: 5px; font-size: 22px; }
+    #loginScreen p { text-align: center; font-size: 13px; color: #666; margin-bottom: 18px; }
     
     /* Layout */
-    .admin-layout { display: none; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    #adminScreen { display: none; grid-template-columns: 240px 1fr; min-height: 100vh; }
     .admin-sidebar { background: #111; color: #fff; padding: 20px; }
     .admin-sidebar h3 { color: #dc2626; margin-bottom: 5px; }
     .admin-sidebar ul { list-style: none; margin-top: 20px; }
@@ -21,11 +22,11 @@
     .admin-sidebar li a:hover { color: #dc2626; }
     .admin-main { padding: 25px; background: #f4f6f9; }
     
-    /* Forms & Cards */
+    /* Forms & UI */
     .card { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; }
     .form-group { margin-bottom: 15px; text-align: left; }
     .form-group label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 14px; }
-    .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; }
     .btn { padding: 10px 20px; border: none; background: #dc2626; color: #fff; cursor: pointer; font-weight: 700; border-radius: 3px; }
     .btn-edit { background: #2563eb; color:#fff; padding: 6px 12px; font-size: 12px; margin-right: 6px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
     .btn-del { background: #dc2626; color:#fff; padding: 6px 12px; font-size: 12px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
@@ -38,25 +39,32 @@
     .preview-box { max-height: 120px; max-width: 200px; border: 1px solid #ddd; border-radius: 4px; margin-top: 8px; display: none; object-fit: cover; }
     
     @media (max-width: 768px) {
-      .admin-layout { grid-template-columns: 1fr; }
+      #adminScreen { grid-template-columns: 1fr; }
       .grid-2form { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- Login Form Box -->
-<div id="loginView">
-  <h2>THE 90I NEWS CMS</h2>
-  <div class="form-group">
-    <label>एडमिन पासवर्ड दर्ज करें:</label>
-    <input type="password" id="adminPassOnly" class="form-control" placeholder="पासवर्ड लिखें...">
-  </div>
-  <button type="button" id="loginBtn" class="btn" style="width: 100%;">लॉगिन करें</button>
+<!-- Secure Login Screen (Email + Password) -->
+<div id="loginScreen">
+  <h2>THE 90I NEWS</h2>
+  <p>एडमिन CMS — सुरक्षित लॉगिन</p>
+  <form id="adminLoginForm" onsubmit="handleAuthSubmit(event)">
+    <div class="form-group">
+      <label>ईमेल आईडी:</label>
+      <input type="email" id="loginEmail" class="form-control" placeholder="उदा. name@example.com" required autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>पासवर्ड:</label>
+      <input type="password" id="loginPassword" class="form-control" placeholder="पासवर्ड लिखें..." required autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;">🔓 लॉगिन करें</button>
+  </form>
 </div>
 
-<!-- CMS Dashboard Panel -->
-<div id="dashboardView" class="admin-layout">
+<!-- Protected CMS Panel -->
+<div id="adminScreen">
   <aside class="admin-sidebar">
     <h3>THE 90I NEWS</h3>
     <p style="font-size: 12px; color: #888;">कंटेंट मैनेजमेंट सिस्टम</p>
@@ -65,12 +73,12 @@
       <li><a onclick="showTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
       <li><a onclick="showTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
       <li><a onclick="showTab('cloudSettings')">☁️ GitHub क्लाउड सेटिंग्स</a></li>
-      <li><a onclick="doLogout()">🚪 लॉगआउट</a></li>
+      <li><a onclick="handleAdminLogout()" style="color:#ef4444; font-weight:bold;">🚪 लॉगआउट</a></li>
     </ul>
   </aside>
 
   <main class="admin-main">
-    <!-- Add / Edit News Tab -->
+    <!-- 1. Add / Edit News Tab -->
     <div id="tabAddNews" class="card">
       <h2 id="formHeading">नया समाचार प्रकाशित करें</h2>
       <form id="newsForm" onsubmit="handlePublishOrUpdateNews(event)" style="margin-top: 15px;">
@@ -168,7 +176,7 @@
       </form>
     </div>
 
-    <!-- Manage News Tab -->
+    <!-- 2. Manage News Tab -->
     <div id="tabManageNews" class="card" style="display: none;">
       <h2>प्रकाशित समाचार प्रबंधन</h2>
       <p style="font-size: 13px; color: #666; margin-bottom: 12px;">गलती सुधारने (Correction) के लिए 'संपादित करें' या हटाने के लिए 'हटाएं' चुनें:</p>
@@ -187,7 +195,7 @@
       </div>
     </div>
 
-    <!-- Inbox Tab -->
+    <!-- 3. Inbox Messages Tab -->
     <div id="tabInboxMessages" class="card" style="display: none;">
       <h2>संपर्क संदेश एवं पाठक न्यूज़ टिप (Inbox)</h2>
       <div style="overflow-x: auto; margin-top: 15px;">
@@ -205,7 +213,7 @@
       </div>
     </div>
 
-    <!-- Cloud Settings Tab -->
+    <!-- 4. GitHub Cloud Settings -->
     <div id="tabCloudSettings" class="card" style="display: none;">
       <h2>GitHub क्लाउड सेटिंग्स</h2>
       <div style="max-width: 600px; margin-top: 15px;">
@@ -228,22 +236,45 @@
 </div>
 
 <script>
-  // Direct Event Listener for Login
-  document.getElementById('loginBtn').onclick = function() {
-    var pass = (document.getElementById('adminPassOnly').value || '').trim();
-    if (pass === "changeme1238") {
-      document.getElementById('loginView').style.display = 'none';
-      document.getElementById('dashboardView').style.display = 'grid';
-      loadAdminNewsList();
-      loadInboxList();
-    } else {
-      alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
-    }
-  };
+  // Validated Admin Credentials
+  var AUTH_EMAIL = "mdsakibraza.066@gmail.com";
+  var AUTH_PASS = "changeme1238";
 
-  function doLogout() {
+  function handleAuthSubmit(event) {
+    event.preventDefault();
+    var emailInput = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
+    var passInput = (document.getElementById('loginPassword').value || '').trim();
+
+    if (emailInput === AUTH_EMAIL.toLowerCase() && passInput === AUTH_PASS) {
+      sessionStorage.setItem('90i_cms_session', 'ACTIVE_AUTHENTICATED');
+      renderDashboard();
+    } else {
+      alert("❌ गलत ईमेल या पासवर्ड! कृपया दोबारा जांचें।");
+    }
+  }
+
+  function renderDashboard() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminScreen').style.display = 'grid';
+    
+    document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
+    document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
+    document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
+
+    loadAdminNewsList();
+    loadInboxList();
+  }
+
+  function handleAdminLogout() {
+    sessionStorage.removeItem('90i_cms_session');
     location.reload();
   }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    if (sessionStorage.getItem('90i_cms_session') === 'ACTIVE_AUTHENTICATED') {
+      renderDashboard();
+    }
+  });
 
   function showTab(tabName) {
     var tabs = ['addNews', 'manageNews', 'inboxMessages', 'cloudSettings'];
@@ -398,12 +429,15 @@
     if (editId) {
       var index = currentData['90i_news'].findIndex(function(n) { return String(n.id) === String(editId); });
       if (index !== -1) {
-        currentData['90i_news'][index] = Object.assign({}, currentData['90i_news'][index], {
+        currentData['90i_news'][index] = {
+          id: currentData['90i_news'][index].id,
+          date: currentData['90i_news'][index].date,
+          time: currentData['90i_news'][index].time,
           title: title, slug: slug, category: category, author: author, tags: tags, excerpt: excerpt,
           image: imageFile, imageCaption: imageCaption, content: content,
           breaking: breaking, featured: featured, seoTitle: seoTitle, seoDescription: seoDescription, seoKeywords: seoKeywords,
           permalink: 'article.html?slug=' + slug
-        });
+        };
       }
     } else {
       var newArticle = {
@@ -435,32 +469,4 @@
     if (!data || !data.news) return;
     tbody.innerHTML = data.news.map(function(n) {
       return '<tr>' +
-        '<td><strong>' + n.title + '</strong></td>' +
-        '<td>' + n.category + '</td>' +
-        '<td>' + n.date + '</td>' +
-        '<td style="white-space:nowrap;">' +
-          '<button type="button" class="btn-edit" onclick="startEditNews(' + n.id + ')">✏️ संपादित करें</button>' +
-          '<button type="button" class="btn-del" onclick="deleteNews(' + n.id + ')">🗑️ हटाएं</button>' +
-        '</td>' +
-      '</tr>';
-    }).join('');
-  }
-
-  async function startEditNews(id) {
-    var data = await loadData();
-    var article = (data.news || []).find(function(n) { return n.id === id; });
-    if (!article) return;
-
-    document.getElementById('editArticleId').value = article.id;
-    document.getElementById('newsTitle').value = article.title;
-    document.getElementById('newsSlug').value = article.slug;
-    document.getElementById('newsCategory').value = article.category;
-    document.getElementById('newsAuthor').value = article.author || '90I डिजिटल डेस्क';
-    document.getElementById('newsTags').value = (article.tags || []).join(', ');
-    document.getElementById('newsExcerpt').value = article.excerpt;
-    document.getElementById('newsImageCaption').value = article.imageCaption || '';
-    document.getElementById('newsSeoTitle').value = article.seoTitle || '';
-    document.getElementById('newsSeoDesc').value = article.seoDescription || '';
-    document.getElementById('newsSeoKeywords').value = article.seoKeywords || '';
-    document.getElementById('richEditor').innerHTML = article.content || '';
-    document.getElementById('newsBreaking').check
+        '<td><st
