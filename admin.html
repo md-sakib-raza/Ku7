@@ -13,14 +13,14 @@
     #loginScreen h2 { color: #dc2626; margin-bottom: 5px; font-size: 24px; font-weight: 800; }
     #loginScreen p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
 
-    /* Admin Panel Layout */
+    /* Admin Panel */
     #adminPanel { display: none; }
     .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
     
     .admin-sidebar { background: #0f172a; color: #fff; padding: 20px; }
     .admin-sidebar h3 { color: #dc2626; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
     .admin-sidebar ul { list-style: none; margin-top: 25px; }
-    .admin-sidebar li a { display: block; color: #cbd5e1; padding: 12px 14px; border-bottom: 1px solid #1e293b; text-decoration: none; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 6px; margin-bottom: 6px; transition: 0.2s; }
+    .admin-sidebar li a { display: block; color: #cbd5e1; padding: 12px 14px; border-bottom: 1px solid #1e293b; text-decoration: none; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 6px; margin-bottom: 6px; }
     .admin-sidebar li a:hover, .admin-sidebar li a.active-tab { background: #dc2626; color: #fff; }
 
     .admin-main { padding: 25px; background: #f1f5f9; }
@@ -31,18 +31,15 @@
     .form-control { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; background: #f8fafc; }
     .form-control:focus { border-color: #dc2626; background: #fff; }
     
-    .btn { padding: 12px 24px; border: none; background: #dc2626; color: #fff; cursor: pointer; font-weight: 700; border-radius: 6px; font-size: 14px; transition: 0.2s; }
+    .btn { padding: 12px 24px; border: none; background: #dc2626; color: #fff; cursor: pointer; font-weight: 700; border-radius: 6px; font-size: 14px; }
     .btn:hover { background: #b91c1c; }
     .btn-edit { background: #2563eb; color:#fff; padding: 7px 12px; font-size: 12px; margin-right: 6px; border:none; border-radius:4px; cursor:pointer; font-weight:700; }
     .btn-del { background: #dc2626; color:#fff; padding: 7px 12px; font-size: 12px; border:none; border-radius:4px; cursor:pointer; font-weight:700; }
     
-    /* Formatting Toolbar */
     .editor-toolbar { margin-bottom: 8px; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; gap: 8px; }
     .editor-toolbar button { padding: 8px 16px; font-size: 14px; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-weight: 800; }
-    .editor-toolbar button:active { background: #e2e8f0; }
     
     #richEditor { min-height: 220px; border: 1px solid #cbd5e1; padding: 14px; background: #fff; border-radius: 6px; outline: none; font-size: 15px; line-height: 1.6; }
-    #richEditor:focus { border-color: #dc2626; }
     
     .table-responsive { overflow-x: auto; margin-top: 15px; border-radius: 6px; border: 1px solid #e2e8f0; }
     .table { width: 100%; border-collapse: collapse; background: #fff; }
@@ -61,33 +58,34 @@
 </head>
 <body>
 
-  <!-- Clean Login Screen -->
+  <!-- Robust Form-Based Login Screen -->
   <div id="loginScreen">
     <h2>THE 90I NEWS</h2>
     <p>एडमिन CMS — सुरक्षित लॉगिन पोर्टल</p>
-    <div class="form-group">
-      <label>ईमेल आईडी:</label>
-      <input type="email" id="loginEmail" class="form-control" placeholder="उदा. name@example.com">
-    </div>
-    <div class="form-group">
-      <label>पासवर्ड:</label>
-      <input type="password" id="loginPassword" class="form-control" placeholder="पासवर्ड दर्ज करें...">
-    </div>
-    <button type="button" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;" onclick="handleAdminLogin()">🔓 लॉगिन करें</button>
+    <form id="adminLoginForm" onsubmit="return handleAuthSubmit(event)">
+      <div class="form-group">
+        <label>ईमेल आईडी:</label>
+        <input type="email" id="loginEmail" class="form-control" autocomplete="off" placeholder="name@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>पासवर्ड:</label>
+        <input type="password" id="loginPassword" class="form-control" autocomplete="off" placeholder="पासवर्ड लिखें..." required>
+      </div>
+      <button type="submit" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;">🔓 लॉगिन करें</button>
+    </form>
   </div>
 
-  <!-- Admin CMS Dashboard -->
+  <!-- Admin Panel -->
   <div id="adminPanel">
     <div class="admin-layout">
       
-      <!-- Left Sidebar (All circle items working) -->
       <aside class="admin-sidebar">
         <h3>THE 90I NEWS</h3>
         <p style="font-size: 12px; color: #94a3b8;">कंटेंट मैनेजमेंट सिस्टम</p>
         
         <ul>
           <li><a id="sideBtn_addNews" class="active-tab" href="javascript:void(0)" onclick="openTab('addNews')">➕ नया समाचार जोड़ें</a></li>
-          <li><a id="sideBtn_manageNews" href="javascript:void(0)" onclick="openTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
+          <li><a id="sideBtn_manageNews" href="javascript:void(0)" onclick="openTab('manageNews')">📑 समाचार प्रबंधन</a></li>
           <li><a id="sideBtn_siteSettings" href="javascript:void(0)" onclick="openTab('siteSettings')">🎨 वेबसाइट सेटिंग्स (Logo)</a></li>
           <li><a id="sideBtn_inboxMessages" href="javascript:void(0)" onclick="openTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
           <li><a id="sideBtn_cloudSettings" href="javascript:void(0)" onclick="openTab('cloudSettings')">☁️ GitHub सेटिंग्स</a></li>
@@ -96,10 +94,9 @@
         </ul>
       </aside>
 
-      <!-- Main Area -->
       <main class="admin-main">
         
-        <!-- 1. Add / Edit News Tab -->
+        <!-- 1. Add News Tab -->
         <div id="tab_addNews" class="card">
           <h3 id="formHeading" style="margin-bottom:16px; font-size:18px; color:#0f172a;">नया समाचार प्रकाशित करें</h3>
           <input type="hidden" id="editArticleId" value="">
@@ -175,13 +172,12 @@
             </div>
           </fieldset>
 
-          <!-- B / I / U Toolbar with Touch Protection -->
           <div class="form-group">
             <label>मुख्य समाचार सामग्री (Article Body)</label>
             <div class="editor-toolbar">
-              <button type="button" onmousedown="formatText(event, 'bold')" ontouchstart="formatText(event, 'bold')"><b>B (Bold)</b></button>
-              <button type="button" onmousedown="formatText(event, 'italic')" ontouchstart="formatText(event, 'italic')"><i>I (Italic)</i></button>
-              <button type="button" onmousedown="formatText(event, 'underline')" ontouchstart="formatText(event, 'underline')"><u>U (Underline)</u></button>
+              <button type="button" onmousedown="formatText(event, 'bold')" ontouchstart="formatText(event, 'bold')"><b>B</b></button>
+              <button type="button" onmousedown="formatText(event, 'italic')" ontouchstart="formatText(event, 'italic')"><i>I</i></button>
+              <button type="button" onmousedown="formatText(event, 'underline')" ontouchstart="formatText(event, 'underline')"><u>U</u></button>
             </div>
             <div id="richEditor" contenteditable="true" placeholder="यहाँ पूरी खबर विस्तार से लिखें..."></div>
           </div>
@@ -199,7 +195,6 @@
         <!-- 2. Manage News Tab -->
         <div id="tab_manageNews" class="card" style="display: none;">
           <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">प्रकाशित समाचार प्रबंधन</h3>
-          <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">गलती सुधारने (Correction) के लिए 'संपादित करें' या हटाने के लिए 'हटाएं' चुनें:</p>
           <div class="table-responsive">
             <table class="table">
               <thead>
@@ -217,11 +212,9 @@
           </div>
         </div>
 
-        <!-- 3. Logo & Branding Settings Tab -->
+        <!-- 3. Logo Settings Tab -->
         <div id="tab_siteSettings" class="card" style="display: none;">
           <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">🎨 वेबसाइट लोगो एवं ब्रांडिंग सेटिंग्स</h3>
-          <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">अपनी वेबसाइट का नाम, टैगलाइन और मुख्य लोगो बदलें:</p>
-          
           <div style="max-width: 600px;">
             <div class="form-group">
               <label>वेबसाइट का नाम (Site Title)</label>
@@ -243,7 +236,7 @@
 
         <!-- 4. Inbox Tab -->
         <div id="tab_inboxMessages" class="card" style="display: none;">
-          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">पाठक न्यूज़ टिप एवं संदेश (Inbox)</h3>
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">पाठक संदेश (Inbox)</h3>
           <div class="table-responsive">
             <table class="table">
               <thead>
@@ -264,7 +257,6 @@
         <!-- 5. GitHub Settings Tab -->
         <div id="tab_cloudSettings" class="card" style="display: none;">
           <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">GitHub क्लाउड सेटिंग्स</h3>
-          <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">वेबसाइट पर सीधे लाइव पब्लिश करने के लिए अपना पर्सनल टोकन सेव रखें:</p>
           <div style="max-width: 600px;">
             <div class="form-group">
               <label>GitHub Personal Access Token (repo scope)</label>
@@ -287,16 +279,18 @@
   </div>
 
 <script>
-  // 1. Authentication
-  function handleAdminLogin() {
+  function handleAuthSubmit(e) {
+    if (e) e.preventDefault();
     var email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
     var pass = (document.getElementById('loginPassword').value || '').trim();
 
     if (email === "mdsakibraza.066@gmail.com" && pass === "changeme1238") {
       sessionStorage.setItem('90i_auth_session', 'ACTIVE');
       initAdminPanel();
+      return false;
     } else {
       alert("❌ गलत ईमेल या पासवर्ड!");
+      return false;
     }
   }
 
@@ -324,19 +318,15 @@
     }
   });
 
-  // 2. Tab Navigation (Left Sidebar Controller)
   function openTab(tabName) {
     var tabList = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
     for (var i = 0; i < tabList.length; i++) {
       var tabId = 'tab_' + tabList[i];
       var btnId = 'sideBtn_' + tabList[i];
-      
       var targetTab = document.getElementById(tabId);
       var targetBtn = document.getElementById(btnId);
 
-      if (targetTab) {
-        targetTab.style.display = (tabList[i] === tabName) ? 'block' : 'none';
-      }
+      if (targetTab) targetTab.style.display = (tabList[i] === tabName) ? 'block' : 'none';
       if (targetBtn) {
         if (tabList[i] === tabName) targetBtn.classList.add('active-tab');
         else targetBtn.classList.remove('active-tab');
@@ -347,14 +337,12 @@
     if (tabName === 'inboxMessages') loadInboxList();
   }
 
-  // 3. Mobile Safe Text Formatter (B / I / U)
   function formatText(e, command) {
     e.preventDefault();
     document.execCommand(command, false, null);
     document.getElementById('richEditor').focus();
   }
 
-  // 4. Data Loading
   async function loadData() {
     try {
       var res = await fetch('data/90i-data.json?_nocache=' + Date.now());
@@ -373,11 +361,7 @@
     if (localBackup) {
       try {
         var d = JSON.parse(localBackup);
-        return {
-          news: d['90i_news'] || [],
-          contacts: d['90i_contacts'] || [],
-          settings: d['90i_settings'] || {}
-        };
+        return { news: d['90i_news'] || [], contacts: d['90i_contacts'] || [], settings: d['90i_settings'] || {} };
       } catch(err) {}
     }
     return { news: [], contacts: [], settings: {} };
@@ -387,7 +371,6 @@
     return window.btoa(unescape(encodeURIComponent(str)));
   }
 
-  // 5. GitHub Cloud Sync
   async function syncToGitHub(updatedData, token) {
     var owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
     var repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
@@ -397,7 +380,7 @@
     localStorage.setItem('cached_90i_data', JSON.stringify(updatedData));
 
     if (!cleanToken) {
-      alert("⚠️ GitHub Token दर्ज नहीं है! डेटा सिर्फ लोकल रूप से सेव हुआ है। कृपया GitHub सेटिंग्स में टोकन डालें।");
+      alert("⚠️ GitHub Token दर्ज नहीं है! कृपया GitHub सेटिंग्स में टोकन डालें।");
       return true;
     }
 
@@ -424,4 +407,30 @@
     if (sha) body.sha = sha;
 
     var putRes = await fetch(putUrl, {
-      method: 'PUT
+      method: 'PUT',
+      headers: {
+        'Authorization': 'token ' + cleanToken,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!putRes.ok) {
+      var errObj = await putRes.json();
+      throw new Error(errObj.message || "Commit failed");
+    }
+    return true;
+  }
+
+  function autoGenerateSlug() {
+    if (document.getElementById('editArticleId').value) return; 
+    var title = document.getElementById('newsTitle').value;
+    var clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
+    document.getElementById('newsSlug').value = clean ? clean + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
+    if (!document.getElementById('newsSeoTitle').value) {
+      document.getElementById('newsSeoTitle').value = title;
+    }
+  }
+
+  function previ
