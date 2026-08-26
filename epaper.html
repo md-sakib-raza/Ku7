@@ -3,67 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ई-पेपर — THE 90I NEWS</title>
-  <link rel="stylesheet" href="assets/styles.css">
+  <title>ई-पेपर संस्करण — THE 90I NEWS</title>
   <style>
-    @media print {
-      .no-print { display: none !important; }
-      body { background: #fff; color: #000; }
-      .epaper-sheet { border: none !important; box-shadow: none !important; }
-    }
-    .epaper-sheet {
-      background: #fff;
-      border: 2px solid #222;
-      padding: 24px;
-      margin: 20px auto;
-      max-width: 1000px;
-    }
-    .epaper-header {
-      border-bottom: 3px double #222;
-      text-align: center;
-      padding-bottom: 12px;
-      margin-bottom: 16px;
-    }
-    .columns-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.6; }
+    
+    header { background: #0f172a; border-bottom: 3px solid #dc2626; padding: 15px 20px; text-align: center; color: #fff; }
+    .epaper-title { font-size: 26px; font-weight: 900; letter-spacing: 1px; }
+    .epaper-title span { color: #dc2626; }
+    .epaper-sub { font-size: 13px; color: #94a3b8; margin-top: 3px; }
+    .epaper-nav { margin-top: 10px; }
+    .epaper-nav a { color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; margin: 0 10px; background: #1e293b; padding: 6px 14px; border-radius: 4px; }
+    .epaper-nav a:hover { background: #dc2626; }
+
+    .epaper-container { max-width: 1100px; margin: 25px auto; padding: 0 15px; }
+    .epaper-header-bar { background: #fff; border: 1px solid #cbd5e1; padding: 12px 18px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: 700; font-size: 14px; color: #475569; }
+
+    /* Newspaper Grid Layout */
+    .epaper-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .epaper-card { background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; }
+    
+    .epaper-tag { font-size: 11px; font-weight: 800; background: #dc2626; color: #fff; padding: 3px 8px; border-radius: 3px; display: inline-block; margin-bottom: 8px; width: fit-content; text-transform: uppercase; }
+    .epaper-headline { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 10px; line-height: 1.4; }
+    .epaper-img { width: 100%; height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; }
+    .epaper-excerpt { font-size: 14px; color: #475569; margin-bottom: 12px; flex-grow: 1; }
+    
+    .epaper-meta { font-size: 12px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .read-btn { color: #dc2626; text-decoration: none; font-weight: 800; font-size: 13px; }
+    .read-btn:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .epaper-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <div class="no-print" style="background: #222; color: #fff; padding: 10px 0; text-align: center;">
-    <button onclick="window.print()" class="badge-category" style="cursor: pointer; border: none; padding: 8px 16px;">प्रिंट / PDF डाउनलोड करें</button>
-    <a href="index.html" style="color: #fff; margin-left: 20px;">होम पेज पर जाएं</a>
-  </div>
+  <header>
+    <div class="epaper-title">THE <span>90I</span> NEWS — ई-पेपर</div>
+    <div class="epaper-sub">डिजिटल दैनिक समाचार संस्करण | सच, सटीक, निर्भीक</div>
+    <div class="epaper-nav">
+      <a href="index.html">🏠 होम</a>
+      <a href="admin.html">🔐 CMS एडमिन</a>
+    </div>
+  </header>
 
-  <div class="container epaper-sheet">
-    <div class="epaper-header">
-      <h1 style="font-size: 48px; color: var(--primary-red);">THE 90I NEWS</h1>
-      <p style="font-weight: bold; font-size: 14px;">डिजिटल ई-पेपर संस्करण • पूर्णिया / बिहार</p>
+  <div class="epaper-container">
+    <div class="epaper-header-bar">
+      <span id="epaperDate">📅 संस्करण तारीख: लोड हो रहा है...</span>
+      <span>📰 दैनिक डिजिटल एडिशन</span>
     </div>
 
-    <div class="columns-3" id="epaperStories">
-      <!-- Stories will load dynamically -->
+    <div class="epaper-grid" id="epaperGrid">
+      <p style="grid-column: 1/-1; text-align:center; padding:30px; color:#64748b;">ई-पेपर लोड हो रहा है...</p>
     </div>
   </div>
 
-  <script src="assets/app.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const data = await loadData();
-      const storiesEl = document.getElementById('epaperStories');
-      if (data && data.news.length > 0) {
-        storiesEl.innerHTML = data.news.slice(0, 6).map(item => `
-          <div style="border-right: 1px solid #ddd; padding-right: 12px;">
-            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 6px;">${item.title}</h3>
-            <img src="${item.image}" alt="" style="width: 100%; height: 120px; object-fit: cover; margin-bottom: 6px;">
-            <p style="font-size: 13px; line-height: 1.4;">${item.excerpt}</p>
-          </div>
-        `).join('');
+<script>
+  async function loadEpaper() {
+    var today = new Date().toLocaleDateString('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('epaperDate').innerText = "📅 " + today;
+
+    var articles = [];
+    try {
+      var res = await fetch('data/90i-data.json?_t=' + Date.now());
+      if (res.ok) {
+        var d = await res.json();
+        articles = d['90i_news'] || [];
       }
-    });
-  </script>
+    } catch(e) {}
+
+    if (articles.length === 0) {
+      var local = localStorage.getItem('cached_db');
+      if (local) {
+        try { articles = JSON.parse(local)['90i_news'] || []; } catch(err){}
+      }
+    }
+
+    var grid = document.getElementById('epaperGrid');
+    if (!articles.length) {
+      grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#64748b;">आज के ई-पेपर में अभी कोई समाचार उपलब्ध नहीं है।</p>';
+      return;
+    }
+
+    grid.innerHTML = articles.map(function(item) {
+      var imgTag = item.image ? '<img src="' + item.image + '" class="epaper-img" alt="' + item.title + '">' : '';
+      var link = item.permalink || ('article.html?slug=' + item.slug);
+      var summary = item.excerpt || (item.content ? item.content.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : '');
+
+      return '<div class="epaper-card">' +
+        '<div>' +
+          '<span class="epaper-tag">' + (item.category || 'ताजा खबर') + '</span>' +
+          '<h2 class="epaper-headline">' + item.title + '</h2>' +
+          imgTag +
+          '<p class="epaper-excerpt">' + summary + '</p>' +
+        '</div>' +
+        '<div class="epaper-meta">' +
+          '<span>📅 ' + (item.date || '') + '</span>' +
+          '<a href="' + link + '" class="read-btn">पूरा पढ़ें ➔</a>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  window.addEventListener('DOMContentLoaded', loadEpaper);
+</script>
 </body>
 </html>
