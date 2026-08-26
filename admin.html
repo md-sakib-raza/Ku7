@@ -10,8 +10,8 @@
     .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
     .admin-sidebar { background: #111; color: #fff; padding: 20px; }
     .admin-sidebar ul { list-style: none; margin-top: 20px; padding: 0; }
-    .admin-sidebar li a { display: block; color: #ddd; padding: 10px 0; border-bottom: 1px solid #222; text-decoration: none; font-size: 14px; }
-    .admin-sidebar li a:hover { color: var(--primary-red, #dc2626); }
+    .admin-sidebar li a { display: block; color: #ddd; padding: 10px 0; border-bottom: 1px solid #222; text-decoration: none; font-size: 14px; cursor: pointer; }
+    .admin-sidebar li a:hover { color: #dc2626; }
     .admin-main { padding: 25px; background: #f4f6f9; }
     .card { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; }
     .form-group { margin-bottom: 15px; }
@@ -34,36 +34,31 @@
 </head>
 <body>
 
-<!-- Login View Screen -->
-<div id="loginView" style="max-width: 380px; margin: 80px auto; padding: 24px; background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+<!-- Only Password Login Box -->
+<div id="loginView" style="max-width: 360px; margin: 100px auto; padding: 25px; background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
   <h2 style="margin-bottom: 16px; text-align: center; color: #dc2626;">THE 90I NEWS CMS</h2>
   <div class="form-group">
-    <label>यूज़रनेम / ईमेल</label>
-    <input type="text" id="adminUser" class="form-control" value="mdsakibraza.066@gmail.com">
+    <label>एडमिन पासवर्ड दर्ज करें:</label>
+    <input type="password" id="adminPassOnly" class="form-control" placeholder="पासवर्ड लिखें...">
   </div>
-  <div class="form-group">
-    <label>पासवर्ड</label>
-    <input type="password" id="adminPass" class="form-control" value="changeme1238">
-  </div>
-  <button type="button" id="loginSubmitBtn" class="btn" style="width: 100%;">लॉगिन करें</button>
+  <button type="button" class="btn" style="width: 100%;" onclick="handleOnlyPassLogin()">लॉगिन करें</button>
 </div>
 
-<!-- Dashboard View Screen -->
+<!-- Admin Dashboard Panel -->
 <div id="dashboardView" class="admin-layout" style="display: none;">
   <aside class="admin-sidebar">
     <h3 style="color:#dc2626;">THE 90I NEWS</h3>
     <p style="font-size: 12px; color: #888;">कंटेंट मैनेजमेंट सिस्टम</p>
     <ul>
-      <li><a href="javascript:void(0)" onclick="showTab('addNews')">➕ नया समाचार जोड़ें</a></li>
-      <li><a href="javascript:void(0)" onclick="showTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
-      <li><a href="javascript:void(0)" onclick="showTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
-      <li><a href="javascript:void(0)" onclick="showTab('cloudSettings')">☁️ GitHub क्लाउड सेटिंग्स</a></li>
-      <li><a href="javascript:void(0)" onclick="handleLogout()">🚪 लॉगआउट</a></li>
+      <li><a onclick="showTab('addNews')">➕ नया समाचार जोड़ें</a></li>
+      <li><a onclick="showTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
+      <li><a onclick="showTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
+      <li><a onclick="showTab('cloudSettings')">☁️ GitHub क्लाउड सेटिंग्स</a></li>
+      <li><a onclick="handleLogout()">🚪 लॉगआउट</a></li>
     </ul>
   </aside>
 
   <main class="admin-main">
-    <!-- Add / Edit News Tab -->
     <div id="tabAddNews" class="card">
       <h2 id="formHeading">नया समाचार प्रकाशित करें</h2>
       <form id="newsForm" onsubmit="handlePublishOrUpdateNews(event)" style="margin-top: 15px;">
@@ -101,7 +96,7 @@
             <input type="text" id="newsAuthor" class="form-control" value="90I डिजिटल डेस्क">
           </div>
           <div class="form-group">
-            <label>टैग्स (Tags - अल्पविराम से अलग करें)</label>
+            <label>टैग्स (Tags)</label>
             <input type="text" id="newsTags" class="form-control" placeholder="बिहार, पूर्णिया, ताजा खबर">
           </div>
         </div>
@@ -114,7 +109,7 @@
         <div class="grid-2form">
           <div class="form-group">
             <label>मुख्य फ़ोटो (Featured Image)</label>
-            <input type="file" id="newsImageFile" class="form-control" accept="image/*" onchange="previewSelectedImage(event, 'newsImgPreview')">
+            <input type="file" id="newsImageFile" class="form-control" accept="image/*" onchange="previewSelectedImage(event)">
             <input type="hidden" id="newsImageData">
             <img id="newsImgPreview" class="preview-box">
           </div>
@@ -161,7 +156,6 @@
       </form>
     </div>
 
-    <!-- Manage News Tab -->
     <div id="tabManageNews" class="card" style="display: none;">
       <h2>प्रकाशित समाचार प्रबंधन</h2>
       <p style="font-size: 13px; color: #666; margin-bottom: 12px;">गलती सुधारने (Correction) के लिए 'संपादित करें' या हटाने के लिए 'हटाएं' चुनें:</p>
@@ -180,7 +174,6 @@
       </div>
     </div>
 
-    <!-- Inbox Tab -->
     <div id="tabInboxMessages" class="card" style="display: none;">
       <h2>संपर्क संदेश एवं पाठक न्यूज़ टिप (Inbox)</h2>
       <div style="overflow-x: auto; margin-top: 15px;">
@@ -198,7 +191,6 @@
       </div>
     </div>
 
-    <!-- Cloud Settings Tab -->
     <div id="tabCloudSettings" class="card" style="display: none;">
       <h2>GitHub क्लाउड सेटिंग्स</h2>
       <div style="max-width: 600px; margin-top: 15px;">
@@ -221,17 +213,56 @@
 </div>
 
 <script>
-  // Core Data Engine
+  const CORRECT_PASS = "changeme1238";
+
+  function handleOnlyPassLogin() {
+    const inputPass = (document.getElementById('adminPassOnly').value || '').trim();
+    if (inputPass === CORRECT_PASS) {
+      sessionStorage.setItem('90i_admin_logged', 'true');
+      checkAuth();
+    } else {
+      alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
+    }
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem('90i_admin_logged');
+    location.reload();
+  }
+
+  function checkAuth() {
+    if (sessionStorage.getItem('90i_admin_logged') === 'true') {
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('dashboardView').style.display = 'grid';
+      loadAdminNewsList();
+      loadInboxList();
+    }
+  }
+
+  window.onload = function() {
+    document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
+    document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
+    document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
+    checkAuth();
+  };
+
+  function showTab(tabName) {
+    ['addNews', 'manageNews', 'inboxMessages', 'cloudSettings'].forEach(t => {
+      const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (el) el.style.display = (t === tabName) ? 'block' : 'none';
+    });
+  }
+
   async function loadData() {
     try {
       const res = await fetch(`data/90i-data.json?_nocache=${Date.now()}`);
-      if (!res.ok) throw new Error("Load failed");
+      if (!res.ok) return { news: [], contacts: [] };
       const data = await res.json();
       return {
         news: data['90i_news'] || [],
         contacts: data['90i_contacts'] || []
       };
-    } catch(err) {
+    } catch (e) {
       return { news: [], contacts: [] };
     }
   }
@@ -287,53 +318,6 @@
     return true;
   }
 
-  function sanitizeHtml(html) {
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-    const allowedTags = ['B', 'STRONG', 'I', 'EM', 'U', 'P', 'DIV', 'BR', 'SPAN', 'BLOCKQUOTE'];
-    function clean(node) {
-      for (let i = node.childNodes.length - 1; i >= 0; i--) {
-        const child = node.childNodes[i];
-        if (child.nodeType === 1) {
-          if (!allowedTags.includes(child.nodeName)) {
-            node.removeChild(child);
-          } else {
-            clean(child);
-          }
-        }
-      }
-    }
-    clean(temp);
-    return temp.innerHTML;
-  }
-
-  // Direct Click Event Binding
-  document.getElementById('loginSubmitBtn').addEventListener('click', () => {
-    sessionStorage.setItem('90i_admin_logged', 'true');
-    checkAuth();
-  });
-
-  function handleLogout() {
-    sessionStorage.removeItem('90i_admin_logged');
-    location.reload();
-  }
-
-  function checkAuth() {
-    if (sessionStorage.getItem('90i_admin_logged') === 'true') {
-      document.getElementById('loginView').style.display = 'none';
-      document.getElementById('dashboardView').style.display = 'grid';
-      loadAdminNewsList();
-      loadInboxList();
-    }
-  }
-
-  function showTab(tab) {
-    ['addNews', 'manageNews', 'inboxMessages', 'cloudSettings'].forEach(t => {
-      const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
-      if (el) el.style.display = (t === tab) ? 'block' : 'none';
-    });
-  }
-
   function autoGenerateSlug() {
     if (document.getElementById('editArticleId').value) return; 
     const title = document.getElementById('newsTitle').value;
@@ -348,12 +332,12 @@
     document.execCommand(cmd, false, null);
   }
 
-  function previewSelectedImage(event, previewId) {
+  function previewSelectedImage(event) {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        const preview = document.getElementById(previewId);
+        const preview = document.getElementById('newsImgPreview');
         preview.src = e.target.result;
         preview.style.display = 'block';
         document.getElementById('newsImageData').value = e.target.result;
@@ -385,7 +369,7 @@
     const tags = document.getElementById('newsTags').value.split(',').map(t => t.trim()).filter(Boolean);
     const excerpt = document.getElementById('newsExcerpt').value;
     const imageCaption = document.getElementById('newsImageCaption').value;
-    const content = sanitizeHtml(document.getElementById('richEditor').innerHTML);
+    const content = document.getElementById('richEditor').innerHTML;
     const breaking = document.getElementById('newsBreaking').checked;
     const featured = document.getElementById('newsFeatured').checked;
     const seoTitle = document.getElementById('newsSeoTitle').value || title;
@@ -406,7 +390,7 @@
         currentData = JSON.parse(decodedStr);
       }
     } catch(err) {
-      currentData = await loadData() || {};
+      currentData = await loadData();
     }
 
     currentData['90i_news'] = currentData['90i_news'] || [];
@@ -474,4 +458,11 @@
     document.getElementById('newsCategory').value = article.category;
     document.getElementById('newsAuthor').value = article.author || '90I डिजिटल डेस्क';
     document.getElementById('newsTags').value = (article.tags || []).join(', ');
-    document.getElementB
+    document.getElementById('newsExcerpt').value = article.excerpt;
+    document.getElementById('newsImageCaption').value = article.imageCaption || '';
+    document.getElementById('newsSeoTitle').value = article.seoTitle || '';
+    document.getElementById('newsSeoDesc').value = article.seoDescription || '';
+    document.getElementById('newsSeoKeywords').value = article.seoKeywords || '';
+    document.getElementById('richEditor').innerHTML = article.content || '';
+    document.getElementById('newsBreaking').checked = !!article.breaking;
+    docume
