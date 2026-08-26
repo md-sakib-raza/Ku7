@@ -46,21 +46,19 @@
 </head>
 <body>
 
-<!-- Secure Login Screen (Email + Password) -->
+<!-- Secure Login Box (No Form Reload) -->
 <div id="loginScreen">
   <h2>THE 90I NEWS</h2>
   <p>एडमिन CMS — सुरक्षित लॉगिन</p>
-  <form id="adminLoginForm" onsubmit="handleAuthSubmit(event)">
-    <div class="form-group">
-      <label>ईमेल आईडी:</label>
-      <input type="email" id="loginEmail" class="form-control" placeholder="उदा. name@example.com" required autocomplete="username">
-    </div>
-    <div class="form-group">
-      <label>पासवर्ड:</label>
-      <input type="password" id="loginPassword" class="form-control" placeholder="पासवर्ड लिखें..." required autocomplete="current-password">
-    </div>
-    <button type="submit" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;">🔓 लॉगिन करें</button>
-  </form>
+  <div class="form-group">
+    <label>ईमेल आईडी:</label>
+    <input type="email" id="loginEmail" class="form-control" placeholder="उदा. name@example.com">
+  </div>
+  <div class="form-group">
+    <label>पासवर्ड:</label>
+    <input type="password" id="loginPassword" class="form-control" placeholder="पासवर्ड लिखें...">
+  </div>
+  <button type="button" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;" onclick="doAdminLogin()">🔓 लॉगिन करें</button>
 </div>
 
 <!-- Protected CMS Panel -->
@@ -73,7 +71,7 @@
       <li><a onclick="showTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
       <li><a onclick="showTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
       <li><a onclick="showTab('cloudSettings')">☁️ GitHub क्लाउड सेटिंग्स</a></li>
-      <li><a onclick="handleAdminLogout()" style="color:#ef4444; font-weight:bold;">🚪 लॉगआउट</a></li>
+      <li><a onclick="doAdminLogout()" style="color:#ef4444; font-weight:bold;">🚪 लॉगआउट</a></li>
     </ul>
   </aside>
 
@@ -81,18 +79,18 @@
     <!-- 1. Add / Edit News Tab -->
     <div id="tabAddNews" class="card">
       <h2 id="formHeading">नया समाचार प्रकाशित करें</h2>
-      <form id="newsForm" onsubmit="handlePublishOrUpdateNews(event)" style="margin-top: 15px;">
+      <div style="margin-top: 15px;">
         <input type="hidden" id="editArticleId" value="">
         
         <div class="form-group">
           <label>शीर्षक (Article Title)</label>
-          <input type="text" id="newsTitle" class="form-control" required oninput="autoGenerateSlug()">
+          <input type="text" id="newsTitle" class="form-control" oninput="autoGenerateSlug()">
         </div>
         
         <div class="grid-2form">
           <div class="form-group">
             <label>परमालिंक / स्लग (Clean English Slug)</label>
-            <input type="text" id="newsSlug" class="form-control" placeholder="purnia-news" required>
+            <input type="text" id="newsSlug" class="form-control" placeholder="purnia-news">
           </div>
           <div class="form-group">
             <label>श्रेणी (Category)</label>
@@ -123,7 +121,7 @@
 
         <div class="form-group">
           <label>संक्षिप्त विवरण (Summary / Excerpt)</label>
-          <textarea id="newsExcerpt" class="form-control" rows="2" required></textarea>
+          <textarea id="newsExcerpt" class="form-control" rows="2"></textarea>
         </div>
 
         <div class="grid-2form">
@@ -171,9 +169,9 @@
           <label><input type="checkbox" id="newsFeatured" checked> मुख्य पृष्ठ (Lead Story) पर रखें</label>
         </div>
 
-        <button type="submit" id="submitBtn" class="btn">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
+        <button type="button" id="submitBtn" class="btn" onclick="handlePublishOrUpdateNews()">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
         <button type="button" id="cancelEditBtn" class="btn" style="background:#6b7280; display:none; margin-left:10px;" onclick="cancelEditMode()">रद्द करें (Cancel)</button>
-      </form>
+      </div>
     </div>
 
     <!-- 2. Manage News Tab -->
@@ -236,24 +234,22 @@
 </div>
 
 <script>
-  // Validated Admin Credentials
   var AUTH_EMAIL = "mdsakibraza.066@gmail.com";
   var AUTH_PASS = "changeme1238";
 
-  function handleAuthSubmit(event) {
-    event.preventDefault();
-    var emailInput = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
-    var passInput = (document.getElementById('loginPassword').value || '').trim();
+  function doAdminLogin() {
+    var email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
+    var pass = (document.getElementById('loginPassword').value || '').trim();
 
-    if (emailInput === AUTH_EMAIL.toLowerCase() && passInput === AUTH_PASS) {
-      sessionStorage.setItem('90i_cms_session', 'ACTIVE_AUTHENTICATED');
-      renderDashboard();
+    if (email === AUTH_EMAIL.toLowerCase() && pass === AUTH_PASS) {
+      localStorage.setItem('90i_cms_auth', 'LOGGED_IN');
+      openDashboard();
     } else {
-      alert("❌ गलत ईमेल या पासवर्ड! कृपया दोबारा जांचें।");
+      alert("❌ गलत ईमेल या पासवर्ड!");
     }
   }
 
-  function renderDashboard() {
+  function openDashboard() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminScreen').style.display = 'grid';
     
@@ -265,14 +261,14 @@
     loadInboxList();
   }
 
-  function handleAdminLogout() {
-    sessionStorage.removeItem('90i_cms_session');
+  function doAdminLogout() {
+    localStorage.removeItem('90i_cms_auth');
     location.reload();
   }
 
   window.addEventListener('DOMContentLoaded', function() {
-    if (sessionStorage.getItem('90i_cms_session') === 'ACTIVE_AUTHENTICATED') {
-      renderDashboard();
+    if (localStorage.getItem('90i_cms_auth') === 'LOGGED_IN') {
+      openDashboard();
     }
   });
 
@@ -377,12 +373,17 @@
     }
   }
 
-  async function handlePublishOrUpdateNews(e) {
-    e.preventDefault();
+  async function handlePublishOrUpdateNews() {
     var token = (localStorage.getItem('90i_gh_token') || '').trim();
     if (!token) {
       alert("पहले 'GitHub क्लाउड सेटिंग्स' में अपना टोकन दर्ज करें!");
       showTab('cloudSettings');
+      return;
+    }
+
+    var title = (document.getElementById('newsTitle').value || '').trim();
+    if (!title) {
+      alert("कृपया समाचार का शीर्षक दर्ज करें!");
       return;
     }
 
@@ -393,7 +394,6 @@
     }
 
     var editId = document.getElementById('editArticleId').value;
-    var title = document.getElementById('newsTitle').value;
     var slug = document.getElementById('newsSlug').value;
     var category = document.getElementById('newsCategory').value;
     var author = document.getElementById('newsAuthor').value;
@@ -469,4 +469,9 @@
     if (!data || !data.news) return;
     tbody.innerHTML = data.news.map(function(n) {
       return '<tr>' +
-        '<td><st
+        '<td><strong>' + n.title + '</strong></td>' +
+        '<td>' + n.category + '</td>' +
+        '<td>' + n.date + '</td>' +
+        '<td style="white-space:nowrap;">' +
+          '<button type="button" class="btn-edit" onclick="startEditNews(' + n.id + ')">✏️ संपादित करें</button>' +
+   
