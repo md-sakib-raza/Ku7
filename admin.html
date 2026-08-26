@@ -6,64 +6,108 @@
   <title>एडमिन CMS — THE 90I NEWS</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f4f6f9; color: #333; }
-    .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-    .admin-sidebar { background: #111; color: #fff; padding: 20px; }
-    .admin-sidebar h3 { color: #dc2626; margin-bottom: 5px; }
-    .admin-sidebar ul { list-style: none; margin-top: 20px; }
-    .admin-sidebar li a { display: block; color: #ddd; padding: 10px 0; border-bottom: 1px solid #222; text-decoration: none; font-size: 14px; cursor: pointer; }
-    .admin-sidebar li a:hover { color: #dc2626; }
-    .admin-main { padding: 25px; background: #f4f6f9; }
-    .card { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
+    
+    /* Login Screen */
+    #loginScreen { max-width: 380px; margin: 90px auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
+    #loginScreen h2 { color: #dc2626; margin-bottom: 5px; font-size: 24px; font-weight: 800; }
+    #loginScreen p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+
+    /* Admin Panel Layout */
+    #adminPanel { display: none; }
+    .admin-header { background: #0f172a; color: #fff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #dc2626; }
+    .admin-header h2 { color: #dc2626; font-size: 20px; font-weight: 800; }
+    
+    .nav-tabs-bar { background: #1e293b; padding: 8px 15px; display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+    .nav-tab-btn { background: #334155; color: #e2e8f0; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .nav-tab-btn.active, .nav-tab-btn:hover { background: #dc2626; color: #fff; }
+
+    .admin-container { max-width: 1050px; margin: 20px auto; padding: 0 15px; }
+    .card { background: #fff; padding: 22px; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 25px; }
+    
     .form-group { margin-bottom: 15px; text-align: left; }
-    .form-group label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 14px; }
-    .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; }
-    .btn { padding: 10px 20px; border: none; background: #dc2626; color: #fff; cursor: pointer; font-weight: 700; border-radius: 3px; }
-    .btn-edit { background: #2563eb; color:#fff; padding: 6px 12px; font-size: 12px; margin-right: 6px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
-    .btn-del { background: #dc2626; color:#fff; padding: 6px 12px; font-size: 12px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
-    .editor-toolbar { margin-bottom: 6px; background: #eee; padding: 6px; border-radius: 3px; }
-    .editor-toolbar button { padding: 4px 10px; margin-right: 4px; cursor: pointer; }
+    .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 13px; color: #334155; }
+    .form-control { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; background: #f8fafc; }
+    .form-control:focus { border-color: #dc2626; background: #fff; }
+    
+    .btn { padding: 12px 24px; border: none; background: #dc2626; color: #fff; cursor: pointer; font-weight: 700; border-radius: 6px; font-size: 14px; transition: 0.2s; }
+    .btn:hover { background: #b91c1c; }
+    .btn-edit { background: #2563eb; color:#fff; padding: 7px 12px; font-size: 12px; margin-right: 6px; border:none; border-radius:4px; cursor:pointer; font-weight:700; }
+    .btn-del { background: #dc2626; color:#fff; padding: 7px 12px; font-size: 12px; border:none; border-radius:4px; cursor:pointer; font-weight:700; }
+    
+    .editor-toolbar { margin-bottom: 8px; background: #f1f5f9; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; gap: 8px; }
+    .editor-toolbar button { padding: 8px 16px; font-size: 14px; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-weight: 800; }
+    
+    #richEditor { min-height: 220px; border: 1px solid #cbd5e1; padding: 14px; background: #fff; border-radius: 6px; outline: none; font-size: 15px; line-height: 1.6; }
+    
+    .table-responsive { overflow-x: auto; margin-top: 15px; border-radius: 6px; border: 1px solid #e2e8f0; }
     .table { width: 100%; border-collapse: collapse; background: #fff; }
-    .table th, .table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    .table th, .table td { padding: 12px 14px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 13px; }
+    .table th { background: #f8fafc; font-weight: 700; color: #475569; }
+    
     .grid-2form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    .preview-box { max-height: 120px; max-width: 200px; border: 1px solid #ddd; border-radius: 4px; margin-top: 8px; display: none; object-fit: cover; }
+    .preview-box { max-height: 140px; max-width: 220px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 8px; display: none; object-fit: cover; }
+    
     @media (max-width: 768px) {
-      .admin-layout { grid-template-columns: 1fr; }
       .grid-2form { grid-template-columns: 1fr; }
+      .admin-container { padding: 0 10px; }
     }
   </style>
 </head>
 <body>
 
-<div class="admin-layout">
-  <aside class="admin-sidebar">
-    <h3>THE 90I NEWS</h3>
-    <p style="font-size: 12px; color: #888;">कंटेंट मैनेजमेंट सिस्टम</p>
-    <ul>
-      <li><a onclick="showTab('addNews')">➕ नया समाचार जोड़ें</a></li>
-      <li><a onclick="showTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
-      <li><a onclick="showTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
-      <li><a onclick="showTab('cloudSettings')">☁️ GitHub क्लाउड सेटिंग्स</a></li>
-      <li><a href="index.html">🌐 वेबसाइट देखें</a></li>
-    </ul>
-  </aside>
+  <!-- Secure Login Screen -->
+  <div id="loginScreen">
+    <h2>THE 90I NEWS</h2>
+    <p>एडमिन CMS — सुरक्षित लॉगिन</p>
+    <div class="form-group">
+      <label>ईमेल आईडी:</label>
+      <input type="email" id="loginEmail" class="form-control" placeholder="उदा. name@example.com">
+    </div>
+    <div class="form-group">
+      <label>पासवर्ड:</label>
+      <input type="password" id="loginPassword" class="form-control" placeholder="पासवर्ड लिखें...">
+    </div>
+    <button type="button" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;" onclick="performAuth()">🔓 लॉगिन करें</button>
+  </div>
 
-  <main class="admin-main">
-    <!-- Add / Edit News Tab -->
-    <div id="tabAddNews" class="card">
-      <h2 id="formHeading">नया समाचार प्रकाशित करें</h2>
-      <div style="margin-top: 15px;">
+  <!-- Protected Admin Panel -->
+  <div id="adminPanel">
+    <header class="admin-header">
+      <div>
+        <h2>THE 90I NEWS</h2>
+        <p style="font-size: 11px; color: #94a3b8;">कंटेंट मैनेजमेंट सिस्टम</p>
+      </div>
+      <div style="display:flex; gap:15px; align-items:center;">
+        <a href="index.html" target="_blank" style="color:#f87171; font-size:13px; text-decoration:none; font-weight:700;">🌐 वेबसाइट देखें</a>
+        <a href="javascript:void(0)" onclick="performLogout()" style="color:#fff; font-size:13px; text-decoration:none; font-weight:700;">🚪 लॉगआउट</a>
+      </div>
+    </header>
+
+    <nav class="nav-tabs-bar">
+      <button type="button" id="navAddNews" class="nav-tab-btn active" onclick="switchTab('addNews')">➕ नया समाचार</button>
+      <button type="button" id="navManageNews" class="nav-tab-btn" onclick="switchTab('manageNews')">📑 समाचार प्रबंधन</button>
+      <button type="button" id="navSiteSettings" class="nav-tab-btn" onclick="switchTab('siteSettings')">🎨 वेबसाइट सेटिंग्स (Logo)</button>
+      <button type="button" id="navInboxMessages" class="nav-tab-btn" onclick="switchTab('inboxMessages')">📬 संपर्क संदेश</button>
+      <button type="button" id="navCloudSettings" class="nav-tab-btn" onclick="switchTab('cloudSettings')">☁️ GitHub सेटिंग्स</button>
+    </nav>
+
+    <main class="admin-container">
+      
+      <!-- 1. Add / Edit News Tab -->
+      <div id="tabAddNews" class="card">
+        <h3 id="formHeading" style="margin-bottom:16px; font-size:18px; color:#0f172a;">नया समाचार प्रकाशित करें</h3>
         <input type="hidden" id="editArticleId" value="">
         
         <div class="form-group">
           <label>शीर्षक (Article Title)</label>
-          <input type="text" id="newsTitle" class="form-control" oninput="autoGenerateSlug()">
+          <input type="text" id="newsTitle" class="form-control" placeholder="समाचार का मुख्य शीर्षक लिखें..." oninput="autoGenerateSlug()">
         </div>
         
         <div class="grid-2form">
           <div class="form-group">
             <label>परमालिंक / स्लग (Clean English Slug)</label>
-            <input type="text" id="newsSlug" class="form-control" placeholder="purnia-news">
+            <input type="text" id="newsSlug" class="form-control" placeholder="purnia-news-update">
           </div>
           <div class="form-group">
             <label>श्रेणी (Category)</label>
@@ -94,7 +138,7 @@
 
         <div class="form-group">
           <label>संक्षिप्त विवरण (Summary / Excerpt)</label>
-          <textarea id="newsExcerpt" class="form-control" rows="2"></textarea>
+          <textarea id="newsExcerpt" class="form-control" rows="2" placeholder="समाचार का 1-2 लाइन का सारांश..."></textarea>
         </div>
 
         <div class="grid-2form">
@@ -106,19 +150,19 @@
           </div>
           <div class="form-group">
             <label>फ़ोटो कैप्शन (Image Caption)</label>
-            <input type="text" id="newsImageCaption" class="form-control" placeholder="तस्वीर का विवरण">
+            <input type="text" id="newsImageCaption" class="form-control" placeholder="तस्वीर का विवरण लिखें">
           </div>
         </div>
 
-        <fieldset style="border: 1px solid #ddd; padding: 14px; margin-bottom: 15px; border-radius: 4px; background: #fafafa;">
-          <legend style="font-weight: 700; color: #dc2626; padding: 0 6px;">SEO एवं सोशल मेटा डेटा</legend>
+        <fieldset style="border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 15px; border-radius: 6px; background: #f8fafc;">
+          <legend style="font-weight: 700; color: #dc2626; padding: 0 6px; font-size:13px;">SEO एवं सोशल मेटा डेटा</legend>
           <div class="form-group">
             <label>SEO मेटा टाइटल (Meta Title)</label>
-            <input type="text" id="newsSeoTitle" class="form-control">
+            <input type="text" id="newsSeoTitle" class="form-control" placeholder="Google Search Title">
           </div>
           <div class="form-group">
             <label>SEO मेटा डिस्क्रिप्शन (Meta Description)</label>
-            <textarea id="newsSeoDesc" class="form-control" rows="2"></textarea>
+            <textarea id="newsSeoDesc" class="form-control" rows="2" placeholder="Google Search Description"></textarea>
           </div>
           <div class="form-group">
             <label>SEO कीवर्ड्स (Keywords)</label>
@@ -129,111 +173,184 @@
         <div class="form-group">
           <label>मुख्य समाचार सामग्री (Article Body)</label>
           <div class="editor-toolbar">
-            <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
-            <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
-            <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
+            <button type="button" onclick="applyFormat(event, 'bold')"><b>B</b></button>
+            <button type="button" onclick="applyFormat(event, 'italic')"><i>I</i></button>
+            <button type="button" onclick="applyFormat(event, 'underline')"><u>U</u></button>
           </div>
-          <div id="richEditor" contenteditable="true" style="min-height: 180px; border: 1px solid #ccc; padding: 10px; background: #fff; border-radius: 3px;"></div>
+          <div id="richEditor" contenteditable="true" placeholder="यहाँ पूरी खबर विस्तार से लिखें..."></div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin: 15px 0;">
           <label><input type="checkbox" id="newsBreaking"> ब्रेकिंग न्यूज़ टिकर में दिखाएं</label>
-          &nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;
           <label><input type="checkbox" id="newsFeatured" checked> मुख्य पृष्ठ (Lead Story) पर रखें</label>
         </div>
 
         <button type="button" id="submitBtn" class="btn" onclick="handlePublishOrUpdateNews()">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
-        <button type="button" id="cancelEditBtn" class="btn" style="background:#6b7280; display:none; margin-left:10px;" onclick="cancelEditMode()">रद्द करें (Cancel)</button>
+        <button type="button" id="cancelEditBtn" class="btn" style="background:#64748b; display:none; margin-left:10px;" onclick="cancelEditMode()">रद्द करें (Cancel)</button>
       </div>
-    </div>
 
-    <!-- Manage News Tab -->
-    <div id="tabManageNews" class="card" style="display: none;">
-      <h2>प्रकाशित समाचार प्रबंधन</h2>
-      <p style="font-size: 13px; color: #666; margin-bottom: 12px;">गलती सुधारने के लिए 'संपादित करें' या हटाने के लिए 'हटाएं' चुनें:</p>
-      <div style="overflow-x: auto;">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>शीर्षक</th>
-              <th>श्रेणी</th>
-              <th>तारीख</th>
-              <th>कार्रवाई</th>
-            </tr>
-          </thead>
-          <tbody id="newsTableBody"></tbody>
-        </table>
+      <!-- 2. Manage News Tab -->
+      <div id="tabManageNews" class="card" style="display: none;">
+        <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">प्रकाशित समाचार प्रबंधन</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>शीर्षक</th>
+                <th>श्रेणी</th>
+                <th>तारीख</th>
+                <th>कार्रवाई</th>
+              </tr>
+            </thead>
+            <tbody id="newsTableBody">
+              <tr><td colspan="4" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
-    <!-- Inbox Tab -->
-    <div id="tabInboxMessages" class="card" style="display: none;">
-      <h2>संपर्क संदेश एवं पाठक न्यूज़ टिप (Inbox)</h2>
-      <div style="overflow-x: auto; margin-top: 15px;">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>नाम</th>
-              <th>संपर्क</th>
-              <th>संदेश</th>
-              <th>तारीख</th>
-            </tr>
-          </thead>
-          <tbody id="inboxTableBody"></tbody>
-        </table>
+      <!-- 3. Website Logo & Branding Settings Tab -->
+      <div id="tabSiteSettings" class="card" style="display: none;">
+        <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">🎨 वेबसाइट लोगो एवं ब्रांडिंग सेटिंग्स</h3>
+        <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">अपनी वेबसाइट का नाम, टैगलाइन और मुख्य लोगो बदलें:</p>
+        
+        <div style="max-width: 600px;">
+          <div class="form-group">
+            <label>वेबसाइट का नाम (Site Title)</label>
+            <input type="text" id="siteTitleInput" class="form-control" value="THE 90I NEWS">
+          </div>
+          <div class="form-group">
+            <label>वेबसाइट टैगलाइन (Tagline / Slogan)</label>
+            <input type="text" id="siteTaglineInput" class="form-control" value="सच | सटीक | निर्भीक">
+          </div>
+          <div class="form-group">
+            <label>लोगो फ़ोटो अपलोड करें (Upload Logo Image)</label>
+            <input type="file" id="siteLogoFile" class="form-control" accept="image/*" onchange="previewLogoImage(event)">
+            <input type="hidden" id="siteLogoData">
+            <img id="logoImgPreview" class="preview-box">
+          </div>
+          <button class="btn" type="button" onclick="saveSiteBrandingSettings()">💾 ब्रांडिंग अपडेट करें</button>
+        </div>
       </div>
-    </div>
 
-    <!-- Cloud Settings Tab -->
-    <div id="tabCloudSettings" class="card" style="display: none;">
-      <h2>GitHub क्लाउड सेटिंग्स</h2>
-      <div style="max-width: 600px; margin-top: 15px;">
-        <div class="form-group">
-          <label>GitHub Personal Access Token (repo scope)</label>
-          <input type="password" id="ghToken" class="form-control" placeholder="ghp_xxxxxxxxxxxx">
+      <!-- 4. Inbox Tab -->
+      <div id="tabInboxMessages" class="card" style="display: none;">
+        <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">पाठक न्यूज़ टिप एवं संदेश (Inbox)</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>नाम</th>
+                <th>संपर्क</th>
+                <th>संदेश</th>
+                <th>तारीख</th>
+              </tr>
+            </thead>
+            <tbody id="inboxTableBody">
+              <tr><td colspan="4" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>
+            </tbody>
+          </table>
         </div>
-        <div class="form-group">
-          <label>Repository Owner</label>
-          <input type="text" id="ghOwner" class="form-control" value="md-sakib-raza">
-        </div>
-        <div class="form-group">
-          <label>Repository Name</label>
-          <input type="text" id="ghRepo" class="form-control" value="Ku7">
-        </div>
-        <button class="btn" type="button" onclick="saveCloudSettings()">सेटिंग्स सुरक्षित करें</button>
       </div>
-    </div>
-  </main>
-</div>
+
+      <!-- 5. GitHub Settings Tab -->
+      <div id="tabCloudSettings" class="card" style="display: none;">
+        <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">GitHub क्लाउड सेटिंग्स</h3>
+        <div style="max-width: 600px;">
+          <div class="form-group">
+            <label>GitHub Personal Access Token (repo scope)</label>
+            <input type="password" id="ghToken" class="form-control" placeholder="ghp_xxxxxxxxxxxx">
+          </div>
+          <div class="form-group">
+            <label>Repository Owner</label>
+            <input type="text" id="ghOwner" class="form-control" value="md-sakib-raza">
+          </div>
+          <div class="form-group">
+            <label>Repository Name</label>
+            <input type="text" id="ghRepo" class="form-control" value="Ku7">
+          </div>
+          <button class="btn" type="button" onclick="saveCloudSettings()">💾 सेटिंग्स सुरक्षित करें</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
 
 <script>
-  window.onload = function() {
+  const AUTH_EMAIL = "mdsakibraza.066@gmail.com";
+  const AUTH_PASS = "changeme1238";
+
+  function performAuth() {
+    const email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
+    const pass = (document.getElementById('loginPassword').value || '').trim();
+
+    if (email === AUTH_EMAIL.toLowerCase() && pass === AUTH_PASS) {
+      localStorage.setItem('90i_auth_active', 'TRUE');
+      openAdminPanel();
+    } else {
+      alert("❌ गलत ईमेल या पासवर्ड!");
+    }
+  }
+
+  function openAdminPanel() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+
     document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
     document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
     document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
+
     loadAdminNewsList();
     loadInboxList();
+    loadSiteSettingsUI();
+  }
+
+  function performLogout() {
+    localStorage.removeItem('90i_auth_active');
+    location.reload();
+  }
+
+  window.onload = function() {
+    if (localStorage.getItem('90i_auth_active') === 'TRUE') {
+      openAdminPanel();
+    }
   };
 
-  function showTab(tabName) {
-    var tabs = ['addNews', 'manageNews', 'inboxMessages', 'cloudSettings'];
-    for (var i = 0; i < tabs.length; i++) {
-      var el = document.getElementById('tab' + tabs[i].charAt(0).toUpperCase() + tabs[i].slice(1));
-      if (el) el.style.display = (tabs[i] === tabName) ? 'block' : 'none';
-    }
+  function switchTab(tabName) {
+    const tabs = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
+    tabs.forEach(t => {
+      const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+      const btn = document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (el) el.style.display = (t === tabName) ? 'block' : 'none';
+      if (btn) {
+        if (t === tabName) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    });
+
+    if (tabName === 'manageNews') loadAdminNewsList();
+    if (tabName === 'inboxMessages') loadInboxList();
+  }
+
+  function applyFormat(e, cmd) {
+    e.preventDefault();
+    document.execCommand(cmd, false, null);
+    document.getElementById('richEditor').focus();
   }
 
   async function loadData() {
     try {
-      var res = await fetch('data/90i-data.json?_nocache=' + Date.now());
-      if (!res.ok) return { news: [], contacts: [] };
-      var data = await res.json();
+      const res = await fetch('data/90i-data.json?_nocache=' + Date.now());
+      if (!res.ok) return { news: [], contacts: [], settings: {} };
+      const data = await res.json();
       return {
         news: data['90i_news'] || [],
-        contacts: data['90i_contacts'] || []
+        contacts: data['90i_contacts'] || [],
+        settings: data['90i_settings'] || {}
       };
     } catch (e) {
-      return { news: [], contacts: [] };
+      return { news: [], contacts: [], settings: {} };
     }
   }
 
@@ -242,39 +359,39 @@
   }
 
   async function syncToGitHub(updatedData, token) {
-    var owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
-    var repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
-    var path = 'data/90i-data.json';
-    var cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
+    const owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
+    const repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
+    const path = 'data/90i-data.json';
+    const cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
 
-    if (!cleanToken) throw new Error("GitHub Token Missing! कृपया 'GitHub क्लाउड सेटिंग्स' में जाकर अपना टोकन पेस्ट करें।");
+    if (!cleanToken) throw new Error("GitHub Token Missing! कृपया 'GitHub सेटिंग्स' में जाकर टोकन दर्ज करें।");
 
-    var getUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_nocache=' + Date.now();
-    var getRes = await fetch(getUrl, {
-      headers: { 'Authorization': 'token ' + cleanToken, 'Accept': 'application/vnd.github.v3+json' }
+    const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=main&_nocache=${Date.now()}`;
+    const getRes = await fetch(getUrl, {
+      headers: { 'Authorization': `token ${cleanToken}`, 'Accept': 'application/vnd.github.v3+json' }
     });
     
-    var sha = null;
+    let sha = null;
     if (getRes.ok) {
-      var fileInfo = await getRes.json();
+      const fileInfo = await getRes.json();
       sha = fileInfo.sha;
     }
 
-    var jsonString = JSON.stringify(updatedData, null, 2);
-    var contentEncoded = utf8ToBase64(jsonString);
-    var putUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path;
+    const jsonString = JSON.stringify(updatedData, null, 2);
+    const contentEncoded = utf8ToBase64(jsonString);
+    const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
     
-    var body = {
-      message: 'CMS Update [' + new Date().toISOString() + ']',
+    const body = {
+      message: `CMS Update [${new Date().toISOString()}]`,
       content: contentEncoded,
       branch: 'main'
     };
     if (sha) body.sha = sha;
 
-    var putRes = await fetch(putUrl, {
+    const putRes = await fetch(putUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': 'token ' + cleanToken,
+        'Authorization': `token ${cleanToken}`,
         'Content-Type': 'application/json',
         'Accept': 'application/vnd.github.v3+json'
       },
@@ -282,7 +399,7 @@
     });
 
     if (!putRes.ok) {
-      var errObj = await putRes.json();
+      const errObj = await putRes.json();
       throw new Error(errObj.message || "Commit failed");
     }
     return true;
@@ -290,24 +407,20 @@
 
   function autoGenerateSlug() {
     if (document.getElementById('editArticleId').value) return; 
-    var title = document.getElementById('newsTitle').value;
-    var clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
-    document.getElementById('newsSlug').value = clean ? clean + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
+    const title = document.getElementById('newsTitle').value;
+    const clean = title.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
+    document.getElementById('newsSlug').value = clean ? `${clean}-${Date.now().toString().slice(-4)}` : `news-${Date.now().toString().slice(-6)}`;
     if (!document.getElementById('newsSeoTitle').value) {
       document.getElementById('newsSeoTitle').value = title;
     }
   }
 
-  function formatDoc(cmd) {
-    document.execCommand(cmd, false, null);
-  }
-
   function previewSelectedImage(event) {
-    var file = event.target.files[0];
+    const file = event.target.files[0];
     if (file) {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.onload = function(e) {
-        var preview = document.getElementById('newsImgPreview');
+        const preview = document.getElementById('newsImgPreview');
         preview.src = e.target.result;
         preview.style.display = 'block';
         document.getElementById('newsImageData').value = e.target.result;
@@ -316,146 +429,12 @@
     }
   }
 
-  async function handlePublishOrUpdateNews() {
-    var token = (localStorage.getItem('90i_gh_token') || '').trim();
-    if (!token) {
-      alert("पहले 'GitHub क्लाउड सेटिंग्स' में अपना टोकन दर्ज करें!");
-      showTab('cloudSettings');
-      return;
-    }
-
-    var title = (document.getElementById('newsTitle').value || '').trim();
-    if (!title) {
-      alert("कृपया समाचार का शीर्षक दर्ज करें!");
-      return;
-    }
-
-    var imageFile = document.getElementById('newsImageData').value;
-    if (!imageFile) {
-      alert("कृपया मुख्य फ़ोटो अपलोड करें!");
-      return;
-    }
-
-    var editId = document.getElementById('editArticleId').value;
-    var slug = document.getElementById('newsSlug').value;
-    var category = document.getElementById('newsCategory').value;
-    var author = document.getElementById('newsAuthor').value;
-    var tags = document.getElementById('newsTags').value.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
-    var excerpt = document.getElementById('newsExcerpt').value;
-    var imageCaption = document.getElementById('newsImageCaption').value;
-    var content = document.getElementById('richEditor').innerHTML;
-    var breaking = document.getElementById('newsBreaking').checked;
-    var featured = document.getElementById('newsFeatured').checked;
-    var seoTitle = document.getElementById('newsSeoTitle').value || title;
-    var seoDescription = document.getElementById('newsSeoDesc').value || excerpt;
-    var seoKeywords = document.getElementById('newsSeoKeywords').value;
-
-    var owner = (localStorage.getItem('90i_gh_owner') || 'md-sakib-raza').trim();
-    var repo = (localStorage.getItem('90i_gh_repo') || 'Ku7').trim();
-    var currentData = {};
-
-    try {
-      var liveRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/data/90i-data.json?ref=main&_nocache=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
-      });
-      if (liveRes.ok) {
-        var fileData = await liveRes.json();
-        var decodedStr = decodeURIComponent(escape(window.atob(fileData.content)));
-        currentData = JSON.parse(decodedStr);
-      }
-    } catch(err) {
-      currentData = await loadData();
-    }
-
-    currentData['90i_news'] = currentData['90i_news'] || [];
-
-    if (editId) {
-      var index = currentData['90i_news'].findIndex(function(n) { return String(n.id) === String(editId); });
-      if (index !== -1) {
-        currentData['90i_news'][index] = {
-          id: currentData['90i_news'][index].id,
-          date: currentData['90i_news'][index].date,
-          time: currentData['90i_news'][index].time,
-          title: title, slug: slug, category: category, author: author, tags: tags, excerpt: excerpt,
-          image: imageFile, imageCaption: imageCaption, content: content,
-          breaking: breaking, featured: featured, seoTitle: seoTitle, seoDescription: seoDescription, seoKeywords: seoKeywords,
-          permalink: 'article.html?slug=' + slug
-        };
-      }
-    } else {
-      var newArticle = {
-        id: Date.now(),
-        title: title, slug: slug, category: category, author: author, tags: tags, excerpt: excerpt,
-        image: imageFile, imageCaption: imageCaption, content: content,
-        breaking: breaking, featured: featured, seoTitle: seoTitle, seoDescription: seoDescription, seoKeywords: seoKeywords,
-        date: new Date().toISOString().split('T')[0],
-        time: new Date().toTimeString().slice(0, 5),
-        permalink: 'article.html?slug=' + slug
-      };
-      currentData['90i_news'].unshift(newArticle);
-    }
-
-    try {
-      await syncToGitHub(currentData, token);
-      alert(editId ? "संशोधन (Correction) सुरक्षित हो गया!" : "समाचार सफलतापूर्वक प्रकाशित हो गया!");
-      cancelEditMode();
-      loadAdminNewsList();
-      showTab('manageNews');
-    } catch (err) {
-      alert("क्लाउड सिंक विफल: " + err.message);
-    }
-  }
-
-  async function loadAdminNewsList() {
-    var data = await loadData();
-    var tbody = document.getElementById('newsTableBody');
-    if (!data || !data.news) return;
-    tbody.innerHTML = data.news.map(function(n) {
-      return '<tr>' +
-        '<td><strong>' + n.title + '</strong></td>' +
-        '<td>' + n.category + '</td>' +
-        '<td>' + n.date + '</td>' +
-        '<td style="white-space:nowrap;">' +
-          '<button type="button" class="btn-edit" onclick="startEditNews(' + n.id + ')">✏️ संपादित करें</button>' +
-          '<button type="button" class="btn-del" onclick="deleteNews(' + n.id + ')">🗑️ हटाएं</button>' +
-        '</td>' +
-      '</tr>';
-    }).join('');
-  }
-
-  async function startEditNews(id) {
-    var data = await loadData();
-    var article = (data.news || []).find(function(n) { return n.id === id; });
-    if (!article) return;
-
-    document.getElementById('editArticleId').value = article.id;
-    document.getElementById('newsTitle').value = article.title;
-    document.getElementById('newsSlug').value = article.slug;
-    document.getElementById('newsCategory').value = article.category;
-    document.getElementById('newsAuthor').value = article.author || '90I डिजिटल डेस्क';
-    document.getElementById('newsTags').value = (article.tags || []).join(', ');
-    document.getElementById('newsExcerpt').value = article.excerpt;
-    document.getElementById('newsImageCaption').value = article.imageCaption || '';
-    document.getElementById('newsSeoTitle').value = article.seoTitle || '';
-    document.getElementById('newsSeoDesc').value = article.seoDescription || '';
-    document.getElementById('newsSeoKeywords').value = article.seoKeywords || '';
-    document.getElementById('richEditor').innerHTML = article.content || '';
-    document.getElementById('newsBreaking').checked = !!article.breaking;
-    document.getElementById('newsFeatured').checked = !!article.featured;
-
-    if (article.image) {
-      document.getElementById('newsImageData').value = article.image;
-      var preview = document.getElementById('newsImgPreview');
-      preview.src = article.image;
-      preview.style.display = 'block';
-    }
-
-    document.getElementById('formHeading').innerText = "समाचार में संशोधन करें (Correction / Edit)";
-    document.getElementById('submitBtn').innerText = "💾 अपडेट सुरक्षित करें (Save Correction)";
-    document.getElementById('cancelEditBtn').style.display = "inline-block";
-
-    showTab('addNews');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
- 
+  function previewLogoImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('logoImgPreview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        doc
