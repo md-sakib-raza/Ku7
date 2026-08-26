@@ -3,233 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>समाचार — 90I न्यूज़</title>
-  <link rel="stylesheet" href="assets/styles.css">
+  <title id="pageTitle">समाचार — THE 90I NEWS</title>
   <style>
-    body { background: #fff; color: #121212; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.7; }
     
-    /* TOI Top Header */
-    .toi-header { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 10px 0; }
-    .toi-header-inner { display: flex; justify-content: space-between; align-items: center; }
-    .site-logo { max-height: 52px; width: auto; }
-    .toi-header-right { display: flex; align-items: center; gap: 10px; }
-    .live-dot { background: var(--primary-red); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 3px; }
+    header { background: #0f172a; border-bottom: 3px solid #dc2626; padding: 15px 20px; }
+    .header-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .header-logo { color: #fff; font-size: 22px; font-weight: 800; text-decoration: none; }
+    .header-logo span { color: #dc2626; }
 
-    /* TOI Article Layout Grid */
-    .article-layout { display: grid; grid-template-columns: 1fr 320px; gap: 35px; margin-top: 20px; margin-bottom: 50px; }
+    .container { max-width: 850px; margin: 25px auto; padding: 0 15px; }
+    .article-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
     
-    /* Article Header */
-    .breadcrumb { font-size: 12px; color: #777; margin-bottom: 10px; }
-    .breadcrumb a { color: #555; text-decoration: none; }
-    .article-headline { font-size: 32px; line-height: 1.28; font-weight: 800; color: #111; margin-bottom: 12px; font-family: Georgia, 'Times New Roman', serif; }
-    .article-byline { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eaeaea; padding-bottom: 12px; margin-bottom: 15px; font-size: 13px; color: #666; }
+    .category-badge { display: inline-block; background: #dc2626; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 12px; }
+    .article-title { font-size: 26px; font-weight: 800; color: #0f172a; line-height: 1.35; margin-bottom: 12px; }
     
-    /* TOI Quick Actions Bar */
-    .toi-action-bar { display: flex; justify-content: space-between; align-items: center; background: #fafafa; border: 1px solid #eee; padding: 8px 14px; border-radius: 4px; margin-bottom: 18px; }
-    .share-pill { display: flex; gap: 6px; }
-    .share-btn { padding: 5px 10px; border-radius: 3px; color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; }
-    .btn-wa { background: #25D366; }
-    .btn-fb { background: #1877F2; }
-    .btn-tw { background: #000; }
-    .btn-tg { background: #0088cc; }
-    .font-resizer span { font-weight: 800; font-size: 13px; cursor: pointer; padding: 4px 8px; border: 1px solid #ddd; background: #fff; border-radius: 3px; }
-
-    /* Article Lead Image */
-    .lead-img-box { margin-bottom: 20px; }
-    .lead-img-box img { width: 100%; max-height: 480px; object-fit: cover; border-radius: 4px; }
-    .img-caption { font-size: 12px; color: #666; margin-top: 6px; border-left: 2px solid var(--primary-red); padding-left: 8px; }
-
-    /* Article Content Typography */
-    .article-body-content { font-size: 19px; line-height: 1.85; color: #2b2b2b; }
-    .article-body-content p { margin-bottom: 18px; }
-
-    /* Sidebar Widgets */
-    .sidebar-widget { border: 1px solid #e5e7eb; border-radius: 6px; padding: 15px; margin-bottom: 20px; }
-    .widget-heading { font-size: 15px; font-weight: 800; border-left: 4px solid var(--primary-red); padding-left: 8px; margin-bottom: 12px; text-transform: uppercase; }
-
-    /* Rich Black Footer */
-    .rich-footer { background: #111; color: #bbb; padding: 40px 0 20px 0; margin-top: 50px; font-size: 14px; }
-    .footer-grid-4 { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 30px; margin-bottom: 30px; }
-    .footer-col h4 { color: #fff; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 6px; }
-    .footer-links { list-style: none; padding: 0; margin: 0; }
-    .footer-links li { margin-bottom: 8px; }
-    .footer-links li a { color: #aaa; text-decoration: none; }
-    .footer-links li a:hover { color: #fff; }
-    .footer-social-box { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-    .ft-btn { padding: 6px 12px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; }
-    .ft-wa { background: #25D366; } .ft-fb { background: #1877F2; } .ft-tw { background: #000; border: 1px solid #444; } .ft-insta { background: #E1306C; }
-
-    @media (max-width: 850px) {
-      .article-layout { grid-template-columns: 1fr; }
-      .footer-grid-4 { grid-template-columns: 1fr; }
-      .article-headline { font-size: 24px; }
-    }
+    .meta-info { font-size: 13px; color: #64748b; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px; display: flex; gap: 15px; }
+    .featured-image { width: 100%; max-height: 450px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; }
+    .image-caption { font-size: 12px; color: #64748b; text-align: center; margin-bottom: 20px; font-style: italic; }
+    
+    .article-content { font-size: 17px; color: #334155; }
+    .article-content p { margin-bottom: 16px; }
+    
+    .back-btn { display: inline-block; margin-top: 25px; padding: 10px 18px; background: #0f172a; color: #fff; text-decoration: none; font-weight: 700; border-radius: 6px; font-size: 13px; }
+    .back-btn:hover { background: #dc2626; }
   </style>
 </head>
 <body>
 
-  <!-- TOI Header -->
-  <header class="toi-header">
-    <div class="container toi-header-inner">
-      <a href="index.html">
-        <img src="assets/logo.png" alt="90I न्यूज़" class="site-logo">
-      </a>
-      <div class="toi-header-right">
-        <span class="live-dot">● LIVE</span>
-        <a href="index.html" style="font-weight: 700; text-decoration: none; color: var(--primary-red); font-size: 14px;">होम पेज</a>
-      </div>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">THE <span>90I</span> NEWS</a>
+      <a href="index.html" style="color:#cbd5e1; font-size:13px; text-decoration:none; font-weight:700;">🏠 होम पेज</a>
     </div>
   </header>
 
-  <!-- Article + Sidebar Layout -->
-  <div class="container article-layout">
-    
-    <!-- Left Column: News Body -->
-    <main>
-      <div id="articleContent">
-        <p>समाचार लोड हो रहा है...</p>
-      </div>
-    </main>
+  <main class="container">
+    <article id="articleContainer" class="article-card">
+      <p style="text-align:center; color:#64748b;">समाचार लोड हो रहा है...</p>
+    </article>
+  </main>
 
-    <!-- Right Column: Sidebar (Trending & Live) -->
-    <aside>
-      <div class="sidebar-widget">
-        <div class="widget-heading">ट्रेंडिंग न्यूज़</div>
-        <div id="sideTrending"></div>
-      </div>
+<script>
+  async function loadFullArticle() {
+    var params = new URLSearchParams(window.location.search);
+    var slug = params.get('slug');
+    var id = params.get('id');
 
-      <div class="sidebar-widget" style="background: #fdf2f2; border-color: #fecaca;">
-        <div class="widget-heading" style="border-color: #dc2626;">ई-पेपर संस्करण</div>
-        <p style="font-size: 13px; color: #444; margin-bottom: 10px;">आज का अखबार ऑनलाइन PDF में पढ़ें।</p>
-        <a href="epaper.html" style="display:block; text-align:center; background:var(--primary-red); color:#fff; padding:8px; border-radius:4px; text-decoration:none; font-weight:700; font-size:13px;">ई-पेपर खोलें</a>
-      </div>
-    </aside>
-
-  </div>
-
-  <!-- TOI Style Black Footer -->
-  <footer class="rich-footer">
-    <div class="container">
-      <div class="footer-grid-4">
-        <div class="footer-col">
-          <img src="assets/logo.png" alt="90I News" style="max-height: 44px; background:#fff; padding:4px; border-radius:4px; margin-bottom:12px;">
-          <p style="font-size: 13px; color: #999; line-height: 1.6;">
-            90I न्यूज़ — बिहार और देश का प्रमाणिक एवं स्वतंत्र डिजिटल न्यूज़ नेटवर्क।
-          </p>
-          <div class="footer-social-box">
-            <a href="https://wa.me/" target="_blank" class="ft-btn ft-wa">WhatsApp</a>
-            <a href="https://facebook.com/" target="_blank" class="ft-btn ft-fb">Facebook</a>
-            <a href="https://instagram.com/" target="_blank" class="ft-btn ft-insta">Instagram</a>
-            <a href="https://twitter.com/" target="_blank" class="ft-btn ft-tw">Twitter</a>
-          </div>
-        </div>
-
-        <div class="footer-col">
-          <h4>प्रमुख श्रेणियां</h4>
-          <ul class="footer-links">
-            <li><a href="category.html?cat=बिहार">बिहार न्यूज़</a></li>
-            <li><a href="category.html?cat=राजनीति">राजनीति</a></li>
-            <li><a href="category.html?cat=शिक्षा">शिक्षा एवं रोजगार</a></li>
-            <li><a href="category.html?cat=खेल">खेल समाचार</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>नीतियां एवं शर्तें</h4>
-          <ul class="footer-links">
-            <li><a href="about.html">हमारे बारे में</a></li>
-            <li><a href="privacy.html">गोपनीयता नीति</a></li>
-            <li><a href="terms.html">नियम व शर्तें</a></li>
-            <li><a href="contact.html">संपर्क करें</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>संपादकीय / CMS</h4>
-          <p style="font-size: 13px; color: #888; margin-bottom: 10px;">एडमिन CMS पैनल में प्रवेश करें:</p>
-          <a href="admin.html" style="background:#222; border:1px solid #444; color:#fff; padding:8px 14px; border-radius:4px; text-decoration:none; display:inline-block; font-weight:700; font-size:13px;">CMS लॉगिन &raquo;</a>
-        </div>
-      </div>
-
-      <div style="border-top: 1px solid #222; padding-top: 15px; text-align: center; font-size: 12px; color: #777;">
-        &copy; 2026 90I न्यूज़ डिजिटल नेटवर्क. सर्वाधिकार सुरक्षित।
-      </div>
-    </div>
-  </footer>
-
-  <script src="assets/app.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const data = await loadData();
-      const params = new URLSearchParams(window.location.search);
-      const slug = params.get('slug');
-
-      const article = (data && data.news) ? (data.news.find(n => n.slug === slug) || data.news[0]) : null;
-
-      if (!article) {
-        document.getElementById('articleContent').innerHTML = `
-          <h2>यह लेख उपलब्ध नहीं है।</h2>
-          <p><a href="index.html">होम पेज पर वापस जाएं</a></p>
-        `;
-        return;
+    var articles = [];
+    try {
+      var res = await fetch('data/90i-data.json?_t=' + Date.now());
+      if (res.ok) {
+        var data = await res.json();
+        articles = data['90i_news'] || [];
       }
+    } catch (e) {}
 
-      document.title = `${article.seoTitle || article.title} — 90I न्यूज़`;
-      const currentUrl = window.location.href;
-
-      document.getElementById('articleContent').innerHTML = `
-        <div class="breadcrumb">
-          <a href="index.html">होम</a> &raquo; <a href="category.html?cat=${encodeURIComponent(article.category)}">${article.category}</a> &raquo; <span>समाचार</span>
-        </div>
-
-        <h1 class="article-headline">${article.title}</h1>
-
-        <div class="article-byline">
-          <div><strong>${article.author}</strong> | 90I डिजिटल डेस्क</div>
-          <div>${formatDateHindi(article.date)} ${article.time ? '| ' + article.time : ''}</div>
-        </div>
-
-        <!-- TOI Action Bar -->
-        <div class="toi-action-bar">
-          <div class="share-pill">
-            <a class="share-btn btn-wa" href="https://api.whatsapp.com/send?text=${encodeURIComponent(article.title + ' ' + currentUrl)}" target="_blank">WhatsApp</a>
-            <a class="share-btn btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank">Facebook</a>
-            <a class="share-btn btn-tw" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(currentUrl)}" target="_blank">Twitter</a>
-            <a class="share-btn btn-tg" href="https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(article.title)}" target="_blank">Telegram</a>
-          </div>
-          <div class="font-resizer">
-            <span onclick="adjustFontSize(1)">A+</span>
-            <span onclick="adjustFontSize(-1)">A-</span>
-          </div>
-        </div>
-
-        <div class="lead-img-box">
-          <img src="${article.image}" alt="${article.title}">
-          ${article.imageCaption ? `<div class="img-caption">${article.imageCaption}</div>` : ''}
-        </div>
-
-        <div class="article-body-content" id="articleBody">
-          ${sanitizeHtml(article.content)}
-        </div>
-      `;
-
-      // Sidebar Trending
-      const sideEl = document.getElementById('sideTrending');
-      if (data.news && data.news.length > 0) {
-        sideEl.innerHTML = data.news.slice(0, 5).map((n, i) => `
-          <p style="font-size: 13px; margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 6px;">
-            <strong style="color:var(--primary-red);">#${i+1}</strong> <a href="article.html?slug=${n.slug}" style="text-decoration:none; color:#222; font-weight:600;">${n.title}</a>
-          </p>
-        `).join('');
+    if (articles.length === 0) {
+      var local = localStorage.getItem('90i_local_news_data');
+      if (local) {
+        try { articles = JSON.parse(local)['90i_news'] || []; } catch(err){}
       }
-    });
-
-    let currentSize = 19;
-    function adjustFontSize(delta) {
-      currentSize += delta;
-      const el = document.getElementById('articleBody');
-      if (el) el.style.fontSize = `${currentSize}px`;
     }
-  </script>
+
+    var article = null;
+    if (slug) {
+      article = articles.find(function(a) { return a.slug === slug; });
+    } else if (id) {
+      article = articles.find(function(a) { return String(a.id) === String(id); });
+    }
+
+    if (!article && articles.length > 0) {
+      article = articles[0]; // fallback to latest
+    }
+
+    var container = document.getElementById('articleContainer');
+    if (!article) {
+      container.innerHTML = '<div style="text-align:center; padding:40px;"><h2>समाचार नहीं मिला!</h2><p style="color:#64748b; margin-top:8px;">हो सकता है यह खबर हटा दी गई हो।</p><a href="index.html" class="back-btn">मुख्य पृष्ठ पर जाएं</a></div>';
+      return;
+    }
+
+    document.getElementById('pageTitle').innerText = article.title + ' — THE 90I NEWS';
+
+    var html = '<span class="category-badge">' + (article.category || 'ताजा खबर') + '</span>';
+    html += '<h1 class="article-title">' + article.title + '</h1>';
+    html += '<div class="meta-info">';
+    html += '<span>✍️ ' + (article.author || '90I डिजिटल डेस्क') + '</span>';
+    html += '<span>📅 ' + (article.date || '') + ' ' + (article.time || '') + '</span>';
+    html += '</div>';
+
+    if (article.image) {
+      html += '<img src="' + article.image + '" class="featured-image" alt="' + article.title + '">';
+      if (article.imageCaption) {
+        html += '<p class="image-caption">' + article.imageCaption + '</p>';
+      }
+    }
+
+    html += '<div class="article-content">' + (article.content || article.excerpt || '') + '</div>';
+    html += '<a href="index.html" class="back-btn">⬅ वापस होम पेज पर जाएं</a>';
+
+    container.innerHTML = html;
+  }
+
+  window.addEventListener('DOMContentLoaded', loadFullArticle);
+</script>
 </body>
 </html>
