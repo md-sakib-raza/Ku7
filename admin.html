@@ -56,24 +56,22 @@
 </head>
 <body>
 
-  <!-- Robust Login Form -->
+  <!-- 1. Pure No-Refresh Login Box -->
   <div id="loginScreen">
     <h2>THE 90I NEWS</h2>
     <p>एडमिन CMS — सुरक्षित लॉगिन पोर्टल</p>
-    <form onsubmit="handleFormLogin(event)">
-      <div class="form-group">
-        <label>ईमेल आईडी:</label>
-        <input type="email" id="txtEmail" class="form-control" placeholder="name@example.com" required>
-      </div>
-      <div class="form-group">
-        <label>पासवर्ड:</label>
-        <input type="password" id="txtPass" class="form-control" placeholder="पासवर्ड दर्ज करें..." required>
-      </div>
-      <button type="submit" class="btn" style="width: 100%; margin-top: 6px;">🔓 लॉगिन करें</button>
-    </form>
+    <div class="form-group">
+      <label>ईमेल आईडी:</label>
+      <input type="email" id="txtEmail" class="form-control" autocomplete="off" placeholder="name@example.com">
+    </div>
+    <div class="form-group">
+      <label>पासवर्ड:</label>
+      <input type="password" id="txtPass" class="form-control" autocomplete="off" placeholder="पासवर्ड दर्ज करें...">
+    </div>
+    <button type="button" class="btn" style="width: 100%; margin-top: 6px;" onclick="checkLoginDirect()">🔓 लॉगिन करें</button>
   </div>
 
-  <!-- Master Admin Dashboard -->
+  <!-- 2. Master Dashboard -->
   <div id="adminPanel">
     <div class="admin-layout">
       
@@ -83,11 +81,12 @@
         
         <ul>
           <li><button type="button" id="btnTab_addNews" class="tab-active" onclick="switchTab('addNews')">➕ नया समाचार जोड़ें</button></li>
-          <li><button type="button" id="btnTab_manageNews" onclick="switchTab('manageNews')">📑 समाचार प्रबंधन (Edit/Delete)</button></li>
+          <li><button type="button" id="btnTab_manageNews" onclick="switchTab('manageNews')">📑 समाचार प्रबंधन</button></li>
           <li><button type="button" id="btnTab_siteSettings" onclick="switchTab('siteSettings')">🎨 वेबसाइट लोगो एवं सेटिंग्स</button></li>
           <li><button type="button" id="btnTab_inboxMessages" onclick="switchTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</button></li>
           <li><button type="button" id="btnTab_cloudSettings" onclick="switchTab('cloudSettings')">☁️ GitHub सेटिंग्स</button></li>
           <li><a href="index.html" target="_blank" style="display:block; padding:12px 14px; color:#cbd5e1; text-decoration:none; font-size:14px;">🌐 वेबसाइट देखें</a></li>
+          <li><a href="epaper.html" target="_blank" style="display:block; padding:12px 14px; color:#cbd5e1; text-decoration:none; font-size:14px;">📰 ई-पेपर देखें</a></li>
           <li><button type="button" onclick="doLogout()" style="color:#f87171;">🚪 लॉगआउट</button></li>
         </ul>
       </aside>
@@ -106,7 +105,7 @@
           
           <div class="grid-2form">
             <div class="form-group">
-              <label>परमालिंक / स्लग (English Slug - Auto Generated)</label>
+              <label>परमालिंक / स्लग (English Slug)</label>
               <input type="text" id="newsSlug" class="form-control" placeholder="purnia-news-update">
             </div>
             <div class="form-group">
@@ -127,7 +126,7 @@
 
           <div class="form-group">
             <label>संक्षिप्त विवरण / सारांश (Summary / Excerpt)</label>
-            <textarea id="newsExcerpt" class="form-control" rows="2" placeholder="समाचार का मुख्य सारांश..."></textarea>
+            <textarea id="newsExcerpt" class="form-control" rows="2" placeholder="समाचार का 1-2 लाइन का मुख्य सारांश..."></textarea>
           </div>
 
           <div class="grid-2form">
@@ -158,7 +157,7 @@
           </div>
 
           <button type="button" id="submitBtn" class="btn" onclick="publishNews()">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
-          <button type="button" id="cancelEditBtn" class="btn" style="background:#64748b; display:none; margin-left:10px;" onclick="cancelEdit()">रद्द करें (Cancel)</button>
+          <button type="button" id="cancelEditBtn" class="btn" style="background:#64748b; display:none; margin-left:10px;" onclick="cancelEdit()">रद्द करें</button>
         </div>
 
         <!-- Tab 2: Manage News -->
@@ -170,7 +169,7 @@
                 <tr><th>शीर्षक</th><th>श्रेणी</th><th>तारीख</th><th>कार्रवाई</th></tr>
               </thead>
               <tbody id="newsTableBody">
-                <tr><td colspan="4" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>
+                <tr><td colspan="4" style="text-align:center;">लोड हो रहा है...</td></tr>
               </tbody>
             </table>
           </div>
@@ -178,7 +177,7 @@
 
         <!-- Tab 3: Logo Settings -->
         <div id="sec_siteSettings" class="card" style="display: none;">
-          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">🎨 वेबसाइट लोगो एवं ब्रांडिंग सेटिंग्स</h3>
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">🎨 वेबसाइट लोगो एवं सेटिंग्स</h3>
           <div style="max-width: 600px;">
             <div class="form-group">
               <label>वेबसाइट का नाम</label>
@@ -226,8 +225,7 @@
   </div>
 
 <script>
-  function handleFormLogin(e) {
-    if (e) e.preventDefault();
+  function checkLoginDirect() {
     var email = (document.getElementById('txtEmail').value || '').trim().toLowerCase();
     var pass = (document.getElementById('txtPass').value || '').trim();
 
@@ -442,8 +440,4 @@
           '<button type="button" class="btn-del" onclick="delNews(' + n.id + ')">🗑️</button>' +
         '</td>' +
       '</tr>';
-    }).join('');
-  }
-
-  async function editNews(id) {
-    var db = await fetchDbDa
+  
