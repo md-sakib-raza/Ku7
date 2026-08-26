@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>एडमिन CMS — THE 90I NEWS</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
+    
+    #loginScreen { max-width: 380px; margin: 60px auto; padding: 25px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
+    #loginScreen h2 { color: #dc2626; font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+    #loginScreen p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+
+    #adminPanel { display: none; }
+    .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    
+    .admin-sidebar { background: #0f172a; color: #fff; padding: 20px; }
+    .admin-sidebar h3 { color: #dc2626; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .admin-sidebar ul { list-style: none; margin-top: 25px; }
+    .admin-sidebar li button { width: 100%; text-align: left; background: none; border: none; color: #cbd5e1; padding: 12px 14px; border-bottom: 1px solid #1e293b; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 6px; margin-bottom: 6px; }
+    .admin-sidebar li button:hover, .admin-sidebar li button.tab-active { background: #dc2626; color: #fff; }
+
+    .admin-main { padding: 25px; background: #f1f5f9; }
+    .card { background: #fff; padding: 22px; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 25px; }
+    
+    .form-group { margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 13px; color: #334155; }
+    .form-control { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; background: #f8fafc; }
+    .form-control:focus { border-color: #dc2626; background: #fff; }
+    
+    .btn { padding: 12px 24px; border: none; background: #dc2626; color: #fff; cursor: pointer; font-weight: 700; border-radius: 6px; font-size: 14px; }
+    .btn:hover { background: #b91c1c; }
+    .btn-edit { background: #2563eb; color:#fff; padding: 7px 12px; font-size: 12px; margin-right: 6px; border:none; border-radius:4px; cursor:pointer; font-weight:700; }
+    .btn-del { background: #dc2626; color:#fff; padding: 7px 12px; font-size: 12px; border:none; border-radius:4px; cursor:pointer; font-weight:700; }
+    
+    .editor-toolbar { margin-bottom: 8px; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; gap: 8px; }
+    .editor-toolbar button { padding: 8px 16px; font-size: 14px; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-weight: 800; }
+    
+    #richEditor { min-height: 220px; border: 1px solid #cbd5e1; padding: 14px; background: #fff; border-radius: 6px; outline: none; font-size: 15px; line-height: 1.6; }
+    
+    .table-responsive { overflow-x: auto; margin-top: 15px; border-radius: 6px; border: 1px solid #e2e8f0; }
+    .table { width: 100%; border-collapse: collapse; background: #fff; }
+    .table th, .table td { padding: 12px 14px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 13px; }
+    .table th { background: #f8fafc; font-weight: 700; color: #475569; }
+    
+    .grid-2form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .preview-box { max-height: 140px; max-width: 220px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 8px; display: none; object-fit: cover; }
+    
+    @media (max-width: 768px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .grid-2form { grid-template-columns: 1fr; }
+      .admin-main { padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Pure No-Form Login -->
+  <div id="loginScreen">
+    <h2>THE 90I NEWS</h2>
+    <p>एडमिन CMS — सुरक्षित लॉगिन पोर्टल</p>
+    <div class="form-group">
+      <label>ईमेल आईडी:</label>
+      <input type="email" id="txtEmail" class="form-control" autocomplete="off" placeholder="name@example.com">
+    </div>
+    <div class="form-group">
+      <label>पासवर्ड:</label>
+      <input type="password" id="txtPass" class="form-control" autocomplete="off" placeholder="पासवर्ड दर्ज करें...">
+    </div>
+    <button type="button" class="btn" style="width: 100%; margin-top: 6px;" onclick="executeLogin()">🔓 लॉगिन करें</button>
+  </div>
+
+  <!-- Master Admin Dashboard -->
+  <div id="adminPanel">
+    <div class="admin-layout">
+      
+      <aside class="admin-sidebar">
+        <h3>THE 90I NEWS</h3>
+        <p style="font-size: 12px; color: #94a3b8;">कंटेंट मैनेजमेंट सिस्टम</p>
+        
+        <ul>
+          <li><button type="button" id="btnTab_addNews" class="tab-active" onclick="switchTab('addNews')">➕ नया समाचार जोड़ें</button></li>
+          <li><button type="button" id="btnTab_manageNews" onclick="switchTab('manageNews')">📑 समाचार प्रबंधन</button></li>
+          <li><button type="button" id="btnTab_siteSettings" onclick="switchTab('siteSettings')">🎨 वेबसाइट लोगो एवं सेटिंग्स</button></li>
+          <li><button type="button" id="btnTab_inboxMessages" onclick="switchTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</button></li>
+          <li><button type="button" id="btnTab_cloudSettings" onclick="switchTab('cloudSettings')">☁️ GitHub सेटिंग्स</button></li>
+          <li><a href="index.html" target="_blank" style="display:block; padding:12px 14px; color:#cbd5e1; text-decoration:none; font-size:14px;">🌐 वेबसाइट देखें</a></li>
+          <li><a href="epaper.html" target="_blank" style="display:block; padding:12px 14px; color:#cbd5e1; text-decoration:none; font-size:14px;">📰 ई-पेपर देखें</a></li>
+          <li><button type="button" onclick="doLogout()" style="color:#f87171;">🚪 लॉगआउट</button></li>
+        </ul>
+      </aside>
+
+      <main class="admin-main">
+        
+        <!-- Tab 1: Add News -->
+        <div id="sec_addNews" class="card">
+          <h3 id="formHeading" style="margin-bottom:16px; font-size:18px; color:#0f172a;">नया समाचार प्रकाशित करें</h3>
+          <input type="hidden" id="editArticleId" value="">
+          
+          <div class="form-group">
+            <label>शीर्षक (Article Title)</label>
+            <input type="text" id="newsTitle" class="form-control" placeholder="समाचार का मुख्य शीर्षक लिखें..." oninput="autoSlug()">
+          </div>
+          
+          <div class="grid-2form">
+            <div class="form-group">
+              <label>परमालिंक / स्लग (English Slug - Auto Generated)</label>
+              <input type="text" id="newsSlug" class="form-control" placeholder="purnia-news-update">
+            </div>
+            <div class="form-group">
+              <label>श्रेणी (Category)</label>
+              <select id="newsCategory" class="form-control">
+                <option>बिहार</option>
+                <option>राजनीति</option>
+                <option>शिक्षा</option>
+                <option>राष्ट्रीय</option>
+                <option>झारखंड</option>
+                <option>खेल</option>
+                <option>व्यापार</option>
+                <option>टेक्नोलॉजी</option>
+                <option>मनोरंजन</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>संक्षिप्त विवरण / सारांश (Summary / Excerpt)</label>
+            <textarea id="newsExcerpt" class="form-control" rows="2" placeholder="समाचार का 1-2 लाइन का मुख्य सारांश..."></textarea>
+          </div>
+
+          <div class="grid-2form">
+            <div class="form-group">
+              <label>मुख्य फ़ोटो (Featured Image)</label>
+              <input type="file" id="newsImageFile" class="form-control" accept="image/*" onchange="pickImage(event)">
+              <input type="hidden" id="newsImageData">
+              <img id="newsImgPreview" class="preview-box">
+            </div>
+            <div class="form-group">
+              <label>फ़ोटो कैप्शन (Image Caption)</label>
+              <input type="text" id="newsImageCaption" class="form-control" placeholder="तस्वीर का विवरण लिखें">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>मुख्य समाचार सामग्री (Article Body)</label>
+            <div class="editor-toolbar">
+              <button type="button" onmousedown="fmtText(event, 'bold')" ontouchstart="fmtText(event, 'bold')"><b>B</b></button>
+              <button type="button" onmousedown="fmtText(event, 'italic')" ontouchstart="fmtText(event, 'italic')"><i>I</i></button>
+              <button type="button" onmousedown="fmtText(event, 'underline')" ontouchstart="fmtText(event, 'underline')"><u>U</u></button>
+            </div>
+            <div id="richEditor" contenteditable="true" placeholder="यहाँ पूरी खबर विस्तार से लिखें..."></div>
+          </div>
+
+          <div class="form-group" style="margin: 15px 0;">
+            <label><input type="checkbox" id="newsBreaking"> ब्रेकिंग न्यूज़ टिकर में दिखाएं</label>
+          </div>
+
+          <button type="button" id="submitBtn" class="btn" onclick="publishNews()">🚀 क्लाउड पर प्रकाशित करें (Publish)</button>
+          <button type="button" id="cancelEditBtn" class="btn" style="background:#64748b; display:none; margin-left:10px;" onclick="cancelEdit()">रद्द करें</button>
+        </div>
+
+        <!-- Tab 2: Manage News -->
+        <div id="sec_manageNews" class="card" style="display: none;">
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">प्रकाशित समाचार प्रबंधन</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr><th>शीर्षक</th><th>श्रेणी</th><th>तारीख</th><th>कार्रवाई</th></tr>
+              </thead>
+              <tbody id="newsTableBody">
+                <tr><td colspan="4" style="text-align:center;">लोड हो रहा है...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 3: Logo Settings -->
+        <div id="sec_siteSettings" class="card" style="display: none;">
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">🎨 वेबसाइट लोगो एवं सेटिंग्स</h3>
+          <div style="max-width: 600px;">
+            <div class="form-group">
+              <label>वेबसाइट का नाम</label>
+              <input type="text" id="siteTitleInput" class="form-control" value="THE 90I NEWS">
+            </div>
+            <div class="form-group">
+              <label>लोगो अपलोड करें</label>
+              <input type="file" class="form-control" accept="image/*" onchange="pickLogo(event)">
+              <input type="hidden" id="siteLogoData">
+              <img id="logoImgPreview" class="preview-box">
+            </div>
+            <button class="btn" type="button" onclick="saveBranding()">💾 ब्रांडिंग अपडेट करें</button>
+          </div>
+        </div>
+
+        <!-- Tab 4: Inbox -->
+        <div id="sec_inboxMessages" class="card" style="display: none;">
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">पाठक संदेश (Inbox)</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr><th>नाम</th><th>संपर्क</th><th>संदेश</th><th>तारीख</th></tr>
+              </thead>
+              <tbody id="inboxTableBody">
+                <tr><td colspan="4" style="text-align:center;">कोई संदेश नहीं है।</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 5: GitHub Settings -->
+        <div id="sec_cloudSettings" class="card" style="display: none;">
+          <h3 style="margin-bottom:6px; font-size:18px; color:#0f172a;">GitHub क्लाउड सेटिंग्स</h3>
+          <div style="max-width: 600px;">
+            <div class="form-group">
+              <label>GitHub Personal Access Token</label>
+              <input type="password" id="ghToken" class="form-control" placeholder="ghp_xxxxxxxx">
+            </div>
+            <button class="btn" type="button" onclick="saveToken()">💾 टोकन सुरक्षित करें</button>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+<script>
+  function executeLogin() {
+    var emailEl = document.getElementById('txtEmail');
+    var passEl = document.getElementById('txtPass');
+    if (!emailEl || !passEl) return;
+
+    var email = emailEl.value.trim().toLowerCase();
+    var pass = passEl.value.trim();
+
+    if (email === "mdsakibraza.066@gmail.com" && pass === "changeme1238") {
+      try {
+        localStorage.setItem('90i_auth_session', 'ACTIVE');
+      } catch(e) {}
+      openPanel();
+    } else {
+      alert("❌ गलत ईमेल या पासवर्ड!");
+    }
+  }
+
+  function openPanel() {
+    var lScreen = document.getElementById('loginScreen');
+    var aPanel = document.getElementById('adminPanel');
+    if (lScreen) lScreen.style.display = 'none';
+    if (aPanel) aPanel.style.display = 'block';
+
+    var ghTokenEl = document.getElementById('ghToken');
+    if (ghTokenEl) {
+      ghTokenEl.value = localStorage.getItem('90i_gh_token') || '';
+    }
+
+    try { loadNewsTable(); } catch(e) {}
+    try { loadInbox(); } catch(e) {}
+    try { loadBrandingUI(); } catch(e) {}
+  }
+
+  function doLogout() {
+    try {
+      localStorage.removeItem('90i_auth_session');
+    } catch(e) {}
+    location.reload();
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('90i_auth_session') === 'ACTIVE') {
+      openPanel();
+    }
+  });
+
+  function switchTab(name) {
+    var tabs = ['addNews', 'manageNews', 'siteSettings', 'inboxMessages', 'cloudSettings'];
+    for (var i = 0; i < tabs.length; i++) {
+      var t = tabs[i];
+      var sec = document.getElementById('sec_' + t);
+      var btn = document.getElementById('btnTab_' + t);
+      if (sec) sec.style.display = (t === name) ? 'block' : 'none';
+      if (btn) {
+        if (t === name) btn.classList.add('tab-active');
+        else btn.classList.remove('tab-active');
+      }
+    }
+    if (name === 'manageNews') loadNewsTable();
+    if (name === 'inboxMessages') loadInbox();
+  }
+
+  function fmtText(e, cmd) {
+    e.preventDefault();
+    document.execCommand(cmd, false, null);
+    var ed = document.getElementById('richEditor');
+    if (ed) ed.focus();
+  }
+
+  async function fetchDbData() {
+    try {
+      var res = await fetch('data/90i-data.json?_t=' + Date.now());
+      if (res.ok) {
+        var json = await res.json();
+        if (json && typeof json === 'object') {
+          localStorage.setItem('cached_db', JSON.stringify(json));
+          return json;
+        }
+      }
+    } catch(e) {}
+
+    try {
+      var cached = localStorage.getItem('cached_db');
+      if (cached) {
+        var parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === 'object') return parsed;
+      }
+    } catch(err) {}
+
+    return { "90i_news": [], "90i_contacts": [], "90i_settings": {} };
+  }
+
+  async function pushToGit(data) {
+    var token = (localStorage.getItem('90i_gh_token') || '').trim();
+    if (!token) { alert("⚠️ पहले GitHub सेटिंग्स में टोकन सुरक्षित करें!"); return; }
+
+    var owner = "md-sakib-raza";
+    var repo = "Ku7";
+    var path = "data/90i-data.json";
+
+    var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
+      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    var sha = getRes.ok ? (await getRes.json()).sha : null;
+
+    var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+
+    var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: "CMS Live Update", content: contentB64, branch: "main", sha: sha })
+    });
+
+    if (!putRes.ok) throw new Error("GitHub Save Failed");
+    localStorage.setItem('cached_db', JSON.stringify(data));
+  }
+
+  function autoSlug() {
+    if (document.getElementById('editArticleId').value) return;
+    var t = document.getElementById('newsTitle').value;
+    var clean = t.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
+    document.getElementById('newsSlug').value = clean ? clean + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
+  }
+
+  function pickImage(e) {
+    var f = e.target.files[0];
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(evt) {
+        document.getElementById('newsImageData').value = evt.target.result;
+        var p = document.getElementById('newsImgPreview');
+        p.src = evt.target.result;
+        p.style.display = 'block';
+      };
+      r.readAsDataURL(f);
+    }
+  }
+
+  function pickLogo(e) {
+    var f = e.target.files[0];
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(evt) {
+        document.getElementById('siteLogoData').value = evt.target.result;
+        var p = document.getElementById('logoImgPreview');
+        p.src = evt.target.result;
+        p.style.display = 'block';
+      };
+      r.readAsDataURL(f);
+    }
+  }
+
+  async function loadBrandingUI() {
+    var db = await fetchDbData();
+    if (db && db['90i_settings']) {
+      if (db['90i_settings'].siteTitle) document.getElementById('siteTitleInput').value = db['90i_settings'].siteTitle;
+      if (db['90i_settings'].siteLogo) {
+        document.getElementById('siteLogoData').value = db['90i_settings'].siteLogo;
+        var p = document.getElementById('logoImgPreview');
+        if (p) {
+          p.src = db['90i_settings'].siteLogo;
+          p.style.display = 'block';
+        }
+      }
+    }
+  }
+
+  async function saveBranding() {
+    var title = document.getElementById('siteTitleInput').value.trim();
+    var logo = document.getElementById('siteLogoData').value.trim();
+    var db = await fetchDbData();
+    db['90i_settings'] = db['90i_settings'] || {};
+    db['90i_settings'].siteTitle = title;
+    if (logo) db['90i_settings'].siteLogo = logo;
+    await pushToGit(db);
+    alert("🎨 ब्रांडिंग अपडेट हो गई!");
+  }
+
+  async function publishNews() {
+    var title = document.getElementById('newsTitle').value.trim();
+    if (!title) { alert("शीर्षक आवश्यक है!"); return; }
+
+    var db = await fetchDbData();
+    db['90i_news'] = db['90i_news'] || [];
+
+    var editId = document.getElementById('editArticleId').value;
+    var slug = document.getElementById('newsSlug').value || ('news-' + Date.now());
+    var cat = document.getElementById('newsCategory').value;
+    var excerpt = document.getElementById('newsExcerpt').value;
+    var img = document.getElementById('newsImageData').value;
+    var caption = document.getElementById('newsImageCaption').value;
+    var body = document.getElementById('richEditor').innerHTML;
+    var breaking = document.getElementById('newsBreaking').checked;
+
+    if (editId) {
+      var idx = db['90i_news'].findIndex(function(n) { return String(n.id) === String(editId); });
+      if (idx !== -1) {
+        db['90i_news'][idx].title = title;
+        db['90i_news'][idx].slug = slug;
+        db['90i_news'][idx].category = cat;
+        db['90i_news'][idx].excerpt = excerpt;
+        if (img) db['90i_news'][idx].image = img;
+        db['90i_news'][idx].imageCaption = caption;
+        db['90i_news'][idx].content = body;
+        db['90i_news'][idx].breaking = breaking;
+      }
+    } else {
+      var item = {
+        id: Date.now(),
+        title: title,
+        slug: slug,
+        category: cat,
+        excerpt: excerpt,
+        image: img || '',
+        imageCaption: caption,
+        content: body,
+        breaking: breaking,
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toTimeString().slice(0, 5),
+        permalink: 'article.html?slug=' + slug
+      };
+      db['90i_news'].unshift(item);
+    }
