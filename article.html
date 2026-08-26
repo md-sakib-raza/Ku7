@@ -1,167 +1,271 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="metaDocTitle">समाचार — THE 90I NEWS</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article | 90i News</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #fdfdfd; color: #111827; line-height: 1.8; }
-    
-    header { background: #0f172a; border-bottom: 3px solid #dc2626; padding: 14px 20px; }
-    .header-inner { max-width: 850px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .header-logo { color: #fff; font-size: 22px; font-weight: 800; text-decoration: none; }
-    .header-logo span { color: #dc2626; }
-    .header-nav a { color: #e2e8f0; text-decoration: none; font-size: 13px; font-weight: 700; margin-left: 15px; }
+    :root {
+      --bg:#f5f5f7;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --brand:#dc2626;
+      --line:#e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: "Noto Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    .wrap {
+      width:min(800px, 94%);
+      margin:28px auto 40px;
+    }
+    .article-card {
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:14px;
+      box-shadow:0 8px 24px rgba(0,0,0,.06);
+      padding:20px;
+    }
+    .badge {
+      display:inline-block;
+      background:#fee2e2;
+      color:#991b1b;
+      border:1px solid #fecaca;
+      border-radius:999px;
+      font-size:.78rem;
+      padding:4px 10px;
+      margin-bottom:10px;
+    }
+    h1 {
+      margin:0 0 10px;
+      line-height:1.25;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+    }
+    .meta {
+      color:var(--muted);
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      padding:10px 0;
+      font-size:.93rem;
+      margin-bottom:14px;
+    }
+    .summary-box {
+      background:#fff7f7;
+      border-left:4px solid var(--brand);
+      padding:12px 14px;
+      border-radius:8px;
+      margin:12px 0 16px;
+      line-height:1.6;
+      color:#374151;
+    }
+    figure {
+      margin:0 0 18px;
+    }
+    figure img {
+      width:100%;
+      border-radius:10px;
+      border:1px solid var(--line);
+      object-fit:cover;
+    }
+    figcaption {
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.88rem;
+    }
+    #bodyContent {
+      line-height:1.82;
+      font-size:1.03rem;
+      color:#1f2937;
+    }
+    #bodyContent p { margin: 0 0 1rem; }
 
-    .container { max-width: 800px; margin: 30px auto; padding: 0 15px; }
-    .article-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-    
-    .category-tag { display: inline-block; background: #dc2626; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; text-transform: uppercase; }
-    .article-title { font-size: 28px; font-weight: 800; color: #111827; line-height: 1.35; margin-bottom: 12px; }
-    
-    .meta-bar { font-size: 13px; color: #6b7280; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px; margin-bottom: 20px; display: flex; gap: 15px; }
-    
-    .summary-box { background: #f8fafc; border-left: 4px solid #dc2626; padding: 14px 18px; font-size: 16px; font-weight: 600; color: #334155; border-radius: 4px; margin-bottom: 20px; line-height: 1.6; }
+    .share {
+      margin-top:26px;
+      border-top:1px solid var(--line);
+      padding-top:16px;
+    }
+    .share h3 { margin:0 0 10px; }
+    .share-buttons {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .share-buttons button, .share-buttons a {
+      border:0;
+      border-radius:8px;
+      padding:9px 12px;
+      text-decoration:none;
+      color:white;
+      font-size:.92rem;
+      cursor:pointer;
+      display:inline-block;
+    }
+    .wa{ background:#16a34a; }
+    .fb{ background:#1877f2; }
+    .tw{ background:#111827; }
+    .native{ background:#ea580c; }
+    .copy{ background:#4b5563; }
 
-    .lead-img { width: 100%; max-height: 450px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; }
-    .img-caption { font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 25px; font-style: italic; }
-    
-    .article-body { font-size: 17px; color: #374151; }
-    .article-body p { margin-bottom: 18px; }
-    
-    /* Bottom Only Social Share Bar */
-    .share-bar { margin: 30px 0 20px 0; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .share-label { font-size: 13px; font-weight: 700; color: #1e293b; margin-right: 5px; }
-    .share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 6px; color: #fff; text-decoration: none; font-size: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; }
-    .share-whatsapp { background: #25D366; }
-    .share-facebook { background: #1877F2; }
-    .share-twitter { background: #000; }
-    .share-native { background: #dc2626; }
-    .share-copy { background: #475569; }
-    .share-btn:hover { opacity: 0.9; }
-
-    .back-home { display: inline-block; margin-top: 15px; padding: 10px 18px; background: #0f172a; color: #fff; text-decoration: none; font-weight: 700; border-radius: 6px; font-size: 13px; }
-    .back-home:hover { background: #dc2626; }
+    .state {
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:18px;
+      text-align:center;
+      color:var(--muted);
+    }
   </style>
 </head>
 <body>
+  <main class="wrap">
+    <article id="articleRoot" class="article-card" style="display:none;">
+      <span id="categoryBadge" class="badge"></span>
+      <h1 id="headline"></h1>
+      <div id="metaBar" class="meta"></div>
+      <div id="summaryBox" class="summary-box"></div>
+      <figure id="figureWrap" style="display:none;">
+        <img id="featuredImage" src="" alt="Featured image" />
+        <figcaption id="imageCaption"></figcaption>
+      </figure>
+      <section id="bodyContent"></section>
 
-  <header>
-    <div class="header-inner">
-      <a href="index.html" class="header-logo">THE <span>90I</span> NEWS</a>
-      <div class="header-nav">
-        <a href="index.html">🏠 होम</a>
-        <a href="admin.html">🔐 CMS लॉगिन</a>
-      </div>
-    </div>
-  </header>
-
-  <div class="container">
-    <article id="articleContainer" class="article-card">
-      <p style="text-align:center; color:#6b7280;">समाचार लोड हो रहा है...</p>
+      <!-- SHARE SUITE ONLY AT BOTTOM -->
+      <section class="share">
+        <h3>Share this article</h3>
+        <div class="share-buttons">
+          <a id="waShare" class="wa" target="_blank" rel="noopener">WhatsApp</a>
+          <a id="fbShare" class="fb" target="_blank" rel="noopener">Facebook</a>
+          <a id="twShare" class="tw" target="_blank" rel="noopener">Twitter</a>
+          <button id="nativeShareBtn" class="native">Share</button>
+          <button id="copyLinkBtn" class="copy">Copy Link</button>
+        </div>
+      </section>
     </article>
-  </div>
 
-<script>
-  async function loadArticleContent() {
-    var params = new URLSearchParams(window.location.search);
-    var slug = params.get('slug');
-    var id = params.get('id');
+    <div id="stateBox" class="state">Loading article...</div>
+  </main>
 
-    var articles = [];
-    try {
-      var res = await fetch('data/90i-data.json?_t=' + Date.now());
-      if (res.ok) {
-        var d = await res.json();
-        articles = d['90i_news'] || [];
-      }
-    } catch(e) {}
+  <script>
+    "use strict";
 
-    if (articles.length === 0) {
-      var local = localStorage.getItem('cached_db');
-      if (local) {
-        try { articles = JSON.parse(local)['90i_news'] || []; } catch(err){}
-      }
-    }
+    const DATA_PATH = "data/90i-data.json";
 
-    var article = null;
-    if (slug) article = articles.find(function(a) { return a.slug === slug; });
-    else if (id) article = articles.find(function(a) { return String(a.id) === String(id); });
-    
-    if (!article && articles.length > 0) article = articles[0];
+    document.addEventListener("DOMContentLoaded", init);
 
-    var container = document.getElementById('articleContainer');
-    if (!article) {
-      container.innerHTML = '<div style="text-align:center; padding:40px;"><h2>समाचार उपलब्ध नहीं है!</h2><p style="color:#6b7280; margin-top:8px;">यह खबर हटा दी गई हो सकती है।</p><a href="index.html" class="back-home">मुख्य पृष्ठ पर जाएं</a></div>';
-      return;
-    }
+    async function init() {
+      const state = document.getElementById("stateBox");
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const slugParam = (params.get("slug") || "").trim().toLowerCase();
+        const idParam = (params.get("id") || "").trim();
 
-    document.getElementById('metaDocTitle').innerText = article.title + ' — THE 90I NEWS';
+        if (!slugParam && !idParam) {
+          state.textContent = "No article parameter provided. Use ?slug=... or ?id=...";
+          return;
+        }
 
-    var currentUrl = encodeURIComponent(window.location.href);
-    var currentTitle = encodeURIComponent(article.title);
+        const res = await fetch(DATA_PATH, { cache: "no-store" });
+        if (!res.ok) throw new Error("Unable to load data source.");
+        const json = await res.json();
 
-    // Share bar only for bottom
-    var shareBarHtml = 
-      '<div class="share-bar">' +
-        '<span class="share-label">📢 इस खबर को शेयर करें:</span>' +
-        '<a class="share-btn share-whatsapp" href="https://api.whatsapp.com/send?text=' + currentTitle + '%20' + currentUrl + '" target="_blank">📱 WhatsApp</a>' +
-        '<a class="share-btn share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' + currentUrl + '" target="_blank">📘 Facebook</a>' +
-        '<a class="share-btn share-twitter" href="https://twitter.com/intent/tweet?text=' + currentTitle + '&url=' + currentUrl + '" target="_blank">✖ Twitter</a>' +
-        '<button type="button" class="share-btn share-native" onclick="triggerNativeShare(\'' + article.title.replace(/'/g, "\\'") + '\')">📲 शेयर</button>' +
-        '<button type="button" class="share-btn share-copy" onclick="copyArticleLink()">📋 लिंक कॉपी</button>' +
-      '</div>';
+        const news = Array.isArray(json?.news) ? json.news : [];
+        let article = null;
 
-    var html = '<span class="category-tag">' + (article.category || 'ताजा खबर') + '</span>';
-    html += '<h1 class="article-title">' + article.title + '</h1>';
-    html += '<div class="meta-bar">';
-    html += '<span>✍️ ' + (article.author || '90I डिजिटल डेस्क') + '</span>';
-    html += '<span>📅 ' + (article.date || '') + ' ' + (article.time || '') + '</span>';
-    html += '</div>';
+        if (slugParam) {
+          article = news.find(n => String(n?.slug || "").trim().toLowerCase() === slugParam) || null;
+        }
+        if (!article && idParam) {
+          article = news.find(n => String(n?.id || "").trim() === idParam) || null;
+        }
 
-    // Summary Box (Netlify reference style)
-    if (article.excerpt) {
-      html += '<div class="summary-box">' + article.excerpt + '</div>';
-    }
+        if (!article) {
+          state.textContent = "Article not found.";
+          return;
+        }
 
-    if (article.image) {
-      html += '<img src="' + article.image + '" class="lead-img" alt="' + article.title + '">';
-      if (article.imageCaption) {
-        html += '<p class="img-caption">' + article.imageCaption + '</p>';
+        renderArticle(article);
+        state.style.display = "none";
+        document.getElementById("articleRoot").style.display = "block";
+      } catch (err) {
+        state.textContent = "Failed to load article: " + (err?.message || "Unknown error");
       }
     }
 
-    html += '<div class="article-body">' + (article.content || '') + '</div>';
+    function renderArticle(a) {
+      const title = safeText(a?.title || "Untitled");
+      const category = safeText(a?.category || "General");
+      const author = safeText(a?.author || "Desk Reporter");
+      const published = safeText(a?.publishedAt || "");
+      const summary = safeText(a?.summary || "");
+      const body = String(a?.bodyHtml || "<p>No content available.</p>");
+      const image = String(a?.image || "").trim();
+      const caption = safeText(a?.imageCaption || "");
 
-    // Bottom Share Bar Only
-    html += shareBarHtml;
-    html += '<a href="index.html" class="back-home">⬅ मुख्य पृष्ठ पर वापस जाएं</a>';
+      document.title = title + " | 90i News";
+      document.getElementById("categoryBadge").textContent = category;
+      document.getElementById("headline").textContent = title;
+      document.getElementById("metaBar").textContent = `By ${author} • ${published}`;
+      document.getElementById("summaryBox").textContent = summary;
+      document.getElementById("bodyContent").innerHTML = body;
 
-    container.innerHTML = html;
-  }
+      const fig = document.getElementById("figureWrap");
+      if (image) {
+        document.getElementById("featuredImage").src = image;
+        document.getElementById("imageCaption").textContent = caption;
+        fig.style.display = "block";
+      } else {
+        fig.style.display = "none";
+      }
 
-  function triggerNativeShare(title) {
-    if (navigator.share) {
-      navigator.share({
-        title: title,
-        text: title + ' — पढ़ें THE 90I NEWS पर',
-        url: window.location.href
-      }).catch(function(err) {});
-    } else {
-      copyArticleLink();
+      setupShare(title);
     }
-  }
 
-  function copyArticleLink() {
-    navigator.clipboard.writeText(window.location.href).then(function() {
-      alert("✅ लिंक कॉपी हो गया!");
-    }).catch(function() {
-      alert("लिंक: " + window.location.href);
-    });
-  }
+    function setupShare(title) {
+      const url = window.location.href;
+      const text = `${title}`;
 
-  window.addEventListener('DOMContentLoaded', loadArticleContent);
-</script>
+      document.getElementById("waShare").href =
+        `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`;
+      document.getElementById("fbShare").href =
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+      document.getElementById("twShare").href =
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+
+      document.getElementById("nativeShareBtn").addEventListener("click", async () => {
+        if (navigator.share) {
+          try {
+            await navigator.share({ title: document.title, text, url });
+          } catch (_) {}
+        } else {
+          alert("Native sharing is not supported on this browser.");
+        }
+      });
+
+      document.getElementById("copyLinkBtn").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          alert("Link copied.");
+        } catch (_) {
+          // fallback
+          const tmp = document.createElement("input");
+          tmp.value = url;
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand("copy");
+          document.body.removeChild(tmp);
+          alert("Link copied.");
+        }
+      });
+    }
+
+    function safeText(v) {
+      return String(v);
+    }
+  </script>
 </body>
 </html>
