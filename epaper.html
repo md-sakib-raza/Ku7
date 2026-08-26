@@ -1,112 +1,207 @@
-<!DOCTYPE html>
+          <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ई-पेपर संस्करण — THE 90I NEWS</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Paper | 90i</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.6; }
-    
-    header { background: #0f172a; border-bottom: 3px solid #dc2626; padding: 15px 20px; text-align: center; color: #fff; }
-    .epaper-title { font-size: 26px; font-weight: 900; letter-spacing: 1px; }
-    .epaper-title span { color: #dc2626; }
-    .epaper-sub { font-size: 13px; color: #94a3b8; margin-top: 3px; }
-    .epaper-nav { margin-top: 10px; }
-    .epaper-nav a { color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; margin: 0 10px; background: #1e293b; padding: 6px 14px; border-radius: 4px; }
-    .epaper-nav a:hover { background: #dc2626; }
+    :root{
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --brand:#b91c1c;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Noto Sans Devanagari", "Noto Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{
+      width:min(1200px, 95%);
+      margin:24px auto 30px;
+    }
+    .head{
+      background:linear-gradient(120deg,#7f1d1d,#b91c1c,#991b1b);
+      color:#fff;
+      border-radius:14px;
+      padding:18px;
+      margin-bottom:16px;
+    }
+    .head h1{ margin:0 0 6px; }
+    .head p{ margin:0; opacity:.95; }
 
-    .epaper-container { max-width: 1100px; margin: 25px auto; padding: 0 15px; }
-    .epaper-header-bar { background: #fff; border: 1px solid #cbd5e1; padding: 12px 18px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: 700; font-size: 14px; color: #475569; }
-
-    /* Newspaper Grid Layout */
-    .epaper-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-    .epaper-card { background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; }
-    
-    .epaper-tag { font-size: 11px; font-weight: 800; background: #dc2626; color: #fff; padding: 3px 8px; border-radius: 3px; display: inline-block; margin-bottom: 8px; width: fit-content; text-transform: uppercase; }
-    .epaper-headline { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 10px; line-height: 1.4; }
-    .epaper-img { width: 100%; height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; }
-    .epaper-excerpt { font-size: 14px; color: #475569; margin-bottom: 12px; flex-grow: 1; }
-    
-    .epaper-meta { font-size: 12px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .read-btn { color: #dc2626; text-decoration: none; font-weight: 800; font-size: 13px; }
-    .read-btn:hover { text-decoration: underline; }
-
-    @media (max-width: 600px) {
-      .epaper-grid { grid-template-columns: 1fr; }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:14px;
+    }
+    .news-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 6px 16px rgba(0,0,0,.05);
+      display:flex;
+      flex-direction:column;
+    }
+    .thumb{
+      width:100%;
+      height:165px;
+      object-fit:cover;
+      background:#e5e7eb;
+    }
+    .content{
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      height:100%;
+    }
+    .badge{
+      display:inline-block;
+      align-self:flex-start;
+      font-size:.75rem;
+      background:#fee2e2;
+      color:#991b1b;
+      border:1px solid #fecaca;
+      border-radius:999px;
+      padding:3px 8px;
+    }
+    .title{
+      margin:0;
+      font-size:1.04rem;
+      line-height:1.4;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:.86rem;
+    }
+    .summary{
+      margin:0;
+      color:#374151;
+      font-size:.92rem;
+      line-height:1.55;
+      flex-grow:1;
+    }
+    .read{
+      text-decoration:none;
+      background:var(--brand);
+      color:#fff;
+      display:inline-block;
+      padding:8px 10px;
+      border-radius:8px;
+      font-size:.88rem;
+      align-self:flex-start;
+    }
+    .empty{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:18px;
+      text-align:center;
+      color:var(--muted);
     }
   </style>
 </head>
 <body>
+  <main class="wrap">
+    <header class="head">
+      <h1>ई-पेपर संस्करण</h1>
+      <p id="hindiDateLine">आज का डिजिटल संस्करण</p>
+    </header>
 
-  <header>
-    <div class="epaper-title">THE <span>90I</span> NEWS — ई-पेपर</div>
-    <div class="epaper-sub">डिजिटल दैनिक समाचार संस्करण | सच, सटीक, निर्भीक</div>
-    <div class="epaper-nav">
-      <a href="index.html">🏠 होम</a>
-      <a href="admin.html">🔐 CMS एडमिन</a>
-    </div>
-  </header>
+    <section id="epaperGrid" class="grid"></section>
+    <div id="emptyState" class="empty" style="display:none;">कोई प्रकाशित समाचार उपलब्ध नहीं है।</div>
+  </main>
 
-  <div class="epaper-container">
-    <div class="epaper-header-bar">
-      <span id="epaperDate">📅 संस्करण तारीख: लोड हो रहा है...</span>
-      <span>📰 दैनिक डिजिटल एडिशन</span>
-    </div>
+  <script>
+    "use strict";
 
-    <div class="epaper-grid" id="epaperGrid">
-      <p style="grid-column: 1/-1; text-align:center; padding:30px; color:#64748b;">ई-पेपर लोड हो रहा है...</p>
-    </div>
-  </div>
+    const DATA_PATH = "data/90i-data.json";
 
-<script>
-  async function loadEpaper() {
-    var today = new Date().toLocaleDateString('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    document.getElementById('epaperDate').innerText = "📅 " + today;
+    document.addEventListener("DOMContentLoaded", init);
 
-    var articles = [];
-    try {
-      var res = await fetch('data/90i-data.json?_t=' + Date.now());
-      if (res.ok) {
-        var d = await res.json();
-        articles = d['90i_news'] || [];
-      }
-    } catch(e) {}
+    async function init() {
+      setHindiDateHeader();
+      try {
+        const res = await fetch(DATA_PATH, { cache: "no-store" });
+        if (!res.ok) throw new Error("Data fetch failed");
+        const json = await res.json();
 
-    if (articles.length === 0) {
-      var local = localStorage.getItem('cached_db');
-      if (local) {
-        try { articles = JSON.parse(local)['90i_news'] || []; } catch(err){}
+        const news = Array.isArray(json?.news) ? json.news : [];
+        const published = news.filter(n => String(n?.status || "").toLowerCase() === "published");
+
+        renderGrid(published);
+      } catch (err) {
+        renderGrid([]);
       }
     }
 
-    var grid = document.getElementById('epaperGrid');
-    if (!articles.length) {
-      grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#64748b;">आज के ई-पेपर में अभी कोई समाचार उपलब्ध नहीं है।</p>';
-      return;
+    function setHindiDateHeader() {
+      const el = document.getElementById("hindiDateLine");
+      if (!el) return;
+      const now = new Date();
+      const formatted = now.toLocaleDateString("hi-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+      el.textContent = `दिनांक: ${formatted} • आज का संस्करण`;
     }
 
-    grid.innerHTML = articles.map(function(item) {
-      var imgTag = item.image ? '<img src="' + item.image + '" class="epaper-img" alt="' + item.title + '">' : '';
-      var link = item.permalink || ('article.html?slug=' + item.slug);
-      var summary = item.excerpt || (item.content ? item.content.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : '');
+    function renderGrid(items) {
+      const grid = document.getElementById("epaperGrid");
+      const empty = document.getElementById("emptyState");
+      if (!grid || !empty) return;
 
-      return '<div class="epaper-card">' +
-        '<div>' +
-          '<span class="epaper-tag">' + (item.category || 'ताजा खबर') + '</span>' +
-          '<h2 class="epaper-headline">' + item.title + '</h2>' +
-          imgTag +
-          '<p class="epaper-excerpt">' + summary + '</p>' +
-        '</div>' +
-        '<div class="epaper-meta">' +
-          '<span>📅 ' + (item.date || '') + '</span>' +
-          '<a href="' + link + '" class="read-btn">पूरा पढ़ें ➔</a>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
+      if (!items.length) {
+        grid.innerHTML = "";
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
 
-  window.addEventListener('DOMContentLoaded', loadEpaper);
-</script>
+      const html = items.map(a => {
+        const title = esc(a?.title || "Untitled");
+        const category = esc(a?.category || "General");
+        const author = esc(a?.author || "Desk Reporter");
+        const date = esc(a?.publishedAt || "");
+        const summary = esc(a?.summary || "");
+        const image = String(a?.image || "").trim();
+        const slug = encodeURIComponent(String(a?.slug || ""));
+        const id = encodeURIComponent(String(a?.id || ""));
+
+        const link = a?.slug ? `article.html?slug=${slug}` : `article.html?id=${id}`;
+        return `
+          <article class="news-card">
+            ${image ? `<img class="thumb" src="${attr(image)}" alt="${title}">` : `<div class="thumb"></div>`}
+            <div class="content">
+              <span class="badge">${category}</span>
+              <h3 class="title">${title}</h3>
+              <div class="meta">${author} • ${date}</div>
+              <p class="summary">${summary}</p>
+              <a class="read" href="${link}">पूरा पढ़ें</a>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      grid.innerHTML = html;
+    }
+
+    function esc(v){
+      return String(v).replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+    function attr(v){
+      return String(v).replace(/"/g, "&quot;");
+    }
+  </script>
 </body>
 </html>
