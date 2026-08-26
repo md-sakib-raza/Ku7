@@ -47,7 +47,7 @@
 </head>
 <body>
 
-<!-- Login Box (Direct Action, No Form Reload) -->
+<!-- Login Box -->
 <div id="loginScreen">
   <h2>THE 90I NEWS</h2>
   <p>एडमिन CMS — सुरक्षित लॉगिन</p>
@@ -306,7 +306,7 @@
     var path = 'data/90i-data.json';
     var cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
 
-    if (!cleanToken) throw new Error("GitHub Token Missing!");
+    if (!cleanToken) throw new Error("GitHub Token Missing! कृपया क्लाउड सेटिंग्स में टोकन डालें।");
 
     var getUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_nocache=' + Date.now();
     var getRes = await fetch(getUrl, {
@@ -473,4 +473,4 @@
       return '<tr>' +
         '<td><strong>' + n.title + '</strong></td>' +
         '<td>' + n.category + '</td>' +
-        '<td>' + n.date + '</td>
+        '<td>' + n.date + 
