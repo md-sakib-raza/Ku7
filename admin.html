@@ -4,26 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>एडमिन CMS — THE 90I NEWS</title>
-  <link rel="stylesheet" href="assets/styles.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f4f6f9; color: #333; }
-    
-    /* Login Screen Card */
-    #loginScreen { max-width: 380px; margin: 80px auto; padding: 25px; background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
-    #loginScreen h2 { color: #dc2626; margin-bottom: 5px; font-size: 22px; }
-    #loginScreen p { font-size: 13px; color: #666; margin-bottom: 18px; }
-    
-    /* Admin Dashboard Panel */
-    #adminScreen { display: none; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
     .admin-sidebar { background: #111; color: #fff; padding: 20px; }
     .admin-sidebar h3 { color: #dc2626; margin-bottom: 5px; }
     .admin-sidebar ul { list-style: none; margin-top: 20px; }
     .admin-sidebar li a { display: block; color: #ddd; padding: 10px 0; border-bottom: 1px solid #222; text-decoration: none; font-size: 14px; cursor: pointer; }
     .admin-sidebar li a:hover { color: #dc2626; }
     .admin-main { padding: 25px; background: #f4f6f9; }
-    
-    /* Forms & UI */
     .card { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; }
     .form-group { margin-bottom: 15px; text-align: left; }
     .form-group label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 14px; }
@@ -31,39 +21,21 @@
     .btn { padding: 10px 20px; border: none; background: #dc2626; color: #fff; cursor: pointer; font-weight: 700; border-radius: 3px; }
     .btn-edit { background: #2563eb; color:#fff; padding: 6px 12px; font-size: 12px; margin-right: 6px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
     .btn-del { background: #dc2626; color:#fff; padding: 6px 12px; font-size: 12px; border:none; border-radius:3px; cursor:pointer; font-weight:700; }
-    
     .editor-toolbar { margin-bottom: 6px; background: #eee; padding: 6px; border-radius: 3px; }
     .editor-toolbar button { padding: 4px 10px; margin-right: 4px; cursor: pointer; }
     .table { width: 100%; border-collapse: collapse; background: #fff; }
     .table th, .table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
     .grid-2form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .preview-box { max-height: 120px; max-width: 200px; border: 1px solid #ddd; border-radius: 4px; margin-top: 8px; display: none; object-fit: cover; }
-    
     @media (max-width: 768px) {
-      #adminScreen { grid-template-columns: 1fr; }
+      .admin-layout { grid-template-columns: 1fr; }
       .grid-2form { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- Login Box -->
-<div id="loginScreen">
-  <h2>THE 90I NEWS</h2>
-  <p>एडमिन CMS — सुरक्षित लॉगिन</p>
-  <div class="form-group">
-    <label>ईमेल आईडी:</label>
-    <input type="email" id="loginEmail" class="form-control" placeholder="उदा. name@example.com">
-  </div>
-  <div class="form-group">
-    <label>पासवर्ड:</label>
-    <input type="password" id="loginPassword" class="form-control" placeholder="पासवर्ड लिखें...">
-  </div>
-  <button type="button" id="btnAdminLogin" class="btn" style="width: 100%; font-size: 15px; margin-top: 5px;">🔓 लॉगिन करें</button>
-</div>
-
-<!-- Admin Dashboard Panel -->
-<div id="adminScreen">
+<div class="admin-layout">
   <aside class="admin-sidebar">
     <h3>THE 90I NEWS</h3>
     <p style="font-size: 12px; color: #888;">कंटेंट मैनेजमेंट सिस्टम</p>
@@ -72,12 +44,12 @@
       <li><a onclick="showTab('manageNews')">📑 समाचार प्रबंधन (Edit / Delete)</a></li>
       <li><a onclick="showTab('inboxMessages')">📬 संपर्क संदेश (Inbox)</a></li>
       <li><a onclick="showTab('cloudSettings')">☁️ GitHub क्लाउड सेटिंग्स</a></li>
-      <li><a onclick="doAdminLogout()" style="color:#ef4444; font-weight:bold;">🚪 लॉगआउट</a></li>
+      <li><a href="index.html">🌐 वेबसाइट देखें</a></li>
     </ul>
   </aside>
 
   <main class="admin-main">
-    <!-- 1. Add / Edit News Tab -->
+    <!-- Add / Edit News Tab -->
     <div id="tabAddNews" class="card">
       <h2 id="formHeading">नया समाचार प्रकाशित करें</h2>
       <div style="margin-top: 15px;">
@@ -175,10 +147,10 @@
       </div>
     </div>
 
-    <!-- 2. Manage News Tab -->
+    <!-- Manage News Tab -->
     <div id="tabManageNews" class="card" style="display: none;">
       <h2>प्रकाशित समाचार प्रबंधन</h2>
-      <p style="font-size: 13px; color: #666; margin-bottom: 12px;">गलती सुधारने (Correction) के लिए 'संपादित करें' या हटाने के लिए 'हटाएं' चुनें:</p>
+      <p style="font-size: 13px; color: #666; margin-bottom: 12px;">गलती सुधारने के लिए 'संपादित करें' या हटाने के लिए 'हटाएं' चुनें:</p>
       <div style="overflow-x: auto;">
         <table class="table">
           <thead>
@@ -194,7 +166,7 @@
       </div>
     </div>
 
-    <!-- 3. Inbox Messages Tab -->
+    <!-- Inbox Tab -->
     <div id="tabInboxMessages" class="card" style="display: none;">
       <h2>संपर्क संदेश एवं पाठक न्यूज़ टिप (Inbox)</h2>
       <div style="overflow-x: auto; margin-top: 15px;">
@@ -212,7 +184,7 @@
       </div>
     </div>
 
-    <!-- 4. GitHub Cloud Settings -->
+    <!-- Cloud Settings Tab -->
     <div id="tabCloudSettings" class="card" style="display: none;">
       <h2>GitHub क्लाउड सेटिंग्स</h2>
       <div style="max-width: 600px; margin-top: 15px;">
@@ -235,44 +207,13 @@
 </div>
 
 <script>
-  var AUTH_EMAIL = "mdsakibraza.066@gmail.com";
-  var AUTH_PASS = "changeme1238";
-
-  // Login Click Handler
-  document.getElementById('btnAdminLogin').onclick = function() {
-    var email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
-    var pass = (document.getElementById('loginPassword').value || '').trim();
-
-    if (email === AUTH_EMAIL.toLowerCase() && pass === AUTH_PASS) {
-      sessionStorage.setItem('90i_cms_session_live', 'LOGGED_IN_SUCCESS');
-      openDashboard();
-    } else {
-      alert("❌ गलत ईमेल या पासवर्ड!");
-    }
-  };
-
-  function openDashboard() {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminScreen').style.display = 'grid';
-    
+  window.onload = function() {
     document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
     document.getElementById('ghOwner').value = localStorage.getItem('90i_gh_owner') || 'md-sakib-raza';
     document.getElementById('ghRepo').value = localStorage.getItem('90i_gh_repo') || 'Ku7';
-
     loadAdminNewsList();
     loadInboxList();
-  }
-
-  function doAdminLogout() {
-    sessionStorage.removeItem('90i_cms_session_live');
-    location.reload();
-  }
-
-  window.addEventListener('DOMContentLoaded', function() {
-    if (sessionStorage.getItem('90i_cms_session_live') === 'LOGGED_IN_SUCCESS') {
-      openDashboard();
-    }
-  });
+  };
 
   function showTab(tabName) {
     var tabs = ['addNews', 'manageNews', 'inboxMessages', 'cloudSettings'];
@@ -306,7 +247,7 @@
     var path = 'data/90i-data.json';
     var cleanToken = (token || localStorage.getItem('90i_gh_token') || '').trim();
 
-    if (!cleanToken) throw new Error("GitHub Token Missing! कृपया क्लाउड सेटिंग्स में टोकन डालें।");
+    if (!cleanToken) throw new Error("GitHub Token Missing! कृपया 'GitHub क्लाउड सेटिंग्स' में जाकर अपना टोकन पेस्ट करें।");
 
     var getUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_nocache=' + Date.now();
     var getRes = await fetch(getUrl, {
@@ -473,4 +414,48 @@
       return '<tr>' +
         '<td><strong>' + n.title + '</strong></td>' +
         '<td>' + n.category + '</td>' +
-        '<td>' + n.date + 
+        '<td>' + n.date + '</td>' +
+        '<td style="white-space:nowrap;">' +
+          '<button type="button" class="btn-edit" onclick="startEditNews(' + n.id + ')">✏️ संपादित करें</button>' +
+          '<button type="button" class="btn-del" onclick="deleteNews(' + n.id + ')">🗑️ हटाएं</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  async function startEditNews(id) {
+    var data = await loadData();
+    var article = (data.news || []).find(function(n) { return n.id === id; });
+    if (!article) return;
+
+    document.getElementById('editArticleId').value = article.id;
+    document.getElementById('newsTitle').value = article.title;
+    document.getElementById('newsSlug').value = article.slug;
+    document.getElementById('newsCategory').value = article.category;
+    document.getElementById('newsAuthor').value = article.author || '90I डिजिटल डेस्क';
+    document.getElementById('newsTags').value = (article.tags || []).join(', ');
+    document.getElementById('newsExcerpt').value = article.excerpt;
+    document.getElementById('newsImageCaption').value = article.imageCaption || '';
+    document.getElementById('newsSeoTitle').value = article.seoTitle || '';
+    document.getElementById('newsSeoDesc').value = article.seoDescription || '';
+    document.getElementById('newsSeoKeywords').value = article.seoKeywords || '';
+    document.getElementById('richEditor').innerHTML = article.content || '';
+    document.getElementById('newsBreaking').checked = !!article.breaking;
+    document.getElementById('newsFeatured').checked = !!article.featured;
+
+    if (article.image) {
+      document.getElementById('newsImageData').value = article.image;
+      var preview = document.getElementById('newsImgPreview');
+      preview.src = article.image;
+      preview.style.display = 'block';
+    }
+
+    document.getElementById('formHeading').innerText = "समाचार में संशोधन करें (Correction / Edit)";
+    document.getElementById('submitBtn').innerText = "💾 अपडेट सुरक्षित करें (Save Correction)";
+    document.getElementById('cancelEditBtn').style.display = "inline-block";
+
+    showTab('addNews');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+ 
