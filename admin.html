@@ -1,0 +1,499 @@
+<!DOCTYPE html>  <html lang="hi">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+  <title>Admin Dashboard | THE 90I NEWS</title>  
+  <style>  
+    :root {  
+      --bg: #0f172a;  
+      --card: #111827;  
+      --border: #374151;  
+      --text: #f8fafc;  
+      --muted: #94a3b8;  
+      --brand: #dc2626;  
+    }  
+    * { box-sizing: border-box; margin: 0; padding: 0; }  
+    body {  
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;  
+      background: var(--bg);  
+      color: var(--text);  
+      min-height: 100vh;  
+      padding: 15px;  
+    }  
+    .panel-wrap { max-width: 1100px; margin: 0 auto; }  
+    .panel-header {  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+      background: var(--card);  
+      border: 1px solid var(--border);  
+      padding: 15px 20px;  
+      border-radius: 10px;  
+      margin-bottom: 15px;  
+    }  
+    .panel-header h2 span { color: var(--brand); }  
+    .panel-header button {  
+      background: #7f1d1d;  
+      color: #fff;  
+      border: none;  
+      padding: 8px 14px;  
+      border-radius: 6px;  
+      font-weight: 700;  
+      cursor: pointer;  
+    }  
+    .tab-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }  
+    .tab-btn {  
+      background: #1e293b;  
+      color: #cbd5e1;  
+      border: 1px solid var(--border);  
+      padding: 10px 16px;  
+      border-radius: 6px;  
+      font-weight: 700;  
+      cursor: pointer;  
+    }  
+    .tab-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }  
+    .card {  
+      background: var(--card);  
+      border: 1px solid var(--border);  
+      border-radius: 10px;  
+      padding: 20px;  
+    }  
+    .form-group { margin-bottom: 14px; text-align: left; }  
+    .form-group label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 5px; font-weight: 600; }  
+    .form-group input, .form-group select, .form-group textarea {  
+      width: 100%;  
+      padding: 11px;  
+      background: #020617;  
+      border: 1px solid var(--border);  
+      color: #fff;  
+      border-radius: 8px;  
+      outline: none;  
+      font-size: 14px;  
+    }  
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--brand); }  
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }  
+    .editor-tools { display: flex; gap: 6px; margin-bottom: 6px; }  
+    .editor-tools button {  
+      background: #334155;  
+      color: #fff;  
+      border: none;  
+      padding: 6px 12px;  
+      border-radius: 4px;  
+      cursor: pointer;  
+      font-weight: 800;  
+    }  
+    #newsBody {  
+      min-height: 200px;  
+      background: #020617;  
+      border: 1px solid var(--border);  
+      border-radius: 8px;  
+      padding: 12px;  
+      color: #fff;  
+      outline: none;  
+      line-height: 1.6;  
+    }  
+    .img-preview { max-height: 150px; border-radius: 6px; margin-top: 8px; display: none; object-fit: cover; }  
+    .btn {  
+      width: 100%;  
+      padding: 12px;  
+      background: var(--brand);  
+      color: #fff;  
+      border: none;  
+      border-radius: 8px;  
+      font-weight: 700;  
+      cursor: pointer;  
+      font-size: 15px;  
+    }  
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }  
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }  
+    th { background: #1e293b; }  
+    @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }  
+  </style>  
+</head>  
+<body>    <div class="panel-wrap">  
+    <div class="panel-header">  
+      <h2>THE <span>90I</span> NEWS — Control Panel</h2>  
+      <button type="button" onclick="logout()">🚪 Logout</button>  
+    </div>  <div class="tab-bar">  
+  <button type="button" class="tab-btn active" id="btn_compose" onclick="switchSection('compose')">➕ Add Article</button>  
+  <button type="button" class="tab-btn" id="btn_list" onclick="switchSection('list')">📑 Manage News</button>  
+  <button type="button" class="tab-btn" id="btn_videos" onclick="switchSection('videos')">📹 Manage Videos</button>  
+  <button type="button" class="tab-btn" id="btn_token" onclick="switchSection('token')">☁️ GitHub Config</button>  
+  <a href="index.html" target="_blank" style="padding:10px 14px; background:#1e293b; color:#cbd5e1; text-decoration:none; border-radius:6px; font-weight:700; font-size:13px; border:1px solid var(--border);">🌐 Website</a>  
+</div>  
+
+<!-- COMPOSE TAB -->  
+<div id="sec_compose" class="card">  
+  <h3 id="formTitle" style="margin-bottom: 15px;">नया समाचार प्रकाशित करें</h3>  
+  <input type="hidden" id="editId" value="" />  
+    
+  <div class="form-group">  
+    <label>Title (शीर्षक) *</label>  
+    <input type="text" id="newsTitle" placeholder="हेडलाइन यहाँ लिखें..." oninput="generateSlug()" />  
+  </div>  
+
+  <div class="grid-2">  
+    <div class="form-group">  
+      <label>Slug (English URL)</label>  
+      <input type="text" id="newsSlug" placeholder="news-slug" />  
+    </div>  
+    <div class="form-group">  
+      <label>Category (श्रेणी)</label>  
+      <select id="newsCategory">  
+        <option>बिहार</option>  
+        <option>राजनीति</option>  
+        <option>शिक्षा</option>  
+        <option>राष्ट्रीय</option>  
+        <option>झारखंड</option>  
+        <option>खेल</option>  
+        <option>व्यापार</option>  
+        <option>टेक्नोलॉजी</option>  
+        <option>मनोरंजन</option>  
+      </select>  
+    </div>  
+  </div>  
+
+  <div class="form-group">  
+    <label>Summary / Excerpt (संक्षिप्त विवरण)</label>  
+    <textarea id="newsSummary" rows="2" placeholder="1-2 लाइन का मुख्य सारांश..."></textarea>  
+  </div>  
+
+  <div class="grid-2">  
+    <div class="form-group">  
+      <label>Photo (Auto Compressed)</label>  
+      <input type="file" id="newsFile" accept="image/*" onchange="handleImg(event)" />  
+      <input type="hidden" id="newsImgBase64" />  
+      <img id="imgPreview" class="img-preview" />  
+    </div>  
+    <div class="form-group">  
+      <label>Photo Caption</label>  
+      <input type="text" id="newsCaption" placeholder="फ़ोटो का विवरण..." />  
+    </div>  
+  </div>  
+
+  <div class="form-group">  
+    <label>Article Content (पूरी खबर)</label>  
+    <div class="editor-tools">  
+      <button type="button" onclick="formatText('bold')"><b>B</b></button>  
+      <button type="button" onclick="formatText('italic')"><i>I</i></button>  
+      <button type="button" onclick="formatText('underline')"><u>U</u></button>  
+    </div>  
+    <div id="newsBody" contenteditable="true" placeholder="विस्तार से खबर लिखें..."></div>  
+  </div>  
+
+  <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Cloud Publish (सेव करें)</button>  
+</div>  
+
+<!-- LIST TAB -->  
+<div id="sec_list" class="card" style="display: none;">  
+  <h3>प्रकाशित समाचार सूची</h3>  
+  <div style="overflow-x: auto;">  
+    <table>  
+      <thead>  
+        <tr><th>Title</th><th>Category</th><th>Date</th><th>Action</th></tr>  
+      </thead>  
+      <tbody id="newsTable">  
+        <tr><td colspan="4" style="text-align:center;">लोड हो रहा है...</td></tr>  
+      </tbody>  
+    </table>  
+  </div>  
+</div>  
+
+<!-- VIDEOS TAB -->  
+<div id="sec_videos" class="card" style="display: none;">  
+  <h3 style="margin-bottom: 15px;">होमपेज वीडियो बुलेटिन अपडेट करें</h3>  
+  <div class="form-group">  
+    <label>Video 1 - Title</label>  
+    <input type="text" id="vTitle1" placeholder="वीडियो 1 का शीर्षक" />  
+  </div>  
+  <div class="form-group">  
+    <label>Video 1 - YouTube Embed/Watch URL</label>  
+    <input type="url" id="vUrl1" placeholder="https://www.youtube.com/watch?v=..." />  
+  </div>  
+  <hr style="border-color: var(--border); margin: 15px 0;">  
+  <div class="form-group">  
+    <label>Video 2 - Title</label>  
+    <input type="text" id="vTitle2" placeholder="वीडियो 2 का शीर्षक" />  
+  </div>  
+  <div class="form-group">  
+    <label>Video 2 - YouTube Embed/Watch URL</label>  
+    <input type="url" id="vUrl2" placeholder="https://www.youtube.com/watch?v=..." />  
+  </div>  
+  <button type="button" class="btn" onclick="saveVideos()">💾 Save & Sync Videos</button>  
+</div>  
+
+<!-- TOKEN TAB -->  
+<div id="sec_token" class="card" style="display: none;">  
+  <h3>GitHub Token Configuration</h3>  
+  <div class="form-group" style="max-width: 500px; margin-top: 15px;">  
+    <label>GitHub Personal Access Token (Classic)</label>  
+    <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" />  
+  </div>  
+  <button type="button" class="btn" style="max-width: 200px;" onclick="saveToken()">💾 Save Token</button>  
+</div>
+
+  </div>    <script>  
+    if (localStorage.getItem("90i_admin_logged") !== "true") {  
+      window.location.replace("login.html");  
+    }  
+  
+    function logout() {  
+      localStorage.removeItem("90i_admin_logged");  
+      window.location.replace("login.html");  
+    }  
+  
+    window.onload = function() {  
+      document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';  
+      loadNewsList();  
+      loadVideoInputs();  
+    };  
+  
+    function switchSection(name) {  
+      document.getElementById('sec_compose').style.display = (name === 'compose') ? 'block' : 'none';  
+      document.getElementById('sec_list').style.display = (name === 'list') ? 'block' : 'none';  
+      document.getElementById('sec_videos').style.display = (name === 'videos') ? 'block' : 'none';  
+      document.getElementById('sec_token').style.display = (name === 'token') ? 'block' : 'none';  
+  
+      document.getElementById('btn_compose').className = 'tab-btn' + (name === 'compose' ? ' active' : '');  
+      document.getElementById('btn_list').className = 'tab-btn' + (name === 'list' ? ' active' : '');  
+      document.getElementById('btn_videos').className = 'tab-btn' + (name === 'videos' ? ' active' : '');  
+      document.getElementById('btn_token').className = 'tab-btn' + (name === 'token' ? ' active' : '');  
+  
+      if (name === 'list') loadNewsList();  
+      if (name === 'videos') loadVideoInputs();  
+    }  
+  
+    function formatText(cmd) {  
+      document.execCommand(cmd, false, null);  
+      document.getElementById('newsBody').focus();  
+    }  
+  
+    function generateSlug() {  
+      if (document.getElementById('editId').value) return;  
+      var t = document.getElementById('newsTitle').value;  
+      var s = t.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');  
+      document.getElementById('newsSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);  
+    }  
+  
+    // Auto-compress heavy images to web-optimized dimensions  
+    function handleImg(e) {  
+      var f = e.target.files[0];  
+      if (!f) return;  
+  
+      var reader = new FileReader();  
+      reader.onload = function(evt) {  
+        var img = new Image();  
+        img.onload = function() {  
+          var canvas = document.createElement("canvas");  
+          var max_w = 800;  
+          var scale = max_w / img.width;  
+          canvas.width = (img.width > max_w) ? max_w : img.width;  
+          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;  
+          var ctx = canvas.getContext("2d");  
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);  
+          var compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);  
+  
+          document.getElementById('newsImgBase64').value = compressedBase64;  
+          var p = document.getElementById('imgPreview');  
+          p.src = compressedBase64;  
+          p.style.display = 'block';  
+        };  
+        img.src = evt.target.result;  
+      };  
+      reader.readAsDataURL(f);  
+    }  
+  
+    function saveToken() {  
+      var t = document.getElementById('ghToken').value.trim();  
+      if (!t) { alert("टोकन डालें!"); return; }  
+      localStorage.setItem('90i_gh_token', t);  
+      alert("✅ टोकन सुरक्षित हो गया!");  
+    }  
+  
+    async function getDb() {  
+      try {  
+        var res = await fetch('data/90i-data.json?_t=' + Date.now());  
+        if (res.ok) return await res.json();  
+      } catch(e) {}  
+      return { "90i_news": [], "news": [], "videos": [] };  
+    }  
+  
+    async function saveAndSync() {  
+      var title = document.getElementById('newsTitle').value.trim();  
+      if (!title) { alert("शीर्षक आवश्यक है!"); return; }  
+  
+      var token = localStorage.getItem('90i_gh_token');  
+      if (!token) {   
+        alert("⚠️ पहले GitHub Config टैब में जाकर टोकन सेव करें!");   
+        switchSection('token');  
+        return;   
+      }  
+  
+      var btn = document.getElementById('btnPublish');  
+      btn.innerText = "⏳ Saving to GitHub...";  
+      btn.disabled = true;  
+  
+      try {  
+        var db = await getDb();  
+        var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);  
+  
+        var editId = document.getElementById('editId').value;  
+        var slug = document.getElementById('newsSlug').value || ('news-' + Date.now());  
+        var cat = document.getElementById('newsCategory').value;  
+        var summary = document.getElementById('newsSummary').value;  
+        var img = document.getElementById('newsImgBase64').value;  
+        var caption = document.getElementById('newsCaption').value;  
+        var body = document.getElementById('newsBody').innerHTML;  
+  
+        var item = {  
+          id: editId ? Number(editId) : Date.now(),  
+          title: title,  
+          slug: slug,  
+          category: cat,  
+          summary: summary,  
+          excerpt: summary,  
+          image: img,  
+          imageCaption: caption,  
+          content: body,  
+          body: body,  
+          date: new Date().toISOString().split('T')[0],  
+          publishedAt: new Date().toISOString().split('T')[0]  
+        };  
+  
+        if (editId) {  
+          var idx = newsList.findIndex(function(x) { return String(x.id) === String(editId); });  
+          if (idx !== -1) newsList[idx] = item;  
+        } else {  
+          newsList.unshift(item);  
+        }  
+  
+        db["90i_news"] = newsList;  
+        db.news = newsList;  
+  
+        await syncDb(db);  
+        alert("🎉 सफलतापूर्वक प्रकाशित और सिंक हो गया!");  
+        resetForm();  
+        switchSection('list');  
+      } catch(err) {  
+        alert("त्रुटि: " + err.message);  
+      } finally {  
+        btn.innerText = "🚀 Cloud Publish (सेव करें)";  
+        btn.disabled = false;  
+      }  
+    }  
+  
+    async function loadVideoInputs() {  
+      var db = await getDb();  
+      var v = db.videos || [];  
+      if (v[0]) {  
+        document.getElementById('vTitle1').value = v[0].title || '';  
+        document.getElementById('vUrl1').value = v[0].url || '';  
+      }  
+      if (v[1]) {  
+        document.getElementById('vTitle2').value = v[1].title || '';  
+        document.getElementById('vUrl2').value = v[1].url || '';  
+      }  
+    }  
+  
+    async function saveVideos() {  
+      var token = localStorage.getItem('90i_gh_token');  
+      if (!token) { alert("⚠️ पहले GitHub Config टैब में जाकर टोकन सेव करें!"); return; }  
+  
+      var db = await getDb();  
+      db.videos = [  
+        { title: document.getElementById('vTitle1').value || "विशेष वीडियो 1", url: document.getElementById('vUrl1').value || "" },  
+        { title: document.getElementById('vTitle2').value || "विशेष वीडियो 2", url: document.getElementById('vUrl2').value || "" }  
+      ];  
+  
+      try {  
+        await syncDb(db);  
+        alert("✅ वीडियो बुलेटिन अपडेट हो गया!");  
+      } catch(err) {  
+        alert("त्रुटि: " + err.message);  
+      }  
+    }  
+  
+    async function syncDb(db) {  
+      var token = localStorage.getItem('90i_gh_token');  
+      var owner = "md-sakib-raza";  
+      var repo = "Ku7";  
+      var path = "data/90i-data.json";  
+  
+      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {  
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }  
+      });  
+        
+      if (getRes.status === 401 || getRes.status === 403) {  
+        throw new Error("GitHub Token अमान्य (Invalid) या Expire हो गया है। कृपया नया टोकन Config में डालें।");  
+      }  
+  
+      var sha = getRes.ok ? (await getRes.json()).sha : null;  
+      var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));  
+  
+      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {  
+        method: 'PUT',  
+        headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },  
+        body: JSON.stringify({ message: "CMS Article Publish", content: contentB64, branch: "main", sha: sha })  
+      });  
+  
+      if (!putRes.ok) {  
+        var errBody = await putRes.json().catch(function(){ return {}; });  
+        throw new Error(errBody.message || "GitHub Save HTTP " + putRes.status);  
+      }  
+    }  
+  
+    async function loadNewsList() {  
+      var db = await getDb();  
+      var list = db["90i_news"] || db.news || [];  
+      var tb = document.getElementById('newsTable');  
+      if (!list.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई समाचार नहीं है।</td></tr>'; return; }  
+  
+      tb.innerHTML = list.map(function(n) {  
+        return '<tr>' +  
+          '<td><b>' + (n.title || '') + '</b></td>' +  
+          '<td>' + (n.category || '') + '</td>' +  
+          '<td>' + (n.date || n.publishedAt || '') + '</td>' +  
+          '<td><button type="button" style="background:#2563eb; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="editNews(' + n.id + ')">✏️</button></td>' +  
+        '</tr>';  
+      }).join('');  
+    }  
+  
+    async function editNews(id) {  
+      var db = await getDb();  
+      var list = db["90i_news"] || db.news || [];  
+      var n = list.find(function(x) { return String(x.id) === String(id); });  
+      if (!n) return;  
+  
+      document.getElementById('editId').value = n.id;  
+      document.getElementById('newsTitle').value = n.title || '';  
+      document.getElementById('newsSlug').value = n.slug || '';  
+      document.getElementById('newsCategory').value = n.category || 'बिहार';  
+      document.getElementById('newsSummary').value = n.summary || n.excerpt || '';  
+      document.getElementById('newsCaption').value = n.imageCaption || '';  
+      document.getElementById('newsBody').innerHTML = n.content || n.body || '';  
+  
+      if (n.image) {  
+        document.getElementById('newsImgBase64').value = n.image;  
+        var p = document.getElementById('imgPreview');  
+        p.src = n.image;  
+        p.style.display = 'block';  
+      }  
+  
+      document.getElementById('formTitle').innerText = "समाचार में संशोधन करें";  
+      switchSection('compose');  
+      window.scrollTo({ top: 0, behavior: 'smooth' });  
+    }  
+  
+    function resetForm() {  
+      document.getElementById('editId').value = '';  
+      document.getElementById('newsTitle').value = '';  
+      document.getElementById('newsSlug').value = '';  
+      document.getElementById('newsSummary').value = '';  
+      document.getElementById('newsCaption').value = '';  
+      document.getElementById('newsBody').innerHTML = '';  
+      document.getElementById('newsImgBase64').value = '';  
+      document.getElementById('imgPreview').style.display = 'none';  
+      document.getElementById('formTitle').innerText = "नया समाचार प्रकाशित करें";  
+    }  
+  </script>  </body>  
+</html>  
