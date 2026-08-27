@@ -1,344 +1,481 @@
 <!DOCTYPE html>
-<html lang="hi" data-theme="light">
+<html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>THE 90I NEWS — सच | सटीक | निर्भीक</title>
-  <link rel="stylesheet" href="assets/styles.css">
-  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yantramanav:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
-    /* Header Layout */
-    .toi-header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 10px 0; }
-    .header-flex { display: flex; justify-content: space-between; align-items: center; }
-    .header-left { display: flex; align-items: center; flex: 1; }
-    .site-logo-main { max-height: 52px; width: auto; object-fit: contain; }
-    
-    /* Center Branding Typography */
-    .header-center-title { flex: 2; text-align: center; }
-    .main-brand-text { font-size: 30px; font-weight: 900; letter-spacing: 1px; font-family: 'Arial Black', Impact, sans-serif; text-decoration: none; display: inline-block; }
-    .color-the { color: #111; }
-    .color-90i { color: var(--primary-red); }
-    .color-news { color: #111; }
+    :root {
+      --brand: #dc2626;
+      --brand-dark: #b91c1c;
+      --bg: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --card-bg: #ffffff;
+    }
 
-    .header-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex: 1; font-size: 13px; }
-    .live-badge { background: var(--primary-red); color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; text-transform: uppercase; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-    .header-action-btn { border: 1px solid #ddd; padding: 5px 10px; border-radius: 4px; text-decoration: none; color: #333; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
-    
-    /* Sub Nav */
-    .sub-navbar { background: #f8f9fa; border-bottom: 2px solid var(--primary-red); overflow-x: auto; white-space: nowrap; }
-    .sub-nav-list { display: flex; list-style: none; margin: 0; padding: 0; }
-    .sub-nav-list li a { display: inline-block; padding: 10px 14px; color: #222; text-decoration: none; font-size: 14px; font-weight: 700; }
-    .sub-nav-list li a:hover, .sub-nav-list li a.active { color: var(--primary-red); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Yantramanav', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
 
-    /* Share Suite */
-    .share-suite { display: flex; gap: 6px; margin: 10px 0; flex-wrap: wrap; }
-    .share-btn { padding: 5px 10px; border-radius: 4px; color: #fff; text-decoration: none; font-size: 12px; font-weight: 700; }
-    .btn-wa { background: #25D366; }
-    .btn-fb { background: #1877F2; }
-    .btn-tw { background: #000; }
-    .btn-tg { background: #0088cc; }
-    .read-more-btn { display: inline-block; margin-top: 10px; background: var(--primary-red); color: #fff; padding: 8px 14px; border-radius: 4px; font-weight: 700; text-decoration: none; font-size: 13px; }
+    /* Top Utility Bar */
+    .top-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 4px 15px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .top-bar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-links a { color: var(--muted); text-decoration: none; margin-left: 12px; font-weight: 500; }
+    .top-links a:hover { color: var(--brand); }
 
-    /* Sidebar Widgets */
-    .widget-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .widget-title { font-size: 16px; font-weight: 800; border-left: 4px solid var(--primary-red); padding-left: 8px; margin-bottom: 12px; }
+    /* Main Branding Header */
+    .header-main {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 15px 20px;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-container a { text-decoration: none; }
+    .logo-text {
+      font-size: 38px;
+      font-weight: 900;
+      color: #0f172a;
+      font-family: 'Rozha One', serif;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .logo-text span { color: var(--brand); }
+    .tagline {
+      font-size: 13px;
+      color: var(--brand);
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn-search {
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--muted);
+    }
 
-    /* Footer */
-    .rich-footer { background: #111; color: #bbb; padding: 40px 0 20px 0; margin-top: 50px; font-size: 14px; }
-    .footer-grid-4 { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 30px; margin-bottom: 30px; }
-    .footer-col h4 { color: #fff; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 6px; }
-    .footer-links { list-style: none; padding: 0; margin: 0; }
-    .footer-links li { margin-bottom: 8px; }
-    .footer-links li a { color: #aaa; text-decoration: none; transition: 0.2s; }
-    .footer-links li a:hover { color: #fff; padding-left: 4px; }
-    
-    .footer-social-box { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 15px; }
-    .ft-social-btn { padding: 6px 12px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; }
-    .ft-wa { background: #25D366; }
-    .ft-fb { background: #1877F2; }
-    .ft-tw { background: #000; border: 1px solid #444; }
-    .ft-insta { background: #E1306C; }
-    .ft-yt { background: #FF0000; }
-    
-    .contact-form-footer input, .contact-form-footer textarea { width: 100%; padding: 8px; margin-bottom: 8px; background: #222; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
-    .btn-footer-submit { background: var(--primary-red); color: #fff; border: none; padding: 8px 15px; font-weight: 700; border-radius: 4px; cursor: pointer; width: 100%; }
-    .footer-bottom-bar { border-top: 1px solid #222; padding-top: 15px; text-align: center; font-size: 12px; color: #777; }
+    /* Navigation Bar */
+    .main-nav {
+      background: #ffffff;
+      border-bottom: 2px solid var(--brand);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .nav-scroll {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+    .nav-scroll::-webkit-scrollbar { display: none; }
+    .nav-scroll a {
+      padding: 10px 14px;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-block;
+      transition: 0.2s;
+    }
+    .nav-scroll a:hover, .nav-scroll a.active { color: var(--brand); }
 
-    @media (max-width: 768px) {
-      .header-flex { flex-wrap: wrap; gap: 10px; }
-      .main-brand-text { font-size: 20px; }
-      .footer-grid-4 { grid-template-columns: 1fr; gap: 20px; }
-      .header-right { font-size: 11px; }
+    /* Breaking News Ticker */
+    .ticker-wrap {
+      background: #0f172a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      max-width: 1200px;
+      margin: 10px auto;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .ticker-badge {
+      background: var(--brand);
+      padding: 6px 14px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .ticker-content {
+      padding: 6px 14px;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #e2e8f0;
+    }
+
+    /* Main Container Grid */
+    .wrap-grid {
+      max-width: 1200px;
+      margin: 20px auto 50px;
+      padding: 0 15px;
+    }
+
+    .section-heading {
+      font-size: 20px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 16px;
+      border-left: 4px solid var(--brand);
+      padding-left: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .news-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .news-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    .thumb-wrap {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: #f1f5f9;
+      position: relative;
+    }
+    .thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .content {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-grow: 1;
+    }
+    .cat-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 800;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      border-radius: 4px;
+      padding: 2px 8px;
+      text-transform: uppercase;
+    }
+    .card-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.4;
+      color: #0f172a;
+    }
+    .card-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .card-title a:hover {
+      color: var(--brand);
+    }
+    .card-meta {
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-summary {
+      margin: 0;
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.55;
+      flex-grow: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      padding: 12px 15px;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+    }
+    .read-btn {
+      text-decoration: none;
+      background: var(--brand);
+      color: #ffffff;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+    .read-btn:hover { background: var(--brand-dark); }
+
+    .empty-box {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 860px) {
+      .logo-text { font-size: 30px; }
+      .grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Announcement Strip -->
-  <div class="topbar">
-    <div class="container topbar-content">
-      <div id="liveDate">बुधवार, 26 अगस्त 2026 | पूर्णिया, बिहार</div>
-      <div>
-        <a href="epaper.html" style="margin-right: 10px; color:#fff; text-decoration:none;">📰 ई-पेपर</a>
-        <a href="#footerContact" style="color:#fff; text-decoration:none;">✉️ सूचना / टिप भेजें</a>
+  <!-- Top Utility -->
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <div id="liveDateDisplay">दिनांक: आज</div>
+      <div class="top-links">
+        <a href="epaper.html">📰 ई-पेपर</a>
+        <a href="admin.html">🔐 CMS एडमिन</a>
       </div>
     </div>
   </div>
 
   <!-- Header -->
-  <header class="toi-header">
-    <div class="container header-flex">
-      <div class="header-left">
+  <header class="header-main">
+    <div class="header-inner">
+      <div class="logo-container">
         <a href="index.html">
-          <img src="assets/logo.png" alt="90I" class="site-logo-main">
+          <div class="logo-text">THE <span>90I</span> NEWS</div>
+          <div class="tagline">सच | सटीक | निर्भीक</div>
         </a>
       </div>
-      
-      <div class="header-center-title">
-        <a href="index.html" class="main-brand-text">
-          <span class="color-the">THE</span> <span class="color-90i">90I</span> <span class="color-news">NEWS</span>
-        </a>
-      </div>
-
-      <div class="header-right">
-        <span class="live-badge">● LIVE</span>
-        <a href="search.html" class="header-action-btn">🔍 खोजें</a>
-        <a href="admin.html" class="header-action-btn">👤 CMS लॉगिन</a>
+      <div class="header-actions">
+        <button type="button" class="btn-search" onclick="location.href='index.html'">🔍 खोजें</button>
       </div>
     </div>
   </header>
 
-  <!-- Sub Navigation -->
-  <nav class="sub-navbar">
-    <div class="container">
-      <ul class="sub-nav-list" id="categoryNav">
-        <li><a href="index.html" class="active">होम</a></li>
-      </ul>
+  <!-- Navigation Menu -->
+  <nav class="main-nav">
+    <div class="nav-scroll" id="navLinks">
+      <a href="index.html" class="active">होम</a>
+      <a href="index.html?cat=राष्ट्रीय">राष्ट्रीय</a>
+      <a href="index.html?cat=बिहार">बिहार</a>
+      <a href="index.html?cat=राजनीति">राजनीति</a>
+      <a href="index.html?cat=मनोरंजन">मनोरंजन</a>
+      <a href="index.html?cat=खेल">खेल</a>
+      <a href="index.html?cat=व्यापार">व्यापार</a>
+      <a href="index.html?cat=शिक्षा">शिक्षा</a>
+      <a href="index.html?cat=टेक्नोलॉजी">टेक्नोलॉजी</a>
+      <a href="index.html?cat=लाइफस्टाइल">लाइफस्टाइल</a>
+      <a href="epaper.html">ई-पेपर</a>
     </div>
   </nav>
 
-  <!-- Breaking News Ticker -->
-  <div class="breaking-ticker">
-    <div class="container" style="display: flex; height: 100%; width: 100%;">
-      <div class="breaking-label">ब्रेकिंग न्यूज़</div>
-      <div class="ticker-content" id="tickerContainer">
-        <span>समाचार लोड हो रहे हैं...</span>
-      </div>
-    </div>
+  <!-- Breaking Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-badge">ब्रेकिंग</div>
+    <div id="tickerText" class="ticker-content">ताजा खबरों के लिए THE 90I NEWS से जुड़े रहें...</div>
   </div>
 
-  <!-- Main Content Grid -->
-  <main class="container main-grid" style="margin-top: 20px;">
+  <!-- Home Content Grid -->
+  <main class="wrap-grid">
+    <div class="section-heading">
+      <span id="sectionTitle">ताज़ा एवं प्रमुख ख़बरें</span>
+      <a href="epaper.html" style="font-size: 13px; color: var(--brand); text-decoration: none; font-weight: 700;">ई-पेपर संस्करण ➔</a>
+    </div>
+
+    <section id="newsGrid" class="grid"></section>
     
-    <section>
-      <!-- Hero / Lead Story -->
-      <div id="leadStoryContainer"></div>
-
-      <!-- Latest Section -->
-      <div class="section-title" style="margin-top: 25px;"><span>ताज़ा समाचार</span></div>
-      <div class="grid-2col" id="latestNewsGrid"></div>
-
-      <!-- Bihar Special -->
-      <div class="section-title" style="margin-top: 30px;">
-        <span>बिहार विशेष</span>
-        <a href="category.html?cat=बिहार" style="font-size: 13px; color: var(--primary-red);">सभी देखें &raquo;</a>
-      </div>
-      <div class="grid-2col" id="biharNewsGrid"></div>
-    </section>
-
-    <!-- Sidebar -->
-    <aside>
-      <div class="widget-box">
-        <div class="widget-title">ट्रेंडिंग खबरें</div>
-        <div id="trendingList"></div>
-      </div>
-
-      <div class="widget-box" style="background: #fff8f8; border-color: #fbcfe8;">
-        <div class="widget-title" style="border-color: #e11d48;">90I ई-पेपर संस्करण</div>
-        <p style="font-size: 13px; color: #555; margin-bottom: 10px;">आज का डिजिटल समाचार पत्र PDF प्रारूप में पढ़ें।</p>
-        <a href="epaper.html" class="read-more-btn" style="display:block; text-align:center;">ई-पेपर डाउनलोड करें</a>
-      </div>
-    </aside>
-
+    <div id="emptyState" class="empty-box" style="display:none;">
+      <h3>कोई समाचार उपलब्ध नहीं है।</h3>
+      <p style="margin-top:6px; font-size:13px;">कृपया अन्य श्रेणी चुनें या बाद में पुनः देखें।</p>
+    </div>
   </main>
 
-  <!-- Black Footer -->
-  <footer class="rich-footer" id="footerContact">
-    <div class="container">
-      <div class="footer-grid-4">
-        
-        <div class="footer-col">
-          <img src="assets/logo.png" alt="90I News" style="max-height: 48px; background:#fff; padding:4px; border-radius:4px; margin-bottom:12px;">
-          <p style="font-size: 13px; line-height: 1.6; color: #999;">
-            THE 90I NEWS — बिहार और देश का स्वतंत्र, निष्पक्ष और प्रमाणिक डिजिटल न्यूज़ पोर्टल।
-          </p>
-          
-          <h4 style="margin-top: 15px; margin-bottom: 8px; font-size: 14px; border: none; padding: 0;">सोशल मीडिया पर फॉलो करें</h4>
-          <div class="footer-social-box">
-            <a href="https://wa.me/" target="_blank" class="ft-social-btn ft-wa">WhatsApp</a>
-            <a href="https://facebook.com/" target="_blank" class="ft-social-btn ft-fb">Facebook</a>
-            <a href="https://instagram.com/" target="_blank" class="ft-social-btn ft-insta">Instagram</a>
-            <a href="https://twitter.com/" target="_blank" class="ft-social-btn ft-tw">Twitter</a>
-            <a href="https://youtube.com/" target="_blank" class="ft-social-btn ft-yt">YouTube</a>
-          </div>
-        </div>
-
-        <div class="footer-col">
-          <h4>प्रमुख श्रेणियां</h4>
-          <ul class="footer-links">
-            <li><a href="category.html?cat=बिहार">बिहार न्यूज़</a></li>
-            <li><a href="category.html?cat=राजनीति">राजनीति</a></li>
-            <li><a href="category.html?cat=शिक्षा">शिक्षा एवं रोजगार</a></li>
-            <li><a href="category.html?cat=राष्ट्रीय">देश - विदेश</a></li>
-            <li><a href="category.html?cat=खेल">खेल जगत</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>नीतियां एवं नियम</h4>
-          <ul class="footer-links">
-            <li><a href="about.html">हमारे बारे में (About Us)</a></li>
-            <li><a href="privacy.html">गोपनीयता नीति (Privacy Policy)</a></li>
-            <li><a href="terms.html">नियम व शर्तें (Terms of Service)</a></li>
-            <li><a href="contact.html">शिकायत निवारण (Grievance)</a></li>
-            <li><a href="admin.html">संपादकीय / CMS लॉगिन</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>न्यूज़ टिप / संदेश भेजें</h4>
-          <form class="contact-form-footer" onsubmit="handleFooterContact(event)">
-            <input type="text" id="ftName" placeholder="आपका नाम" required>
-            <input type="text" id="ftContact" placeholder="मोबाइल नंबर / ईमेल" required>
-            <textarea id="ftMessage" rows="2" placeholder="अपनी खबर या संदेश यहाँ लिखें..." required></textarea>
-            <button type="submit" class="btn-footer-submit">संदेश सबमिट करें</button>
-          </form>
-        </div>
-
-      </div>
-
-      <div class="footer-bottom-bar">
-        &copy; 2026 THE 90I NEWS. सर्वाधिकार सुरक्षित। | सच • सटीक • निर्भीक
-      </div>
-    </div>
-  </footer>
-
-  <script src="assets/app.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const data = await loadData();
-      if (!data) return;
+    "use strict";
 
-      const navEl = document.getElementById('categoryNav');
-      const cats = (data.categories && data.categories.length > 0) ? data.categories : ['बिहार', 'राजनीति', 'शिक्षा', 'राष्ट्रीय', 'झारखंड', 'खेल', 'मनोरंजन'];
-      cats.forEach(cat => {
-        const li = document.createElement('li');
-        li.innerHTML = `<a href="category.html?cat=${encodeURIComponent(cat)}">${cat}</a>`;
-        navEl.appendChild(li);
-      });
+    const DATA_PATH = "data/90i-data.json";
 
-      const breakingArticles = (data.news || []).filter(n => n.breaking);
-      const tickerEl = document.getElementById('tickerContainer');
-      if (breakingArticles.length > 0) {
-        tickerEl.innerHTML = breakingArticles.map(a => 
-          `<a href="article.html?slug=${a.slug}">${a.title}</a>`
-        ).join(' • ');
-      } else if (data.news && data.news.length > 0) {
-        tickerEl.innerHTML = `<a href="article.html?slug=${data.news[0].slug}">${data.news[0].title}</a>`;
+    document.addEventListener("DOMContentLoaded", initHome);
+
+    async function initHome() {
+      renderDateHeader();
+
+      const params = new URLSearchParams(window.location.search);
+      const catParam = (params.get("cat") || "").trim();
+
+      if (catParam) {
+        document.getElementById("sectionTitle").textContent = `${catParam} — मुख्य ख़बरें`;
+        // Highlight active nav
+        document.querySelectorAll("#navLinks a").forEach(a => {
+          if (a.textContent.trim() === catParam) {
+            a.classList.add("active");
+          } else {
+            a.classList.remove("active");
+          }
+        });
       }
 
-      const leadNews = (data.news || []).find(n => n.featured) || (data.news && data.news[0]);
-      if (leadNews) {
-        const articleUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}article.html?slug=${leadNews.slug}`;
-        document.getElementById('leadStoryContainer').innerHTML = `
-          <div class="news-card-lead">
-            <span class="badge-category">${leadNews.category}</span>
-            <h2 class="lead-title"><a href="article.html?slug=${leadNews.slug}">${leadNews.title}</a></h2>
-            <div class="news-meta">${formatDateHindi(leadNews.date)} | ${leadNews.author}</div>
-            
-            <div class="share-suite">
-              <a class="share-btn btn-wa" href="https://api.whatsapp.com/send?text=${encodeURIComponent(leadNews.title + ' ' + articleUrl)}" target="_blank">WhatsApp</a>
-              <a class="share-btn btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}" target="_blank">Facebook</a>
-              <a class="share-btn btn-tw" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(leadNews.title)}&url=${encodeURIComponent(articleUrl)}" target="_blank">Twitter</a>
-              <a class="share-btn btn-tg" href="https://t.me/share/url?url=${encodeURIComponent(articleUrl)}&text=${encodeURIComponent(leadNews.title)}" target="_blank">Telegram</a>
-            </div>
+      let newsList = [];
 
-            <a href="article.html?slug=${leadNews.slug}">
-              <img src="${leadNews.image}" alt="${leadNews.title}" loading="lazy" style="width: 100%; max-height: 420px; object-fit: cover; margin: 10px 0; border-radius:4px;">
-            </a>
-            <p style="font-size: 16px; line-height: 1.6; color: #333;">${leadNews.excerpt}</p>
-            <a href="article.html?slug=${leadNews.slug}" class="read-more-btn">पूरा समाचार पढ़ें &raquo;</a>
-          </div>
-        `;
-      }
+      try {
+        const res = await fetch(DATA_PATH + "?_t=" + Date.now(), { cache: "no-store" });
+        if (res.ok) {
+          const db = await res.json();
+          newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
+        }
+      } catch (e) {}
 
-      const gridEl = document.getElementById('latestNewsGrid');
-      (data.news || []).slice(1, 5).forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'news-card-sm';
-        card.innerHTML = `
-          <a href="article.html?slug=${item.slug}">
-            <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 160px; width: 100%; object-fit: cover; border-radius:4px;">
-          </a>
-          <div style="margin-top: 8px;">
-            <span class="badge-category">${item.category}</span>
-            <h3 style="font-size:15px; margin: 4px 0;"><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
-            <div class="news-meta">${formatDateHindi(item.date)}</div>
-          </div>
-        `;
-        gridEl.appendChild(card);
-      });
-
-      const biharGrid = document.getElementById('biharNewsGrid');
-      const biharStories = (data.news || []).filter(n => n.category === 'बिहार').slice(0, 4);
-      biharStories.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'news-card-sm';
-        card.innerHTML = `
-          <a href="article.html?slug=${item.slug}">
-            <img src="${item.image}" alt="${item.title}" loading="lazy" style="height: 160px; width: 100%; object-fit: cover; border-radius:4px;">
-          </a>
-          <div style="margin-top: 8px;">
-            <h3 style="font-size:15px; margin: 4px 0;"><a href="article.html?slug=${item.slug}">${item.title}</a></h3>
-            <div class="news-meta">${formatDateHindi(item.date)}</div>
-          </div>
-        `;
-        biharGrid.appendChild(card);
-      });
-
-      const trendEl = document.getElementById('trendingList');
-      if (data.news && data.news.length > 0) {
-        trendEl.innerHTML = data.news.slice(0, 5).map((n, i) => `
-          <p style="font-size: 13px; margin-bottom: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 6px;">
-            <strong style="color:var(--primary-red);">#${i+1}</strong> <a href="article.html?slug=${n.slug}" style="text-decoration:none; color:#222; font-weight:600;">${n.title}</a>
-          </p>
-        `).join('');
-      }
-    });
-
-    async function handleFooterContact(e) {
-      e.preventDefault();
-      const name = document.getElementById('ftName').value;
-      const contact = document.getElementById('ftContact').value;
-      const message = document.getElementById('ftMessage').value;
-      
-      const newMsg = {
-        name, contact, message, date: new Date().toISOString().split('T')[0]
-      };
-
-      const data = await loadData() || {};
-      data['90i_contacts'] = data['90i_contacts'] || [];
-      data['90i_contacts'].unshift(newMsg);
-
-      const token = localStorage.getItem('90i_gh_token');
-      if (token) {
+      // Cache fallback
+      if (!newsList.length) {
         try {
-          await syncToGitHub(data, token);
-        } catch(err){}
+          const cached = localStorage.getItem("cached_db");
+          if (cached) {
+            const db = JSON.parse(cached);
+            newsList = db["90i_news"] || db.news || [];
+          }
+        } catch(e) {}
       }
-      alert("धन्यवाद! आपका संदेश सफलतापूर्वक भेज दिया गया है।");
-      e.target.reset();
+
+      if (catParam) {
+        newsList = newsList.filter(n => (n.category || "").trim() === catParam);
+      }
+
+      renderGrid(newsList);
+
+      if (newsList.length > 0) {
+        document.getElementById("tickerText").innerText = newsList[0].title;
+      }
+    }
+
+    function renderDateHeader() {
+      const el = document.getElementById("liveDateDisplay");
+      if (!el) return;
+      const now = new Date();
+      el.textContent = now.toLocaleDateString("hi-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    function renderGrid(items) {
+      const grid = document.getElementById("newsGrid");
+      const empty = document.getElementById("emptyState");
+      if (!grid || !empty) return;
+
+      if (!items || !items.length) {
+        grid.innerHTML = "";
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+
+      const html = items.map(a => {
+        const title = esc(a?.title || "शीर्षक उपलब्ध नहीं");
+        const category = esc(a?.category || "ताजा खबर");
+        const author = esc(a?.author || "90I डिजिटल डेस्क");
+        const date = esc(a?.date || a?.publishedAt || "");
+        const rawSummary = a?.excerpt || a?.summary || (a?.content ? a.content.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : '');
+        const summary = esc(rawSummary);
+        const image = String(a?.image || "").trim();
+        const slug = encodeURIComponent(String(a?.slug || ""));
+        const id = encodeURIComponent(String(a?.id || ""));
+
+        const link = a?.slug ? `article.html?slug=${slug}` : `article.html?id=${id}`;
+        
+        return `
+          <article class="news-card">
+            <div class="thumb-wrap">
+              ${image ? `<img class="thumb" src="${attr(image)}" alt="${title}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80'">` : `<div style="width:100%; height:100%; background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:12px;">फ़ोटो उपलब्ध नहीं</div>`}
+            </div>
+            <div class="content">
+              <span class="cat-badge">${category}</span>
+              <h3 class="card-title"><a href="${link}">${title}</a></h3>
+              <div class="card-meta">✍️ ${author} • 📅 ${date}</div>
+              <p class="card-summary">${summary}</p>
+            </div>
+            <div class="card-footer">
+              <span style="font-size:11px; color:var(--muted);">${date}</span>
+              <a class="read-btn" href="${link}">पूरा पढ़ें ➔</a>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      grid.innerHTML = html;
+    }
+
+    function esc(v){
+      return String(v).replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+    function attr(v){
+      return String(v).replace(/"/g, "&quot;");
     }
   </script>
 </body>
