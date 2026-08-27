@@ -1,153 +1,445 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Article | 90i News</title>
+  <title id="pageTitle">THE 90I NEWS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yantramanav:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:#f5f5f7;
-      --card:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --brand:#dc2626;
-      --line:#e5e7eb;
+      --brand: #dc2626;
+      --brand-dark: #b91c1c;
+      --bg: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --card-bg: #ffffff;
+      --summary-bg: #fef8ee;
+      --summary-border: #dc2626;
     }
-    * { box-sizing: border-box; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family: "Noto Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family: 'Yantramanav', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
     }
-    .wrap {
-      width:min(800px, 94%);
-      margin:28px auto 40px;
-    }
-    .article-card {
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:14px;
-      box-shadow:0 8px 24px rgba(0,0,0,.06);
-      padding:20px;
-    }
-    .badge {
-      display:inline-block;
-      background:#fee2e2;
-      color:#991b1b;
-      border:1px solid #fecaca;
-      border-radius:999px;
-      font-size:.78rem;
-      padding:4px 10px;
-      margin-bottom:10px;
-    }
-    h1 {
-      margin:0 0 10px;
-      line-height:1.25;
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
-    }
-    .meta {
-      color:var(--muted);
-      border-top:1px solid var(--line);
-      border-bottom:1px solid var(--line);
-      padding:10px 0;
-      font-size:.93rem;
-      margin-bottom:14px;
-    }
-    .summary-box {
-      background:#fff7f7;
-      border-left:4px solid var(--brand);
-      padding:12px 14px;
-      border-radius:8px;
-      margin:12px 0 16px;
-      line-height:1.6;
-      color:#374151;
-    }
-    figure {
-      margin:0 0 18px;
-    }
-    figure img {
-      width:100%;
-      border-radius:10px;
-      border:1px solid var(--line);
-      object-fit:cover;
-    }
-    figcaption {
-      margin-top:8px;
-      color:var(--muted);
-      font-size:.88rem;
-    }
-    #bodyContent {
-      line-height:1.82;
-      font-size:1.03rem;
-      color:#1f2937;
-    }
-    #bodyContent p { margin: 0 0 1rem; }
 
-    .share {
-      margin-top:26px;
-      border-top:1px solid var(--line);
-      padding-top:16px;
+    /* Top Utility Bar */
+    .top-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 4px 15px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .share h3 { margin:0 0 10px; }
-    .share-buttons {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-    .share-buttons button, .share-buttons a {
-      border:0;
-      border-radius:8px;
-      padding:9px 12px;
-      text-decoration:none;
-      color:white;
-      font-size:.92rem;
-      cursor:pointer;
-      display:inline-block;
-    }
-    .wa{ background:#16a34a; }
-    .fb{ background:#1877f2; }
-    .tw{ background:#111827; }
-    .native{ background:#ea580c; }
-    .copy{ background:#4b5563; }
+    .top-links a { color: var(--muted); text-decoration: none; margin-left: 12px; font-weight: 500; }
+    .top-links a:hover { color: var(--brand); }
 
-    .state {
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:18px;
-      text-align:center;
-      color:var(--muted);
+    /* Main Branding Header */
+    .header-main {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 15px 20px;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-container a { text-decoration: none; }
+    .logo-text {
+      font-size: 38px;
+      font-weight: 900;
+      color: #0f172a;
+      font-family: 'Rozha One', serif;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .logo-text span { color: var(--brand); }
+    .tagline {
+      font-size: 13px;
+      color: var(--brand);
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn-search {
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    /* Navigation Bar */
+    .main-nav {
+      background: #ffffff;
+      border-bottom: 2px solid var(--brand);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .nav-scroll {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+    .nav-scroll::-webkit-scrollbar { display: none; }
+    .nav-scroll a {
+      padding: 10px 14px;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-block;
+      transition: 0.2s;
+    }
+    .nav-scroll a:hover, .nav-scroll a.active { color: var(--brand); }
+
+    /* Breaking News Ticker */
+    .ticker-wrap {
+      background: #0f172a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      max-width: 1200px;
+      margin: 10px auto;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .ticker-badge {
+      background: var(--brand);
+      padding: 6px 14px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .ticker-content {
+      padding: 6px 14px;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #e2e8f0;
+    }
+
+    /* 2-Column Content Layout */
+    .layout-container {
+      max-width: 1200px;
+      margin: 15px auto 40px;
+      padding: 0 15px;
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 28px;
+    }
+
+    /* Article Card */
+    .article-box {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .cat-tag {
+      background: var(--brand);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .article-headline {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.35;
+      color: #0f172a;
+      margin-bottom: 12px;
+      font-family: 'Yantramanav', sans-serif;
+    }
+    .meta-line {
+      font-size: 13px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .featured-img-wrap {
+      margin-bottom: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f1f5f9;
+    }
+    .featured-img-wrap img {
+      width: 100%;
+      max-height: 480px;
+      object-fit: cover;
+      display: block;
+    }
+    .img-caption {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-top: 1px solid var(--line);
+      font-style: italic;
+    }
+
+    /* Summary Box */
+    .summary-card {
+      background: var(--summary-bg);
+      border-left: 4px solid var(--summary-border);
+      padding: 14px 18px;
+      border-radius: 4px;
+      margin: 18px 0;
+      font-size: 15px;
+      line-height: 1.65;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    /* Article Body with Drop-Cap */
+    .article-text {
+      font-size: 17px;
+      line-height: 1.85;
+      color: #1e293b;
+    }
+    .article-text p { margin-bottom: 16px; }
+    .article-text p:first-of-type::first-letter {
+      font-size: 52px;
+      line-height: 45px;
+      padding-top: 4px;
+      padding-right: 8px;
+      padding-left: 3px;
+      float: left;
+      color: var(--brand);
+      font-weight: 900;
+      font-family: 'Yantramanav', sans-serif;
+    }
+
+    /* Social Share Suite */
+    .share-container {
+      margin-top: 30px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+    .share-container h4 {
+      font-size: 14px;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+    .share-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .share-btn-group a, .share-btn-group button {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-wa { background: #16a34a; }
+    .btn-fb { background: #1877f2; }
+    .btn-tw { background: #0f172a; }
+    .btn-native { background: #ea580c; }
+    .btn-copy { background: #475569; }
+
+    /* Sidebar (ताज़ा खबरें) */
+    .sidebar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 15px;
+      border-bottom: 2px solid var(--brand);
+      padding-bottom: 6px;
+    }
+    .side-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f1f5f9;
+      text-decoration: none;
+      color: inherit;
+    }
+    .side-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .side-thumb {
+      width: 85px;
+      height: 65px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #e2e8f0;
+      flex-shrink: 0;
+    }
+    .side-detail {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .side-cat {
+      background: var(--brand);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 3px;
+      align-self: flex-start;
+      margin-bottom: 4px;
+    }
+    .side-headline {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #1e293b;
+    }
+    .side-headline:hover { color: var(--brand); }
+    .side-date {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 860px) {
+      .layout-container { grid-template-columns: 1fr; }
+      .logo-text { font-size: 30px; }
+      .article-headline { font-size: 22px; }
     }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <article id="articleRoot" class="article-card" style="display:none;">
-      <span id="categoryBadge" class="badge"></span>
-      <h1 id="headline"></h1>
-      <div id="metaBar" class="meta"></div>
-      <div id="summaryBox" class="summary-box"></div>
-      <figure id="figureWrap" style="display:none;">
-        <img id="featuredImage" src="" alt="Featured image" />
-        <figcaption id="imageCaption"></figcaption>
-      </figure>
-      <section id="bodyContent"></section>
 
-      <!-- SHARE SUITE ONLY AT BOTTOM -->
-      <section class="share">
-        <h3>Share this article</h3>
-        <div class="share-buttons">
-          <a id="waShare" class="wa" target="_blank" rel="noopener">WhatsApp</a>
-          <a id="fbShare" class="fb" target="_blank" rel="noopener">Facebook</a>
-          <a id="twShare" class="tw" target="_blank" rel="noopener">Twitter</a>
-          <button id="nativeShareBtn" class="native">Share</button>
-          <button id="copyLinkBtn" class="copy">Copy Link</button>
-        </div>
+  <!-- Top Utility -->
+  <div class="top-bar">
+    <div id="liveDateDisplay">दिनांक: आज</div>
+    <div class="top-links">
+      <a href="epaper.html">📰 ई-पेपर</a>
+      <a href="admin.html">🔐 CMS</a>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header-main">
+    <div class="header-inner">
+      <div class="logo-container">
+        <a href="index.html">
+          <div class="logo-text">THE <span>90I</span> NEWS</div>
+          <div class="tagline">सच | सटीक | निर्भीक</div>
+        </a>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn-search" onclick="location.href='index.html'">🔍 खोजें</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Menu -->
+  <nav class="main-nav">
+    <div class="nav-scroll">
+      <a href="index.html" class="active">होम</a>
+      <a href="index.html?cat=राष्ट्रीय">राष्ट्रीय</a>
+      <a href="index.html?cat=बिहार">बिहार</a>
+      <a href="index.html?cat=राजनीति">राजनीति</a>
+      <a href="index.html?cat=मनोरंजन">मनोरंजन</a>
+      <a href="index.html?cat=खेल">खेल</a>
+      <a href="index.html?cat=व्यापार">व्यापार</a>
+      <a href="index.html?cat=शिक्षा">शिक्षा</a>
+      <a href="index.html?cat=टेक्नोलॉजी">टेक्नोलॉजी</a>
+      <a href="index.html?cat=लाइफस्टाइल">लाइफस्टाइल</a>
+      <a href="epaper.html">ई-पेपर</a>
+    </div>
+  </nav>
+
+  <!-- Breaking Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-badge">ब्रेकिंग</div>
+    <div id="tickerText" class="ticker-content">ताजा खबरों के लिए THE 90I NEWS से जुड़े रहें...</div>
+  </div>
+
+  <!-- 2 Column Layout -->
+  <main class="layout-container">
+    
+    <!-- Left: Main Full Article -->
+    <article class="article-box">
+      <span id="artCategory" class="cat-tag">बिहार</span>
+      <h1 id="artHeadline" class="article-headline">लोड हो रहा है...</h1>
+      <div id="artMeta" class="meta-line">25 अगस्त 2026 • 15:16 • 90I डिजिटल डेस्क</div>
+
+      <div id="artImgContainer" class="featured-img-wrap" style="display: none;">
+        <img id="artImg" src="" alt="Featured image" />
+        <div id="artImgCap" class="img-caption"></div>
+      </div>
+
+      <div id="artSummary" class="summary-card" style="display: none;"></div>
+
+      <section id="artBody" class="article-text">
+        <p>समाचार सामग्री लोड हो रही है...</p>
       </section>
+
+      <!-- Bottom Share Suite -->
+      <div class="share-container">
+        <h4>📢 इस खबर को शेयर करें:</h4>
+        <div class="share-btn-group">
+          <a id="btnWa" class="btn-wa" target="_blank" rel="noopener">WhatsApp</a>
+          <a id="btnFb" class="btn-fb" target="_blank" rel="noopener">Facebook</a>
+          <a id="btnTw" class="btn-tw" target="_blank" rel="noopener">Twitter</a>
+          <button type="button" id="btnShareNative" class="btn-native">📲 Share</button>
+          <button type="button" id="btnCopyLink" class="btn-copy">📋 Copy Link</button>
+        </div>
+      </div>
     </article>
 
-    <div id="stateBox" class="state">Loading article...</div>
+    <!-- Right: Sidebar (ताज़ा खबरें) -->
+    <aside class="sidebar-card">
+      <h3 class="sidebar-title">ताज़ा खबरें</h3>
+      <div id="sidebarList">
+        <p style="font-size: 13px; color: var(--muted);">लोड हो रहा है...</p>
+      </div>
+    </aside>
+
   </main>
 
   <script>
@@ -155,116 +447,168 @@
 
     const DATA_PATH = "data/90i-data.json";
 
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", initPage);
 
-    async function init() {
-      const state = document.getElementById("stateBox");
+    async function initPage() {
+      renderDateHeader();
+
+      const params = new URLSearchParams(window.location.search);
+      const slug = (params.get("slug") || "").trim().toLowerCase();
+      const id = (params.get("id") || "").trim();
+
+      let newsList = [];
+
       try {
-        const params = new URLSearchParams(window.location.search);
-        const slugParam = (params.get("slug") || "").trim().toLowerCase();
-        const idParam = (params.get("id") || "").trim();
-
-        if (!slugParam && !idParam) {
-          state.textContent = "No article parameter provided. Use ?slug=... or ?id=...";
-          return;
+        const res = await fetch(DATA_PATH + "?_t=" + Date.now(), { cache: "no-store" });
+        if (res.ok) {
+          const db = await res.json();
+          newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
         }
+      } catch (e) {}
 
-        const res = await fetch(DATA_PATH, { cache: "no-store" });
-        if (!res.ok) throw new Error("Unable to load data source.");
-        const json = await res.json();
+      // Fallback to cache if offline
+      if (!newsList.length) {
+        try {
+          const cached = localStorage.getItem("cached_db");
+          if (cached) {
+            const db = JSON.parse(cached);
+            newsList = db["90i_news"] || db.news || [];
+          }
+        } catch(e) {}
+      }
 
-        const news = Array.isArray(json?.news) ? json.news : [];
-        let article = null;
+      // Find current article
+      let currentArticle = null;
+      if (slug) currentArticle = newsList.find(n => String(n.slug || "").trim().toLowerCase() === slug);
+      if (!currentArticle && id) currentArticle = newsList.find(n => String(n.id) === id);
+      if (!currentArticle && newsList.length > 0) currentArticle = newsList[0];
 
-        if (slugParam) {
-          article = news.find(n => String(n?.slug || "").trim().toLowerCase() === slugParam) || null;
-        }
-        if (!article && idParam) {
-          article = news.find(n => String(n?.id || "").trim() === idParam) || null;
-        }
+      if (currentArticle) {
+        renderArticle(currentArticle);
+      } else {
+        document.getElementById("artHeadline").innerText = "समाचार उपलब्ध नहीं है";
+        document.getElementById("artBody").innerHTML = "<p>माफ कीजिए, यह समाचार मौजूद नहीं है या हटा दिया गया है।</p>";
+      }
 
-        if (!article) {
-          state.textContent = "Article not found.";
-          return;
-        }
-
-        renderArticle(article);
-        state.style.display = "none";
-        document.getElementById("articleRoot").style.display = "block";
-      } catch (err) {
-        state.textContent = "Failed to load article: " + (err?.message || "Unknown error");
+      // Render Sidebar & Ticker
+      renderSidebar(newsList, currentArticle ? currentArticle.id : null);
+      if (newsList.length > 0) {
+        document.getElementById("tickerText").innerText = newsList[0].title;
       }
     }
 
+    function renderDateHeader() {
+      const el = document.getElementById("liveDateDisplay");
+      if (!el) return;
+      const now = new Date();
+      el.textContent = now.toLocaleDateString("hi-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
     function renderArticle(a) {
-      const title = safeText(a?.title || "Untitled");
-      const category = safeText(a?.category || "General");
-      const author = safeText(a?.author || "Desk Reporter");
-      const published = safeText(a?.publishedAt || "");
-      const summary = safeText(a?.summary || "");
-      const body = String(a?.bodyHtml || "<p>No content available.</p>");
-      const image = String(a?.image || "").trim();
-      const caption = safeText(a?.imageCaption || "");
+      const title = a.title || "शीर्षक उपलब्ध नहीं";
+      const category = a.category || "बिहार";
+      const author = a.author || "90I डिजिटल डेस्क";
+      const date = a.date || a.publishedAt || "";
+      const time = a.time || "";
+      const summary = a.excerpt || a.summary || "";
+      const body = a.content || a.body || "<p>सामग्री उपलब्ध नहीं है।</p>";
+      const image = (a.image || "").trim();
+      const caption = a.imageCaption || "";
 
-      document.title = title + " | 90i News";
-      document.getElementById("categoryBadge").textContent = category;
-      document.getElementById("headline").textContent = title;
-      document.getElementById("metaBar").textContent = `By ${author} • ${published}`;
-      document.getElementById("summaryBox").textContent = summary;
-      document.getElementById("bodyContent").innerHTML = body;
+      document.title = `${title} — THE 90I NEWS`;
+      document.getElementById("artCategory").innerText = category;
+      document.getElementById("artHeadline").innerText = title;
+      document.getElementById("artMeta").innerText = `${date} ${time ? '• ' + time : ''} • ${author}`;
 
-      const fig = document.getElementById("figureWrap");
-      if (image) {
-        document.getElementById("featuredImage").src = image;
-        document.getElementById("imageCaption").textContent = caption;
-        fig.style.display = "block";
+      // Summary
+      const summaryEl = document.getElementById("artSummary");
+      if (summary) {
+        summaryEl.innerText = summary;
+        summaryEl.style.display = "block";
       } else {
-        fig.style.display = "none";
+        summaryEl.style.display = "none";
       }
 
+      // Image
+      const imgWrap = document.getElementById("artImgContainer");
+      if (image) {
+        document.getElementById("artImg").src = image;
+        document.getElementById("artImgCap").innerText = caption;
+        imgWrap.style.display = "block";
+      } else {
+        imgWrap.style.display = "none";
+      }
+
+      // Body
+      document.getElementById("artBody").innerHTML = body;
+
+      // Share links
       setupShare(title);
+    }
+
+    function renderSidebar(list, currentId) {
+      const sb = document.getElementById("sidebarList");
+      if (!sb) return;
+
+      const filtered = list.filter(n => String(n.id) !== String(currentId)).slice(0, 6);
+      if (!filtered.length) {
+        sb.innerHTML = '<p style="font-size: 13px; color: var(--muted);">अन्य कोई समाचार नहीं है।</p>';
+        return;
+      }
+
+      sb.innerHTML = filtered.map(item => {
+        const title = item.title || "";
+        const cat = item.category || "ताजा";
+        const date = item.date || item.publishedAt || "";
+        const link = item.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${item.id}`;
+        const thumb = item.image || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80";
+
+        return `
+          <a href="${link}" class="side-item">
+            <img src="${thumb}" alt="${title}" class="side-thumb" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80'">
+            <div class="side-detail">
+              <span class="side-cat">${cat}</span>
+              <div class="side-headline">${title}</div>
+              <div class="side-date">${date}</div>
+            </div>
+          </a>
+        `;
+      }).join("");
     }
 
     function setupShare(title) {
       const url = window.location.href;
-      const text = `${title}`;
+      const text = `${title} — पढ़ें THE 90I NEWS पर`;
 
-      document.getElementById("waShare").href =
-        `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`;
-      document.getElementById("fbShare").href =
-        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-      document.getElementById("twShare").href =
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+      document.getElementById("btnWa").href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + "\n\n" + url)}`;
+      document.getElementById("btnFb").href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+      document.getElementById("btnTw").href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
 
-      document.getElementById("nativeShareBtn").addEventListener("click", async () => {
+      document.getElementById("btnShareNative").onclick = async () => {
         if (navigator.share) {
           try {
-            await navigator.share({ title: document.title, text, url });
+            await navigator.share({ title: title, text: text, url: url });
           } catch (_) {}
         } else {
-          alert("Native sharing is not supported on this browser.");
+          copyLink();
         }
-      });
+      };
 
-      document.getElementById("copyLinkBtn").addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(url);
-          alert("Link copied.");
-        } catch (_) {
-          // fallback
-          const tmp = document.createElement("input");
-          tmp.value = url;
-          document.body.appendChild(tmp);
-          tmp.select();
-          document.execCommand("copy");
-          document.body.removeChild(tmp);
-          alert("Link copied.");
-        }
-      });
+      document.getElementById("btnCopyLink").onclick = copyLink;
     }
 
-    function safeText(v) {
-      return String(v);
+    function copyLink() {
+      const url = window.location.href;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => alert("✅ लिंक कॉपी हो गया!"));
+      } else {
+        alert("✅ URL: " + url);
+      }
     }
   </script>
 </body>
