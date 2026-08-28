@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>मुख्य पृष्ठ | THE 90I NEWS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yantramanav:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626;
+      --brand-dark: #b91c1c;
+      --bg: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --card-bg: #ffffff;
+      --footer-bg: #0b1315;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Yantramanav', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Top Utility Bar */
+    .top-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 4px 15px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .top-bar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-links a { color: var(--muted); text-decoration: none; margin-left: 12px; font-weight: 500; }
+    .top-links a:hover { color: var(--brand); }
+
+    /* Main Branding Header */
+    .header-main {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 15px 20px;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-container a { text-decoration: none; }
+    .logo-text {
+      font-size: 38px;
+      font-weight: 900;
+      color: #0f172a;
+      font-family: 'Rozha One', serif;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .logo-text span { color: var(--brand); }
+    .tagline {
+      font-size: 13px;
+      color: var(--brand);
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn-search {
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    /* Navigation Bar */
+    .main-nav {
+      background: #ffffff;
+      border-bottom: 2px solid var(--brand);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .nav-scroll {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+    .nav-scroll::-webkit-scrollbar { display: none; }
+    .nav-scroll a {
+      padding: 10px 14px;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-block;
+      transition: 0.2s;
+    }
+    .nav-scroll a:hover, .nav-scroll a.active { color: var(--brand); }
+
+    /* Breaking News Ticker */
+    .ticker-wrap {
+      background: #0f172a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      max-width: 1200px;
+      margin: 10px auto;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .ticker-badge {
+      background: var(--brand);
+      padding: 6px 14px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .ticker-content {
+      padding: 6px 14px;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #e2e8f0;
+    }
+
+    /* Sub Header / Edition Info */
+    .epaper-meta-header {
+      max-width: 1200px;
+      margin: 15px auto 20px;
+      padding: 12px 18px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--brand);
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .epaper-meta-header h2 {
+      font-size: 20px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .epaper-meta-header p {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* 2-Column Main Layout */
+    .main-layout {
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      padding: 0 15px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 25px;
+      align-items: start;
+    }
+
+    /* Left Side: Original News Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .news-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .news-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    .thumb-wrap {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: #f1f5f9;
+      position: relative;
+    }
+    .thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .content {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-grow: 1;
+    }
+    .cat-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 800;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      border-radius: 4px;
+      padding: 2px 8px;
+      text-transform: uppercase;
+    }
+    .card-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.4;
+      color: #0f172a;
+    }
+    .card-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .card-title a:hover {
+      color: var(--brand);
+    }
+    .card-meta {
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-summary {
+      margin: 0;
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.55;
+      flex-grow: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      padding: 12px 15px;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+    }
+    .read-btn {
+      text-decoration: none;
+      background: var(--brand);
+      color: #ffffff;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+    .read-btn:hover { background: var(--brand-dark); }
+
+    .empty-box {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+
+    /* Right Side: Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .sidebar-widget {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.03);
+    }
+    .sidebar-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      border-bottom: 2px solid var(--brand);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .trending-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .trending-list li {
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--line);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .trending-list li:last-child { border-bottom: none; }
+    .trending-list a {
+      color: #1e293b;
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      transition: color 0.2s;
+    }
+    .trending-list a:hover { color: var(--brand); }
+    .trending-num {
+      background: #fee2e2;
+      color: var(--brand-dark);
+      font-size: 11px;
+      font-weight: 900;
+      padding: 1px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .btn-epaper-promo {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(135deg, var(--brand), #991b1b);
+      color: #ffffff;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-epaper-promo:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
+    }
+
+    /* Video Section */
+    .section-wrap {
+      max-width: 1200px;
+      margin: 0 auto 45px;
+      padding: 0 15px;
+    }
+    .section-header {
+      margin-bottom: 15px;
+      border-left: 4px solid var(--brand);
+      padding-left: 10px;
+    }
+    .section-header h2 {
+      font-size: 20px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .video-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+    }
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background: #000;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-info {
+      padding: 12px 15px;
+    }
+    .video-info h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* Feedback / Contact Form Section */
+    .contact-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 25px;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      border-color: var(--brand);
+    }
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .btn-submit {
+      background: var(--brand);
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover {
+      background: var(--brand-dark);
+    }
+
+    /* Multi-Column Dark Footer */
+    .footer-dark {
+      background: var(--footer-bg);
+      color: #94a3b8;
+      padding: 50px 15px 20px;
+      font-size: 13px;
+      border-top: 3px solid var(--brand);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 30px;
+    }
+    .footer-col h3 {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .footer-col h3::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 30px;
+      height: 2px;
+      background: var(--brand);
+    }
+    .footer-col p {
+      line-height: 1.7;
+      margin-top: 10px;
+    }
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .footer-links li {
+      margin-bottom: 9px;
+    }
+    .footer-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.2s, padding-left 0.2s;
+      display: inline-block;
+    }
+    .footer-links a:hover {
+      color: #ffffff;
+      padding-left: 4px;
+    }
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .logo-text { font-size: 30px; }
+      .main-layout { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .video-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 540px) {
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Utility Bar -->
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <div id="liveDateDisplay">दिनांक: आज</div>
+      <div class="top-links">
+        <a href="index.html">🏠 मुख्य पृष्ठ</a>
+        <a href="epaper.html">📰 ई-पेपर</a>
+        <a href="admin.html">🔐 CMS एडमिन</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header-main">
+    <div class="header-inner">
+      <div class="logo-container">
+        <a href="index.html">
+          <div class="logo-text">THE <span>90I</span> NEWS</div>
+          <div class="tagline">सच | सटीक | निर्भीक</div>
+        </a>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn-search" onclick="location.href='index.html'">🔍 खोजें</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Menu -->
+  <nav class="main-nav">
+    <div class="nav-scroll">
+      <a href="index.html" class="active">होम</a>
+      <a href="index.html?cat=राष्ट्रीय">राष्ट्रीय</a>
+      <a href="index.html?cat=बिहार">बिहार</a>
+      <a href="index.html?cat=राजनीति">राजनीति</a>
+      <a href="index.html?cat=मनोरंजन">मनोरंजन</a>
+      <a href="index.html?cat=खेल">खेल</a>
+      <a href="index.html?cat=व्यापार">व्यापार</a>
+      <a href="index.html?cat=शिक्षा">शिक्षा</a>
+      <a href="index.html?cat=टेक्नोलॉजी">टेक्नोलॉजी</a>
+      <a href="index.html?cat=लाइफस्टाइल">लाइफस्टाइल</a>
+      <a href="epaper.html">ई-पेपर</a>
+    </div>
+  </nav>
+
+  <!-- Breaking Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-badge">ब्रेकिंग</div>
+    <div id="tickerText" class="ticker-content">ताजा डिजिटल समाचार संस्करण उपलब्ध है...</div>
+  </div>
+
+  <!-- Main Meta Header -->
+  <div class="epaper-meta-header">
+    <div>
+      <h2>📰 प्रमुख समाचार बुलेटिन</h2>
+      <p id="editionDateLine">संस्करण: आज का डिजिटल बुलेटिन</p>
+    </div>
+    <div id="totalNewsCount" style="font-size: 13px; font-weight: 700; color: var(--brand);">कुल समाचार: लोड हो रहा है...</div>
+  </div>
+
+  <!-- 2-Column Responsive Layout -->
+  <main class="main-layout">
+    <!-- Left Column: News Grid -->
+    <section>
+      <div id="epaperGrid" class="grid"></div>
+      <div id="emptyState" class="empty-box" style="display:none;">
+        <h3>कोई प्रकाशित समाचार उपलब्ध नहीं है।</h3>
+        <p style="margin-top:6px; font-size:13px;">कृपया एडमिन पैनल से नया समाचार प्रकाशित करें।</p>
+        <a href="index.html" class="read-btn" style="margin-top:14px;">मुख्य पृष्ठ पर जाएं</a>
+      </div>
+    </section>
+
+    <!-- Right Column: Sidebar -->
+    <aside class="sidebar">
+      <a href="epaper.html" class="btn-epaper-promo">
+        📰 आज का ई-पेपर पढ़ें ➔
+      </a>
+
+      <div class="sidebar-widget">
+        <h3 class="sidebar-title">⚡ न्यूज़ ब्रीफ (Trending)</h3>
+        <ul id="trendingNewsList" class="trending-list">
+          <li style="color:var(--muted); font-size:12px;">समाचार लोड हो रहा है...</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <!-- 2 YouTube Video Bulletin Section -->
+  <section class="section-wrap">
+    <div class="section-header">
+      <h2>📹 वीडियो बुलेटिन / लाइव अपडेट</h2>
+    </div>
+    <div id="videoContainer" class="video-grid">
+      <!-- Dynamic / Default fallback videos -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <iframe id="videoPlayer1" src="https://www.youtube.com/embed/live_stream?channel=" allowfullscreen></iframe>
+        </div>
+        <div class="video-info">
+          <h3 id="videoTitle1">ताजा वीडियो समाचार बुलेटिन</h3>
+        </div>
+      </div>
+      <div class="video-card">
+        <div class="video-wrapper">
+          <iframe id="videoPlayer2" src="https://www.youtube.com/embed/live_stream?channel=" allowfullscreen></iframe>
+        </div>
+        <div class="video-info">
+          <h3 id="videoTitle2">विशेष रिपोर्ट व विश्लेषण</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact / Feedback Form Section -->
+  <section class="section-wrap">
+    <div class="contact-card">
+      <div class="section-header" style="margin-bottom:20px; border-left:4px solid var(--brand); padding-left:10px;">
+        <h2>📩 संपर्क करें / न्यूज़ टिप भेजें</h2>
+      </div>
+      <form id="feedbackForm" onsubmit="handleFeedbackSubmit(event)">
+        <div class="form-group">
+          <label for="cName">आपका नाम *</label>
+          <input type="text" id="cName" class="form-control" placeholder="उदा. राहुल शर्मा" required>
+        </div>
+        <div class="form-group">
+          <label for="cContact">मोबाइल नंबर या ईमेल आईडी *</label>
+          <input type="text" id="cContact" class="form-control" placeholder="उदा. 9876543210 / name@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="cMessage">संदेश या न्यूज़ टिप *</label>
+          <textarea id="cMessage" class="form-control" placeholder="अपना संदेश या स्थानीय समाचार यहाँ लिखें..." required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">संदेश भेजें ➔</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Multi-Column Black Footer -->
+  <footer class="footer-dark">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="logo-text" style="color:#ffffff; font-size:26px; margin-bottom:10px;">THE <span style="color:var(--brand)">90I</span> NEWS</div>
+        <p>THE 90I NEWS हिंदी पत्रकारिता का एक अग्रणी डिजिटल मंच है जो पाठकों तक निष्पक्ष, सटीक और निर्भीक समाचार पहुँचाने के लिए प्रतिबद्ध है।</p>
+      </div>
+      <div class="footer-col">
+        <h3>समाचार</h3>
+        <ul class="footer-links">
+          <li><a href="index.html?cat=राष्ट्रीय">राष्ट्रीय</a></li>
+          <li><a href="index.html?cat=बिहार">बिहार</a></li>
+          <li><a href="index.html?cat=राजनीति">राजनीति</a></li>
+          <li><a href="index.html?cat=खेल">खेल</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>विशेष</h3>
+        <ul class="footer-links">
+          <li><a href="epaper.html">डिजिटल ई-पेपर</a></li>
+          <li><a href="index.html?cat=टेक्नोलॉजी">टेक्नोलॉजी</a></li>
+          <li><a href="index.html?cat=शिक्षा">शिक्षा व रोजगार</a></li>
+          <li><a href="index.html?cat=लाइफस्टाइल">लाइफस्टाइल</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>कंपनी</h3>
+        <ul class="footer-links">
+          <li><a href="#">हमारे बारे में</a></li>
+          <li><a href="#">गोपनीयता नीति (Privacy Policy)</a></li>
+          <li><a href="#">नियम एवं शर्तें</a></li>
+          <li><a href="admin.html">एडमिन लॉगिन</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 THE 90I NEWS. सर्वाधिकार सुरक्षित। Designed for Precision & Speed.
+    </div>
+ 
