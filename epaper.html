@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>दैनिक ई-पेपर संस्करण | THE 90I NEWS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yantramanav:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #111827;
+      --paper: #ffffff;
+      --rule: #1e293b;
+      --light-rule: #cbd5e1;
+      --brand-red: #c81e1e;
+      --dark-red: #991b1b;
+      --ad-gold: #b45309;
+      --ad-bg: #fef08a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Yantramanav', 'Noto Serif Devanagari', serif;
+      background: #475569;
+      color: var(--ink);
+      line-height: 1.4;
+      padding-bottom: 50px;
+    }
+
+    /* Screen-Only Control Toolbar */
+    .screen-toolbar {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .toolbar-left, .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-tool {
+      background: var(--brand-red);
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+    .btn-tool:hover { background: var(--dark-red); }
+    .btn-tool.secondary { background: #334155; }
+    .btn-tool.secondary:hover { background: #1e293b; }
+
+    /* Physical Broadsheet Sheet */
+    .newspaper-sheet {
+      width: 100%;
+      max-width: 1100px;
+      margin: 25px auto;
+      background: var(--paper);
+      padding: 18px 24px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.4);
+      border: 1px solid #cbd5e1;
+      min-height: 900px;
+    }
+
+    /* 1. HINDUSTAN STYLE MASTHEAD */
+    .masthead-top-strip {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 11px;
+      font-weight: 800;
+      color: #334155;
+      padding-bottom: 2px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .masthead-grid {
+      display: grid;
+      grid-template-columns: 80px 1fr 220px;
+      gap: 15px;
+      align-items: center;
+      padding: 8px 0;
+    }
+    .brand-crest-box {
+      border: 2px solid var(--brand-red);
+      border-radius: 6px;
+      padding: 4px;
+      text-align: center;
+      font-weight: 900;
+      color: var(--brand-red);
+      line-height: 1;
+    }
+    .brand-crest-box .crest-hi { font-size: 28px; font-family: 'Rozha One', serif; }
+    .brand-crest-box .crest-sub { font-size: 9px; font-weight: 800; color: #1e293b; }
+
+    .masthead-center-wrap {
+      text-align: center;
+    }
+    .masthead-logo {
+      font-family: 'Rozha One', serif;
+      font-size: 72px;
+      font-weight: 900;
+      color: var(--brand-red);
+      line-height: 0.9;
+      letter-spacing: -1px;
+      margin-bottom: 4px;
+    }
+    .masthead-logo span { color: #000000; }
+    .masthead-slogan {
+      font-size: 14px;
+      font-weight: 900;
+      color: #1e293b;
+      letter-spacing: 1px;
+    }
+
+    /* Top-Right Teaser Box */
+    .top-teaser-box {
+      border-left: 1.5px solid var(--light-rule);
+      padding-left: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .teaser-text h5 { font-size: 11px; color: var(--brand-red); font-weight: 900; line-height: 1.2; }
+    .teaser-text p { font-size: 12px; font-weight: 800; color: #000; line-height: 1.2; }
+    .teaser-img { width: 55px; height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid var(--rule); }
+
+    /* Masthead Meta Line */
+    .masthead-meta-bar {
+      border-top: 1.5px solid var(--rule);
+      border-bottom: 2.5px solid var(--rule);
+      padding: 3px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 10px;
+    }
+
+    /* Top Promo Banner */
+    .top-promo-banner {
+      background: linear-gradient(90deg, #fef08a 0%, #fed7aa 100%);
+      border: 1.5px solid #f59e0b;
+      border-radius: 4px;
+      padding: 6px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .promo-tag { font-weight: 900; font-size: 14px; color: #b45309; }
+    .promo-msg { font-weight: 800; font-size: 13px; color: #78350f; }
+
+    /* 2. MAIN 3-TIER NEWSPAPER GRID LAYOUT */
+    .newspaper-layout {
+      display: grid;
+      grid-template-columns: 2.6fr 1fr;
+      gap: 18px;
+    }
+    .left-broad-col {
+      border-right: 1.5px solid var(--light-rule);
+      padding-right: 18px;
+    }
+
+    /* TOP DUAL LEAD SECTION */
+    .top-row-stories {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 16px;
+      border-bottom: 1.5px solid var(--rule);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .top-story-card h3 {
+      font-size: 19px;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #000;
+      margin-bottom: 6px;
+    }
+    .top-story-card .story-kicker {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--brand-red);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .top-story-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border: 1px solid var(--rule);
+      margin: 6px 0;
+    }
+    .story-desc {
+      font-size: 12.5px;
+      text-align: justify;
+      color: #1f2937;
+      line-height: 1.45;
+    }
+
+    /* SUPER HEADLINE LEAD STORY */
+    .super-lead-block {
+      border-bottom: 2px solid var(--rule);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+    .super-sub-head {
+      font-size: 15px;
+      font-weight: 800;
+      color: #334155;
+      margin-bottom: 2px;
+    }
+    .super-main-title {
+      font-size: 32px;
+      font-weight: 900;
+      color: #000000;
+      line-height: 1.2;
+      font-family: 'Rozha One', 'Yantramanav', serif;
+      margin-bottom: 10px;
+    }
+    .super-content-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 14px;
+    }
+    .super-photo-box img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      border: 1px solid var(--rule);
+    }
+    .super-photo-caption {
+      font-size: 11px;
+      color: #475569;
+      font-style: italic;
+      padding-top: 3px;
+    }
+    .super-text {
+      font-size: 13.5px;
+      text-align: justify;
+      line-height: 1.5;
+      color: #111827;
+    }
+    .super-text::first-letter {
+      font-size: 40px;
+      float: left;
+      line-height: 0.8;
+      padding-right: 6px;
+      font-weight: 900;
+      color: var(--brand-red);
+      font-family: 'Rozha One', serif;
+    }
+
+    /* SUB STORIES ROW */
+    .sub-grid-three {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      border-bottom: 1.5px solid var(--rule);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .mini-story-item {
+      border-right: 1px solid var(--light-rule);
+      padding-right: 12px;
+    }
+    .mini-story-item:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+    .mini-story-title {
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.3;
+      color: #000;
+      margin-bottom: 4px;
+    }
+    .mini-story-img {
+      width: 100%;
+      height: 95px;
+      object-fit: cover;
+      margin-bottom: 6px;
+      border: 1px solid var(--light-rule);
+    }
+
+    /* BOTTOM MEGA SPECIAL BLOCK */
+    .bottom-mega-story {
+      border: 2px solid var(--brand-red);
+      background: #fafafa;
+      padding: 12px;
+    }
+    .mega-header-bar {
+      background: var(--brand-red);
+      color: #ffffff;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 900;
+      margin: -12px -12px 10px -12px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .mega-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #000;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .mega-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 120px;
+      gap: 12px;
+    }
+    .mega-photo-wrap img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border: 1px solid var(--rule);
+    }
+    .mega-points-box {
+      background: #fff;
+      border: 1px dashed var(--brand-red);
+      padding: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    /* RIGHT SIDEBAR */
+    .right-sidebar-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Top 5 Headlines Box */
+    .top-five-box {
+      border: 2px solid var(--brand-red);
+      border-radius: 4px;
+      padding: 10px;
+      background: #fff;
+    }
+    .top-five-head {
+      background: var(--brand-red);
+      color: #fff;
+      font-weight: 900;
+      font-size: 14px;
+      text-align: center;
+      padding: 4px;
+      margin: -10px -10px 8px -10px;
+    }
+    .top-five-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .top-five-item {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.35;
+      border-bottom: 1px dashed var(--light-rule);
+      padding-bottom: 6px;
+    }
+    .top-five-item:last-child { border-bottom: none; }
+    .five-num {
+      background: #fee2e2;
+      color: var(--brand-red);
+      font-weight: 900;
+      font-size: 14px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .side-card {
+      border-bottom: 1.5px solid var(--rule);
+      padding-bottom: 12px;
+    }
+    .side-card h4 {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.3;
+      color: #000;
+      margin-bottom: 6px;
+    }
+    .side-card img {
+      width: 100%;
+      height: 125px;
+      object-fit: cover;
+      border: 1px solid var(--rule);
+      margin-bottom: 6px;
+    }
+
+    .ad-card-side {
+      background: #fffbeb;
+      border: 2px solid var(--ad-gold);
+      padding: 12px;
+      text-align: center;
+      border-radius: 4px;
+    }
+    .ad-card-side h5 { font-size: 15px; font-weight: 900; color: #92400e; margin-bottom: 2px; }
+    .ad-card-side p { font-size: 11px; font-weight: 700; color: #78350f; word-break: break-all; }
+
+    /* Newspaper Imprint Footer */
+    .imprint-footer {
+      margin-top: 18px;
+      border-top: 2px solid var(--rule);
+      padding-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      color: #475569;
+    }
+
+    /* PRINT / PDF ENGINE */
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        color: #000000 !important;
+      }
+      .screen-toolbar {
+        display: none !important;
+      }
+      .newspaper-sheet {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 4mm;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .masthead-grid { grid-template-columns: 1fr; text-align: center; }
+      .newspaper-layout { grid-template-columns: 1fr; }
+      .left-broad-col { border-right: none; padding-right: 0; }
+      .top-row-stories { grid-template-columns: 1fr; }
+      .super-content-grid { grid-template-columns: 1fr; }
+      .sub-grid-three { grid-template-columns: 1fr; }
+      .mini-story-item { border-right: none; border-bottom: 1px solid var(--light-rule); padding-bottom: 10px; margin-bottom: 10px; }
+      .mega-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Toolbar -->
+  <header class="screen-toolbar">
+    <div class="toolbar-left">
+      <a href="index.html" class="btn-tool secondary">🏠 मुख्य पृष्ठ</a>
+      <span style="font-size: 13px; font-weight: 700; color: #94a3b8;" id="pageEditionDate">दिनांक: आज</span>
+    </div>
+    <div class="toolbar-right">
+      <button type="button" onclick="window.print()" class="btn-tool">
+        🖨️ अखबार प्रिंट / PDF डाउनलोड करें
+      </button>
+    </div>
+  </header>
+
+  <!-- Broadsheet Sheet -->
+  <main class="newspaper-sheet" id="printArea">
+
+    <!-- Masthead Top Web URL -->
+    <div class="masthead-top-strip">
+      <span>www.the90inews.com</span>
+    </div>
+
+    <!-- 1. HINDUSTAN STYLE MASTHEAD -->
+    <header>
+      <div class="masthead-grid">
+        <div class="brand-crest-box">
+          <div class="crest-hi">90I</div>
+          <div class="crest-sub">न्यूज़ नेटवर्क</div>
+        </div>
+
+        <div class="masthead-center-wrap">
+          <h1 class="masthead-logo">THE <span>90I</span> NEWS</h1>
+          <div class="masthead-slogan">भरोसा नए भारत का • सच | सटीक | निर्भीक</div>
+        </div>
+
+        <!-- Top Right Teaser Box -->
+        <div class="top-teaser-box">
+          <div class="teaser-text">
+            <h5 id="teaserTag">विशेष बुलेटिन</h5>
+            <p id="teaserHead">प्रमुख राष्ट्रीय एवं डिजिटल विश्लेषण</p>
+          </div>
+          <img id="teaserImg" class="teaser-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=100&q=80" alt="Teaser">
+        </div>
+      </div>
+
+      <!-- Masthead Day & Date Bar -->
+      <div class="masthead-meta-bar">
+        <span id="mastheadDateDay">बिहार • लोड हो रहा है...</span>
+        <span>वर्ष: 28 • अंक: 104 • मूल्य: ₹5.00</span>
+        <span>डिजिटल दैनिक ब्रॉडशीट</span>
+      </div>
+    </header>
+
+    <!-- Sponsor / Announcement Ribbon -->
+    <div class="top-promo-banner">
+      <div class="promo-tag">⭐ THE 90I NEWS दैनिक ई-संस्करण</div>
+      <div class="promo-msg">विश्वसनीय पत्रकारिता, सटीक विश्लेषण एवं हर पल की ताजा रिपोर्ट सीधे आपके हाथ में।</div>
+    </div>
+
+    <!-- Empty State Box -->
+    <div id="noDataAlert" style="display:none; text-align:center; padding: 60px 20px; border: 1px dashed var(--rule); margin: 20px 0;">
+      <h2 style="color: var(--brand-red);">📰 कोई प्रकाशित समाचार उपलब्ध नहीं है</h2>
+      <p style="color: #64748b; margin-top: 8px;">कृपया एडमिन पैनल से नया समाचार प्रकाशित करें। आपके द्वारा रिलीज किया गया समाचार सीधे इस पृष्ठ पर अखबार के लेआउट में स्वतः प्रदर्शित हो जाएगा।</p>
+    </div>
+
+    <!-- 2. NEWSPAPER BROAD MAIN EDITORIAL LAYOUT -->
+    <div class="newspaper-layout" id="broadsheetColumns">
+
+      <!-- Left Broad Column -->
+      <section class="left-broad-col">
+        
+        <!-- Top Dual Lead Row (Stories 1 & 2) -->
+        <div class="top-row-stories" id="topRowStories">
+          <article class="top-story-card" id="slotTop1">
+            <span class="story-kicker" id="top1Kicker">विशेष खबर</span>
+            <h3 id="top1Title">समाचार लोड हो रहा है...</h3>
+            <img id="top1Img" src="" alt="News" style="display:none;">
+            <p class="story-desc" id="top1Body">कृपया प्रतीक्षा करें...</p>
+          </article>
+
+          <article class="top-story-card" id="slotTop2">
+            <span class="story-kicker" id="top2Kicker">राष्ट्रीय अपडेट</span>
+            <h3 id="top2Title">प्रमुख राजनीतिक एवं सामाजिक हलचल</h3>
+            <img id="top2Img" src="" alt="News" style="display:none;">
+            <p class="story-desc" id="top2Body">विस्तृत विश्लेषण लोड हो रहा है...</p>
+          </article>
+        </div>
+
+        <!-- Super Main Headline Story (Story 3) -->
+        <article class="super-lead-block" id="slotSuper">
+          <div class="super-sub-head" id="superSubHead">दैनिक विशेष ग्राउंड रिपोर्ट</div>
+          <h2 class="super-main-title" id="superMainTitle">ताज़ा एवं प्रमुख घटनाक्रम का विस्तृत ब्योरा</h2>
+          
+          <div class="super-content-grid">
+            <div class="super-photo-box">
+              <img id="superImg" src="" alt="Super Lead" style="display:none;">
+              <div class="super-photo-caption" id="superCaption"></div>
+            </div>
+            <div class="super-text" id="superBody">
+              राज्य एवं राष्ट्र से जुड़ी प्रमुख खबरों का निष्पक्ष और प्रामाणिक कवरेज।
+            </div>
+          </div>
+        </article>
+
+        <!-- Sub Grid 3 Stories (Stories 4, 5, 6) -->
+        <div class="sub-grid-three" id="subGridThree">
+          <article class="mini-story-item" id="slotSub1">
+            <h4 class="mini-story-title" id="sub1Title">कानून-व्यवस्था</h4>
+            <img id="sub1Img" class="mini-story-img" src="" alt="News" style="display:none;">
+            <p class="story-desc" id="sub1Body">सुरक्षा एवं प्रशासनिक अपडेट।</p>
+          </article>
+
+          <article class="mini-story-item" id="slotSub2">
+            <h4 class="mini-story-title" id="sub2Title">शिक्षा एवं रोजगार</h4>
+            <img id="sub2Img" class="mini-story-img" src="" alt="News" style="display:none;">
+            <p class="story-desc" id="sub2Body">भर्ती, परीक्षा व परिणाम।</p>
+          </article>
+
+          <article class="mini-story-item" id="slotSub3">
+            <h4 class="mini-story-title" id="sub3Title">व्यापार एवं मौसम</h4>
+            <img id="sub3Img" class="mini-story-img" src="" alt="News" style="display:none;">
+            <p class="story-desc" id="sub3Body">बाजार भाव एवं मौसम स्थिति।</p>
+          </article>
+        </div>
+
+        <!-- Bottom Mega Story (Story 7) -->
+        <article class="bottom-mega-story" id="slotMega">
+          <div class="mega-header-bar">
+            <span>● विशेष प्रस्तुति / प्रेरणादायक रिपोर्ट</span>
+            <span id="megaDate">आज का अंक</span>
+          </div>
+          <h3 class="mega-title" id="megaTitle">समाज और जनसरोकार से जुड़ी विशेष गाथा</h3>
+          <div class="mega-grid">
+            <div class="mega-photo-wrap">
+              <img id="megaImg" src="" alt="Mega Story" style="display:none;">
+            </div>
+            <p class="story-desc" id="megaBody">
+              प्रेरक व्यक्तित्व और समाज में सकारात्मक बदलाव की ग्राउंड रिपोर्ट।
+            </p>
+            <div class="mega-points-box" id="megaBox">
+              <b>मुख्य बिंदु:</b><br>
+              • प्रामाणिक तथ्य<br>
+              • ग्राउंड रिपोर्टिंग<br>
+              • विशेष कवरेज
+            </div>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- Right Sidebar Column -->
+      <aside class="right-sidebar-col">
+        
+        <!-- "प्रमुख पांच" Top 5 Headlines Box -->
+        <div class="top-five-box">
+          <div class="top-five-head">प्रमुख पांच बड़ी खबरें</div>
+          <ul class="top-five-list" id="topFiveList"></ul>
+        </div>
+
+        <!-- Side Story 1 (Story 8) -->
+        <article class="side-card" id="slotSide1">
+          <h4 id="side1Title">राजनीतिक दलों की गतिविधियां तेज</h4>
+          <img id="side1Img" src="" alt="Side News" style="display:none;">
+          <p class="story-desc" id="side1Body">चुनावी तैयारियों और बैठकों का दौर जारी।</p>
+        </article>
+
+        <!-- Broadsheet Ad Box -->
+        <div class="ad-card-side">
+          <h5>📰 THE 90I NEWS विज्ञापन</h5>
+          <p>व्यापार, संस्थान व शुभकामना संदेश हेतु संपर्क करें:<br><b>mdsakibraza.066@gmail.com</b></p>
+        </div>
+
+        <!-- Side Story 2 (Story 9) -->
+        <article class="side-card" id="slotSide2">
+          <h4 id="side2Title">विज्ञान, तकनीक एवं स्वास्थ्य बुलेटिन</h4>
+          <p class="story-desc" id="side2Body">नवाचार एवं स्वास्थ्य से जुड़े जरूरी सुझाव।</p>
+        </article>
+
+      </aside>
+
+    </div>
+
+    <!-- Newspaper Imprint Footer -->
+    <footer class="imprint-footer">
+      <span>THE 90I NEWS • दैनिक ई-पेपर ब्रॉडशीट संस्करण</span>
+      
