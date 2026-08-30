@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>THE 90I NEWS | निष्पक्ष और निर्भीक डिजिटल न्यूज़ पोर्टल</title>
+
+  <!-- Google AdSense Code -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9762787230045511" crossorigin="anonymous"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yantramanav:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626;
+      --brand-dark: #b91c1c;
+      --brand-soft: #fef2f2;
+      --bg: #f8fafc;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --line: #e2e8f0;
+      --card-bg: #ffffff;
+      --dark-header: #0f172a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Yantramanav', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .main-wrapper { flex: 1 0 auto; }
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+
+    /* Top Utility Bar */
+    .top-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 7px 0;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .top-bar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--brand);
+      font-weight: 800;
+      font-size: 11.5px;
+      text-transform: uppercase;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--brand);
+      border-radius: 50%;
+      box-shadow: 0 0 0 rgba(220, 38, 38, 0.4);
+      animation: pulseAnim 1.6s infinite;
+    }
+    @keyframes pulseAnim {
+      0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+
+    /* Main Header Branding */
+    .header-main {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 16px 0;
+    }
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-container a { text-decoration: none; }
+    .logo-text {
+      font-size: 38px;
+      font-weight: 900;
+      color: #0f172a;
+      font-family: 'Rozha One', serif;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .logo-text span { color: var(--brand); }
+    .tagline {
+      font-size: 13px;
+      color: var(--brand);
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+    .btn-search {
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      cursor: pointer;
+      color: #334155;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+    .btn-search:hover {
+      background: #e2e8f0;
+      color: var(--brand);
+    }
+
+    /* Navigation Bar */
+    .main-nav {
+      background: #ffffff;
+      border-bottom: 2px solid var(--brand);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .nav-scroll {
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav-scroll::-webkit-scrollbar { display: none; }
+    .nav-scroll a {
+      padding: 12px 18px;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 700;
+      font-size: 15px;
+      display: inline-block;
+      transition: color 0.2s;
+    }
+    .nav-scroll a:hover, .nav-scroll a.active { color: var(--brand); }
+
+    /* Breaking News Smooth Scrolling Ticker */
+    .ticker-wrap {
+      background: #0f172a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      margin: 14px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker-badge {
+      background: var(--brand);
+      padding: 7px 14px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      z-index: 2;
+    }
+    .ticker-content-box {
+      flex-grow: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .ticker-moving-text {
+      display: inline-block;
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: tickerRun 22s linear infinite;
+      font-size: 13.5px;
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+    .ticker-moving-text:hover {
+      animation-play-state: paused;
+      cursor: pointer;
+    }
+    @keyframes tickerRun {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    /* Section Headers */
+    .sec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid var(--line);
+      margin-bottom: 18px;
+      padding-bottom: 6px;
+      position: relative;
+    }
+    .sec-title {
+      font-size: 21px;
+      font-weight: 900;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sec-title::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 70px;
+      height: 2px;
+      background: var(--brand);
+    }
+    .sec-link {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand);
+      text-decoration: none;
+    }
+
+    /* ================= 1. HERO SECTION ================= */
+    .hero-section {
+      margin: 18px 0 30px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 20px;
+    }
+    .hero-spotlight {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .spotlight-img-wrap {
+      width: 100%;
+      height: 330px;
+      position: relative;
+      overflow: hidden;
+      background: #e2e8f0;
+    }
+    .spotlight-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .hero-spotlight:hover .spotlight-img {
+      transform: scale(1.03);
+    }
+    .spotlight-cat-tag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--brand);
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .spotlight-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-grow: 1;
+    }
+    .spotlight-title {
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.35;
+      color: #0f172a;
+    }
+    .spotlight-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .spotlight-title a:hover { color: var(--brand); }
+    .spotlight-meta {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .spotlight-excerpt {
+      color: #475569;
+      font-size: 14.5px;
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Subleads in Hero */
+    .hero-subleads {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .sublead-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .sublead-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .sublead-thumb {
+      width: 110px;
+      height: 80px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #e2e8f0;
+      flex-shrink: 0;
+    }
+    .sublead-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+    }
+    .sublead-cat {
+      font-size: 11px;
+      color: var(--brand);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .sublead-headline {
+      font-size: 14.5px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: #0f172a;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .sublead-card:hover .sublead-headline { color: var(--brand); }
+    .sublead-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ================= 2. MAIN LAYOUT ================= */
+    .main-body-layout {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    /* News Cards Grid */
+    .news-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .news-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .news-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+    .card-thumb-wrap {
+      width: 100%;
+      height: 175px;
+      overflow: hidden;
+      background: #f1f5f9;
+      position: relative;
+    }
+    .card-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex-grow: 1;
+    }
+    .cat-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 800;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      border-radius: 4px;
+      padding: 2px 7px;
+      text-transform: uppercase;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.4;
+      color: #0f172a;
+    }
+    .card-title a { color: inherit; text-decoration: none; }
+    .card-title a:hover { color: var(--brand); }
+    .card-summary {
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      padding: 10px 14px;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+    .view-count-tag {
+      font-weight: 700;
+      color: #475569;
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Sidebar Speed News */
+    .sidebar-widget {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      margin-bottom: 25px;
+    }
+    .sidebar-widget-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 14px;
+      border-bottom: 2px solid var(--brand);
+      padding-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .speed-news-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .speed-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .speed-item:last-child { border-bottom: none; }
+    .speed-headline {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.4;
+      color: #0f172a;
+      margin-bottom: 4px;
+      transition: color 0.2s;
+    }
+    .speed-item:hover .speed-headline { color: var(--brand); }
+    .speed-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Strips */
+    .section-block { margin-bottom: 35px; }
+    .split-category-row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 35px; }
+
+    /* ================= 3D AI NEWS CHATBOT STYLING ================= */
+    .ai-bot-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #dc2626, #7f1d1d);
+      box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      animation: botFloat 3.5s ease-in-out infinite alternate;
+    }
+    .ai-bot-toggle:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 14px 30px rgba(220, 38, 38, 0.55), 0 0 0 5px #ffffff;
+    }
+    .ai-bot-avatar {
+      font-size: 24px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+    .bot-status-dot {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 13px;
+      height: 13px;
+      background: #22c55e;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+    @keyframes botFloat {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-7px) rotate(3deg); }
+    }
+
+    .chat-widget-window {
+      position: fixed;
+      bottom: 95px;
+      right: 24px;
+      width: 360px;
+      max-width: calc(100vw - 32px);
+      height: 480px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 15px 40px rgba(15, 23, 42, 0.25);
+      border: 1px solid var(--line);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: popInChat 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes popInChat {
+      0% { opacity: 0; transform: translateY(20px) scale(0.92); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #ffffff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--brand);
+    }
+    .chat-header-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-header-avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+    }
+    .chat-header-info h4 { font-size: 14px; font-weight: 800; line-height: 1.2; }
+    .chat-header-info span { font-size: 11px; color: #4ade80; font-weight: 600; }
+    .btn-close-chat {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-close-chat:hover { color: #ffffff; }
+
+    .chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chat-msg {
+      max-width: 84%;
+      padding: 9px 13px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .msg-bot {
+      background: #ffffff;
+      color: #1e293b;
+      align-self: flex-start;
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 2px;
+    }
+    .msg-user {
+      background: var(--brand);
+      color: #ffffff;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+    .chat-quick-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 5px;
+    }
+    .quick-tag {
+      background: #fee2e2;
+      color: var(--brand-dark);
+      border: 1px solid #fecaca;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .quick-tag:hover { background: #fca5a5; }
+
+    .chat-input-area {
+      padding: 10px 12px;
+      background: #ffffff;
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .chat-input-area input {
+      flex: 1;
+      padding: 9px 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 20px;
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+    }
+    .chat-input-area input:focus { border-color: var(--brand); }
+    .btn-chat-send {
+      background: var(--brand);
+      border: none;
+      color: #ffffff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* Search Modal */
+    .search-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+      align-items: flex-start;
+      justify-content: center;
+      padding: 50px 15px;
+    }
+    .search-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 650px;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .search-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .search-input-wrap input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      font-size: 15px;
+      outline: none;
+    }
+    .search-input-wrap input:focus { border-color: var(--brand); }
+    .search-results-list {
+      max-height: 350px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .search-result-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: inherit;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+    }
+    .search-result-item:hover { background: #fee2e2; }
+    .search-res-thumb {
+      width: 70px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;
+    }
+
+    /* ================= COMPLETE BLACK FOOTER ================= */
+    .main-footer {
+      background: #090d16 !important;
+      color: #cbd5e1 !important;
+      border-top: 4px solid var(--brand);
+      padding: 50px 0 20px;
+      font-size: 14px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .footer-container {
+      display: grid;
+      grid-template-columns: 1.3fr 0.8fr 0.9fr 1.4fr;
+      gap: 35px;
+    }
+    .footer-col h3 {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 18px;
+      position: relative;
+      padding-bottom: 8px;
+    }
+    .footer-col h3::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 35px;
+      height: 2px;
+      background: var(--brand);
+    }
+    .footer-logo {
+      font-family: 'Rozha One', serif;
+      font-size: 30px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .footer-logo span { color: var(--brand); }
+    .footer-desc {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .footer-contact-info {
+      list-style: none;
+      font-size: 13px;
+      color: #94a3b8;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-contact-info a { color: #cbd5e1; text-decoration: none; }
+    .footer-contact-info a:hover { color: var(--brand); }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-links a:hover { color: #ffffff; transform: translateX(3px); }
+    .footer-links a::before { content: '▸'; color: var(--brand); font-size: 11px; }
+
+    .footer-form { display: flex; flex-direction: column; gap: 10px; }
+    .form-input, .form-textarea {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #ffffff;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--brand); background: #0f172a; }
+    .form-textarea { resize: vertical; min-height: 70px; }
+    .btn-footer-submit {
+      background: var(--brand);
+      color: #ffffff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+    .btn-footer-submit:hover { background: var(--brand-dark); }
+    .footer-bottom {
+      margin-top: 40px;
+      border-top: 1px solid #1e293b;
+      padding-top: 20px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .footer-bottom-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .main-body-layout { grid-template-columns: 1fr; }
+      .split-category-row { grid-template-columns: 1fr; }
+      .footer-container { grid-template-columns: 1fr 1fr; gap: 30px; }
+    }
+    @media (max-width: 768px) {
+      .logo-text { font-size: 32px; }
+      .spotlight-img-wrap { height: 230px; }
+      .spotlight-title { font-size: 19px; }
+      .footer-container { grid-template-columns: 1fr; gap: 28px; }
+      .footer-bottom-inner { flex-direction: column; text-align: center; }
+      .chat-widget-window { width: calc(100vw - 24px); right: 12px; bottom: 85px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-wrapper">
+    <!-- Top Utility -->
+    <div class="top-bar">
+      <div class="container top-bar-inner">
+        <div class="top-live-badge">
+          <span class="pulse-dot"></span> 24x7 लाइव न्यूज़ नेटवर्क
+        </div>
+        <div id="liveDateDisplay">दिनांक: लोड हो रहा है...</div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header-main">
+      <div class="container header-inner">
+        <div class="logo-container">
+          <a href="index.html">
+            <div class="logo-text">THE <span>90I</span> NEWS</div>
+            <div class="tagline">सच | सटीक | निर्भीक</div>
+          </a>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-search" onclick="openSearchModal()">🔍 खोजें</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+      <div class="container nav-scroll">
+        <a href="index.html" class="active">होम</a>
+        <a href="index.html?cat=राष्ट्रीय">राष्ट्रीय</a>
+        <a href="index.html?cat=बिहार">बिहार</a>
+        <a href="index.html?cat=राजनीति">राजनीति</a>
+        <a href="index.html?cat=मनोरंजन">मनोरंजन</a>
+        <a href="index.html?cat=खेल">खेल</a>
+        <a href="index.html?cat=व्यापार">व्यापार</a>
+        <a href="index.html?cat=शिक्षा">शिक्षा व जॉब्स</a>
+        <a href="index.html?cat=टेक्नोलॉजी">टेक्नोलॉजी</a>
+        <a href="index.html?cat=लाइफस्टाइल">लाइफस्टाइल</a>
+        <a href="epaper.html">📰 ई-पेपर</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- Breaking Ticker -->
+      <div class="ticker-wrap">
+        <div class="ticker-badge">ब्रेकिंग</div>
+        <div class="ticker-content-box">
+          <div id="tickerText" class="ticker-moving-text">ताज़ा डिजिटल बुलेटिन लोड हो रहा है...</div>
+        </div>
+      </div>
+
+      <!-- ================= 1. HERO SECTION ================= -->
+      <section class="hero-section">
+        <div class="hero-grid">
+          
+          <!-- Big Spotlight Lead Story -->
+          <div id="heroSpotlightBox" class="hero-spotlight">
+            <div class="spotlight-img-wrap">
+              <span id="spotlightCat" class="spotlight-cat-tag">मुख्य सुर्खी</span>
+              <img id="spotlightImg" class="spotlight-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80" alt="News Image">
+            </div>
+            <div class="spotlight-body">
+              <h1 class="spotlight-title"><a id="spotlightLink" href="#">समाचार लोड हो रहा है...</a></h1>
+              <div class="spotlight-meta">
+                <span id="spotlightAuthor">✍️ 90I डेस्क</span>
+                <span id="spotlightDate">📅 आज</span>
+                <span id="spotlightViews">👁️ 240+ Views</span>
+              </div>
+              <p id="spotlightExcerpt" class="spotlight-excerpt">देश, दुनिया एवं बिहार की सभी महत्वपूर्ण खबरों का लाइव विश्लेषण।</p>
+            </div>
+          </div>
+
+          <!-- Top Trending Subleads -->
+          <div id="heroSubleadsBox" class="hero-subleads">
+            <!-- Dynamically Populated -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= 2. MAIN FEED + SPEED NEWS SIDEBAR ================= -->
+      <div class="main-body-layout">
+        
+        <!-- Main Column -->
+        <div>
+          <!-- Section 1: Top Daily Bulletin -->
+          <div class="section-block">
+            <div class="sec-header">
+              <div class="sec-title">📰 डिजिटल दैनिक संस्करण</div>
+              <span id="totalNewsCount" style="font-size:12px; font-weight:700; color:var(--text-muted);">कुल समाचार: 0</span>
+            </div>
+            <div id="epaperGrid" class="news-grid-3"></div>
+          </div>
+
+          <!-- Section 2: Bihar Special Strip -->
+          <div class="section-block">
+            <div class="sec-header">
+              <div class="sec-title">📍 बिहार बुलेटिन</div>
+              <a href="index.html?cat=बिहार" class="sec-link">सभी देखें ➔</a>
+            </div>
+            <div id="biharGrid" class="news-grid-3"></div>
+          </div>
+
+          <!-- Section 3: Dual Column (Politics & Business) -->
+          <div class="split-category-row">
+            <div>
+              <div class="sec-header">
+                <div class="sec-title">🏛️ राजनीति व राष्ट्रीय</div>
+                <a href="index.html?cat=राजनीति" class="sec-link">और ➔</a>
+              </div>
+              <div id="politicsList" class="speed-news-list"></div>
+            </div>
+            <div>
+              <div class="sec-header">
+                <div class="sec-title">📈 व्यापार व तकनीक</div>
+                <a href="index.html?cat=व्यापार" class="sec-link">और ➔</a>
+              </div>
+              <div id="businessList" class="speed-news-list"></div>
+            </div>
+          </div>
+
+          <!-- Section 4: Entertainment & Sports Strip -->
+          <div class="section-block">
+            <div class="sec-header">
+              <div class="sec-title">🎭 मनोरंजन व खेल जगत</div>
+              <a href="index.html?cat=मनोरंजन" class="sec-link">अधिक खबरें ➔</a>
+            </div>
+            <div id="entGrid" class="news-grid-3"></div>
+          </div>
+        </div>
+
+        <!-- Sidebar Column -->
+        <aside>
+          <!-- Speed News Widget -->
+          <div class="sidebar-widget">
+            <div class="sidebar-widget-title">⚡ फटाफट ताज़ा खबरें</div>
+            <div id="speedNewsList" class="speed-news-list">
+              <p style="font-size:13px; color:var(--text-muted); padding:10px 0;">अपडेट्स लोड हो रहे हैं...</p>
+            </div>
+          </div>
+
+          <!-- Category Quick Links -->
+          <div class="sidebar-widget">
+            <div class="sidebar-widget-title">📌 ट्रेंडिंग टॉपिक</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <a href="index.html?cat=बिहार" class="quick-tag">पूर्णिया</a>
+              <a href="index.html?cat=बिहार" class="quick-tag">पटना</a>
+              <a href="index.html?cat=राजनीति" class="quick-tag">लोकसभा</a>
+              <a href="index.html?cat=शिक्षा" class="quick-tag">सरकारी नौकरी</a>
+              <a href="index.html?cat=खेल" class="quick-tag">क्रिकेट</a>
+              <a href="index.html?cat=टेक्नोलॉजी" class="quick-tag">AI व टेक</a>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 3D AI NEWS CHATBOT FLOATING WIDGET ================= -->
+  <div class="ai-bot-toggle" onclick="toggleChatWidget()" title="90I AI न्यूज़ असिस्टेंट">
+    <div class="ai-bot-avatar">🤖</div>
+    <div class="bot-status-dot"></div>
+  </div>
+
+  <div id="chatWidgetWindow" class="chat-widget-window">
+    <div class="chat-header">
+      <div class="chat-header-user">
+        <div class="chat-header-avatar">⚡</div>
+        <div class="chat-header-info">
+          <h4>90I AI असिस्टेंट</h4>
+          <span>● लाइव सपोर्ट</span>
+        </div>
+      </div>
+      <button class="btn-close-chat" onclick="toggleChatWidget()">✕</button>
+    </div>
+    <div id="chatMessages" class="chat-messages">
+      <div class="chat-msg msg-bot">
+        नमस्ते! 🙏 मैं <b>THE 90I NEWS</b> का AI न्यूज़ असिस्टेंट हूँ।<br/>
+        आप मुझसे ताज़ा खबरें, मुख्य विषय या पोर्टल के बारे में पूछ सकते हैं।
+        <div class="chat-quick-tags">
+          <span class="quick-tag" onclick="sendQuickMsg('आज की ताज़ा खबर क्या है?')">📰 ताज़ा खबर</span>
+          <span class="quick-tag" onclick="sendQuickMsg('इस पोर्टल के मालिक कौन हैं?')">👤 पोर्टल ओनर</span>
+          <span class="quick-tag" onclick="sendQuickMsg('बिहार की खबरें')">📍 बिहार न्यूज़</span>
+        </div>
+      </div>
+    </div>
+    <form class="chat-input-area" onsubmit="handleChatSubmit(event)">
+      <input type="text" id="chatInputText" placeholder="खबर या सवाल पूछें..." autocomplete="off" />
+      <button type="submit" class="btn-chat-send">➤</button>
+    </form>
+  </div>
+
+  <!-- Search Modal -->
+  <div id="searchModal" class="search-modal" onclick="closeSearchOnBg(event)">
+    <div class="search-box">
+      <div class="search-header">
+        <h3 style="font-size:18px; font-weight:800;">🔍 खबरें खोजें</h3>
+        <button style="background:none; border:none; font-size:20px; cursor:pointer;" onclick="closeSearchModal()">✕</button>
+      </div>
+      <div class="search-input-wrap">
+        <input type="text" id="searchInput" placeholder="शीर्षक, श्रेणी या कीवर्ड टाइप करें..." oninput="handleLiveSearch(this.value)" autofocus />
+      </div>
+      <div id="searchResultsList" class="search-results-list">
+        <p style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 15px;">खोजने के लिए ऊपर टाइप करें...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= COMPLETE BLACK FOOTER (EXACT ORIGINAL) ================= -->
+  <footer class="main-footer">
+    <div class="container footer-container">
+      
+      <!-- Col 1: About & Info -->
+      <div class="footer-col">
+        <div class="footer-logo">THE <span>90I</span> NEWS</div>
+        <p class="footer-desc">
+          बिहार एवं राष्ट्र का अग्रणी डिजिटल न्यूज़ नेटवर्क। निष्पक्ष पत्रकारिता, सटीक विश्लेषण और ज़मीनी मुद्दों की निर्भीक आवाज़।
+        </p>
+        <ul class="footer-contact-info">
+          <li>📍 <b>मुख्यालय:</b> बिहार, भारत</li>
+          <li>✉️ <b>ईमेल:</b> <a href="mailto:office.mdsakibraza@gmail.com">office.mdsakibraza@gmail.com</a></li>
+          <li>🌐 <b>वेबसाइट:</b> www.the90inews.com</li>
+        </ul>
+      </div>
+
+      <!-- Col 2: Categories -->
+      <div class="footer-col">
+        <h3>प्रमुख श्रेणियां</h3>
+        <ul class="footer-links">
+          <li><a href="index.html?cat=बिहार">बिहार न्यूज़</a></li>
+          <li><a href="index.html?cat=राष्ट्रीय">राष्ट्रीय घटनाक्रम</a></li>
+          <li><a href="index.html?cat=राजनीति">राजनीति विशेष</a></li>
+          <li><a href="index.html?cat=शिक्षा">शिक्षा व रोजगार</a></li>
+          <li><a href="index.html?cat=खेल">खेल जगत</a></li>
+          <li><a href="epaper.html">दैनिक ई-पेपर</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Legal & Editorial -->
+      <div class="footer-col">
+        <h3>नीति व नियम</h3>
+        <ul class="footer-links">
+          <li><a href="terms.html">नियम और शर्तें (Terms)</a></li>
+          <li><a href="privacy.html">गोपनीयता नीति (Privacy Policy)</a></li>
+          <li><a href="disclaimer.html">अस्वीकरण (Disclaimer)</a></li>
+          <li><a href="editorial.html">संपादकीय नीति</a></li>
+          <li><a href="admin.html">संपादक लॉगिन (CMS)</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Contact Form -->
+      <div class="footer-col">
+        <h3>संदेश भेजें / विज्ञापन</h3>
+        <form id="footerContactForm" class="footer-form" onsubmit="handleFooterContact(event)">
+          <input type="text" id="footerName" class="form-input" placeholder="आपका नाम" required />
+          <input type="email" id="footerEmail" class="form-input" placeholder="ईमेल पता" required />
+          <textarea id="footerMessage" class="form-textarea" placeholder="अपना संदेश / विज्ञापन विवरण लिखें..." required></textarea>
+          <button type="submit" class="btn-footer-submit">✉️ संदेश भेजें</button>
+          <div id="footerFormStatus" style="font-size:12px; margin-top:4px; display:none;"></div>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Bottom Copyright -->
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <div>© <span id="footerYear">2026</span> THE 90I NEWS. सर्वाधिकार सुरक्षित।</div>
+        <div>डिजिटल दैनिक संस्करण • RNI: डिजिटल अंक</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= FIXED & ULTRA-ROBUST DATA SCRIPT ================= -->
+  <script>
+    "use strict";
+
+    const DATA_PATH = "data/90i-data.json";
+    let globalNewsList = [];
+
+    document.addEventListener("DOMContentLoaded", initPortal);
+
+    function esc(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function attr(str) {
+      if (!str) return "";
+      return String(str).replace(/"/g, "&quot;");
+    }
+
+    function getArticleViews(id) {
+      if (!id) return 120;
+      const key = "view_count_" + id;
+      let count = localStorage.getItem(key);
+      if (!count) {
+        count = Math.floor(Math.random() * (250 - 80 + 1)) + 80;
+        localStorage.setItem(key, count);
+      }
+      return count;
+    }
+
+    function recordNewsClick(id) {
+      if (!id) return;
+      const key = "view_count_" + id;
+      let count = parseInt(localStorage.getItem(key) || "100", 10);
+      count += 1;
+      localStorage.setItem(key, count);
+    }
+
+    function extractNewsArray(db) {
+      if (!db) return [];
+      if (Array.isArray(db)) return db;
+      if (Array.isArray(db["90i_news"])) return db["90i_news"];
+      if (Array.isArray(db.news)) return db.news;
+      if (Array.isArray(db.articles)) return db.articles;
+      return [];
+    }
+
+    async function initPortal() {
+      renderDateHeaders();
+
+      // 1. Live Fetch with Anti-Cache Timestamp
+      try {
+        const res = await fetch(DATA_PATH + "?_t=" + Date.now(), { cache: "no-store" });
+        if (res.ok) {
+          const db = await res.json();
+          globalNewsList = extractNewsArray(db);
+          if (globalNewsList.length > 0) {
+            localStorage.setItem("cached_db", JSON.stringify(db));
+          }
+        }
+      } catch (e) {
+        console.warn("Primary fetch failed, checking fallbacks:", e);
+      }
+
+      // 2. Local Cache Fallback if network was offline/slow
+      if (!globalNewsList.length) {
+        try {
+          const cached = localStorage.getItem("cached_db");
+          if (cached) {
+            const db = JSON.parse(cached);
+            globalNewsList = extractNewsArray(db);
+          }
+        } catch(e) {}
+      }
+
+      // 3. Render All News Blocks safely
+      if (globalNewsList.length > 0) {
+        renderHeroSection(globalNewsList);
+        renderAllPortalSections(globalNewsList);
+        renderSpeedNews(globalNewsList);
+
+        // Ticker update
+        const headlines = globalNewsList.slice(0, 5).map(n => esc(n.title || "")).filter(Boolean).join("  &nbsp;★&nbsp; ");
+        const tickerEl = document.getElementById("tickerText");
+        if (tickerEl && headlines) tickerEl.innerHTML = headlines;
+
+        const countEl = document.getElementById("totalNewsCount");
+        if (countEl) countEl.innerText = `कुल समाचार: ${globalNewsList.length}`;
+      }
+    }
+
+    function renderDateHeaders() {
+      const topDate = document.getElementById("liveDateDisplay");
+      const footerYear = document.getElementById("footerYear");
+      const now = new Date();
+
+      const formatted = now.toLocaleDateString("hi-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+
+      if (topDate) topDate.textContent = `दिनांक: ${formatted}`;
+      if (footerYear) footerYear.textContent = now.getFullYear();
+    }
+
+    /* 1. Hero Spotlight & Subleads (Safely Guarded) */
+    function renderHeroSection(items) {
+      if (!items || !items.length) return;
+
+      const lead = items.find(x => x.section === 'spotlight') || items[0];
+      const rawId = lead?.id || lead?.slug || "lead";
+      const leadLink = lead?.slug ? `article.html?slug=${encodeURIComponent(lead.slug)}` : `article.html?id=${encodeURIComponent(rawId)}`;
+
+      const spotCat = document.getElementById("spotlightCat");
+      if (spotCat) spotCat.innerText = lead?.category || "मुख्य सुर्खी";
+
+      const spotImg = document.getElementById("spotlightImg");
+      if (spotImg) spotImg.src = lead?.image || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80";
+
+      const sLink = document.getElementById("spotlightLink");
+      if (sLink) {
+        sLink.innerText = lead?.title || "शीर्षक उपलब्ध नहीं";
+        sLink.href = leadLink;
+        sLink.onclick = () => recordNewsClick(rawId);
+      }
+
+      const spotAuth = document.getElementById("spotlightAuthor");
+      if (spotAuth) spotAuth.innerText = `✍️ ${lead?.author || "90I डिजिटल डेस्क"}`;
+
+      const spotDate = document.getElementById("spotlightDate");
+      if (spotDate) spotDate.innerText = `📅 ${lead?.date || lead?.publishedAt || "आज"}`;
+
+      const spotViews = document.getElementById("spotlightViews");
+      if (spotViews) spotViews.innerText = `👁️ ${getArticleViews(rawId)} Views`;
+
+      const spotExcerpt = document.getElementById("spotlightExcerpt");
+      if (spotExcerpt) {
+        spotExcerpt.innerText = lead?.excerpt || lead?.summary || (lead?.content ? String(lead.content).replace(/<[^>]*>?/gm, '').substring(0, 130) + '...' : '');
+      }
+
+      // Subleads Box (Next 3 stories)
+      const subContainer = document.getElementById("heroSubleadsBox");
+      if (subContainer) {
+        const remaining = items.filter(x => String(x.id) !== String(lead?.id));
+        const subItems = remaining.slice(0, 3);
+
+        subContainer.innerHTML = subItems.map(item => {
+          const sId = item?.id || item?.slug || "sub";
+          const link = item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(sId)}`;
+          return `
+            <a href="${link}" class="sublead-card" onclick="recordNewsClick('${sId}')">
+              <img class="sublead-thumb" src="${attr(item?.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&q=80')}" alt="${esc(item?.title)}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&q=80'">
+              <div class="sublead-content">
+                <span class="sublead-cat">${esc(item?.category || "ताज़ा खबर")}</span>
+                <div class="sublead-headline">${esc(item?.title)}</div>
+                <div class="sublead-meta">📅 ${esc(item?.date || item?.publishedAt || "आज")} • 👁️ ${getArticleViews(sId)}</div>
+              </div>
+            </a>
+          `;
+        }).join("");
+      }
+    }
+
+    /* Helper: Card HTML Generator */
+    function createNewsCard(a) {
+      const title = esc(a?.title || "शीर्षक उपलब्ध नहीं");
+      const category = esc(a?.category || "ताजा खबर");
+      const date = esc(a?.date || a?.publishedAt || "आज");
+      const rawSummary = a?.excerpt || a?.summary || (a?.content ? String(a.content).replace(/<[^>]*>?/gm, '').substring(0, 100) + '...' : '');
+      const summary = esc(rawSummary);
+      const image = String(a?.image || "").trim();
+      const rawId = a?.id || a?.slug || "item";
+      const slug = encodeURIComponent(String(a?.slug || rawId));
+      const link = a?.slug ? `article.html?slug=${slug}` : `article.html?id=${encodeURIComponent(rawId)}`;
+      const views = getArticleViews(rawId);
+
+      return `
+        <article class="news-card">
+          <div class="card-thumb-wrap">
+            <img class="card-thumb" loading="lazy" src="${attr(image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80')}" alt="${title}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80'">
+          </div>
+          <div class="card-body">
+            <span class="cat-badge">${category}</span>
+            <h3 class="card-title"><a href="${link}" onclick="recordNewsClick('${rawId}')">${title}</a></h3>
+            <p class="card-summary">${summary}</p>
+          </div>
+          <div class="card-footer">
+            <span>📅 ${date}</span>
+            <span class="view-count-tag">👁️ ${views}</span>
+          </div>
+        </article>
+      `;
+    }
+
+    /* 2. Render Portal Sections */
+    function renderAllPortalSections(items) {
+      // Main Feed
+      const mainGrid = document.getElementById("epaperGrid");
+      if (mainGrid) mainGrid.innerHTML = items.slice(0, 6).map(createNewsCard).join("");
+
+      // Bihar Section
+      const biharGrid = document.getElementById("biharGrid");
+      if (biharGrid) {
+        const biharItems = items.filter(n => (n?.section === 'bihar') || (n?.category || "").includes("बिहार") || (n?.title || "").includes("बिहार") || (n?.title || "").includes("पूर्णिया"));
+        biharGrid.innerHTML = (biharItems.length ? biharItems.slice(0, 3) : items.slice(0, 3)).map(createNewsCard).join("");
+      }
+
+      // Politics List
+      const polList = document.getElementById("politicsList");
+      if (polList) {
+        const polItems = items.filter(n => (n?.section === 'politics') || (n?.category || "").includes("राजनीति") || (n?.category || "").includes("राष्ट्रीय"));
+        const pSource = polItems.length ? polItems.slice(0, 4) : items.slice(0, 4);
+        polList.innerHTML = pSource.map(item => `
+          <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(item?.id || 'item')}`}" class="speed-item">
+            <div class="speed-headline">● ${esc(item?.title)}</div>
+            <div class="speed-meta"><span>📅 ${esc(item?.date || item?.publishedAt || "आज")}</span><span>🏷️ ${esc(item?.category || "राजनीति")}</span></div>
+          </a>
+        `).join("");
+      }
+
+      // Business & Tech List
+      const bizList = document.getElementById("businessList");
+      if (bizList) {
+        const bizItems = items.filter(n => (n?.section === 'business') || (n?.category || "").includes("व्यापार") || (n?.category || "").includes("टेक्नोलॉजी") || (n?.category || "").includes("शिक्षा"));
+        const bSource = bizItems.length ? bizItems.slice(0, 4) : items.slice(0, 4);
+        bizList.innerHTML = bSource.map(item => `
+          <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(item?.id || 'item')}`}" class="speed-item">
+            <div class="speed-headline">● ${esc(item?.title)}</div>
+            <div class="speed-meta"><span>📅 ${esc(item?.date || item?.publishedAt || "आज")}</span><span>🏷️ ${esc(item?.category || "व्यापार")}</span></div>
+          </a>
+        `).join("");
+      }
+
+      // Entertainment & Sports Grid
+      const entGrid = document.getElementById("entGrid");
+      if (entGrid) {
+        const entItems = items.filter(n => (n?.section === 'entertainment') || (n?.category || "").includes("मनोरंजन") || (n?.category || "").includes("खेल") || (n?.category || "").includes("लाइफस्टाइल"));
+        entGrid.innerHTML = (entItems.length ? entItems.slice(0, 3) : items.slice(0, 3)).map(createNewsCard).join("");
+      }
+    }
+
+    /* 3. Speed News Sidebar */
+    function renderSpeedNews(items) {
+      const container = document.getElementById("speedNewsList");
+      if (!container) return;
+      container.innerHTML = items.slice(0, 6).map(item => `
+        <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(item?.id || 'item')}`}" class="speed-item" onclick="recordNewsClick('${item?.id || item?.slug || 'item'}')">
+          <div class="speed-headline">${esc(item?.title)}</div>
+          <div class="speed-meta">
+            <span>📅 ${esc(item?.date || item?.publishedAt || "आज")}</span>
+            <span style="color:var(--brand); font-weight:700;">${esc(item?.category || "ताज़ा")}</span>
+          </div>
+        </a>
+      `).join("");
+    }
+
+    /* Live Search Functions */
+    function openSearchModal() {
+      const modal = document.getElementById("searchModal");
+      if (modal) modal.style.display = "flex";
+      const input = document.getElementById("searchInput");
+      if (input) { input.value = ""; input.focus(); }
+      handleLiveSearch("");
+    }
+
+    function closeSearchModal() {
+      const modal = document.getElementById("searchModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function closeSearchOnBg(e) {
+      if (e.target.id === "searchModal") closeSearchModal();
+    }
+
+    function handleLiveSearch(query) {
+      const list = document.getElementById("searchResultsList");
+      if (!list) return;
+      const q = (query || "").trim().toLowerCase();
+
+      if (!q) {
+        list.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 15px;">खोजने के लिए ऊपर टाइप करें...</p>';
+        return;
+      }
+
+      const filtered = globalNewsList.filter(item => (item?.title || "").toLowerCase().includes(q) || (item?.category || "").toLowerCase().includes(q) || (item?.summary || "").toLowerCase().includes(q));
+      if (!filtered.length) {
+        list.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 15px;">कोई मेल खाने वाला समाचार नहीं मिला।</p>';
+        return;
+      }
+
+      list.innerHTML = filtered.slice(0, 8).map(item => `
+        <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(item?.id || 'item')}`}" class="search-result-item">
+          <img src="${attr(item?.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80')}" class="search-res-thumb" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80'">
+          <div>
+            <h4 style="font-size:13.5px; font-weight:700;">${esc(item?.title)}</h4>
+            <span style="font-size:11px; color:var(--text-muted);">🏷️ ${esc(item?.category || "खबर")} • 📅 ${esc(item?.date || item?.publishedAt || "")}</span>
+          </div>
+        </a>
+      `).join("");
+    }
+
+    /* 3D AI Chatbot Controller */
+    function toggleChatWidget() {
+      const win = document.getElementById("chatWidgetWindow");
+      if (!win) return;
+      win.style.display = (win.style.display === "flex") ? "none" : "flex";
+      if (win.style.display === "flex") {
+        const inp = document.getElementById("chatInputText");
+        if (inp) inp.focus();
+      }
+    }
+
+    function sendQuickMsg(text) {
+      const input = document.getElementById("chatInputText");
+      if (input) {
+        input.value = text;
+        handleChatSubmit(new Event("submit"));
+      }
+    }
+
+    function handleChatSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById("chatInputText");
+      if (!input) return;
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      appendChatMessage(userText, "user");
+      input.value = "";
+
+      setTimeout(() => {
+        const botReply = generateBotResponse(userText);
+        appendChatMessage(botReply, "bot");
+      }, 400);
+    }
+
+    function appendChatMessage(msg, sender) {
+      const box = document.getElementById("chatMessages");
+      if (!box) return;
+      const div = document.createElement("div");
+      div.className = `chat-msg msg-${sender}`;
+      div.innerHTML = msg;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function generateBotResponse(query) {
+      const q = query.toLowerCase();
+
+      if (q.includes("password") || q.includes("पासवर्ड") || q.includes("admin pass") || q.includes("secret") || q.includes("token")) {
+        return "🔒 <b>सुरक्षा प्रतिबंध:</b> सुरक्षा कारणों से मेरे पास एडमिन या सिस्टम का कोई क्रेडेंशियल उपलब्ध नहीं है।";
+      }
+
+      if (q.includes("owner") || q.includes("मालिक") || q.includes("founder") || q.includes("संस्थापक") || q.includes("sakib")) {
+        return "👤 <b>THE 90I NEWS</b> के मुख्य संचालक एवं संस्थापक <b>Md Sakib Raza</b> हैं। निष्पक्ष और निर्भीक पत्रकारिता हमारा ध्येय है।";
+      }
+
+      if (q.includes("ताज़ा") || q.includes("breaking") || q.includes("latest") || q.includes("खबर") || q.includes("news")) {
+        if (globalNewsList && globalNewsList.length > 0) {
+          const topN = globalNewsList[0];
+          const link = topN?.slug ? `article.html?slug=${encodeURIComponent(topN.slug)}` : `article.html?id=${encodeURIComponent(topN?.id || 'item')}`;
+          return `🔥 <b>आज की मुख्य सुर्खी:</b><br/><a href="${link}" style="color:var(--brand); text-decoration:none; font-weight:700;">${esc(topN?.title)}</a>`;
+        }
+        return "📰 इस समय बुलेटिन लोड हो रहा है, कृपया होमपेज चेक करें।";
+      }
+
+      if (q.includes("bihar") || q.includes("बिहार")) {
+        return "📍 <b>बिहार बुलेटिन:</b> बिहार राज्य और पूर्णिया प्रमंडल की सभी प्रमुख खबरें हमारे 'बिहार बुलेटिन' सेक्शन में उपलब्ध हैं।";
+      }
+
+      return "✨ मैं आपकी क्या सहायता कर सकता हूँ? आप ताज़ा समाचार, प्रमुख श्रेणी या पोर्टल के बारे में कोई भी सवाल पूछ सकते हैं।";
+    }
+
+    /* Footer Contact Form Handler */
+    function handleFooterContact(e) {
+      e.preventDefault();
+      const status = document.getElementById("footerFormStatus");
+      if (status) {
+        status.style.display = "block";
+        status.style.color = "#4ade80";
+        status.textContent = "✅ धन्यवाद! आपका संदेश सफलतापूर्वक भेज दिया गया है।";
+      }
+      const form = document.getElementById("footerContactForm");
+      if (form) form.reset();
+      setTimeout(() => { if (status) status.style.display = "none"; }, 4000);
+    }
+  </script>
+</body>
+</html>
