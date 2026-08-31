@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1100, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes" />
+  <title>दैनिक ई-पेपर संस्करण | THE 90I NEWS</title>
+
+  <!-- Google AdSense Code -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9762787230045511" crossorigin="anonymous"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yantramanav:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --ink: #0f172a;
+      --paper: #ffffff;
+      --rule: #111827;
+      --light-rule: #cbd5e1;
+      --brand-red: #c81e1e;
+      --dark-red: #991b1b;
+      --ad-gold: #b45309;
+      --bg-dark: #1e293b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      background: var(--bg-dark);
+      color: var(--ink);
+      font-family: 'Yantramanav', 'Noto Serif Devanagari', serif;
+      line-height: 1.45;
+      width: 100%;
+      min-width: 1100px;
+      margin: 0;
+      padding: 0 0 70px 0;
+    }
+
+    /* Fixed Top Control Bar */
+    .epaper-nav-header {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #0f172a;
+      color: #fff;
+      z-index: 10000;
+      border-bottom: 2px solid var(--brand-red);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      padding: 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-width: 1100px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .home-back-btn {
+      background: #334155;
+      color: #fff;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+    .home-back-btn:hover {
+      background: var(--brand-red);
+    }
+
+    .brand-title-nav {
+      font-family: 'Rozha One', serif;
+      font-size: 20px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+    }
+    .brand-title-nav span { color: #ef4444; }
+
+    /* Page Switcher Tabs */
+    .page-controller-center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #1e293b;
+      padding: 4px 10px;
+      border-radius: 30px;
+      border: 1px solid #475569;
+    }
+
+    .nav-arrow-btn {
+      background: var(--brand-red);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .nav-arrow-btn:hover:not(:disabled) {
+      background: #dc2626;
+      transform: scale(1.08);
+    }
+    .nav-arrow-btn:disabled {
+      background: #475569;
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .page-indicator-text {
+      font-size: 14px;
+      font-weight: 800;
+      color: #f1f5f9;
+      padding: 0 8px;
+    }
+
+    .page-pill-buttons {
+      display: flex;
+      gap: 4px;
+    }
+    .page-pill {
+      background: #334155;
+      color: #cbd5e1;
+      border: 1px solid #475569;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .page-pill.active {
+      background: var(--brand-red);
+      color: white;
+      border-color: var(--brand-red);
+    }
+
+    .nav-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .print-main-btn {
+      background: #16a34a;
+      color: white;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+    .print-main-btn:hover { background: #15803d; }
+
+    /* Epaper Viewport */
+    .epaper-container {
+      width: 1080px;
+      margin: 20px auto 0;
+      position: relative;
+    }
+
+    /* Individual Newspaper Sheet / Page */
+    .newspaper-page {
+      display: none;
+      width: 1080px !important;
+      min-width: 1080px !important;
+      max-width: 1080px !important;
+      background: var(--paper);
+      padding: 24px 28px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.45);
+      border: 1px solid #94a3b8;
+      margin-bottom: 25px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .newspaper-page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Page Masthead */
+    .page-masthead-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #334155;
+      padding-bottom: 4px;
+      border-bottom: 1.5px solid var(--rule);
+    }
+
+    /* Main Page 1 Big Masthead */
+    .masthead-grid {
+      display: grid;
+      grid-template-columns: 90px 1fr 240px;
+      gap: 15px;
+      align-items: center;
+      padding: 8px 0;
+    }
+    .brand-crest-box {
+      border: 2px solid var(--brand-red);
+      border-radius: 4px;
+      padding: 4px;
+      text-align: center;
+      font-weight: 900;
+      color: var(--brand-red);
+    }
+    .brand-crest-box .crest-hi { font-size: 28px; font-family: 'Rozha One', serif; line-height: 1; }
+    .brand-crest-box .crest-sub { font-size: 10px; font-weight: 800; color: #1e293b; }
+
+    .masthead-center-wrap { text-align: center; }
+    .masthead-logo {
+      font-family: 'Rozha One', serif;
+      font-size: 64px;
+      font-weight: 900;
+      color: var(--brand-red);
+      line-height: 0.95;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+    .masthead-logo span { color: #000000; }
+    .masthead-slogan { font-size: 13px; font-weight: 900; color: #1e293b; }
+
+    .top-teaser-box {
+      border-left: 1.5px solid var(--light-rule);
+      padding-left: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .teaser-text h5 { font-size: 11px; color: var(--brand-red); font-weight: 900; }
+    .teaser-text p { font-size: 12px; font-weight: 800; color: #000; line-height: 1.2; }
+    .teaser-img { width: 55px; height: 55px; object-fit: cover; border-radius: 2px; border: 1px solid var(--rule); }
+
+    /* Inside Pages Sleek Header */
+    .inside-page-masthead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 3px double var(--rule);
+      margin-bottom: 12px;
+    }
+    .inside-brand {
+      font-family: 'Rozha One', serif;
+      font-size: 26px;
+      color: var(--brand-red);
+      font-weight: 900;
+    }
+    .inside-brand span { color: #000; }
+    .inside-page-cat {
+      background: var(--brand-red);
+      color: white;
+      padding: 3px 12px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      border-radius: 2px;
+    }
+    .inside-page-meta {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    .masthead-meta-bar {
+      border-top: 1.5px solid var(--rule);
+      border-bottom: 2.5px solid var(--rule);
+      padding: 4px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 12px;
+    }
+
+    .top-promo-banner {
+      background: #fef3c7;
+      border: 1.5px solid #d97706;
+      border-radius: 2px;
+      padding: 5px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    /* Newspaper Broadsheet Grid Layout */
+    .newspaper-layout {
+      display: grid !important;
+      grid-template-columns: 730px 290px !important;
+      gap: 20px;
+    }
+    .left-broad-col {
+      border-right: 1.5px solid var(--light-rule);
+      padding-right: 20px;
+      width: 730px;
+    }
+
+    /* Inside Pages Layout Types */
+    .inside-three-col-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .inside-col-card {
+      border-right: 1px solid var(--light-rule);
+      padding-right: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+    .inside-col-card:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+
+    .inside-two-col-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* Summary Box */
+    .summary-box {
+      background: #f1f5f9;
+      border-left: 4px solid var(--brand-red);
+      padding: 7px 11px;
+      margin: 6px 0 10px 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.35;
+    }
+    .summary-box b { color: var(--brand-red); }
+
+    /* Lead Story Elements */
+    .super-lead-block {
+      border-bottom: 2px solid var(--rule);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    .kicker-tag {
+      font-size: 12.5px;
+      font-weight: 900;
+      color: var(--brand-red);
+      display: block;
+      margin-bottom: 3px;
+    }
+    .super-main-title {
+      font-size: 27px;
+      font-weight: 900;
+      color: #000000;
+      line-height: 1.22;
+      font-family: 'Rozha One', 'Yantramanav', serif;
+      margin-bottom: 6px;
+    }
+    .super-photo-box img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+      border: 1px solid var(--rule);
+    }
+    .photo-caption-tag {
+      font-size: 11px;
+      color: #475569;
+      font-style: italic;
+      padding-top: 4px;
+      border-bottom: 1px dotted var(--light-rule);
+      margin-bottom: 8px;
+    }
+
+    .newspaper-body-text {
+      font-size: 12.5px;
+      text-align: justify;
+      line-height: 1.5;
+      color: #111827;
+      column-count: 3;
+      column-gap: 15px;
+      column-rule: 1px solid var(--light-rule);
+      word-break: break-word;
+    }
+    .newspaper-body-text::first-letter {
+      font-size: 34px;
+      float: left;
+      line-height: 0.85;
+      padding-right: 5px;
+      font-weight: 900;
+      color: var(--brand-red);
+      font-family: 'Rozha One', serif;
+    }
+
+    /* Secondary Articles */
+    .full-article-row {
+      border-bottom: 1.5px solid var(--rule);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .full-article-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    .article-headline {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.28;
+      color: #000000;
+      margin-bottom: 5px;
+    }
+    .article-photo-full img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border: 1px solid var(--rule);
+      display: block;
+    }
+    .article-columns-text {
+      font-size: 12px;
+      text-align: justify;
+      line-height: 1.5;
+      color: #1e293b;
+      column-count: 2;
+      column-gap: 14px;
+      column-rule: 1px dotted var(--light-rule);
+      word-break: break-word;
+    }
+
+    /* Right Sidebar */
+    .right-sidebar-col {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 290px;
+    }
+    .top-five-box {
+      border: 2px solid var(--brand-red);
+      border-radius: 2px;
+      padding: 10px;
+      background: #fff;
+    }
+    .top-five-head {
+      background: var(--brand-red);
+      color: #fff;
+      font-weight: 900;
+      font-size: 13px;
+      text-align: center;
+      padding: 4px;
+      margin: -10px -10px 10px -10px;
+    }
+    .top-five-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .top-five-item {
+      display: flex;
+      gap: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      line-height: 1.35;
+      border-bottom: 1px dashed var(--light-rule);
+      padding-bottom: 8px;
+    }
+    .top-five-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .five-num {
+      background: #fee2e2;
+      color: var(--brand-red);
+      font-weight: 900;
+      font-size: 11px;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ad-card-side {
+      background: #fffbeb;
+      border: 1.5px solid var(--ad-gold);
+      padding: 10px;
+      text-align: center;
+      border-radius: 2px;
+    }
+    .ad-card-side h5 { font-size: 13px; font-weight: 900; color: #92400e; margin-bottom: 3px; }
+    .ad-card-side p { font-size: 10.5px; font-weight: 700; color: #78350f; word-break: break-all; }
+
+    .side-card {
+      border-bottom: 1.5px solid var(--rule);
+      padding-bottom: 11px;
+    }
+    .side-card:last-child { border-bottom: none; }
+    .side-card h4 {
+      font-size: 13.5px;
+      font-weight: 900;
+      line-height: 1.3;
+      color: #000;
+      margin-bottom: 5px;
+    }
+    .side-card img {
+      width: 100%;
+      height: 115px;
+      object-fit: cover;
+      border: 1px solid var(--rule);
+      margin-bottom: 5px;
+    }
+    .side-card p {
+      font-size: 11px;
+      color: #334155;
+      line-height: 1.4;
+      text-align: justify;
+    }
+
+    /* Inside Page Medium News Card */
+    .news-block-card {
+      border-bottom: 1.5px solid var(--light-rule);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .news-block-card:last-child { border-bottom: none; }
+    .news-block-title {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.3;
+      color: #000;
+      margin-bottom: 5px;
+    }
+    .news-block-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border: 1px solid var(--rule);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .news-block-text {
+      font-size: 12px;
+      text-align: justify;
+      color: #1e293b;
+      line-height: 1.45;
+    }
+
+    /* Page Navigation Bottom Quick Bar */
+    .page-bottom-nav {
+      margin-top: 18px;
+      padding-top: 8px;
+      border-top: 2px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: #475569;
+    }
+    .bottom-btn-switch {
+      background: var(--brand-red);
+      color: white;
+      border: none;
+      padding: 4px 12px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 11.5px;
+    }
+
+    /* Floating Navigation Controls */
+    .floating-flip-container {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 99999;
+    }
+    .floating-btn {
+      background: var(--brand-red);
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-size: 13.5px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+      transition: 0.2s;
+    }
+    .floating-btn:hover {
+      background: var(--dark-red);
+      transform: translateY(-2px);
+    }
+    .floating-btn.print-btn {
+      background: #059669;
+    }
+    .floating-btn.print-btn:hover {
+      background: #047857;
+    }
+
+    /* Print Setup */
+    @media print {
+      html, body { 
+        background: #fff !important; 
+        padding: 0 !important; 
+        width: 100% !important; 
+        min-width: 100% !important; 
+      }
+      .epaper-nav-header, .floating-flip-container, .page-bottom-nav { 
+        display: none !important; 
+      }
+      .epaper-container {
+        width: 100% !important;
+        margin: 0 !important;
+      }
+      .newspaper-page { 
+        display: block !important; 
+        width: 100% !important; 
+        min-width: 100% !important;
+        max-width: 100% !important; 
+        margin: 0 0 20mm 0 !important; 
+        padding: 0 !important; 
+        border: none !important; 
+        box-shadow: none !important; 
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+      .newspaper-layout {
+        display: grid !important;
+        grid-template-columns: 2.8fr 1fr !important;
+        gap: 15px !important;
+      }
+      .left-broad-col { width: auto !important; }
+      .right-sidebar-col { width: auto !important; }
+      .super-photo-box img { max-height: 220px !important; }
+      .article-photo-full img { max-height: 150px !important; }
+      .newspaper-body-text { column-count: 3 !important; font-size: 10.5px !important; }
+      .article-columns-text { column-count: 2 !important; font-size: 10px !important; }
+      @page { size: A4 portrait; margin: 6mm; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Navigation Bar -->
+  <nav class="epaper-nav-header">
+    <div class="nav-left">
+      <a href="index.html" class="home-back-btn">← मुख्य पोर्टल</a>
+      <div class="brand-title-nav">THE <span>90I</span> NEWS ई-पेपर</div>
+    </div>
+
+    <!-- Page Switcher -->
+    <div class="page-controller-center">
+      <button type="button" class="nav-arrow-btn" id="prevPageBtn" onclick="changePage(-1)" title="पिछला पृष्ठ">❮</button>
+      
+      <div class="page-pill-buttons">
+        <button type="button" class="page-pill active" onclick="goToPage(1)">पेज 1 (मुख्य)</button>
+        <button type="button" class="page-pill" onclick="goToPage(2)">पेज 2 (बिहार)</button>
+        <button type="button" class="page-pill" onclick="goToPage(3)">पेज 3 (सीमांचल/पूर्णिया)</button>
+        <button type="button" class="page-pill" onclick="goToPage(4)">पेज 4 (देश/विदेश)</button>
+        <button type="button" class="page-pill" onclick="goToPage(5)">पेज 5 (शिक्षा/व्यापार)</button>
+      </div>
+
+      <span class="page-indicator-text" id="pageIndicator">1 / 5</span>
+      <button type="button" class="nav-arrow-btn" id="nextPageBtn" onclick="changePage(1)" title="अगला पृष्ठ">❯</button>
+    </div>
+
+    <div class="nav-right-actions">
+      <button type="button" class="print-main-btn" onclick="window.print()">
+        🖨️ सम्पूर्ण ई-पेपर प्रिंट / PDF
+      </button>
+    </div>
+  </nav>
+
+  <!-- Floating Quick Actions -->
+  <div class="floating-flip-container">
+    <button type="button" class="floating-btn" id="floatingNextBtn" onclick="changePage(1)">
+      अगला पेज ❯
+    </button>
+    <button type="button" class="floating-btn print-btn" onclick="window.print()">
+      🖨️ PDF डाउनलोड
+    </button>
+  </div>
+
+  <div class="epaper-container" id="epaperContainer">
+
+    <!-- ================= PAGE 1: मुख्य पृष्ठ (Front Page) ================= -->
+    <section class="newspaper-page active" id="page-1">
+      <div class="page-masthead-strip">
+        <span>दैनिक ई-संस्करण • अंक: 104 • मूल्य: ₹5.00</span>
+        <span>www.the90inews.com</span>
+      </div>
+
+      <!-- Main Masthead -->
+      <header>
+        <div class="masthead-grid">
+          <div class="brand-crest-box">
+            <div class="crest-hi">90I</div>
+            <div class="crest-sub">न्यूज़ नेटवर्क</div>
+          </div>
+
+          <div class="masthead-center-wrap">
+            <h1 class="masthead-logo">THE <span>90I</span> NEWS</h1>
+            <div class="masthead-slogan">भरोसा नए भारत का • सच | सटीक | निर्भीक</div>
+          </div>
+
+          <div class="top-teaser-box">
+            <div class="teaser-text">
+              <h5 id="p1TeaserTag">विशेष बुलेटिन</h5>
+              <p id="p1TeaserHead">दैनिक मुख्य डिजिटल रिपोर्ट</p>
+            </div>
+            <img id="p1TeaserImg" class="teaser-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=100&q=80" alt="Teaser">
+          </div>
+        </div>
+
+        <div class="masthead-meta-bar">
+          <span class="live-date-str">बिहार • लोड हो रहा है...</span>
+          <span>पृष्ठ 01: मुख्य फ्रंट पेज</span>
+          <span id="p1NewsCount">कुल समाचार: 0</span>
+        </div>
+      </header>
+
+      <div class="top-promo-banner">
+        <div style="font-weight: 900; font-size: 13.5px; color: #b45309;">⭐ THE 90I NEWS दैनिक ई-संस्करण - मुख्य पृष्ठ</div>
+        <div style="font-weight: 800; font-size: 12.5px; color: #78350f;">विश्वसनीय पत्रकारिता, सटीक विश्लेषण एवं विस्तृत ग्राउंड रिपोर्ट।</div>
+      </div>
+
+      <div class="newspaper-layout">
+        <!-- Left Column (Super Lead + 2 Big Stories) -->
+        <div class="left-broad-col">
+          <article class="super-lead-block" id="p1SuperLead">
+            <span class="kicker-tag" id="p1LeadKicker">● मुख्य समाचार</span>
+            <h2 class="super-main-title" id="p1LeadTitle">समाचार लोड हो रहा है...</h2>
+            
+            <div class="summary-box" id="p1LeadSummaryBox" style="display:none;">
+              <b>संक्षेप में सार:</b> <span id="p1LeadSummary"></span>
+            </div>
+
+            <div class="super-photo-box" id="p1LeadPhotoWrap" style="display:none;">
+              <img id="p1LeadImg" src="" alt="Super Lead">
+              <div class="photo-caption-tag" id="p1LeadCaption"></div>
+            </div>
+
+            <div class="newspaper-body-text" id="p1LeadBody">
+              कृपया प्रतीक्षा करें, प्रकाशित समाचार लोड हो रहा है...
+            </div>
+          </article>
+
+          <div id="p1ArticlesContainer"></div>
+        </div>
+
+        <!-- Right Column -->
+        <aside class="right-sidebar-col">
+          <div class="top-five-box">
+            <div class="top-five-head">आज की 5 बड़ी सुर्खियां</div>
+            <ul class="top-five-list" id="p1TopFiveList"></ul>
+          </div>
+
+          <div id="p1SidebarContainer"></div>
+
+          <div class="ad-card-side">
+            <h5>📰 THE 90I NEWS विज्ञापन</h5>
+            <p>व्यापार, संस्थान व शुभकामना संदेश हेतु संपर्क करें:<br><b>office.mdsakibraza@gmail.com</b></p>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="page-bottom-nav">
+        <span>THE 90I NEWS • डिजिटल डेस्क</span>
+        <span>पृष्ठ: 01 / 05</span>
+        <button type="button" class="bottom-btn-switch" onclick="goToPage(2)">अगला पृष्ठ (बिहार समाचार) ❯</button>
+      </footer>
+    </section>
+
+    <!-- ================= PAGE 2: बिहार समाचार (Bihar State) ================= -->
+    <section class="newspaper-page" id="page-2">
+      <div class="page-masthead-strip">
+        <span>THE 90I NEWS • डिजिटल ई-संस्करण</span>
+        <span>www.the90inews.com</span>
+      </div>
+
+      <div class="inside-page-masthead">
+        <div class="inside-brand">THE <span>90I</span> NEWS</div>
+        <div class="inside-page-cat">पृष्ठ 02 : राज्य व बिहार हलचल</div>
+        <div class="inside-page-meta live-date-str">लोड हो रहा है...</div>
+      </div>
+
+      <div class="inside-two-col-layout" id="p2ContentGrid"></div>
+
+      <footer class="page-bottom-nav">
+        <button type="button" class="bottom-btn-switch" onclick="goToPage(1)">❮ पिछला पृष्ठ</button>
+        <span>THE 90I NEWS • पृष्ठ: 02 / 05 (बिहार)</span>
+        <button type="button" class="bottom-btn-switch" onclick="goToPage(3)">अगला पृष्ठ (सीमांचल/पूर्णिया) ❯</button>
+      </footer>
+    </section>
+
+    <!-- ================= PAGE 3: सीमांचल एवं पूर्णिया (Local Special) ================= -->
+    <section class="newspaper-page" id="page-3">
+      <div class="page-masthead-strip">
+        <span>THE 90I NEWS • ग्राउंड रिपोर्ट</span>
+        <span>www.the90inews.com</span>
+      </div>
+
+      <div class="inside-page-masthead">
+        <div class="inside-brand">THE <span>90I</span> NEWS</div>
+        <div class="inside-page-cat" style="background:#b91c1c;">पृष्ठ 03 : सीमांचल व पूर्णिया ज़ोन</div>
+        <div class="inside-page-meta live-date-str">लोड हो रहा है...</div>
+      </div>
+
+      <div class="inside-three-col-layout" id="p3ContentGrid"></div>
+
+      <footer class="page-bottom-nav">
+        <button type="button" class="bottom-btn-switch" onclick="goToPage(2)">❮ पिछला पृष्ठ</button>
+        <span>THE 90I NEWS • पृष्ठ: 03 / 05 (सीमांचल)</span>
+        <button type="button" class="bottom-btn-switch" onclick="goToPage(4)">अगला पृष्ठ (देश-विदेश) ❯</button>
+      </footer>
+    </section>
+
+    <!-- ================= PAGE 4: राष्ट्रीय एवं विदेश (National / World) ================= -->
+    <section class="newspaper-page" id="page-4">
+      <div class="page-masthead-strip">
+        <span>THE 90I NEWS • राष्ट्रीय महा बुलेटिन</span>
+        <span>www.the90inews.com</span>
+      </div>
+
+      <div class="inside-page-masthead">
+        <div class="inside-brand">THE <span>90I</span> NEWS</div>
+        <div class="inside-page-cat" style="background:#1e40af;">पृष्ठ 04 : राष्ट्रीय व अंतर्राष्ट्रीय</div>
+        <div class="inside-page-meta live-date-str">लोड हो रहा है...</div>
+      </div>
+
+      <div class="inside-two-col-layout" id="p4ContentGrid"></div>
+
+      <footer class="page-bottom-nav">
+        <button type="button" class="bottom-btn-switch" onclick="goToPage(3)">❮ पिछला पृष्ठ</button>
+        <span>THE 90I NEWS • पृष्ठ: 04 / 05 (राष्ट्रीय)</span>
+        <button type="button" class="bottom-btn-switch" onclick="goToPage(5)">अगला पृष्ठ (शिक्षा व रोज़गार) ❯</button>
+      </footer>
+    </section>
+
+    <!-- ================= PAGE 5: शिक्षा, रोज़गार व संपादकीय (Career & Business) ================= -->
+    <section class="newspaper-page" id="page-5">
+      <div class="page-masthead-strip">
+        <span>THE 90I NEWS • विशेषांक एवं करियर</span>
+        <span>www.the90inews.com</span>
+      </div>
+
+      <div class="inside-page-masthead">
+        <div class="inside-brand">THE <span>90I</span> NEWS</div>
+        <div class="inside-page-cat" style="background:#047857;">पृष्ठ 05 : शिक्षा, रोज़गार व संपादकीय</div>
+        <div class="inside-page-meta live-date-str">लोड हो रहा है...</div>
+      </div>
+
+      <div class="inside-three-col-layout" id="p5ContentGrid"></div>
+
+      <footer class="page-bottom-nav">
+        <button type="button" class="bottom-btn-switch" onclick="goToPage(4)">❮ पिछला पृष्ठ</button>
+        <span>THE 90I NEWS • पृष्ठ: 05 / 05 (अंतिम पृष्ठ)</span>
+        <button type="button" class="bottom-btn-switch" onclick="goToPage(1)">प्रथम पृष्ठ पर जाएं ↺</button>
+      </footer>
+    </section>
+
+  </div>
+
+  <script>
+    "use strict";
+
+    var currentPage = 1;
+    var totalPages = 5;
+    var globalNews = [];
+
+    // 1. Live Day Date Setup
+    (function setLiveDates() {
+      var days = ["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
+      var months = ["जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"];
+
+      var now = new Date();
+      var fullDate = days[now.getDay()] + ", " + now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
+
+      document.querySelectorAll(".live-date-str").forEach(function(el) {
+        el.textContent = "बिहार • " + fullDate;
+      });
+    })();
+
+    // 2. Page Navigation Functions
+    function goToPage(pageNum) {
+      if (pageNum < 1 || pageNum > totalPages) return;
+      currentPage = pageNum;
+
+      for (var i = 1; i <= totalPages; i++) {
+        var pEl = document.getElementById("page-" + i);
+        if (pEl) {
+          if (i === currentPage) pEl.classList.add("active");
+          else pEl.classList.remove("active");
+        }
+      }
+
+      var pills = document.querySelectorAll(".page-pill");
+      pills.forEach(function(pill, idx) {
+        if (idx + 1 === currentPage) pill.classList.add("active");
+        else pill.classList.remove("active");
+      });
+
+      var ind = document.getElementById("pageIndicator");
+      if (ind) ind.textContent = currentPage + " / " + totalPages;
+
+      var prevBtn = document.getElementById("prevPageBtn");
+      var nextBtn = document.getElementById("nextPageBtn");
+      if (prevBtn) prevBtn.disabled = (currentPage === 1);
+      if (nextBtn) nextBtn.disabled = (currentPage === totalPages);
+
+      var floatNext = document.getElementById("floatingNextBtn");
+      if (floatNext) {
+        if (currentPage === totalPages) {
+          floatNext.textContent = "↺ प्रथम पेज";
+          floatNext.onclick = function() { goToPage(1); };
+        } else {
+          floatNext.textContent = "अगला पेज ❯";
+          floatNext.onclick = function() { changePage(1); };
+        }
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(autoScaleForMobile, 80);
+    }
+
+    function changePage(delta) {
+      goToPage(currentPage + delta);
+    }
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "ArrowRight") changePage(1);
+      if (e.key === "ArrowLeft") changePage(-1);
+    });
+
+    // 3. Responsive Mobile Auto-Scaler
+    function autoScaleForMobile() {
+      var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+      var activePage = document.querySelector(".newspaper-page.active");
+      if (!activePage) return;
+
+      if (screenWidth < 1100) {
+        var scaleRatio = (screenWidth - 10) / 1080;
+        activePage.style.transformOrigin = "top center";
+        activePage.style.transform = "scale(" + scaleRatio + ")";
+        activePage.style.margin = "0 auto";
+        
+        var scaledHeight = activePage.offsetHeight * scaleRatio;
+        document.body.style.minHeight = (scaledHeight + 120) + "px";
+      } else {
+        activePage.style.transform = "none";
+        document.body.style.minHeight = "auto";
+      }
+    }
+
+    window.addEventListener("resize", autoScaleForMobile);
+    window.addEventListener("load", autoScaleForMobile);
+
+    // 4. News Loader & 5-Page Unique Distributor
+    document.addEventListener("DOMContentLoaded", initMultiPageEpaper);
+
+    async function initMultiPageEpaper() {
+      var newsList = [];
+
+      var paths = ["data/90i-data.json", "data.json", "90i-data.json"];
+      for (var p = 0; p < paths.length; p++) {
+        try {
+          var res = await fetch(paths[p] + "?_t=" + Date.now(), { cache: "no-store" });
+          if (res.ok) {
+            var db = await res.json();
+            var extracted = extractNewsList(db);
+            if (extracted && extracted.length > 0) {
+              newsList = extracted;
+              try { localStorage.setItem("cached_db", JSON.stringify(db)); } catch(e) {}
+              break;
+            }
+          }
+        } catch(e) {}
+      }
+
+      if (!newsList || !newsList.length) {
+        var storageKeys = ["cached_db", "90i_news", "news_data", "news", "articles"];
+        for (var s = 0; s < storageKeys.length; s++) {
+          try {
+            var raw = localStorage.getItem(storageKeys[s]);
+            if (raw) {
+              var parsed = JSON.parse(raw);
+              var fromStore = extractNewsList(parsed);
+              if (fromStore && fromStore.length > 0) {
+                newsList = fromStore;
+                break;
+              }
+            }
+          } catch(e) {}
+        }
+      }
+
+      globalNews = newsList || [];
+      var countEl = document.getElementById("p1NewsCount");
+      if (countEl) countEl.textContent = "कुल समाचार: " + globalNews.length;
+
+      if (!globalNews.length) return;
+
+      renderPage1(globalNews);
+      renderPage2(globalNews);
+      renderPage3(globalNews);
+      renderPage4(globalNews);
+      renderPage5(globalNews);
+
+      goToPage(1);
+    }
+
+    // Page 1: Uses News Index 0, 1, 2, 3, 4 (No Repeat)
+    function renderPage1(list) {
+      if (!list.length) return;
+
+      var tHead = document.getElementById("p1TeaserHead");
+      if (tHead) tHead.textContent = (list[0].title || "").substring(0, 35) + "...";
+      if (list[0].image) {
+        var tImg = document.getElementById("p1TeaserImg");
+        if (tImg) tImg.src = list[0].image;
+      }
+
+      // News 0 (Lead)
+      var lead = list[0];
+      var elLeadTitle = document.getElementById("p1LeadTitle");
+      var elLeadKicker = document.getElementById("p1LeadKicker");
+      var elLeadBody = document.getElementById("p1LeadBody");
+      var elLeadSumBox = document.getElementById("p1LeadSummaryBox");
+      var elLeadSum = document.getElementById("p1LeadSummary");
+
+      if (elLeadTitle) elLeadTitle.textContent = lead.title || "";
+      if (elLeadKicker) elLeadKicker.textContent = lead.category ? ("● " + lead.category) : "● मुख्य समाचार";
+      if (elLeadBody) elLeadBody.textContent = getFullText(lead);
+
+      var summary = getSummaryText(lead);
+      if (summary && elLeadSumBox && elLeadSum) {
+        elLeadSum.textContent = summary;
+        elLeadSumBox.style.display = "block";
+      }
+
+      if (lead.image && String(lead.image).trim()) {
+        var sImg = document.getElementById("p1LeadImg");
+        var sCap = document.getElementById("p1LeadCaption");
+        var sWrap = document.getElementById("p1LeadPhotoWrap");
+        if (sImg) sImg.src = lead.image;
+        if (sCap) sCap.textContent = lead.author ? ("रिपोर्ट: " + lead.author + " • " + (lead.date || '')) : (lead.date || '');
+        if (sWrap) sWrap.style.display = "block";
+      }
+
+      // News 1 and 2 (Left Column)
+      var leftArtContainer = document.getElementById("p1ArticlesContainer");
+      if (leftArtContainer) {
+        var artHtml = "";
+        for (var i = 1; i <= 2 && i < list.length; i++) {
+          var it = list[i];
+          var sm = getSummaryText(it);
+          var smHtml = sm ? '<div class="summary-box"><b>संक्षेप में सार:</b> ' + sm + '</div>' : '';
+          var imgHtml = (it.image && String(it.image).trim()) ? 
+            '<div class="article-photo-full"><img src="' + it.image + '" alt="Photo"><div class="photo-caption-tag">' + (it.author ? ('रिपोर्ट: ' + it.author + ' • ') : '') + (it.date || '') + '</div></div>' : '';
+          
+          artHtml += '<article class="full-article-row">' +
+            '<span class="kicker-tag">● ' + (it.category || 'समाचार') + '</span>' +
+            '<h3 class="article-headline">' + (it.title || '') + '</h3>' +
+            smHtml +
+            imgHtml +
+            '<div class="article-columns-text">' + getFullText(it) + '</div>' +
+          '</article>';
+        }
+        leftArtContainer.innerHTML = artHtml;
+      }
+
+      // Top 5 Headlines (Quick Bulletin)
+      var fiveList = document.getElementById("p1TopFiveList");
+      if (fiveList) {
+        var top5Html = "";
+        var count = Math.min(list.length, 5);
+        for (var j = 0; j < count; j++) {
+          top5Html += '<li class="top-five-item">' +
+            '<span class="five-num">' + (j + 1) + '</span>' +
+            '<div>' + (list[j].title || '') + '</div>' +
+          '</li>';
+        }
+        fiveList.innerHTML = top5Html;
+      }
+
+      // News 3 and 4 (Sidebar Cards)
+      var sideContainer = document.getElementById("p1SidebarContainer");
+      if (sideContainer) {
+        var sideHtml = "";
+        for (var k = 3; k <= 4 && k < list.length; k++) {
+          var sItem = list[k];
+          var sSm = getSummaryText(sItem);
+          var sSmHtml = sSm ? '<div class="summary-box" style="font-size:11px; padding:4px 7px;"><b>सार:</b> ' + sSm + '</div>' : '';
+          var sImg = (sItem.image && String(sItem.image).trim()) ? '<img src="' + sItem.image + '" alt="Side News">' : '';
+          
+          sideHtml += '<article class="side-card">' +
+            '<span class="kicker-tag">● ' + (sItem.category || 'विशेष') + '</span>' +
+            '<h4>' + (sItem.title || '') + '</h4>' +
+            sSmHtml +
+            sImg +
+            '<p>' + getFullText(sItem).substring(0, 110) + '...</p>' +
+          '</article>';
+        }
+        sideContainer.innerHTML = sideHtml;
+      }
+    }
+
+    // Page 2: Uses Strictly News Index 5 to 8 (No Repeat)
+    function renderPage2(list) {
+      var grid = document.getElementById("p2ContentGrid");
+      if (!grid) return;
+      var items = getUniqueSlice(list, 5, 4);
+      var col1 = "", col2 = "";
+
+      if (items.length > 0) {
+        items.forEach(function(item, idx) {
+          var card = buildCardHtml(item);
+          if (idx % 2 === 0) col1 += card;
+          else col2 += card;
+        });
+      }
+
+      grid.innerHTML = '<div class="inside-col-card">' + (col1 || getPlaceholderHtml("बिहार राज्य समाचार", "राज्य स्तरीय मुख्य प्रशासनिक एवं विकास कार्य की रिपोर्ट।")) + '</div>' +
+                       '<div class="inside-col-card">' + (col2 || getPlaceholderHtml("प्रादेशिक विशेष", "बिहार के सभी जिलों की महत्वपूर्ण हलचल व समीक्षा।")) + '</div>';
+    }
+
+    // Page 3: Uses Strictly News Index 9 to 14 (No Repeat)
+    function renderPage3(list) {
+      var grid = document.getElementById("p3ContentGrid");
+      if (!grid) return;
+      var items = getUniqueSlice(list, 9, 6);
+      var c1 = "", c2 = "", c3 = "";
+
+      if (items.length > 0) {
+        items.forEach(function(item, idx) {
+          var card = buildCardHtml(item);
+          if (idx % 3 === 0) c1 += card;
+          else if (idx % 3 === 1) c2 += card;
+          else c3 += card;
+        });
+      }
+
+      grid.innerHTML = '<div class="inside-col-card">' + (c1 || getPlaceholderHtml("पूर्णिया लोकल", "पूर्णिया शहर एवं ग्रामीण क्षेत्रों की ज़मीनी रिपोर्ट।")) + '</div>' +
+                       '<div class="inside-col-card">' + (c2 || getPlaceholderHtml("सीमांचल हलचल", "कटिहार, अररिया, किशनगंज व सीमांचल क्षेत्र के समाचार।")) + '</div>' +
+                       '<div class="inside-col-card">' + (c3 || getPlaceholderHtml("ज़िला बुलेटिन", "प्रशासनिक फैसले, मौसम एवं क्षेत्रीय गतिविधियां।")) + '</div>';
+    }
+
+    // Page 4: Uses Strictly News Index 15 to 18 (No Repeat)
+    function renderPage4(list) {
+      var grid = document.getElementById("p4ContentGrid");
+      if (!grid) return;
+      var items = getUniqueSlice(list, 15, 4);
+      var col1 = "", col2 = "";
+
+      if (items.length > 0) {
+        items.forEach(function(item, idx) {
+          var card = buildCardHtml(item);
+          if (idx % 2 === 0) col1 += card;
+          else col2 += card;
+        });
+      }
+
+      grid.innerHTML = '<div class="inside-col-card">' + (col1 || getPlaceholderHtml("राष्ट्रीय महा बुलेटिन", "देशभर की राजनीति, नीतियां एवं मुख्य राष्ट्रीय घटनाक्रम।")) + '</div>' +
+                       '<div class="inside-col-card">' + (col2 || getPlaceholderHtml("विदेश एवं तकनीक", "विश्व मंच की कूटनीति, विज्ञान और तकनीकी नवाचार।")) + '</div>';
+    }
+
+    // Page 5: Uses Strictly News Index 19+ (No Repeat)
+    function renderPage5(list) {
+      var grid = document.getElementById("p5ContentGrid");
+      if (!grid) return;
+      var items = getUniqueSlice(list, 19, 6);
+      var c1 = "", c2 = "", c3 = "";
+
+      if (items.length > 0) {
+        items.forEach(function(item, idx) {
+          var card = buildCardHtml(item);
+          if (idx % 3 === 0) c1 += card;
+          else if (idx % 3 === 1) c2 += card;
+          else c3 += card;
+        });
+      }
+
+      grid.innerHTML = '<div class="inside-col-card">' + (c1 || getPlaceholderHtml("शिक्षा एवं परीक्षा", "विश्वविद्यालय, बोर्ड परीक्षा व प्रतियोगी अपडेट्स।")) + '</div>' +
+                       '<div class="inside-col-card">' + (c2 || getPlaceholderHtml("रोज़गार मेला व करियर", "सरकारी एवं निजी क्षेत्र के ताज़ा भर्ती विज्ञापन।")) + '</div>' +
+                       '<div class="inside-col-card">' + (c3 || getEditorialBox()) + '</div>';
+    }
+
+    // Strictly Unique Slicer (Zero Repeat)
+    function getUniqueSlice(list, startIndex, count) {
+      if (!list || list.length <= startIndex) return [];
+      return list.slice(startIndex, startIndex + count);
+    }
+
+    function buildCardHtml(item) {
+      if (!item) return "";
+      var summary = getSummaryText(item);
+      var summaryHtml = summary ? '<div class="summary-box" style="font-size:11.5px; padding:5px 8px;"><b>सार:</b> ' + summary + '</div>' : '';
+      var imgHtml = (item.image && String(item.image).trim()) ? 
+        '<img class="news-block-img" src="' + item.image + '" alt="Photo">' : '';
+
+      return '<article class="news-block-card">' +
+        '<span class="kicker-tag">● ' + (item.category || 'विशेष रिपोर्ट') + '</span>' +
+        '<h3 class="news-block-title">' + (item.title || '') + '</h3>' +
+        summaryHtml +
+        imgHtml +
+        '<p class="news-block-text">' + getFullText(item) + '</p>' +
+      '</article>';
+    }
+
+    function getPlaceholderHtml(categoryName, desc) {
+      return '<article class="news-block-card">' +
+        '<span class="kicker-tag">● ' + categoryName + '</span>' +
+        '<h3 class="news-block-title">डिजिटल डेस्क विशेष बुलेटिन</h3>' +
+        '<div class="summary-box"><b>संक्षेप:</b> ' + desc + '</div>' +
+        '<p class="news-block-text">THE 90I NEWS की रिपोर्टिंग टीम द्वारा ताज़ा जानकारी एकत्रित की जा रही है। नया समाचार पब्लिश होते ही यह खंड स्वतः अपडेट हो जाएगा।</p>' +
+      '</article>';
+    }
+
+    function getEditorialBox() {
+      return '<article class="news-block-card" style="background:#f8fafc; padding:12px; border:1.5px solid #cbd5e1; border-radius:3px;">' +
+        '<span class="kicker-tag" style="color:#0f172a;">● संपादकीय दृष्टिकोण</span>' +
+        '<h3 class="news-block-title">सकारात्मक पत्रकारिता और राष्ट्र निर्माण</h3>' +
+        '<p class="news-block-text" style="font-size:11.5px; line-height:1.5;">' +
+        'निष्पक्ष और सत्यपरक पत्रकारिता किसी भी सशक्त समाज का आधारस्तंभ है। THE 90I NEWS का संकल्प हर पाठक तक निष्पक्ष तथ्य पहुंचाना है।' +
+        '</p>' +
+        '<div style="margin-top:10px; font-weight:800; font-size:11px; color:#475569; text-align:right;">— संपादक मंडल</div>' +
+      '</article>';
+    }
+
+    function extractNewsList(db) {
+      if (!db) return [];
+      if (Array.isArray(db)) return db;
+      if (Array.isArray(db["90i_news"])) return db["90i_news"];
+      if (Array.isArray(db.news)) return db.news;
+      if (Array.isArray(db.articles)) return db.articles;
+      if (Array.isArray(db.data)) return db.data;
+      return [];
+    }
+
+    function getFullText(obj) {
+      if (!obj) return "";
+      var raw = obj.content || obj.body || obj.summary || obj.excerpt || obj.description || "";
+      return String(raw).replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
+    }
+
+    function getSummaryText(obj) {
+      if (!obj) return "";
+      if (obj.summary && obj.content && obj.summary !== obj.content) {
+        return String(obj.summary).replace(/<[^>]*>?/gm, '').trim();
+      }
+      var full = getFullText(obj);
+      if (full.length > 30) {
+        return full.substring(0, 110) + "...";
+      }
+      return "";
+    }
+  </script>
+</body>
+</html>
