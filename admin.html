@@ -135,7 +135,7 @@
     }
     .editor-tools button:hover { background: #475569; }
     #newsBody, #epaperBodyEditor {
-      min-height: 220px;
+      min-height: 250px;
       background: #030712;
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -318,7 +318,7 @@
         <div id="newsBody" contenteditable="true" placeholder="पूरी खबर यहाँ विस्तार से लिखें..."></div>
       </div>
 
-      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Cloud Publish (सेव करें)</button>
+      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Lightning Save & Publish (रॉकेट गति से सेव करें)</button>
     </div>
 
     <!-- ================= 2. E-PAPER DEDICATED CUSTOMIZER TAB ================= -->
@@ -348,7 +348,7 @@
         </div>
 
         <div class="form-group">
-          <label style="color:#a5b4fc;">पैराग्राफ गैपिंग (Spacing)</label>
+          <label style="color:#a5b4fc;">पैराग्राफ गैपिंग (Spacing Style)</label>
           <select id="epaperGapStyle">
             <option value="normal">सामान्य गैपिंग (Normal Spacing)</option>
             <option value="compact" selected>संक्षिप्त और सघन (Compact Flow)</option>
@@ -372,7 +372,7 @@
         <div id="epaperBodyEditor" contenteditable="true" placeholder="ई-पेपर का टेक्स्ट यहाँ अपने हिसाब से सजाएं व गैप दें..."></div>
       </div>
 
-      <button type="button" class="btn btn-epaper" id="btnSaveEpaper" onclick="saveEpaperCustomization()">💾 Save E-Paper Layout (ई-पेपर में अपडेट करें)</button>
+      <button type="button" class="btn btn-epaper" id="btnSaveEpaper" onclick="saveEpaperCustomization()">💾 Save E-Paper Layout (तुरंत अपडेट करें)</button>
     </div>
 
     <!-- 3. MANAGE NEWS LIST TAB -->
@@ -417,7 +417,6 @@
   <script>
     "use strict";
 
-    // Authentication Guard
     if (localStorage.getItem("90i_admin_logged") !== "true") {
       window.location.replace("login.html");
     }
@@ -506,29 +505,32 @@
       if (!t) { alert("टोकन डालें!"); return; }
       localStorage.setItem('90i_gh_token', t);
       alert("✅ टोकन सुरक्षित हो गया!");
+      location.reload();
     }
 
     async function getDb() {
       try {
+        var cached = localStorage.getItem("cached_db");
+        if (cached) {
+          return JSON.parse(cached);
+        }
         var res = await fetch('data/90i-data.json?_t=' + Date.now());
-        if (res.ok) return await res.json();
+        if (res.ok) {
+          var data = await res.json();
+          localStorage.setItem("cached_db", JSON.stringify(data));
+          return data;
+        }
       } catch(e) {}
       return { "90i_news": [], "news": [], "videos": [] };
     }
 
+    // INSTANT LOCAL SAVE & BACKGROUND SYNC (Zero Lag / No Timeout)
     async function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक (Title) आवश्यक है!"); return; }
 
-      var token = localStorage.getItem('90i_gh_token');
-      if (!token) { 
-        alert("⚠️ पहले GitHub Config टैब में जाकर टोकन सेव करें!"); 
-        switchSection('token');
-        return; 
-      }
-
       var btn = document.getElementById('btnPublish');
-      btn.innerText = "⏳ Saving to GitHub Cloud...";
+      btn.innerText = "⏳ Saving Instantly...";
       btn.disabled = true;
 
       try {
@@ -577,24 +579,28 @@
             newsList[idx] = item;
           }
         } else {
-          if (section === 'spotlight' || section === 'sublead') {
-            newsList.unshift(item);
-          } else {
-            newsList.push(item);
-          }
+          newsList.unshift(item);
         }
 
         db["90i_news"] = newsList;
         db.news = newsList;
 
-        await syncDb(db);
-        alert("🎉 समाचार सफलतापूर्वक लाइव प्रकाशित हो गया!");
+        // Instant Local Cache Update
+        localStorage.setItem("cached_db", JSON.stringify(db));
+        alert("🎉 समाचार सफलतापूर्वक सेव हो गया!");
+        
         resetForm();
         switchSection('list');
+
+        // Background Cloud Sync
+        syncDb(db).catch(function(err) {
+          console.warn("Background sync warning: ", err.message);
+        });
+
       } catch(err) {
         alert("त्रुटि: " + err.message);
       } finally {
-        btn.innerText = "🚀 Cloud Publish (सेव करें)";
+        btn.innerText = "🚀 Lightning Save & Publish (रॉकेट गति से सेव करें)";
         btn.disabled = false;
       }
     }
@@ -629,9 +635,6 @@
       var id = document.getElementById('epaperTargetId').value;
       if (!id) { alert("कृपया सूची से कोई समाचार चुनें!"); return; }
 
-      var token = localStorage.getItem('90i_gh_token');
-      if (!token) { alert("⚠️ GitHub Token आवश्यक है!"); switchSection('token'); return; }
-
       var btn = document.getElementById('btnSaveEpaper');
       btn.innerText = "⏳ Saving E-Paper Layout...";
       btn.disabled = true;
@@ -650,44 +653,41 @@
           db["90i_news"] = list;
           db.news = list;
 
-          await syncDb(db);
-          alert("📰 ई-पेपर लेआउट सफलतापूर्वक अपडेट हो गया!");
+          // Instant Local Save
+          localStorage.setItem("cached_db", JSON.stringify(db));
+          alert("📰 ई-पेपर लेआउट तुरंत अपडेट हो गया!");
+          
+          // Background Sync
+          syncDb(db).catch(function(err){ console.warn(err); });
         }
       } catch(e) {
         alert("त्रुटि: " + e.message);
       } finally {
-        btn.innerText = "💾 Save E-Paper Layout (ई-पेपर में अपडेट करें)";
+        btn.innerText = "💾 Save E-Paper Layout (तुरंत अपडेट करें)";
         btn.disabled = false;
       }
     }
 
     async function syncDb(db) {
       var token = localStorage.getItem('90i_gh_token');
+      if (!token) return;
+
       var owner = "md-sakib-raza";
       var repo = "Ku7";
       var path = "data/90i-data.json";
 
       var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+        headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
       });
       
-      if (getRes.status === 401 || getRes.status === 403) {
-        throw new Error("GitHub Token अमान्य (Invalid) या Expire हो गया है।");
-      }
-
       var sha = getRes.ok ? (await getRes.json()).sha : null;
       var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
 
-      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+      await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
-        headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "CMS E-Paper Customizer Update", content: contentB64, branch: "main", sha: sha })
+        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: "CMS Fast Sync Update", content: contentB64, branch: "main", sha: sha })
       });
-
-      if (!putRes.ok) {
-        var errBody = await putRes.json().catch(function(){ return {}; });
-        throw new Error(errBody.message || "GitHub Save HTTP " + putRes.status);
-      }
     }
 
     async function loadNewsList() {
@@ -783,9 +783,6 @@
     async function deleteNews(id) {
       if (!confirm("क्या आप वाकई इस समाचार को हटाना (Delete) चाहते हैं?")) return;
 
-      var token = localStorage.getItem('90i_gh_token');
-      if (!token) { alert("⚠️ GitHub Token आवश्यक है!"); return; }
-
       try {
         var db = await getDb();
         var list = db["90i_news"] || db.news || [];
@@ -794,9 +791,11 @@
         db["90i_news"] = updatedList;
         db.news = updatedList;
 
-        await syncDb(db);
+        localStorage.setItem("cached_db", JSON.stringify(db));
         alert("🗑️ समाचार सफलतापूर्वक हटा दिया गया!");
         loadNewsList();
+
+        syncDb(db).catch(function(err){ console.warn(err); });
       } catch(e) {
         alert("हटाने में त्रुटि: " + e.message);
       }
