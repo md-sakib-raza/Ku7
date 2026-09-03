@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>THE 90I NEWS | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क</title>
+  <meta name="description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
+
+  <!-- Google AdSense Code -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9762787230045511" crossorigin="anonymous"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yantramanav:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626;
+      --brand-dark: #b91c1c;
+      --brand-soft: #fef2f2;
+      --bg: #f8fafc;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --line: #e2e8f0;
+      --card-bg: #ffffff;
+      --nav-bg: #ffffff;
+    }
+
+    /* Dark Mode Variables */
+    body.dark-mode {
+      --bg: #0b1120;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --line: #1e293b;
+      --card-bg: #0f172a;
+      --nav-bg: #0f172a;
+    }
+    body.dark-mode .top-bar,
+    body.dark-mode .header-main,
+    body.dark-mode .main-nav,
+    body.dark-mode .sidebar-widget,
+    body.dark-mode .news-card,
+    body.dark-mode .hero-spotlight,
+    body.dark-mode .sublead-card,
+    body.dark-mode .category-filter-banner,
+    body.dark-mode .search-box,
+    body.dark-mode .policy-box,
+    body.dark-mode .chat-widget-window {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: #1e293b !important;
+    }
+    body.dark-mode .card-footer { background-color: #111827 !important; }
+    body.dark-mode .btn-search { background: #1e293b; color: #f8fafc; border-color: #334155; }
+    body.dark-mode .visitor-stat-card { background: #111827; border-color: #1e293b; }
+    body.dark-mode .search-result-item { background: #111827; border-color: #1e293b; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Yantramanav', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .main-wrapper { flex: 1 0 auto; }
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+
+    /* Top Utility Bar */
+    .top-bar {
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--line);
+      padding: 7px 0;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .top-bar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--brand);
+      font-weight: 800;
+      font-size: 11.5px;
+      text-transform: uppercase;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--brand);
+      border-radius: 50%;
+      box-shadow: 0 0 0 rgba(220, 38, 38, 0.4);
+      animation: pulseAnim 1.6s infinite;
+    }
+    @keyframes pulseAnim {
+      0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+
+    /* Main Header Branding */
+    .header-main {
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--line);
+      padding: 16px 0;
+    }
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-container a { text-decoration: none; }
+    .logo-text {
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--text);
+      font-family: 'Rozha One', serif;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .logo-text span { color: var(--brand); }
+    .tagline {
+      font-size: 13px;
+      color: var(--brand);
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Header Actions Group */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-search {
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      cursor: pointer;
+      color: var(--text);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+    .btn-search:hover {
+      background: #e2e8f0;
+      color: var(--brand);
+    }
+
+    /* 3D Animated Theme Toggle Button */
+    .theme-3d-toggle {
+      background: linear-gradient(145deg, #ffffff, #e2e8f0);
+      border: 2px solid #cbd5e1;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .theme-3d-toggle:hover {
+      transform: scale(1.1) rotate(15deg);
+      box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.9);
+      border-color: var(--brand);
+    }
+    body.dark-mode .theme-3d-toggle {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border-color: #334155;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Navigation Bar */
+    .main-nav {
+      background: var(--nav-bg);
+      border-bottom: 2px solid var(--brand);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .nav-scroll {
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav-scroll::-webkit-scrollbar { display: none; }
+    .nav-scroll a {
+      padding: 12px 18px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 15px;
+      display: inline-block;
+      transition: color 0.2s;
+    }
+    .nav-scroll a:hover, .nav-scroll a.active {
+      color: var(--brand);
+    }
+
+    /* Breaking News Ticker */
+    .ticker-wrap {
+      background: #0f172a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      margin: 14px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker-badge {
+      background: var(--brand);
+      padding: 7px 14px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      z-index: 2;
+    }
+    .ticker-content-box {
+      flex-grow: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .ticker-moving-text {
+      display: inline-block;
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: tickerRun 22s linear infinite;
+      font-size: 13.5px;
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+    .ticker-moving-text:hover {
+      animation-play-state: paused;
+      cursor: pointer;
+    }
+    @keyframes tickerRun {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    /* Section Headers */
+    .sec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid var(--line);
+      margin-bottom: 18px;
+      padding-bottom: 6px;
+      position: relative;
+    }
+    .sec-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.2px;
+    }
+    .sec-title::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 60px;
+      height: 2px;
+      background: var(--brand);
+    }
+    .sec-link {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand);
+      text-decoration: none;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      margin: 18px 0 30px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 20px;
+    }
+    .hero-spotlight {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .spotlight-img-wrap {
+      width: 100%;
+      height: 330px;
+      position: relative;
+      overflow: hidden;
+      background: #e2e8f0;
+    }
+    .spotlight-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .hero-spotlight:hover .spotlight-img {
+      transform: scale(1.03);
+    }
+    .spotlight-cat-tag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--brand);
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .spotlight-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-grow: 1;
+    }
+    .spotlight-title {
+      font-size: 23px;
+      font-weight: 900;
+      line-height: 1.35;
+      color: var(--text);
+    }
+    .spotlight-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .spotlight-title a:hover { color: var(--brand); }
+    .spotlight-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .spotlight-excerpt {
+      color: var(--text-muted);
+      font-size: 14.5px;
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Rating Tag Styling */
+    .rating-badge-card {
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid var(--line);
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    body.dark-mode .rating-badge-card { background: #1e293b; color: #cbd5e1; }
+
+    /* Subleads in Hero */
+    .hero-subleads {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .sublead-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .sublead-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .sublead-thumb {
+      width: 110px;
+      height: 80px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #e2e8f0;
+      flex-shrink: 0;
+    }
+    .sublead-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+    }
+    .sublead-cat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .sublead-cat {
+      font-size: 11px;
+      color: var(--brand);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .sublead-headline {
+      font-size: 14.5px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: 3px 0;
+    }
+    .sublead-card:hover .sublead-headline { color: var(--brand); }
+    .sublead-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Main Layout */
+    .main-body-layout {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    /* News Cards Grid */
+    .news-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .news-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .news-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+    .card-thumb-wrap {
+      width: 100%;
+      height: 175px;
+      overflow: hidden;
+      background: #f1f5f9;
+      position: relative;
+    }
+    .card-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex-grow: 1;
+    }
+    .card-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .cat-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 800;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      border-radius: 4px;
+      padding: 2px 7px;
+      text-transform: uppercase;
+    }
+    body.dark-mode .cat-badge { background: rgba(220, 38, 38, 0.2); color: #f87171; border-color: rgba(220, 38, 38, 0.4); }
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.4;
+      color: var(--text);
+    }
+    .card-title a { color: inherit; text-decoration: none; }
+    .card-title a:hover { color: var(--brand); }
+    .card-summary {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+    body.dark-mode .card-footer { background: #111827; }
+    .view-count-tag {
+      font-weight: 700;
+      color: var(--text-muted);
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    body.dark-mode .view-count-tag { background: #1e293b; }
+
+    /* Sidebar Speed News */
+    .sidebar-widget {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      margin-bottom: 25px;
+    }
+    .sidebar-widget-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 14px;
+      border-bottom: 2px solid var(--brand);
+      padding-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .speed-news-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .speed-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .speed-item:last-child { border-bottom: none; }
+    .speed-headline {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.4;
+      color: var(--text);
+      margin-bottom: 4px;
+      transition: color 0.2s;
+    }
+    .speed-item:hover .speed-headline { color: var(--brand); }
+    .speed-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Traffic Box */
+    .sidebar-visitor-box {
+      background: linear-gradient(145deg, var(--card-bg), var(--bg)) !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 16px !important;
+      padding: 18px !important;
+      box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 10px rgba(0, 0, 0, 0.03) !important;
+      position: relative !important;
+      overflow: hidden !important;
+      margin-bottom: 25px !important;
+    }
+    .traffic-glow-line {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #dc2626, #3b82f6, #10b981, #f59e0b, #dc2626);
+      background-size: 300% 100%;
+      animation: flowNeonGradient 4s linear infinite;
+    }
+    @keyframes flowNeonGradient {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    .visitor-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    .visitor-box-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .traffic-live-icon {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 15px;
+    }
+    .eq-bar {
+      width: 3.5px;
+      border-radius: 2px;
+      animation: eqBounce 1.2s ease-in-out infinite alternate;
+    }
+    .bar-1 { height: 6px; animation-delay: 0.1s; background: #dc2626; }
+    .bar-2 { height: 15px; animation-delay: 0.3s; background: #2563eb; }
+    .bar-3 { height: 9px; animation-delay: 0.5s; background: #16a34a; }
+    @keyframes eqBounce {
+      0% { transform: scaleY(0.3); }
+      100% { transform: scaleY(1); }
+    }
+    .live-status-pill {
+      background: #f0fdf4;
+      color: #16a34a;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid #bbf7d0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    body.dark-mode .live-status-pill { background: rgba(22, 163, 74, 0.15); border-color: rgba(22, 163, 74, 0.3); }
+    .live-radar-dot {
+      position: relative;
+      width: 8px;
+      height: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .radar-core {
+      width: 6px;
+      height: 6px;
+      background: #16a34a;
+      border-radius: 50%;
+      position: relative;
+      z-index: 2;
+    }
+    .radar-ping {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(22, 163, 74, 0.4);
+      animation: radarPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    @keyframes radarPing {
+      0% { transform: scale(1); opacity: 1; }
+      75%, 100% { transform: scale(2.8); opacity: 0; }
+    }
+    .visitor-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .visitor-stat-card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 10px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+    }
+    .stat-card-num {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 4px;
+      color: #2563eb;
+    }
+    .stat-total .stat-card-num { color: #16a34a; }
+    .stat-card-label {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    /* Strips & Split Layout */
+    .section-block { margin-bottom: 35px; }
+    .split-category-row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 35px; }
+
+    /* Category Active Banner */
+    .category-filter-banner {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--brand);
+      padding: 14px 20px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .category-filter-banner h2 {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .btn-reset-filter {
+      font-size: 12.5px;
+      color: var(--brand);
+      text-decoration: none;
+      font-weight: 800;
+      padding: 4px 10px;
+      background: #fee2e2;
+      border-radius: 4px;
+    }
+
+    /* Floating Chatbot */
+    .ai-bot-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 14px;
+      transition: transform 0.25s ease;
+    }
+    .ai-bot-toggle:hover { transform: scale(1.08); }
+    .bot-status-dot {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 11px;
+      height: 11px;
+      background: #22c55e;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+    }
+
+    .chat-widget-window {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: 350px;
+      max-width: calc(100vw - 32px);
+      height: 460px;
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: 0 15px 40px rgba(15, 23, 42, 0.2);
+      border: 1px solid var(--line);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .chat-header {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--brand);
+    }
+    .chat-header h4 { font-size: 14px; font-weight: 800; }
+    .btn-close-chat { background: transparent; border: none; color: #94a3b8; font-size: 18px; cursor: pointer; }
+    .chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-msg {
+      max-width: 85%;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .msg-bot {
+      background: var(--card-bg);
+      color: var(--text);
+      align-self: flex-start;
+      border: 1px solid var(--line);
+    }
+    .msg-user {
+      background: var(--brand);
+      color: #ffffff;
+      align-self: flex-end;
+    }
+    .chat-quick-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .quick-tag {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 3px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .quick-tag:hover { background: var(--brand); color: #fff; }
+    .chat-input-area {
+      padding: 10px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 8px;
+    }
+    .chat-input-area input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+    }
+    .btn-chat-send {
+      background: var(--brand);
+      border: none;
+      color: #ffffff;
+      padding: 0 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    /* Search Modal */
+    .search-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+      align-items: flex-start;
+      justify-content: center;
+      padding: 50px 15px;
+    }
+    .search-box {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 650px;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border: 1px solid var(--line);
+    }
+    .search-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .search-input-wrap input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+    .search-results-list {
+      max-height: 350px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .search-result-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: inherit;
+      background: var(--bg);
+      border: 1px solid var(--line);
+    }
+    .search-res-thumb {
+      width: 70px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;
+    }
+
+    /* Policy Modal Styles */
+    .policy-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .policy-box {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 750px;
+      max-height: 85vh;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      border: 1px solid var(--line);
+    }
+    .policy-header {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid var(--brand);
+    }
+    .policy-body {
+      padding: 24px;
+      overflow-y: auto;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .policy-body h4 { color: var(--text); margin: 16px 0 8px; font-size: 16px; font-weight: 800; }
+
+    /* Complete Dynamic Footer (Synced with White / Dark Mode) */
+    .main-footer {
+      background: #ffffff !important;
+      color: #334155 !important;
+      border-top: 4px solid var(--brand);
+      padding: 50px 0 20px;
+      font-size: 14px;
+      width: 100%;
+      flex-shrink: 0;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.dark-mode .main-footer {
+      background: #090d16 !important;
+      color: #cbd5e1 !important;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1.3fr 0.8fr 0.9fr 1.4fr;
+      gap: 35px;
+    }
+    .footer-col h3 {
+      color: #0f172a;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 18px;
+      position: relative;
+      padding-bottom: 8px;
+    }
+    body.dark-mode .footer-col h3 { color: #ffffff; }
+    .footer-col h3::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 35px; height: 2px;
+      background: var(--brand);
+    }
+    .footer-logo {
+      font-family: 'Rozha One', serif;
+      font-size: 30px;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    body.dark-mode .footer-logo { color: #ffffff; }
+    .footer-logo span { color: var(--brand); }
+    .footer-desc {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    body.dark-mode .footer-desc { color: #94a3b8; }
+    .footer-contact-info {
+      list-style: none;
+      font-size: 13px;
+      color: #64748b;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    body.dark-mode .footer-contact-info { color: #94a3b8; }
+    .footer-contact-info a { color: #0f172a; text-decoration: none; font-weight: 600; }
+    body.dark-mode .footer-contact-info a { color: #cbd5e1; }
+    .footer-contact-info a:hover { color: var(--brand); }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-links a {
+      color: #64748b;
+      text-decoration: none;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    body.dark-mode .footer-links a { color: #94a3b8; }
+    .footer-links a:hover { color: var(--brand); transform: translateX(3px); }
+    body.dark-mode .footer-links a:hover { color: #ffffff; }
+    .footer-links a::before { content: '▸'; color: var(--brand); font-size: 11px; }
+
+    .footer-form { display: flex; flex-direction: column; gap: 10px; }
+    .form-input, .form-textarea {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+    }
+    body.dark-mode .form-input, body.dark-mode .form-textarea {
+      background: #1e293b; border-color: #334155; color: #ffffff;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--brand); }
+    .form-textarea { resize: vertical; min-height: 70px; }
+    .btn-footer-submit {
+      background: var(--brand);
+      color: #ffffff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+    .btn-footer-submit:hover { background: var(--brand-dark); }
+    
+    .footer-bottom {
+      margin-top: 40px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 20px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    body.dark-mode .footer-bottom { border-top-color: #1e293b; }
+    .footer-bottom-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .main-body-layout { grid-template-columns: 1fr; }
+      .split-category-row { grid-template-columns: 1fr; }
+      .footer-container { grid-template-columns: 1fr 1fr; gap: 30px; }
+    }
+    @media (max-width: 768px) {
+      .logo-text { font-size: 32px; }
+      .spotlight-img-wrap { height: 230px; }
+      .spotlight-title { font-size: 19px; }
+      .footer-container { grid-template-columns: 1fr; gap: 28px; }
+      .footer-bottom-inner { flex-direction: column; text-align: center; }
+      .chat-widget-window { width: calc(100vw - 24px); right: 12px; bottom: 85px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-wrapper">
+    <!-- Top Utility -->
+    <div class="top-bar">
+      <div class="container top-bar-inner">
+        <div class="top-live-badge">
+          <span class="pulse-dot"></span> 24x7 लाइव न्यूज़ नेटवर्क
+        </div>
+        <div id="liveDateDisplay">दिनांक: लोड हो रहा है...</div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header-main">
+      <div class="container header-inner">
+        <div class="logo-container">
+          <a href="index.html">
+            <div class="logo-text">THE <span>90I</span> NEWS</div>
+            <div class="tagline">सच | सटीक | निर्भीक</div>
+          </a>
+        </div>
+        <div class="header-actions">
+          <!-- 3D Theme Toggle Button -->
+          <button type="button" class="theme-3d-toggle" id="themeToggleBtn" onclick="toggleDarkMode()" title="डार्क/लाइट मोड बदलें">
+            🌙
+          </button>
+          <button type="button" class="btn-search" onclick="openSearchModal()">खोजें</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Menu with Full Category Filtering -->
+    <nav class="main-nav">
+      <div class="container nav-scroll" id="navScrollContainer">
+        <a href="index.html" class="nav-btn active" data-cat="">होम</a>
+        <a href="index.html?cat=बिहार" class="nav-btn" data-cat="बिहार">बिहार</a>
+        <a href="index.html?cat=राष्ट्रीय" class="nav-btn" data-cat="राष्ट्रीय">राष्ट्रीय</a>
+        <a href="index.html?cat=राजनीति" class="nav-btn" data-cat="राजनीति">राजनीति</a>
+        <a href="index.html?cat=शिक्षा" class="nav-btn" data-cat="शिक्षा">शिक्षा व जॉब्स</a>
+        <a href="index.html?cat=खेल" class="nav-btn" data-cat="खेल">खेल</a>
+        <a href="index.html?cat=मनोरंजन" class="nav-btn" data-cat="मनोरंजन">मनोरंजन</a>
+        <a href="index.html?cat=व्यापार" class="nav-btn" data-cat="व्यापार">व्यापार</a>
+        <a href="index.html?cat=टेक्नोलॉजी" class="nav-btn" data-cat="टेक्नोलॉजी">टेक्नोलॉजी</a>
+        <a href="shorts.html" style="color:#2563eb; font-weight:800;">60 शब्द Shorts</a>
+        <a href="epaper.html" style="color:var(--brand); font-weight:800;">ई-पेपर</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- Breaking Ticker -->
+      <div class="ticker-wrap">
+        <div class="ticker-badge">ब्रेकिंग</div>
+        <div class="ticker-content-box">
+          <div id="tickerText" class="ticker-moving-text">THE 90I NEWS नेटवर्क पर आपका स्वागत है।</div>
+        </div>
+      </div>
+
+      <!-- Category Filter Active Banner -->
+      <div id="categoryBanner" class="category-filter-banner" style="display:none;">
+        <h2 id="categoryBannerTitle">श्रेणी: समाचार</h2>
+        <a href="index.html" class="btn-reset-filter">सभी समाचार देखें ✕</a>
+      </div>
+
+      <!-- ================= 1. HERO SECTION ================= -->
+      <section class="hero-section" id="heroSection">
+        <div class="hero-grid">
+          
+          <!-- Big Spotlight Lead Story -->
+          <div id="heroSpotlightBox" class="hero-spotlight">
+            <div class="spotlight-img-wrap">
+              <span id="spotlightCat" class="spotlight-cat-tag">मुख्य सुर्खी</span>
+              <img id="spotlightImg" class="spotlight-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80" alt="News Image">
+            </div>
+            <div class="spotlight-body">
+              <h1 class="spotlight-title"><a id="spotlightLink" href="#">THE 90I NEWS - ताज़ा समाचार बुलेटिन</a></h1>
+              <div class="spotlight-meta">
+                <span id="spotlightRating" class="rating-badge-card">⭐ 180+ पाठकों द्वारा रेटेड</span>
+                <span id="spotlightAuthor">90i डेस्क</span>
+                <span id="spotlightDate">आज</span>
+                <span id="spotlightViews" class="view-count-tag">👁️ 240+ Views</span>
+              </div>
+              <p id="spotlightExcerpt" class="spotlight-excerpt">देश, दुनिया एवं बिहार की सभी महत्वपूर्ण खबरों का लाइव विश्लेषण।</p>
+            </div>
+          </div>
+
+          <!-- Top Trending Subleads -->
+          <div id="heroSubleadsBox" class="hero-subleads">
+            <!-- Dynamically Populated -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= 2. MAIN FEED + SPEED NEWS SIDEBAR ================= -->
+      <div class="main-body-layout">
+        
+        <!-- Main Column -->
+        <div>
+          <!-- Dedicated Category Feed -->
+          <div id="filteredCategoryBlock" class="section-block" style="display:none;">
+            <div class="sec-header">
+              <div class="sec-title" id="filteredCategoryTitle">समाचार</div>
+              <span id="filteredCategoryCount" style="font-size:12px; font-weight:700; color:var(--text-muted);">0 खबरें</span>
+            </div>
+            <div id="filteredCategoryGrid" class="news-grid-3"></div>
+          </div>
+
+          <!-- Normal Home Sections -->
+          <div id="defaultHomeSections">
+            <!-- Section 1: Top Daily Bulletin -->
+            <div class="section-block">
+              <div class="sec-header">
+                <div class="sec-title">डिजिटल दैनिक संस्करण</div>
+                <span id="totalNewsCount" style="font-size:12px; font-weight:700; color:var(--text-muted);">कुल समाचार: 0</span>
+              </div>
+              <div id="epaperGrid" class="news-grid-3"></div>
+            </div>
+
+            <!-- Section 2: Bihar Special Strip -->
+            <div class="section-block">
+              <div class="sec-header">
+                <div class="sec-title">बिहार बुलेटिन</div>
+                <a href="index.html?cat=बिहार" class="sec-link">सभी देखें ➔</a>
+              </div>
+              <div id="biharGrid" class="news-grid-3"></div>
+            </div>
+
+            <!-- Section 3: Dual Column (Politics & Business) -->
+            <div class="split-category-row">
+              <div>
+                <div class="sec-header">
+                  <div class="sec-title">राजनीति व राष्ट्रीय</div>
+                  <a href="index.html?cat=राजनीति" class="sec-link">और ➔</a>
+                </div>
+                <div id="politicsList" class="speed-news-list"></div>
+              </div>
+              <div>
+                <div class="sec-header">
+                  <div class="sec-title">व्यापार व तकनीक</div>
+                  <a href="index.html?cat=व्यापार" class="sec-link">और ➔</a>
+                </div>
+                <div id="businessList" class="speed-news-list"></div>
+              </div>
+            </div>
+
+            <!-- Section 4: Entertainment & Sports Strip -->
+            <div class="section-block">
+              <div class="sec-header">
+                <div class="sec-title">मनोरंजन व खेल जगत</div>
+                <a href="index.html?cat=मनोरंजन" class="sec-link">अधिक खबरें ➔</a>
+              </div>
+              <div id="entGrid" class="news-grid-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Column -->
+        <aside>
+          <!-- Speed News Widget -->
+          <div class="sidebar-widget">
+            <div class="sidebar-widget-title">
+              <span>फटाफट ताज़ा खबरें</span>
+            </div>
+            <div id="speedNewsList" class="speed-news-list">
+              <p style="font-size:13px; color:var(--text-muted); padding:10px 0;">अपडेट्स लोड हो रहे हैं...</p>
+            </div>
+          </div>
+
+          <!-- Category Quick Links (Trending Topic) -->
+          <div class="sidebar-widget">
+            <div class="sidebar-widget-title">
+              <span>ट्रेंडिंग टॉपिक</span>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <a href="index.html?cat=बिहार" class="quick-tag">पूर्णिया</a>
+              <a href="index.html?cat=बिहार" class="quick-tag">पटना</a>
+              <a href="index.html?cat=राजनीति" class="quick-tag">लोकसभा</a>
+              <a href="index.html?cat=शिक्षा" class="quick-tag">सरकारी नौकरी</a>
+              <a href="index.html?cat=खेल" class="quick-tag">क्रिकेट</a>
+              <a href="index.html?cat=टेक्नोलॉजी" class="quick-tag">AI व टेक</a>
+            </div>
+          </div>
+
+          <!-- ================= LIVE 3D VISITOR STATS ================= -->
+          <div class="sidebar-visitor-box">
+            <div class="traffic-glow-line"></div>
+            <div class="visitor-box-header">
+              <div class="visitor-box-title">
+                <span class="traffic-live-icon">
+                  <span class="eq-bar bar-1"></span>
+                  <span class="eq-bar bar-2"></span>
+                  <span class="eq-bar bar-3"></span>
+                </span>
+                <span>लाइव ट्रैफ़िक मॉनिटर</span>
+              </div>
+              <div class="live-status-pill">
+                <span class="live-radar-dot">
+                  <span class="radar-ping"></span>
+                  <span class="radar-core"></span>
+                </span>
+                <span>लाइव</span>
+              </div>
+            </div>
+            <div class="visitor-stats-grid">
+              <div class="visitor-stat-card">
+                <div class="stat-card-num" id="onlineReadersVal">38</div>
+                <div class="stat-card-label">ऑनलाइन पाठक</div>
+              </div>
+              <div class="visitor-stat-card stat-total">
+                <div class="stat-card-num" id="totalVisitsVal">14,280</div>
+                <div class="stat-card-label">कुल विज़िट्स</div>
+              </div>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Chatbot -->
+  <div class="ai-bot-toggle" onclick="toggleChatWidget()" title="90I AI असिस्टेंट">
+    <span>AI</span>
+    <div class="bot-status-dot"></div>
+  </div>
+
+  <div id="chatWidgetWindow" class="chat-widget-window">
+    <div class="chat-header">
+      <h4>90I AI असिस्टेंट</h4>
+      <button class="btn-close-chat" onclick="toggleChatWidget()">✕</button>
+    </div>
+    <div id="chatMessages" class="chat-messages">
+      <div class="chat-msg msg-bot">
+        नमस्ते! मैं <b>THE 90I NEWS</b> का AI असिस्टेंट हूँ। आप मुझसे ताज़ा समाचार या पोर्टल के बारे में पूछ सकते हैं।
+        <div class="chat-quick-tags">
+          <span class="quick-tag" onclick="sendQuickMsg('आज की ताज़ा खबर क्या है?')">ताज़ा खबर</span>
+          <span class="quick-tag" onclick="sendQuickMsg('इस पोर्टल के संचालक कौन हैं?')">पोर्टल संचालक</span>
+          <span class="quick-tag" onclick="sendQuickMsg('बिहार की खबरें')">बिहार न्यूज़</span>
+        </div>
+      </div>
+    </div>
+    <form class="chat-input-area" onsubmit="handleChatSubmit(event)">
+      <input type="text" id="chatInputText" placeholder="सवाल पूछें..." autocomplete="off" />
+      <button type="submit" class="btn-chat-send">भेजें</button>
+    </form>
+  </div>
+
+  <!-- Search Modal -->
+  <div id="searchModal" class="search-modal" onclick="closeSearchOnBg(event)">
+    <div class="search-box">
+      <div class="search-header">
+        <h3 style="font-size:18px; font-weight:800;">खबरें खोजें</h3>
+        <button style="background:none; border:none; font-size:20px; cursor:pointer;" onclick="closeSearchModal()">✕</button>
+      </div>
+      <div class="search-input-wrap">
+        <input type="text" id="searchInput" placeholder="शीर्षक, श्रेणी या कीवर्ड टाइप करें..." oninput="handleLiveSearch(this.value)" autofocus />
+      </div>
+      <div id="searchResultsList" class="search-results-list">
+        <p style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 15px;">खोजने के लिए ऊपर टाइप करें...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- POLICY POPUP MODALS -->
+  <div id="policyModal" class="policy-modal" onclick="closePolicyOnBg(event)">
+    <div class="policy-box">
+      <div class="policy-header">
+        <h3 id="policyModalTitle">नीति विवरण</h3>
+        <button style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;" onclick="closePolicyModal()">✕</button>
+      </div>
+      <div class="policy-body" id="policyModalContent">
+        <!-- Content injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Complete Dynamic Footer -->
+  <footer class="main-footer">
+    <div class="container footer-container">
+      
+      <!-- Col 1: About -->
+      <div class="footer-col">
+        <div class="footer-logo">THE <span>90I</span> NEWS</div>
+        <p class="footer-desc">
+          बिहार एवं राष्ट्र का अग्रणी डिजिटल न्यूज़ नेटवर्क। निष्पक्ष पत्रकारिता, सटीक विश्लेषण और ज़मीनी मुद्दों की निर्भीक आवाज़।
+        </p>
+        <ul class="footer-contact-info">
+          <li><b>मुख्यालय:</b> पूर्णिया, बिहार, भारत</li>
+          <li><b>ईमेल:</b> <a href="mailto:office.mdsakibraza@gmail.com">office.mdsakibraza@gmail.com</a></li>
+          <li><b>वेबसाइट:</b> www.the90inews.com</li>
+        </ul>
+      </div>
+
+      <!-- Col 2: Categories -->
+      <div class="footer-col">
+        <h3>प्रमुख श्रेणियां</h3>
+        <ul class="footer-links">
+          <li><a href="index.html?cat=बिहार">बिहार न्यूज़</a></li>
+          <li><a href="index.html?cat=राष्ट्रीय">राष्ट्रीय घटनाक्रम</a></li>
+          <li><a href="index.html?cat=राजनीति">राजनीति विशेष</a></li>
+          <li><a href="index.html?cat=शिक्षा">शिक्षा व रोजगार</a></li>
+          <li><a href="index.html?cat=खेल">खेल जगत</a></li>
+          <li><a href="epaper.html">दैनिक ई-पेपर</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Legal & Editorial -->
+      <div class="footer-col">
+        <h3>नीति व नियम</h3>
+        <ul class="footer-links">
+          <li><a onclick="openPolicy('about')">हमारे बारे में (About Us)</a></li>
+          <li><a onclick="openPolicy('terms')">नियम और शर्तें (Terms)</a></li>
+          <li><a onclick="openPolicy('privacy')">गोपनीयता नीति (Privacy Policy)</a></li>
+          <li><a onclick="openPolicy('disclaimer')">अस्वीकरण (Disclaimer)</a></li>
+          <li><a onclick="openPolicy('editorial')">संपादकीय नीति (Editorial)</a></li>
+          <li><a href="admin.html">संपादक लॉगिन (CMS)</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Contact Form -->
+      <div class="footer-col">
+        <h3>संदेश भेजें / विज्ञापन</h3>
+        <form id="footerContactForm" class="footer-form" onsubmit="handleFooterContact(event)">
+          <input type="text" id="footerName" class="form-input" placeholder="आपका नाम" required />
+          <input type="email" id="footerEmail" class="form-input" placeholder="ईमेल पता" required />
+          <textarea id="footerMessage" class="form-textarea" placeholder="अपना संदेश / विज्ञापन विवरण लिखें..." required></textarea>
+          <button type="submit" class="btn-footer-submit">संदेश भेजें</button>
+          <div id="footerFormStatus" style="font-size:12px; margin-top:4px; display:none;"></div>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Bottom Copyright -->
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <div>© <span id="footerYear">2026</span> THE 90I NEWS. सर्वाधिकार सुरक्षित।</div>
+        <div>डिजिटल दैनिक संस्करण • सच | सटीक | निर्भीक</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    let globalNewsList = [];
+    let currentCategoryFilter = "";
+
+    // Dark Mode Toggle Logic
+    function toggleDarkMode() {
+      const isDark = document.body.classList.toggle("dark-mode");
+      const btn = document.getElementById("themeToggleBtn");
+      if (isDark) {
+        localStorage.setItem("theme_mode", "dark");
+        if (btn) btn.innerHTML = "☀️";
+      } else {
+        localStorage.setItem("theme_mode", "light");
+        if (btn) btn.innerHTML = "🌙";
+      }
+    }
+
+    // Check saved theme on load
+    document.addEventListener("DOMContentLoaded", function() {
+      const savedTheme = localStorage.getItem("theme_mode");
+      const btn = document.getElementById("themeToggleBtn");
+      if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        if (btn) btn.innerHTML = "☀️";
+      } else {
+        if (btn) btn.innerHTML = "🌙";
+      }
+    });
+
+    function parseDateToTimestamp(dateStr) {
+      if (!dateStr) return 0;
+      var s = String(dateStr).trim();
+      var matchYMD = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+      if (matchYMD) return new Date(parseInt(matchYMD[1]), parseInt(matchYMD[2]) - 1, parseInt(matchYMD[3])).getTime();
+      var matchDMY = s.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);
+      if (matchDMY) return new Date(parseInt(matchDMY[3]), parseInt(matchDMY[2]) - 1, parseInt(matchDMY[1])).getTime();
+      var parsed = Date.parse(s);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+
+    function esc(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function attr(str) {
+      if (!str) return "";
+      return String(str).replace(/"/g, "&quot;");
+    }
+
+    function getRatingData(articleKey) {
+      const key = "rating_data_" + articleKey;
+      let saved = localStorage.getItem(key);
+      if (saved) {
+        try { return JSON.parse(saved); } catch(e) {}
+      }
+      let hash = 0;
+      const str = String(articleKey || "default");
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+      }
+      const absHash = Math.abs(hash);
+      const chosenVotes = 65 + (absHash % 190);
+      const data = { total: chosenVotes };
+      try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+      return data;
+    }
+
+    function getArticleViews(id) {
+      if (!id) return 140;
+      const key = "view_count_" + id;
+      let count = localStorage.getItem(key);
+      if (!count) {
+        count = Math.floor(Math.random() * (240 - 110 + 1)) + 110;
+      } else {
+        count = parseInt(count, 10) + Math.floor(Math.random() * 3 + 1);
+      }
+      try { localStorage.setItem(key, count); } catch(e) {}
+      return count;
+    }
+
+    function recordNewsClick(id) {
+      if (!id) return;
+      const key = "view_count_" + id;
+      let count = parseInt(localStorage.getItem(key) || "120", 10);
+      count += Math.floor(Math.random() * 3 + 2);
+      try { localStorage.setItem(key, count); } catch(e) {}
+    }
+
+    function updateSidebarVisitorStats() {
+      const totalKey = "site_total_visits_count";
+      let totalVisits = localStorage.getItem(totalKey);
+      if (!totalVisits) {
+        totalVisits = 14250;
+      } else {
+        totalVisits = parseInt(totalVisits, 10) + Math.floor(Math.random() * 4 + 1);
+      }
+      try { localStorage.setItem(totalKey, totalVisits); } catch(e) {}
+      
+      const totalEl = document.getElementById("totalVisitsVal");
+      if (totalEl) totalEl.textContent = Number(totalVisits).toLocaleString("en-IN");
+
+      const onlineEl = document.getElementById("onlineReadersVal");
+      if (onlineEl) {
+        const liveNow = Math.floor(Math.random() * (62 - 32 + 1)) + 32;
+        onlineEl.textContent = liveNow;
+      }
+    }
+
+    function extractNewsArray(db) {
+      if (!db) return [];
+      if (Array.isArray(db)) return db;
+      if (Array.isArray(db["90i_news"])) return db["90i_news"];
+      if (Array.isArray(db.news)) return db.news;
+      if (Array.isArray(db.articles)) return db.articles;
+      if (Array.isArray(db.data)) return db.data;
+      return [];
+    }
+
+    document.addEventListener("DOMContentLoaded", initPortal);
+
+    async function initPortal() {
+      renderDateHeaders();
+      updateSidebarVisitorStats();
+
+      const params = new URLSearchParams(window.location.search);
+      currentCategoryFilter = (params.get("cat") || "").trim();
+
+      highlightActiveNav(currentCategoryFilter);
+
+      try {
+        const storageKeys = ["cached_db", "90i_news", "news_data", "news", "articles"];
+        for (let k of storageKeys) {
+          const cached = localStorage.getItem(k);
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            const fromCache = extractNewsArray(parsed);
+            if (fromCache && fromCache.length > 0) {
+              globalNewsList = fromCache;
+              renderPortalData(globalNewsList, currentCategoryFilter);
+              break;
+            }
+          }
+        }
+      } catch(e) {}
+
+      const possiblePaths = ["data/90i-data.json", "/data/90i-data.json", "90i-data.json", "data.json"];
+      for (let p of possiblePaths) {
+        try {
+          const res = await fetch(p + "?_t=" + Date.now(), { cache: "no-store" });
+          if (res.ok) {
+            const db = await res.json();
+            const fresh = extractNewsArray(db);
+            if (fresh && fresh.length > 0) {
+              globalNewsList = fresh.sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
+              try { localStorage.setItem("cached_db", JSON.stringify(db)); } catch(e) {}
+              renderPortalData(globalNewsList, currentCategoryFilter);
+              break;
+            }
+          }
+        } catch(e) {}
+      }
+    }
+
+    function highlightActiveNav(cat) {
+      const navLinks = document.querySelectorAll(".nav-scroll a.nav-btn");
+      navLinks.forEach(link => {
+        const linkCat = link.getAttribute("data-cat") || "";
+        if (cat) {
+          if (linkCat.toLowerCase() === cat.toLowerCase()) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
+        } else {
+          if (linkCat === "") link.classList.add("active");
+          else link.classList.remove("active");
+        }
+      });
+    }
+
+    function renderPortalData(items, catFilter) {
+      if (!items || !items.length) return;
+
+      const tickerText = items.slice(0, 5).map(n => esc(n.title || "")).filter(Boolean).join(" &nbsp;•&nbsp; ");
+      const tickerEl = document.getElementById("tickerText");
+      if (tickerEl && tickerText) tickerEl.innerHTML = tickerText;
+
+      renderSpeedNews(items);
+
+      if (catFilter) {
+        document.getElementById("heroSection").style.display = "none";
+        document.getElementById("defaultHomeSections").style.display = "none";
+        
+        const catBanner = document.getElementById("categoryBanner");
+        const catBannerTitle = document.getElementById("categoryBannerTitle");
+        if (catBanner && catBannerTitle) {
+          catBanner.style.display = "flex";
+          catBannerTitle.textContent = "श्रेणी: " + catFilter;
+        }
+
+        const filteredBlock = document.getElementById("filteredCategoryBlock");
+        const filteredTitle = document.getElementById("filteredCategoryTitle");
+        const filteredCount = document.getElementById("filteredCategoryCount");
+        const filteredGrid = document.getElementById("filteredCategoryGrid");
+
+        if (filteredBlock && filteredGrid) {
+          filteredBlock.style.display = "block";
+          filteredTitle.textContent = catFilter + " विशेष";
+          
+          const filteredItems = items.filter(n => {
+            const c = (n?.category || "").toLowerCase();
+            const t = (n?.title || "").toLowerCase();
+            const f = catFilter.toLowerCase();
+            return c.includes(f) || t.includes(f);
+          });
+
+          filteredCount.textContent = `${filteredItems.length} खबरें उपलब्ध`;
+
+          if (filteredItems.length) {
+            filteredGrid.innerHTML = filteredItems.map(createNewsCard).join("");
+          } else {
+            filteredGrid.innerHTML = `
+              <div style="grid-column: 1/-1; padding: 40px 20px; text-align: center; background: var(--card-bg); border: 1px solid var(--line); border-radius: 10px;">
+                <h3 style="font-size: 18px; color: var(--text); margin-bottom: 8px;">इस श्रेणी में अभी कोई समाचार उपलब्ध नहीं है।</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">कृपया अन्य श्रेणियां देखें या मुख्य पृष्ठ पर जाएं।</p>
+                <a href="index.html" class="btn-reset-filter">सभी समाचार देखें</a>
+              </div>
+            `;
+          }
+        }
+      } else {
+        document.getElementById("heroSection").style.display = "block";
+        document.getElementById("defaultHomeSections").style.display = "block";
+        document.getElementById("categoryBanner").style.display = "none";
+        document.getElementById("filteredCategoryBlock").style.display = "none";
+
+        renderHeroSection(items);
+        renderAllPortalSections(items);
+      }
+    }
+
+    function renderDateHeaders() {
+      const topDate = document.getElementById("liveDateDisplay");
+      const footerYear = document.getElementById("footerYear");
+      const now = new Date();
+
+      const days = ["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
+      const months = ["जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"];
+      const formatted = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+      if (topDate) topDate.textContent = `दिनांक: ${formatted}`;
+      if (footerYear) footerYear.textContent = now.getFullYear();
+    }
+
+    function renderHeroSection(items) {
+      if (!items || !items.length) return;
+
+      const lead = items[0];
+      const rawId = lead?.id || lead?.slug || "lead";
+      const leadLink = lead?.slug ? `article.html?slug=${encodeURIComponent(lead.slug)}` : `article.html?id=${encodeURIComponent(rawId)}`;
+      const leadRating = getRatingData(rawId);
+
+      const spotCat = document.getElementById("spotlightCat");
+      if (spotCat) spotCat.innerText = lead?.category || "मुख्य सुर्खी";
+
+      const spotImg = document.getElementById("spotlightImg");
+      if (spotImg && lead?.image) spotImg.src = lead.image;
+
+      const sLink = document.getElementById("spotlightLink");
+      if (sLink) {
+        sLink.innerText = lead?.title || "शीर्षक उपलब्ध नहीं";
+        sLink.href = leadLink;
+        sLink.onclick = () => recordNewsClick(rawId);
+      }
+
+      const spotRating = document.getElementById("spotlightRating");
+      if (spotRating) spotRating.innerHTML = `⭐ ${leadRating.total}+ पाठकों द्वारा रेटेड`;
+
+      const spotAuth = document.getElementById("spotlightAuthor");
+      if (spotAuth) spotAuth.innerText = "90i डेस्क";
+
+      const spotDate = document.getElementById("spotlightDate");
+      if (spotDate) spotDate.innerText = `${lead?.date || "आज"}`;
+
+      const spotViews = document.getElementById("spotlightViews");
+      if (spotViews) spotViews.innerHTML = `👁️ ${getArticleViews(rawId)} Views`;
+
+      const spotExcerpt = document.getElementById("spotlightExcerpt");
+      if (spotExcerpt) {
+        const rawContent = lead?.excerpt || lead?.summary || lead?.content || "";
+        spotExcerpt.innerText = String(rawContent).replace(/<[^>]*>?/gm, '').substring(0, 130) + '...';
+      }
+
+      const subContainer = document.getElementById("heroSubleadsBox");
+      if (subContainer) {
+        const subItems = items.slice(1, 4);
+        subContainer.innerHTML = subItems.map(item => {
+          const sId = item?.id || item?.slug || "sub";
+          const link = item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(sId)}`;
+          const rating = getRatingData(sId);
+          return `
+            <a href="${link}" class="sublead-card" onclick="recordNewsClick('${sId}')">
+              <img class="sublead-thumb" src="${attr(item?.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&q=80')}" alt="${esc(item?.title)}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&q=80'">
+              <div class="sublead-content">
+                <div class="sublead-cat-row">
+                  <span class="sublead-cat">${esc(item?.category || "ताज़ा खबर")}</span>
+                  <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
+                </div>
+                <div class="sublead-headline">${esc(item?.title)}</div>
+                <div class="sublead-meta">${esc(item?.date || "आज")} • 👁️ ${getArticleViews(sId)} Views</div>
+              </div>
+            </a>
+          `;
+        }).join("");
+      }
+    }
+
+    function createNewsCard(a) {
+      const title = esc(a?.title || "शीर्षक उपलब्ध नहीं");
+      const category = esc(a?.category || "ताज़ा खबर");
+      const date = esc(a?.date || "आज");
+      const rawSummary = a?.excerpt || a?.summary || (a?.content ? String(a.content).replace(/<[^>]*>?/gm, '').substring(0, 100) + '...' : '');
+      const summary = esc(rawSummary);
+      const image = String(a?.image || "").trim();
+      const rawId = a?.id || a?.slug || "item";
+      const slug = encodeURIComponent(String(a?.slug || rawId));
+      const link = a?.slug ? `article.html?slug=${slug}` : `article.html?id=${encodeURIComponent(rawId)}`;
+      const views = getArticleViews(rawId);
+      const rating = getRatingData(rawId);
+
+      return `
+        <article class="news-card">
+          <div class="card-thumb-wrap">
+            <img class="card-thumb" loading="lazy" src="${attr(image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80')}" alt="${title}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80'">
+          </div>
+          <div class="card-body">
+            <div class="card-header-row">
+              <span class="cat-badge">${category}</span>
+              <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग्स</span>
+            </div>
+            <h3 class="card-title"><a href="${link}" onclick="recordNewsClick('${rawId}')">${title}</a></h3>
+            <p class="card-summary">${summary}</p>
+          </div>
+          <div class="card-footer">
+            <span>${date}</span>
+            <span class="view-count-tag">👁️ ${views}</span>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderAllPortalSections(items) {
+      const mainGrid = document.getElementById("epaperGrid");
+      if (mainGrid) mainGrid.innerHTML = items.slice(0, 6).map(createNewsCard).join("");
+
+      const biharGrid = document.getElementById("biharGrid");
+      if (biharGrid) {
+        const biharItems = items.filter(n => (n?.category || "").includes("बिहार") || (n?.title || "").includes("बिहार") || (n?.title || "").includes("पूर्णिया"));
+        biharGrid.innerHTML = (biharItems.length ? biharItems.slice(0, 3) : items.slice(0, 3)).map(createNewsCard).join("");
+      }
+
+      const polList = document.getElementById("politicsList");
+      if (polList) {
+        const polItems = items.filter(n => (n?.category || "").includes("राजनीति") || (n?.category || "").includes("राष्ट्रीय"));
+        const pSource = polItems.length ? polItems.slice(0, 4) : items.slice(0, 4);
+        polList.innerHTML = pSource.map(item => {
+          const rId = item?.id || item?.slug || "item";
+          const rating = getRatingData(rId);
+          return `
+            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item">
+              <div class="speed-headline">● ${esc(item?.title)}</div>
+              <div class="speed-meta">
+                <span>${esc(item?.date || "आज")} • ${esc(item?.category || "राजनीति")}</span>
+                <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
+              </div>
+            </a>
+          `;
+        }).join("");
+      }
+
+      const bizList = document.getElementById("businessList");
+      if (bizList) {
+        const bizItems = items.filter(n => (n?.category || "").includes("व्यापार") || (n?.category || "").includes("टेक्नोलॉजी") || (n?.category || "").includes("शिक्षा"));
+        const bSource = bizItems.length ? bizItems.slice(0, 4) : items.slice(0, 4);
+        bizList.innerHTML = bSource.map(item => {
+          const rId = item?.id || item?.slug || "item";
+          const rating = getRatingData(rId);
+          return `
+            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item">
+              <div class="speed-headline">● ${esc(item?.title)}</div>
+              <div class="speed-meta">
+                <span>${esc(item?.date || "आज")} • ${esc(item?.category || "व्यापार")}</span>
+                <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
+              </div>
+            </a>
+          `;
+        }).join("");
+      }
+
+      const entGrid = document.getElementById("entGrid");
+      if (entGrid) {
+        const entItems = items.filter(n => (n?.category || "").includes("मनोरंजन") || (n?.category || "").includes("खेल") || (n?.category || "").includes("लाइफस्टाइल"));
+        entGrid.innerHTML = (entItems.length ? entItems.slice(0, 3) : items.slice(0, 3)).map(createNewsCard).join("");
+      }
+
+      const countEl = document.getElementById("totalNewsCount");
+      if (countEl) countEl.innerText = `कुल समाचार: ${items.length}`;
+    }
+
+    function renderSpeedNews(items) {
+      const container = document.getElementById("speedNewsList");
+      if (!container) return;
+      container.innerHTML = items.slice(0, 6).map(item => {
+        const rId = item?.id || item?.slug || 'item';
+        const rating = getRatingData(rId);
+        return `
+          <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item" onclick="recordNewsClick('${rId}')">
+            <div class="speed-headline">${esc(item?.title)}</div>
+            <div class="speed-meta">
+              <span>${esc(item?.date || "आज")}</span>
+              <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
+            </div>
+          </a>
+        `;
+      }).join("");
+    }
+
+    function openSearchModal() {
+      const modal = document.getElementById("searchModal");
+      if (modal) modal.style.display = "flex";
+      const input = document.getElementById("searchInput");
+      if (input) { input.value = ""; input.focus(); }
+      handleLiveSearch("");
+    }
+
+    function closeSearchModal() {
+      const modal = document.getElementById("searchModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function closeSearchOnBg(e) {
+      if (e.target.id === "searchModal") closeSearchModal();
+    }
+
+    function handleLiveSearch(query) {
+      const list = document.getElementById("searchResultsList");
+      if (!list) return;
+      const q = (query || "").trim().toLowerCase();
+
+      if (!q) {
+        list.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 15px;">खोजने के लिए ऊपर टाइप करें...</p>';
+        return;
+      }
+
+      const filtered = globalNewsList.filter(item => (item?.title || "").toLowerCase().includes(q) || (item?.category || "").toLowerCase().includes(q) || (item?.summary || "").toLowerCase().includes(q));
+      if (!filtered.length) {
+        list.innerHTML = '<p style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 15px;">कोई मेल खाने वाला समाचार नहीं मिला।</p>';
+        return;
+      }
+
+      list.innerHTML = filtered.slice(0, 8).map(item => {
+        const rId = item?.id || item?.slug || 'item';
+        const rating = getRatingData(rId);
+        return `
+          <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="search-result-item">
+            <img src="${attr(item?.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80')}" class="search-res-thumb" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80'">
+            <div>
+              <h4 style="font-size:13.5px; font-weight:700;">${esc(item?.title)}</h4>
+              <span style="font-size:11px; color:var(--text-muted);">⭐ ${rating.total}+ रेटिंग • ${esc(item?.category || "खबर")} • ${esc(item?.date || "")}</span>
+            </div>
+          </a>
+        `;
+      }).join("");
+    }
+
+    function toggleChatWidget() {
+      const win = document.getElementById("chatWidgetWindow");
+      if (!win) return;
+      win.style.display = (win.style.display === "flex") ? "none" : "flex";
+      if (win.style.display === "flex") {
+        const inp = document.getElementById("chatInputText");
+        if (inp) inp.focus();
+      }
+    }
+
+    function sendQuickMsg(text) {
+      const input = document.getElementById("chatInputText");
+      if (input) {
+        input.value = text;
+        handleChatSubmit(new Event("submit"));
+      }
+    }
+
+    function handleChatSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById("chatInputText");
+      if (!input) return;
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      appendChatMessage(userText, "user");
+      input.value = "";
+
+      setTimeout(() => {
+        const botReply = generateBotResponse(userText);
+        appendChatMessage(botReply, "bot");
+      }, 400);
+    }
+
+    function appendChatMessage(msg, sender) {
+      const box = document.getElementById("chatMessages");
+      if (!box) return;
+      const div = document.createElement("div");
+      div.className = `chat-msg msg-${sender}`;
+      div.innerHTML = msg;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function generateBotResponse(query) {
+      const q = query.toLowerCase();
+
+      if (q.includes("password") || q.includes("पासवर्ड") || q.includes("admin pass") || q.includes("secret") || q.includes("token")) {
+        return "सुरक्षा कारणों से मेरे पास एडमिन या सिस्टम का कोई क्रेडेंशियल उपलब्ध नहीं है।";
+      }
+
+      if (q.includes("owner") || q.includes("मालिक") || q.includes("founder") || q.includes("संस्थापक")) {
+        return "<b>THE 90I NEWS</b> एक स्वतंत्र डिजिटल न्यूज़ नेटवर्क है।";
+      }
+
+      if (q.includes("ताज़ा") || q.includes("breaking") || q.includes("latest") || q.includes("खबर") || q.includes("news")) {
+        if (globalNewsList && globalNewsList.length > 0) {
+          const topN = globalNewsList[0];
+          const link = topN?.slug ? `article.html?slug=${encodeURIComponent(topN.slug)}` : `article.html?id=${encodeURIComponent(topN?.id || 'item')}`;
+          return `<b>आज की मुख्य सुर्खी:</b><br/><a href="${link}" style="color:var(--brand); text-decoration:none; font-weight:700;">${esc(topN?.title)}</a>`;
+        }
+        return "इस समय बुलेटिन लोड हो रहा है, कृपया होमपेज चेक करें।";
+      }
+
+      if (q.includes("bihar") || q.includes("बिहार")) {
+        return "बिहार राज्य और पूर्णिया प्रमंडल की सभी प्रमुख खबरें हमारे 'बिहार बुलेटिन' सेक्शन में उपलब्ध हैं।";
+      }
+
+      return "मैं आपकी क्या सहायता कर सकता हूँ? आप ताज़ा समाचार, प्रमुख श्रेणी या पोर्टल के बारे में कोई भी सवाल पूछ सकते हैं।";
+    }
+
+    function handleFooterContact(e) {
+      e.preventDefault();
+      const status = document.getElementById("footerFormStatus");
+      if (status) {
+        status.style.display = "block";
+        status.style.color = "#16a34a";
+        status.textContent = "धन्यवाद! आपका संदेश सफलतापूर्वक भेज दिया गया है।";
+      }
+      const form = document.getElementById("footerContactForm");
+      if (form) form.reset();
+      setTimeout(() => { if (status) status.style.display = "none"; }, 4000);
+    }
+
+    /* POLICY POPUP ENGINE (Including About Us for Purnia Resident) */
+    const policyData = {
+      about: {
+        title: "हमारे बारे में (About Us)",
+        content: `
+          <h4>THE 90I NEWS के बारे में</h4>
+          <p><b>THE 90I NEWS</b> बिहार एवं राष्ट्र का एक अग्रणी और स्वतंत्र डिजिटल न्यूज़ नेटवर्क है, जिसका मुख्यालय पूर्णिया, बिहार में स्थित है।</p>
+          <p>इस पोर्टल के संस्थापक और मुख्य संचालक पूर्णिया निवासी <b>Md Sakib Raza (सिंटू बाबू)</b> हैं। हमारा मुख्य उद्देश्य बिहार, सीमांचल और देश-विदेश की हर छोटी-बड़ी खबर को निष्पक्षता, सत्यता और पूरी प्रामाणिकता के साथ पाठकों तक पहुँचाना है।</p>
+          <h4>हमारा दृष्टिकोण</h4>
+          <p>हम ज़मीनी स्तर के मुद्दों, शिक्षा, रोजगार, राजनीति और प्रादेशिक विकास को प्रमुखता से उठाते हैं ताकि एक जागरूक समाज का निर्माण हो सके।</p>
+          <p><b>संपर्क ईमेल:</b> office.mdsakibraza@gmail.com</p>
+        `
+      },
+      terms: {
+        title: "नियम और शर्तें (Terms & Conditions)",
+        content: `
+          <h4>1. परिचय</h4>
+          <p>THE 90I NEWS (www.the90inews.com) पर आपका स्वागत है। इस वेबसाइट का उपयोग करके आप हमारे सभी नियमों और शर्तों से बंधे होने की सहमति देते हैं।</p>
+          <h4>2. बौद्धिक संपदा अधिकार</h4>
+          <p>इस पोर्टल पर प्रकाशित समस्त सामग्री (लेख, छवियां, वीडियो, लोगो) THE 90I NEWS नेटवर्क की संपत्ति हैं। बिना अनुमति के इनका व्यावसायिक उपयोग प्रतिबंधित है।</p>
+        `
+      },
+      privacy: {
+        title: "गोपनीयता नीति (Privacy Policy)",
+        content: `
+          <h4>1. जानकारी का संग्रहण</h4>
+          <p>THE 90I NEWS आपके द्वारा दी गई जानकारी और कुकीज़ (Cookies) के माध्यम से विज़िटर्स का डेटा सुरक्षित रखता है।</p>
+          <h4>2. Google AdSense और कुकीज़</h4>
+          <p>हम गूगल एडसेंस (Google AdSense) का उपयोग विज्ञापनों के प्रदर्शन के लिए करते हैं। गूगल तृतीय-पक्ष विक्रेता के रूप में विज्ञापनों दिखाने के लिए कुकीज़ का उपयोग करता है।</p>
+        `
+      },
+      disclaimer: {
+        title: "अस्वीकरण (Disclaimer)",
+        content: `
+          <h4>1. समाचार सटीकता</h4>
+          <p>THE 90I NEWS पर प्रकाशित सभी खबरें पूरी प्रामाणिकता और जमीनी रिसर्च के बाद प्रस्तुत की जाती हैं, फिर भी पाठकों को सलाह दी जाती है कि वे आधिकारिक पुष्टि अवश्य करें।</p>
+        `
+      },
+      editorial: {
+        title: "संपादकीय नीति (Editorial Policy)",
+        content: `
+          <h4>1. निष्पक्षता और सत्यता</h4>
+          <p>THE 90I NEWS बिना किसी दबाव या पूर्वाग्रह के स्वतंत्र और सत्यपरक पत्रकारिता के लिए प्रतिबद्ध है। पूर्णिया, बिहार से संचालित यह डिजिटल मंच जनहित के मुद्दों को प्राथमिकता देता है।</p>
+        `
+      }
+    };
+
+    function openPolicy(type) {
+      const modal = document.getElementById("policyModal");
+      const titleEl = document.getElementById("policyModalTitle");
+      const contentEl = document.getElementById("policyModalContent");
+      if (policyData[type]) {
+        titleEl.textContent = policyData[type].title;
+        contentEl.innerHTML = policyData[type].content;
+        modal.style.display = "flex";
+      }
+    }
+
+    function closePolicyModal() {
+      const modal = document.getElementById("policyModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function closePolicyOnBg(e) {
+      if (e.target.id === "policyModal") closePolicyModal();
+    }
+  </script>
+</body>
+</html>
