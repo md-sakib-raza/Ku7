@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
-Sitemap: https://md-sakib-raza.github.io/Ku7/sitemap.xml
+Sitemap: https://90inews.me/sitemap.xml
