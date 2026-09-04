@@ -8,7 +8,6 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
     (function() {
-      // आपकी Public Key यहाँ सेट है
       emailjs.init("7ZzUd_fEz7aXwTui7");
     })();
   </script>
@@ -67,7 +66,7 @@
       margin-top: 10px;
     }
     .btn-secondary:hover { background: #4b5563; }
-    .msg { margin-top: 12px; font-size: 13px; color: #ef4444; }
+    .msg { margin-top: 12px; font-size: 13px; color: #ef4444; word-break: break-all; }
     .success-msg { color: #22c55e; }
     .forgot-link {
       display: block;
@@ -133,7 +132,7 @@
     const ADMIN_EMAIL = "mdsakibraza.066@gmail.com";
     
     if (!localStorage.getItem("90i_admin_pass")) {
-      localStorage.getItem("90i_admin_pass") || localStorage.setItem("90i_admin_pass", "changeme1238");
+      localStorage.setItem("90i_admin_pass", "changeme1238");
     }
 
     function processLogin() {
@@ -183,21 +182,25 @@
       msg.className = "msg success-msg";
       msg.innerText = "⏳ ओटीपी भेजा जा रहा है...";
 
+      // EmailJS के लिए सही पैरामीटर्स (to_email और passcode सीधे मैच किए गए हैं)
       var templateParams = {
         to_email: ADMIN_EMAIL,
-        passcode: generatedOtp
+        passcode: generatedOtp,
+        reply_to: "office.mdsakibraza@gmail.com"
       };
 
-      // Service ID और Template ID यहाँ कॉन्फिगर हैं
+      // सही सिंटैक्स के साथ कॉल किया गया है
       emailjs.send('service_6os4alk', 'template_shdltj19', templateParams)
         .then(function(response) {
+            console.log('SUCCESS!', response.status, response.text);
             document.getElementById('forgotFormSection').style.display = 'none';
             document.getElementById('newPassSection').style.display = 'block';
             msg.className = "msg success-msg";
             msg.innerText = "✅ 6-अंकों का OTP आपकी ईमेल पर भेज दिया गया है!";
         }, function(error) {
+            console.log('FAILED...', error);
             msg.className = "msg";
-            msg.innerText = "❌ ईमेल भेजने में असफल। कृपया इंटरनेट जाँचें।";
+            msg.innerText = "❌ ईमेल भेजने में असफल: " + (error.text || JSON.stringify(error));
         });
     }
 
