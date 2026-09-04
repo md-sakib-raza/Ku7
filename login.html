@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login | THE 90I NEWS</title>
+  <!-- EmailJS Library -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      // आपकी Public Key यहाँ सेट है
+      emailjs.init("7ZzUd_fEz7aXwTui7");
+    })();
+  </script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -54,41 +62,166 @@
       margin-top: 5px;
     }
     .btn:hover { background: #b91c1c; }
+    .btn-secondary {
+      background: #374151;
+      margin-top: 10px;
+    }
+    .btn-secondary:hover { background: #4b5563; }
     .msg { margin-top: 12px; font-size: 13px; color: #ef4444; }
+    .success-msg { color: #22c55e; }
+    .forgot-link {
+      display: block;
+      margin-top: 15px;
+      font-size: 13px;
+      color: #38bdf8;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .forgot-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
   <div class="login-box">
     <h2>THE 90I NEWS</h2>
-    <p>सुरक्षित एडमिन लॉगिन</p>
+    <p id="panelSubtitle">सुरक्षित एडमिन लॉगिन</p>
     
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" id="txtEmail" placeholder="name@example.com" />
+    <!-- LOGIN FORM -->
+    <div id="loginFormSection">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="txtEmail" placeholder="admin@example.com" autocomplete="off" />
+      </div>
+      
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="txtPass" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      
+      <button type="button" class="btn" onclick="processLogin()">🔓 Login</button>
+      <a class="forgot-link" onclick="showForgotModal()">पासवर्ड भूल गए? (Forgot Password)</a>
     </div>
-    
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" id="txtPass" placeholder="••••••••" />
+
+    <!-- FORGOT / RESET PASSWORD SECTION -->
+    <div id="forgotFormSection" style="display: none;">
+      <div class="form-group">
+        <label>अपनी रजिस्टर्ड ईमेल दर्ज करें</label>
+        <input type="email" id="txtResetEmail" placeholder="email दर्ज करें..." autocomplete="off" />
+      </div>
+      <button type="button" class="btn" onclick="sendResetOtp()">📤 रीसेट कोड भेजें</button>
+      <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">⬅️ वापस लॉगिन पर जाएं</button>
     </div>
-    
-    <button type="button" class="btn" onclick="processLogin()">🔓 Login</button>
+
+    <!-- NEW PASSWORD SET SECTION -->
+    <div id="newPassSection" style="display: none;">
+      <div class="form-group">
+        <label>ईमेल पर प्राप्त 6-अंकों का OTP दर्ज करें</label>
+        <input type="text" id="txtOtpInput" placeholder="123456" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>नया पासवर्ड दर्ज करें</label>
+        <input type="password" id="txtNewPass" placeholder="नया पासवर्ड..." autocomplete="new-password" />
+      </div>
+      <button type="button" class="btn" onclick="verifyAndSetNewPassword()">💾 पासवर्ड अपडेट करें</button>
+      <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">रद्द करें</button>
+    </div>
+
     <div id="errMsg" class="msg"></div>
   </div>
 
   <script>
+    const ADMIN_EMAIL = "mdsakibraza.066@gmail.com";
+    
+    if (!localStorage.getItem("90i_admin_pass")) {
+      localStorage.getItem("90i_admin_pass") || localStorage.setItem("90i_admin_pass", "changeme1238");
+    }
+
     function processLogin() {
       var e = (document.getElementById('txtEmail').value || '').trim().toLowerCase();
       var p = (document.getElementById('txtPass').value || '').trim();
       var msg = document.getElementById('errMsg');
+      var savedPass = localStorage.getItem("90i_admin_pass");
 
-      if (e === "mdsakibraza.066@gmail.com" && p === "changeme1238") {
+      if (e === ADMIN_EMAIL && p === savedPass) {
         localStorage.setItem("90i_admin_logged", "true");
         window.location.replace("admin.html");
       } else {
+        msg.className = "msg";
         msg.innerText = "❌ गलत ईमेल या पासवर्ड!";
       }
+    }
+
+    function showForgotModal() {
+      document.getElementById('loginFormSection').style.display = 'none';
+      document.getElementById('forgotFormSection').style.display = 'block';
+      document.getElementById('panelSubtitle').innerText = "पासवर्ड रीसेट सहायता";
+      document.getElementById('errMsg').innerText = "";
+      document.getElementById('txtResetEmail').value = "";
+    }
+
+    function hideForgotModal() {
+      document.getElementById('loginFormSection').style.display = 'block';
+      document.getElementById('forgotFormSection').style.display = 'none';
+      document.getElementById('newPassSection').style.display = 'none';
+      document.getElementById('panelSubtitle').innerText = "सुरक्षित एडमिन लॉगिन";
+      document.getElementById('errMsg').innerText = "";
+    }
+
+    let generatedOtp = "";
+
+    function sendResetOtp() {
+      var email = (document.getElementById('txtResetEmail').value || '').trim().toLowerCase();
+      var msg = document.getElementById('errMsg');
+
+      if (email !== ADMIN_EMAIL) {
+        msg.className = "msg";
+        msg.innerText = "❌ यह एडमिन ईमेल नहीं है!";
+        return;
+      }
+
+      generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      msg.className = "msg success-msg";
+      msg.innerText = "⏳ ओटीपी भेजा जा रहा है...";
+
+      var templateParams = {
+        to_email: ADMIN_EMAIL,
+        passcode: generatedOtp
+      };
+
+      // Service ID और Template ID यहाँ कॉन्फिगर हैं
+      emailjs.send('service_6os4alk', 'template_shdltj19', templateParams)
+        .then(function(response) {
+            document.getElementById('forgotFormSection').style.display = 'none';
+            document.getElementById('newPassSection').style.display = 'block';
+            msg.className = "msg success-msg";
+            msg.innerText = "✅ 6-अंकों का OTP आपकी ईमेल पर भेज दिया गया है!";
+        }, function(error) {
+            msg.className = "msg";
+            msg.innerText = "❌ ईमेल भेजने में असफल। कृपया इंटरनेट जाँचें।";
+        });
+    }
+
+    function verifyAndSetNewPassword() {
+      var otp = document.getElementById('txtOtpInput').value.trim();
+      var newPass = document.getElementById('txtNewPass').value.trim();
+      var msg = document.getElementById('errMsg');
+
+      if (otp !== generatedOtp || otp === "") {
+        msg.className = "msg";
+        msg.innerText = "❌ अमान्य (Invalid) OTP कोड!";
+        return;
+      }
+
+      if (newPass.length < 6) {
+        msg.className = "msg";
+        msg.innerText = "❌ पासवर्ड कम से कम 6 अक्षरों का होना चाहिए!";
+        return;
+      }
+
+      localStorage.setItem("90i_admin_pass", newPass);
+      alert("🎉 आपका पासवर्ड सफलतापूर्वक बदल गया है! अब नए पासवर्ड से लॉगिन करें।");
+      hideForgotModal();
+      document.getElementById('txtPass').value = "";
     }
   </script>
 </body>
