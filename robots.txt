@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
-Sitemap: https://md-sakib-raza.github.io/Kxj/sitemap.xml
+Sitemap: https://md-sakib-raza.github.io/Ku7/sitemap.xml
