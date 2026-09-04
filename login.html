@@ -182,17 +182,15 @@
       msg.className = "msg success-msg";
       msg.innerText = "⏳ ओटीपी भेजा जा रहा है...";
 
-      // EmailJS के लिए सही पैरामीटर्स (to_email और passcode सीधे मैच किए गए हैं)
       var templateParams = {
+        email: ADMIN_EMAIL,
         to_email: ADMIN_EMAIL,
         passcode: generatedOtp,
-        reply_to: "office.mdsakibraza@gmail.com"
+        time: "15 minutes"
       };
 
-      // सही सिंटैक्स के साथ कॉल किया गया है
       emailjs.send('service_6os4alk', 'template_shdltj19', templateParams)
         .then(function(response) {
-            console.log('SUCCESS!', response.status, response.text);
             document.getElementById('forgotFormSection').style.display = 'none';
             document.getElementById('newPassSection').style.display = 'block';
             msg.className = "msg success-msg";
@@ -200,7 +198,7 @@
         }, function(error) {
             console.log('FAILED...', error);
             msg.className = "msg";
-            msg.innerText = "❌ ईमेल भेजने में असफल: " + (error.text || JSON.stringify(error));
+            msg.innerText = "❌ एरर: " + (error.text || JSON.stringify(error));
         });
     }
 
