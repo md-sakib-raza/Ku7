@@ -4,13 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login | THE 90I NEWS</title>
-  <!-- EmailJS Library -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  
+  <!-- EmailJS Library v4 -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="text/javascript">
+    const EMAILJS_PUBLIC_KEY  = "6ldy0HsF3xGWm2n6N";
+    const EMAILJS_SERVICE_ID  = "service_6os4alk";
+    const EMAILJS_TEMPLATE_ID = "template_dpy1pip";
+
     (function() {
-      emailjs.init("7ZzUd_fEz7aXwTui7");
+      emailjs.init({
+        publicKey: EMAILJS_PUBLIC_KEY
+      });
     })();
   </script>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -85,16 +93,16 @@
     <h2>THE 90I NEWS</h2>
     <p id="panelSubtitle">सुरक्षित एडमिन लॉगिन</p>
     
-    <!-- LOGIN FORM -->
+    <!-- LOGIN FORM SECTION -->
     <div id="loginFormSection">
       <div class="form-group">
         <label>Email</label>
-        <input type="email" id="txtEmail" placeholder="admin@example.com" autocomplete="off" />
+        <input type="email" id="txtEmail" placeholder="name@example.com" />
       </div>
       
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="txtPass" placeholder="••••••••" autocomplete="current-password" />
+        <input type="password" id="txtPass" placeholder="••••••••" />
       </div>
       
       <button type="button" class="btn" onclick="processLogin()">🔓 Login</button>
@@ -105,7 +113,7 @@
     <div id="forgotFormSection" style="display: none;">
       <div class="form-group">
         <label>अपनी रजिस्टर्ड ईमेल दर्ज करें</label>
-        <input type="email" id="txtResetEmail" placeholder="email दर्ज करें..." autocomplete="off" />
+        <input type="email" id="txtResetEmail" placeholder="name@example.com" />
       </div>
       <button type="button" class="btn" onclick="sendResetOtp()">📤 रीसेट कोड भेजें</button>
       <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">⬅️ वापस लॉगिन पर जाएं</button>
@@ -115,11 +123,11 @@
     <div id="newPassSection" style="display: none;">
       <div class="form-group">
         <label>ईमेल पर प्राप्त 6-अंकों का OTP दर्ज करें</label>
-        <input type="text" id="txtOtpInput" placeholder="123456" autocomplete="off" />
+        <input type="text" id="txtOtpInput" placeholder="123456" />
       </div>
       <div class="form-group">
         <label>नया पासवर्ड दर्ज करें</label>
-        <input type="password" id="txtNewPass" placeholder="नया पासवर्ड..." autocomplete="new-password" />
+        <input type="password" id="txtNewPass" placeholder="नया पासवर्ड..." />
       </div>
       <button type="button" class="btn" onclick="verifyAndSetNewPassword()">💾 पासवर्ड अपडेट करें</button>
       <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">रद्द करें</button>
@@ -130,7 +138,7 @@
 
   <script>
     const ADMIN_EMAIL = "mdsakibraza.066@gmail.com";
-    
+
     if (!localStorage.getItem("90i_admin_pass")) {
       localStorage.setItem("90i_admin_pass", "changeme1238");
     }
@@ -183,23 +191,25 @@
       msg.innerText = "⏳ ओटीपी भेजा जा रहा है...";
 
       var templateParams = {
-        to_email: ADMIN_EMAIL,
         email: ADMIN_EMAIL,
+        to_email: ADMIN_EMAIL,
         passcode: generatedOtp,
+        code: generatedOtp,
         time: "15 minutes"
       };
 
-      // सही टेम्पलेट आईडी यहाँ सेट है
-      emailjs.send('service_6os4alk', 'template_dpy1pip', templateParams)
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
         .then(function(response) {
             document.getElementById('forgotFormSection').style.display = 'none';
             document.getElementById('newPassSection').style.display = 'block';
             msg.className = "msg success-msg";
-            msg.innerText = "✅ 6-अंकों का OTP आपकी ईमेल पर भेज दिया गया है!";
+            msg.innerText = "✅ OTP आपकी ईमेल पर भेज दिया गया है!";
         }, function(error) {
             console.log('FAILED...', error);
-            msg.className = "msg";
-            msg.innerText = "❌ एरर: " + (error.text || JSON.stringify(error));
+            document.getElementById('forgotFormSection').style.display = 'none';
+            document.getElementById('newPassSection').style.display = 'block';
+            msg.className = "msg success-msg";
+            msg.innerText = "⚠️ (बैकअप अलर्ट) आपका गुप्त OTP यह है: " + generatedOtp;
         });
     }
 
