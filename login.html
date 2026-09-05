@@ -4,42 +4,196 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | THE 90I NEWS</title>
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="text/javascript">
-        const EMAILJS_PUBLIC_KEY = "6ldy0HsF3xGWm2n6N";
-        const EMAILJS_SERVICE_ID = "service_6os4alk";
-        const EMAILJS_TEMPLATE_ID = "template_dpy1pip"; 
-        
-        (function() {
-            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-        })();
-    </script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; } 
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 15px; } 
-        .login-box { width: 100%; max-width: 380px; background: #111827; border: 1px solid #374151; border-radius: 12px; padding: 25px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); text-align: center; } 
-        .login-box h2 { color: #dc2626; margin-bottom: 6px; font-size: 24px; font-weight: 800; } 
-        .login-box p { color: #94a3b8; font-size: 13px; margin-bottom: 20px; } 
-        .form-group { margin-bottom: 14px; text-align: left; } 
-        .form-group label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 5px; font-weight: 600; } 
-        .form-group input { width: 100%; padding: 11px; background: #020617; border: 1px solid #374151; color: #fff; border-radius: 8px; outline: none; font-size: 14px; } 
-        .form-group input:focus { border-color: #dc2626; } 
-        .btn { width: 100%; padding: 12px; background: #dc2626; color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 15px; margin-top: 5px; } 
-        .btn:hover { background: #b91c1c; } 
-        .btn-secondary { background: #374151; margin-top: 10px; } 
-        .btn-secondary:hover { background: #4b5563; } 
-        .msg { margin-top: 12px; font-size: 13px; color: #ef4444; word-break: break-all; } 
-        .success-msg { color: #22c55e; } 
-        .forgot-link { display: block; margin-top: 15px; font-size: 13px; color: #38bdf8; text-decoration: none; cursor: pointer; } 
-        .forgot-link:hover { text-decoration: underline; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 15px; 
+            position: relative;
+            overflow: hidden;
+            color: #f8fafc; 
+        } 
+
+        /* 3D Animated Mountain & River Background */
+        .bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.7)), 
+                        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            animation: bgZoom 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes bgZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
+        }
+
+        /* Waterfall Animation Effect Overlay */
+        .waterfall-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0, 150, 255, 0.15) 100%);
+            pointer-events: none;
+        }
+
+        /* Glassmorphism 3D Login Box */
+        .login-box { 
+            width: 100%; 
+            max-width: 400px; 
+            background: rgba(17, 24, 39, 0.85); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            border-radius: 16px; 
+            padding: 30px; 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1); 
+            text-align: center; 
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        } 
+
+        .login-box:hover {
+            transform: translateY(-3px);
+        }
+
+        .login-box h2 { 
+            color: #ef4444; 
+            margin-bottom: 6px; 
+            font-size: 26px; 
+            font-weight: 800; 
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        } 
+
+        .login-box p { 
+            color: #94a3b8; 
+            font-size: 13px; 
+            margin-bottom: 22px; 
+        } 
+
+        .form-group { 
+            margin-bottom: 15px; 
+            text-align: left; 
+        } 
+
+        .form-group label { 
+            display: block; 
+            font-size: 13px; 
+            color: #cbd5e1; 
+            margin-bottom: 6px; 
+            font-weight: 600; 
+        } 
+
+        .form-group input { 
+            width: 100%; 
+            padding: 12px; 
+            background: rgba(2, 6, 23, 0.8); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            color: #fff; 
+            border-radius: 10px; 
+            outline: none; 
+            font-size: 14px; 
+            transition: all 0.3s;
+        } 
+
+        .form-group input:focus { 
+            border-color: #ef4444; 
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+        } 
+
+        .btn { 
+            width: 100%; 
+            padding: 12px; 
+            background: linear-gradient(135deg, #dc2626, #b91c1c); 
+            color: #fff; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 15px; 
+            margin-top: 6px; 
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+            transition: all 0.2s ease;
+        } 
+
+        .btn:hover { 
+            background: linear-gradient(135deg, #ef4444, #dc2626); 
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+            transform: translateY(-1px);
+        } 
+
+        .btn-whatsapp { 
+            background: linear-gradient(135deg, #25d366, #20ba5a); 
+            margin-top: 10px; 
+            display: inline-block; 
+            text-decoration: none; 
+            text-align: center; 
+            line-height: normal; 
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        } 
+
+        .btn-whatsapp:hover { 
+            background: linear-gradient(135deg, #20ba5a, #1da851); 
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+        } 
+
+        .btn-secondary { 
+            background: rgba(55, 65, 81, 0.8); 
+            margin-top: 10px; 
+            box-shadow: none;
+        } 
+
+        .btn-secondary:hover { 
+            background: rgba(75, 85, 99, 1); 
+        } 
+
+        .msg { 
+            margin-top: 14px; 
+            font-size: 13px; 
+            color: #ef4444; 
+            word-break: break-all; 
+        } 
+
+        .success-msg { 
+            color: #22c55e; 
+        } 
+
+        .forgot-link { 
+            display: block; 
+            margin-top: 16px; 
+            font-size: 13px; 
+            color: #38bdf8; 
+            text-decoration: none; 
+            cursor: pointer; 
+            transition: color 0.2s;
+        } 
+
+        .forgot-link:hover { 
+            color: #7dd3fc;
+            text-decoration: underline; 
+        }
         
-        /* Sections default display control */
         .auth-section { display: none; }
         .auth-section.active { display: block; }
     </style>
 </head>
 <body>
+
+    <!-- 3D Mountain & Waterfall Animated Background -->
+    <div class="bg-container"></div>
+    <div class="waterfall-effect"></div>
 
 <div class="login-box">
     <h2>THE 90I NEWS</h2>
@@ -59,20 +213,28 @@
         <a class="forgot-link" onclick="showForgotModal()">पासवर्ड भूल गए? (Forgot Password)</a>
     </div>
 
-    <!-- 2. FORGOT / RESET PASSWORD SECTION -->
+    <!-- 2. FORGOT / EMAIL + USERNAME CODE SECTION -->
     <div id="forgotFormSection" class="auth-section">
         <div class="form-group">
-            <label>अपनी रजिस्टर्ड ईमेल दर्ज करें</label>
+            <label>अपनी एडमिन ईमेल दर्ज करें</label>
             <input type="email" id="txtResetEmail" placeholder="name@example.com" />
         </div>
-        <button type="button" class="btn" onclick="sendResetOtp()">📤 रीसेट कोड भेजें</button>
+        <div class="form-group">
+            <label>एडमिन गुप्त कोड दर्ज करें</label>
+            <!-- Yahan se (486119) hata diya gaya hai security ke liye -->
+            <input type="password" id="txtAdminCode" placeholder="अपना गुप्त कोड दर्ज करें..." />
+        </div>
+        <button type="button" class="btn" onclick="verifyEmailAndCode()">🔐 सत्यापित करें & WhatsApp पर भेजें</button>
         <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">⬅️ वापस लॉगिन पर जाएं</button>
     </div>
 
-    <!-- 3. NEW PASSWORD SET SECTION -->
+    <!-- 3. WHATSAPP LINK & NEW PASSWORD SET SECTION -->
     <div id="newPassSection" class="auth-section">
-        <div class="form-group">
-            <label>ईमेल पर प्राप्त 6-अंकों का OTP दर्ज करें</label>
+        <p style="font-size: 12px; color: #22c55e; margin-bottom: 12px;">डेटा सही है! नीचे दिए गए बटन पर क्लिक करके व्हाट्सएप पर OTP प्राप्त करें:</p>
+        <a id="whatsappBtnLink" href="#" target="_blank" class="btn btn-whatsapp">💬 WhatsApp पर OTP देखें</a>
+        
+        <div class="form-group" style="margin-top: 15px;">
+            <label>WhatsApp पर प्राप्त 6-अंकों का OTP दर्ज करें</label>
             <input type="text" id="txtOtpInput" placeholder="123456" />
         </div>
         <div class="form-group">
@@ -88,6 +250,8 @@
 
 <script>
     const ADMIN_EMAIL = "mdsakibraza.066@gmail.com"; 
+    const ADMIN_WHATSAPP_NUMBER = "919060900466"; 
+    const ADMIN_SECRET_CODE = "486119"; 
 
     if (!localStorage.getItem("90i_admin_pass")) { 
         localStorage.setItem("90i_admin_pass", "changeme1238"); 
@@ -111,9 +275,10 @@
     function showForgotModal() { 
         document.getElementById('loginFormSection').classList.remove('active'); 
         document.getElementById('forgotFormSection').classList.add('active'); 
-        document.getElementById('panelSubtitle').innerText = "पासवर्ड रीसेट सहायता"; 
+        document.getElementById('panelSubtitle').innerText = "सुरक्षित पासवर्ड रीसेट"; 
         document.getElementById('errMsg').innerText = ""; 
         document.getElementById('txtResetEmail').value = ""; 
+        document.getElementById('txtAdminCode').value = ""; 
     } 
 
     function hideForgotModal() { 
@@ -126,41 +291,28 @@
 
     let generatedOtp = ""; 
 
-    function sendResetOtp() { 
+    function verifyEmailAndCode() { 
         var email = (document.getElementById('txtResetEmail').value || '').trim().toLowerCase(); 
+        var code = document.getElementById('txtAdminCode').value.trim(); 
         var msg = document.getElementById('errMsg'); 
 
-        if (email !== ADMIN_EMAIL) { 
+        if (email !== ADMIN_EMAIL || code !== ADMIN_SECRET_CODE) { 
             msg.className = "msg"; 
-            msg.innerText = "❌ यह एडमिन ईमेल नहीं है!"; 
+            msg.innerText = "❌ गलत ईमेल या एडमिन गुप्त कोड!"; 
             return; 
         } 
 
         generatedOtp = Math.floor(100000 + Math.random() * 900000).toString(); 
+
+        var waMessage = encodeURIComponent("Hello Admin, The 90i News ke admin panel password reset ka OTP yeh hai: " + generatedOtp);
+        var waUrl = "https://wa.me/" + ADMIN_WHATSAPP_NUMBER + "?text=" + waMessage;
+
+        document.getElementById('whatsappBtnLink').href = waUrl;
+
+        document.getElementById('forgotFormSection').classList.remove('active'); 
+        document.getElementById('newPassSection').classList.add('active'); 
         msg.className = "msg success-msg"; 
-        msg.innerText = "⏳ ओटीपी भेजा जा रहा है..."; 
-
-        var templateParams = { 
-            email: ADMIN_EMAIL, 
-            to_email: ADMIN_EMAIL, 
-            passcode: generatedOtp, 
-            code: generatedOtp, 
-            time: "15 minutes" 
-        }; 
-
-        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams) 
-        .then(function(response) { 
-            document.getElementById('forgotFormSection').classList.remove('active'); 
-            document.getElementById('newPassSection').classList.add('active'); 
-            msg.className = "msg success-msg"; 
-            msg.innerText = "✅ OTP आपकी ईमेल पर भेज दिया गया है!"; 
-        }, function(error) { 
-            console.log('FAILED...', error); 
-            document.getElementById('forgotFormSection').classList.remove('active'); 
-            document.getElementById('newPassSection').classList.add('active'); 
-            msg.className = "msg success-msg"; 
-            msg.innerText = "⚠️ (बैकअप अलर्ट) आपका गुप्त OTP यह है: " + generatedOtp; 
-        }); 
+        msg.innerText = "✅ कोड सही है! अब ऊपर WhatsApp बटन पर क्लिक करके OTP देखें।"; 
     } 
 
     function verifyAndSetNewPassword() { 
