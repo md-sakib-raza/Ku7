@@ -3,238 +3,992 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Admin Login | THE 90I NEWS</title>
-  
-  <!-- EmailJS Library v4 -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script type="text/javascript">
+
+  <!-- ================================
+       EMAILJS
+  ================================= -->
+  <script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+  </script>
+
+  <script>
     const EMAILJS_PUBLIC_KEY  = "6ldy0HsF3xGWm2n6N";
     const EMAILJS_SERVICE_ID  = "service_6os4alk";
     const EMAILJS_TEMPLATE_ID = "template_dpy1pip";
 
-    (function() {
+    window.addEventListener("DOMContentLoaded", function () {
       emailjs.init({
         publicKey: EMAILJS_PUBLIC_KEY
       });
-    })();
+    });
   </script>
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, sans-serif;
       background: #0f172a;
       color: #f8fafc;
       min-height: 100vh;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       padding: 15px;
     }
+
     .login-box {
       width: 100%;
       max-width: 380px;
+
       background: #111827;
       border: 1px solid #374151;
+
       border-radius: 12px;
       padding: 25px;
+
       box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+
       text-align: center;
     }
-    .login-box h2 { color: #dc2626; margin-bottom: 6px; font-size: 24px; font-weight: 800; }
-    .login-box p { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
-    .form-group { margin-bottom: 14px; text-align: left; }
-    .form-group label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 5px; font-weight: 600; }
+
+    .login-box h2 {
+      color: #dc2626;
+      margin-bottom: 6px;
+
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .login-box p {
+      color: #94a3b8;
+      font-size: 13px;
+
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+
+      font-size: 13px;
+      color: #cbd5e1;
+
+      margin-bottom: 5px;
+
+      font-weight: 600;
+    }
+
     .form-group input {
       width: 100%;
+
       padding: 11px;
+
       background: #020617;
+
       border: 1px solid #374151;
+
       color: #fff;
+
       border-radius: 8px;
+
       outline: none;
+
       font-size: 14px;
     }
-    .form-group input:focus { border-color: #dc2626; }
+
+    .form-group input:focus {
+      border-color: #dc2626;
+    }
+
     .btn {
       width: 100%;
+
       padding: 12px;
+
       background: #dc2626;
       color: #fff;
+
       border: none;
       border-radius: 8px;
+
       font-weight: 700;
+
       cursor: pointer;
+
       font-size: 15px;
+
       margin-top: 5px;
     }
-    .btn:hover { background: #b91c1c; }
+
+    .btn:hover {
+      background: #b91c1c;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     .btn-secondary {
       background: #374151;
       margin-top: 10px;
     }
-    .btn-secondary:hover { background: #4b5563; }
-    .msg { margin-top: 12px; font-size: 13px; color: #ef4444; word-break: break-all; }
-    .success-msg { color: #22c55e; }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+
+    .msg {
+      margin-top: 12px;
+
+      font-size: 13px;
+
+      color: #ef4444;
+
+      word-break: break-word;
+    }
+
+    .success-msg {
+      color: #22c55e;
+    }
+
     .forgot-link {
       display: block;
+
       margin-top: 15px;
+
       font-size: 13px;
+
       color: #38bdf8;
+
       text-decoration: none;
+
       cursor: pointer;
     }
-    .forgot-link:hover { text-decoration: underline; }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    .timer {
+      margin-top: 8px;
+
+      font-size: 12px;
+
+      color: #f59e0b;
+    }
   </style>
 </head>
+
 <body>
 
   <div class="login-box">
+
     <h2>THE 90I NEWS</h2>
-    <p id="panelSubtitle">सुरक्षित एडमिन लॉगिन</p>
-    
-    <!-- LOGIN FORM SECTION -->
+
+    <p id="panelSubtitle">
+      सुरक्षित एडमिन लॉगिन
+    </p>
+
+
+    <!-- =================================
+         LOGIN
+    ================================== -->
+
     <div id="loginFormSection">
+
       <div class="form-group">
+
         <label>Email</label>
-        <input type="email" id="txtEmail" placeholder="name@example.com" />
+
+        <input
+          type="email"
+          id="txtEmail"
+          placeholder="name@example.com"
+          autocomplete="username"
+        />
+
       </div>
-      
+
+
       <div class="form-group">
+
         <label>Password</label>
-        <input type="password" id="txtPass" placeholder="••••••••" />
+
+        <input
+          type="password"
+          id="txtPass"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        />
+
       </div>
-      
-      <button type="button" class="btn" onclick="processLogin()">🔓 Login</button>
-      <a class="forgot-link" onclick="showForgotModal()">पासवर्ड भूल गए? (Forgot Password)</a>
+
+
+      <button
+        type="button"
+        class="btn"
+        onclick="processLogin()"
+        id="loginBtn"
+      >
+        🔓 Login
+      </button>
+
+
+      <a
+        class="forgot-link"
+        onclick="showForgotModal()"
+      >
+        पासवर्ड भूल गए? (Forgot Password)
+      </a>
+
     </div>
 
-    <!-- FORGOT / RESET PASSWORD SECTION -->
-    <div id="forgotFormSection" style="display: none;">
+
+
+    <!-- =================================
+         FORGOT PASSWORD
+    ================================== -->
+
+    <div
+      id="forgotFormSection"
+      style="display:none;"
+    >
+
       <div class="form-group">
-        <label>अपनी रजिस्टर्ड ईमेल दर्ज करें</label>
-        <input type="email" id="txtResetEmail" placeholder="name@example.com" />
+
+        <label>
+          अपनी रजिस्टर्ड ईमेल दर्ज करें
+        </label>
+
+        <input
+          type="email"
+          id="txtResetEmail"
+          placeholder="name@example.com"
+          autocomplete="email"
+        />
+
       </div>
-      <button type="button" class="btn" onclick="sendResetOtp()">📤 रीसेट कोड भेजें</button>
-      <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">⬅️ वापस लॉगिन पर जाएं</button>
+
+
+      <button
+        type="button"
+        class="btn"
+        onclick="sendResetOtp()"
+        id="sendOtpBtn"
+      >
+        📤 रीसेट कोड भेजें
+      </button>
+
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        onclick="hideForgotModal()"
+      >
+        ⬅️ वापस लॉगिन पर जाएं
+      </button>
+
     </div>
 
-    <!-- NEW PASSWORD SET SECTION -->
-    <div id="newPassSection" style="display: none;">
+
+
+    <!-- =================================
+         OTP + NEW PASSWORD
+    ================================== -->
+
+    <div
+      id="newPassSection"
+      style="display:none;"
+    >
+
       <div class="form-group">
-        <label>ईमेल पर प्राप्त 6-अंकों का OTP दर्ज करें</label>
-        <input type="text" id="txtOtpInput" placeholder="123456" />
+
+        <label>
+          ईमेल पर प्राप्त 6-अंकों का OTP दर्ज करें
+        </label>
+
+        <input
+          type="text"
+          id="txtOtpInput"
+          placeholder="123456"
+          maxlength="6"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+        />
+
       </div>
+
+
       <div class="form-group">
-        <label>नया पासवर्ड दर्ज करें</label>
-        <input type="password" id="txtNewPass" placeholder="नया पासवर्ड..." />
+
+        <label>
+          नया पासवर्ड दर्ज करें
+        </label>
+
+        <input
+          type="password"
+          id="txtNewPass"
+          placeholder="नया पासवर्ड..."
+          autocomplete="new-password"
+        />
+
       </div>
-      <button type="button" class="btn" onclick="verifyAndSetNewPassword()">💾 पासवर्ड अपडेट करें</button>
-      <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">रद्द करें</button>
+
+
+      <button
+        type="button"
+        class="btn"
+        onclick="verifyAndSetNewPassword()"
+        id="updatePassBtn"
+      >
+        💾 पासवर्ड अपडेट करें
+      </button>
+
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        onclick="hideForgotModal()"
+      >
+        रद्द करें
+      </button>
+
+
+      <div
+        id="otpTimer"
+        class="timer"
+      ></div>
+
     </div>
 
-    <div id="errMsg" class="msg"></div>
+
+    <div
+      id="errMsg"
+      class="msg"
+    ></div>
+
   </div>
 
-  <script>
-    const ADMIN_EMAIL = "mdsakibraza.066@gmail.com";
 
-    if (!localStorage.getItem("90i_admin_pass")) {
-      localStorage.setItem("90i_admin_pass", "changeme1238");
+
+<script>
+
+/* =========================================
+   ADMIN SETTINGS
+========================================= */
+
+const ADMIN_EMAIL = "mdsakibraza.066@gmail.com";
+
+
+/*
+   Existing password system maintained.
+
+   IMPORTANT:
+   This is browser/localStorage authentication.
+*/
+
+if (!localStorage.getItem("90i_admin_pass")) {
+
+  localStorage.setItem(
+    "90i_admin_pass",
+    "changeme1238"
+  );
+
+}
+
+
+/* =========================================
+   OTP VARIABLES
+========================================= */
+
+let generatedOtp = "";
+
+let otpExpiryTime = 0;
+
+let otpTimerInterval = null;
+
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(message, success = false) {
+
+  const msg =
+    document.getElementById("errMsg");
+
+  msg.className =
+    success ? "msg success-msg" : "msg";
+
+  msg.innerText = message;
+
+}
+
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+function processLogin() {
+
+  const email =
+    (document.getElementById("txtEmail").value || "")
+      .trim()
+      .toLowerCase();
+
+  const password =
+    (document.getElementById("txtPass").value || "")
+      .trim();
+
+  const savedPassword =
+    localStorage.getItem("90i_admin_pass");
+
+
+  if (!email || !password) {
+
+    showMessage(
+      "❌ Email और Password दोनों दर्ज करें!"
+    );
+
+    return;
+  }
+
+
+  if (
+    email === ADMIN_EMAIL &&
+    password === savedPassword
+  ) {
+
+    localStorage.setItem(
+      "90i_admin_logged",
+      "true"
+    );
+
+
+    window.location.replace(
+      "admin.html"
+    );
+
+  } else {
+
+    showMessage(
+      "❌ गलत ईमेल या पासवर्ड!"
+    );
+
+  }
+
+}
+
+
+
+/* =========================================
+   SHOW FORGOT PASSWORD
+========================================= */
+
+function showForgotModal() {
+
+  document.getElementById(
+    "loginFormSection"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "forgotFormSection"
+  ).style.display = "block";
+
+
+  document.getElementById(
+    "newPassSection"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "panelSubtitle"
+  ).innerText =
+    "पासवर्ड रीसेट सहायता";
+
+
+  document.getElementById(
+    "txtResetEmail"
+  ).value = "";
+
+
+  showMessage("");
+
+}
+
+
+
+/* =========================================
+   HIDE FORGOT PASSWORD
+========================================= */
+
+function hideForgotModal() {
+
+  document.getElementById(
+    "loginFormSection"
+  ).style.display = "block";
+
+
+  document.getElementById(
+    "forgotFormSection"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "newPassSection"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "panelSubtitle"
+  ).innerText =
+    "सुरक्षित एडमिन लॉगिन";
+
+
+  document.getElementById(
+    "txtOtpInput"
+  ).value = "";
+
+
+  document.getElementById(
+    "txtNewPass"
+  ).value = "";
+
+
+  document.getElementById(
+    "otpTimer"
+  ).innerText = "";
+
+
+  generatedOtp = "";
+
+  otpExpiryTime = 0;
+
+
+  if (otpTimerInterval) {
+
+    clearInterval(
+      otpTimerInterval
+    );
+
+    otpTimerInterval = null;
+
+  }
+
+
+  showMessage("");
+
+}
+
+
+
+/* =========================================
+   SEND OTP
+========================================= */
+
+function sendResetOtp() {
+
+  const email =
+    (document.getElementById(
+      "txtResetEmail"
+    ).value || "")
+      .trim()
+      .toLowerCase();
+
+
+  const sendButton =
+    document.getElementById(
+      "sendOtpBtn"
+    );
+
+
+  if (!email) {
+
+    showMessage(
+      "❌ कृपया अपनी ईमेल दर्ज करें!"
+    );
+
+    return;
+
+  }
+
+
+  if (email !== ADMIN_EMAIL) {
+
+    showMessage(
+      "❌ यह एडमिन ईमेल नहीं है!"
+    );
+
+    return;
+
+  }
+
+
+  /*
+     Generate 6 digit OTP
+  */
+
+  generatedOtp =
+    Math.floor(
+      100000 +
+      Math.random() * 900000
+    ).toString();
+
+
+  /*
+     OTP valid for 15 minutes
+  */
+
+  otpExpiryTime =
+    Date.now() +
+    (15 * 60 * 1000);
+
+
+  sendButton.disabled = true;
+
+  sendButton.innerText =
+    "⏳ OTP भेजा जा रहा है...";
+
+
+  showMessage(
+    "⏳ कृपया प्रतीक्षा करें...",
+    true
+  );
+
+
+  /*
+     EmailJS template variables.
+
+     Your EmailJS template should use:
+
+     {{passcode}}
+
+     Recipient:
+
+     {{to_email}}
+  */
+
+  const templateParams = {
+
+    email: ADMIN_EMAIL,
+
+    to_email: ADMIN_EMAIL,
+
+    passcode: generatedOtp,
+
+    code: generatedOtp,
+
+    time: "15 minutes"
+
+  };
+
+
+  emailjs.send(
+    EMAILJS_SERVICE_ID,
+    EMAILJS_TEMPLATE_ID,
+    templateParams
+  )
+
+  .then(function(response) {
+
+    console.log(
+      "EmailJS SUCCESS:",
+      response
+    );
+
+
+    document.getElementById(
+      "forgotFormSection"
+    ).style.display = "none";
+
+
+    document.getElementById(
+      "newPassSection"
+    ).style.display = "block";
+
+
+    document.getElementById(
+      "panelSubtitle"
+    ).innerText =
+      "OTP सत्यापन";
+
+
+    showMessage(
+      "✅ OTP आपकी ईमेल पर भेज दिया गया है!",
+      true
+    );
+
+
+    startOtpTimer();
+
+
+  })
+
+  .catch(function(error) {
+
+    console.error(
+      "EmailJS ERROR:",
+      error
+    );
+
+
+    /*
+       IMPORTANT:
+       OTP is NOT shown on screen.
+    */
+
+    generatedOtp = "";
+
+    otpExpiryTime = 0;
+
+
+    showMessage(
+      "❌ OTP भेजने में समस्या हुई। कृपया कुछ देर बाद दोबारा प्रयास करें।"
+    );
+
+
+    sendButton.disabled = false;
+
+    sendButton.innerText =
+      "📤 रीसेट कोड भेजें";
+
+  });
+
+}
+
+
+
+/* =========================================
+   OTP TIMER
+========================================= */
+
+function startOtpTimer() {
+
+  const timer =
+    document.getElementById(
+      "otpTimer"
+    );
+
+
+  if (otpTimerInterval) {
+
+    clearInterval(
+      otpTimerInterval
+    );
+
+  }
+
+
+  function updateTimer() {
+
+    const remaining =
+      otpExpiryTime - Date.now();
+
+
+    if (remaining <= 0) {
+
+      clearInterval(
+        otpTimerInterval
+      );
+
+
+      generatedOtp = "";
+
+      otpExpiryTime = 0;
+
+
+      timer.innerText =
+        "⏰ OTP की अवधि समाप्त हो गई है।";
+
+
+      return;
+
     }
 
-    function processLogin() {
-      var e = (document.getElementById('txtEmail').value || '').trim().toLowerCase();
-      var p = (document.getElementById('txtPass').value || '').trim();
-      var msg = document.getElementById('errMsg');
-      var savedPass = localStorage.getItem("90i_admin_pass");
 
-      if (e === ADMIN_EMAIL && p === savedPass) {
-        localStorage.setItem("90i_admin_logged", "true");
-        window.location.replace("admin.html");
-      } else {
-        msg.className = "msg";
-        msg.innerText = "❌ गलत ईमेल या पासवर्ड!";
-      }
-    }
+    const minutes =
+      Math.floor(
+        remaining / 60000
+      );
 
-    function showForgotModal() {
-      document.getElementById('loginFormSection').style.display = 'none';
-      document.getElementById('forgotFormSection').style.display = 'block';
-      document.getElementById('panelSubtitle').innerText = "पासवर्ड रीसेट सहायता";
-      document.getElementById('errMsg').innerText = "";
-      document.getElementById('txtResetEmail').value = "";
-    }
 
-    function hideForgotModal() {
-      document.getElementById('loginFormSection').style.display = 'block';
-      document.getElementById('forgotFormSection').style.display = 'none';
-      document.getElementById('newPassSection').style.display = 'none';
-      document.getElementById('panelSubtitle').innerText = "सुरक्षित एडमिन लॉगिन";
-      document.getElementById('errMsg').innerText = "";
-    }
+    const seconds =
+      Math.floor(
+        (remaining % 60000) / 1000
+      );
 
-    let generatedOtp = "";
 
-    function sendResetOtp() {
-      var email = (document.getElementById('txtResetEmail').value || '').trim().toLowerCase();
-      var msg = document.getElementById('errMsg');
+    timer.innerText =
+      "OTP valid: " +
+      minutes +
+      ":" +
+      String(seconds).padStart(2, "0");
 
-      if (email !== ADMIN_EMAIL) {
-        msg.className = "msg";
-        msg.innerText = "❌ यह एडमिन ईमेल नहीं है!";
-        return;
-      }
+  }
 
-      generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      msg.className = "msg success-msg";
-      msg.innerText = "⏳ ओटीपी भेजा जा रहा है...";
 
-      var templateParams = {
-        email: ADMIN_EMAIL,
-        to_email: ADMIN_EMAIL,
-        passcode: generatedOtp,
-        code: generatedOtp,
-        time: "15 minutes"
-      };
+  updateTimer();
 
-      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-        .then(function(response) {
-            document.getElementById('forgotFormSection').style.display = 'none';
-            document.getElementById('newPassSection').style.display = 'block';
-            msg.className = "msg success-msg";
-            msg.innerText = "✅ OTP आपकी ईमेल पर भेज दिया गया है!";
-        }, function(error) {
-            console.log('FAILED...', error);
-            document.getElementById('forgotFormSection').style.display = 'none';
-            document.getElementById('newPassSection').style.display = 'block';
-            msg.className = "msg success-msg";
-            msg.innerText = "⚠️ (बैकअप अलर्ट) आपका गुप्त OTP यह है: " + generatedOtp;
-        });
-    }
 
-    function verifyAndSetNewPassword() {
-      var otp = document.getElementById('txtOtpInput').value.trim();
-      var newPass = document.getElementById('txtNewPass').value.trim();
-      var msg = document.getElementById('errMsg');
+  otpTimerInterval =
+    setInterval(
+      updateTimer,
+      1000
+    );
 
-      if (otp !== generatedOtp || otp === "") {
-        msg.className = "msg";
-        msg.innerText = "❌ अमान्य (Invalid) OTP कोड!";
-        return;
-      }
+}
 
-      if (newPass.length < 6) {
-        msg.className = "msg";
-        msg.innerText = "❌ पासवर्ड कम से कम 6 अक्षरों का होना चाहिए!";
-        return;
-      }
 
-      localStorage.setItem("90i_admin_pass", newPass);
-      alert("🎉 आपका पासवर्ड सफलतापूर्वक बदल गया है! अब नए पासवर्ड से लॉगिन करें।");
-      hideForgotModal();
-      document.getElementById('txtPass').value = "";
-    }
-  </script>
+
+/* =========================================
+   VERIFY OTP + CHANGE PASSWORD
+========================================= */
+
+function verifyAndSetNewPassword() {
+
+  const otp =
+    (document.getElementById(
+      "txtOtpInput"
+    ).value || "")
+      .trim();
+
+
+  const newPassword =
+    (document.getElementById(
+      "txtNewPass"
+    ).value || "")
+      .trim();
+
+
+  /*
+     Check OTP
+  */
+
+  if (!otp) {
+
+    showMessage(
+      "❌ कृपया OTP दर्ज करें!"
+    );
+
+    return;
+
+  }
+
+
+  if (!generatedOtp) {
+
+    showMessage(
+      "❌ OTP अमान्य या समाप्त हो चुका है।"
+    );
+
+    return;
+
+  }
+
+
+  if (Date.now() > otpExpiryTime) {
+
+    generatedOtp = "";
+
+    showMessage(
+      "⏰ OTP की अवधि समाप्त हो गई है। नया OTP लें।"
+    );
+
+    return;
+
+  }
+
+
+  if (otp !== generatedOtp) {
+
+    showMessage(
+      "❌ अमान्य OTP कोड!"
+    );
+
+    return;
+
+  }
+
+
+  /*
+     Password validation
+  */
+
+  if (newPassword.length < 6) {
+
+    showMessage(
+      "❌ पासवर्ड कम से कम 6 अक्षरों का होना चाहिए!"
+    );
+
+    return;
+
+  }
+
+
+  /*
+     Save new password
+  */
+
+  localStorage.setItem(
+    "90i_admin_pass",
+    newPassword
+  );
+
+
+  /*
+     Clear OTP
+  */
+
+  generatedOtp = "";
+
+  otpExpiryTime = 0;
+
+
+  if (otpTimerInterval) {
+
+    clearInterval(
+      otpTimerInterval
+    );
+
+    otpTimerInterval = null;
+
+  }
+
+
+  alert(
+    "🎉 आपका पासवर्ड सफलतापूर्वक बदल गया है!\n\nअब नए पासवर्ड से लॉगिन करें।"
+  );
+
+
+  hideForgotModal();
+
+
+  document.getElementById(
+    "txtPass"
+  ).value = "";
+
+}
+
+</script>
+
 </body>
 </html>
