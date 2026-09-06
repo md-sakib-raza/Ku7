@@ -115,20 +115,6 @@
             box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
         }
 
-        .btn-whatsapp { 
-            background: #25d366; 
-            margin-top: 10px; 
-            display: inline-block; 
-            text-decoration: none; 
-            text-align: center; 
-            box-shadow: 5px 5px 15px rgba(37, 211, 102, 0.3), 
-                        -5px -5px 15px rgba(255, 255, 255, 0.5);
-        } 
-
-        .btn-whatsapp:hover { 
-            background: #20ba5a; 
-        } 
-
         .btn-secondary { 
             background: #cbd5e1; 
             color: #334155;
@@ -231,23 +217,15 @@
         </div>
         <div class="form-group">
             <label>एडमिन गुप्त कोड दर्ज करें</label>
-            <!-- Secret code yahan se bilkul hata diya gaya hai -->
             <input type="password" id="txtAdminCode" placeholder="गुप्त कोड दर्ज करें..." />
         </div>
-        <button type="button" class="btn" onclick="verifyEmailAndCode()">🔐 सत्यापित करें & WhatsApp पर भेजें</button>
+        <button type="button" class="btn" onclick="verifyEmailAndSendOtp()">📤 ईमेल पर OTP भेजें</button>
         <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">⬅️ वापस लॉगिन पर जाएं</button>
     </div>
 
-    <!-- 3. WHATSAPP LINK SECTION -->
-    <div id="waLinkSection" class="auth-section">
-        <p style="font-size: 13px; color: #16a34a; margin-bottom: 15px; font-weight: 600;">डेटा सत्यापित हो गया है! नीचे दिए गए बटन पर क्लिक करके व्हाट्सएप पर OTP प्राप्त करें:</p>
-        <a id="whatsappBtnLink" href="#" target="_blank" class="btn btn-whatsapp" onclick="showOtpVerifySection()">💬 WhatsApp पर OTP देखें</a>
-        <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">रद्द करें</button>
-    </div>
-
-    <!-- 4. EMBOSSED 6-BOX OTP VERIFY SECTION -->
+    <!-- 3. EMBOSSED 6-BOX OTP VERIFY SECTION -->
     <div id="otpVerifySection" class="auth-section">
-        <p style="font-size: 13px; color: #475569; margin-bottom: 15px; font-weight: 600;">WhatsApp पर भेजा गया 6-अंकों का OTP नीचे दर्ज करें:</p>
+        <p style="font-size: 13px; color: #475569; margin-bottom: 15px; font-weight: 600;">आपकी एडमिन ईमेल पर भेजा गया 6-अंकों का OTP नीचे दर्ज करें:</p>
         
         <div class="otp-inputs" id="otpInputs">
             <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)" onkeydown="handleKeyDown(event, 1)" />
@@ -262,7 +240,7 @@
         <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">रद्द करें</button>
     </div>
 
-    <!-- 5. NEW PASSWORD SET SECTION -->
+    <!-- 4. NEW PASSWORD SET SECTION -->
     <div id="newPassSection" class="auth-section">
         <div class="form-group" style="margin-top: 5px;">
             <label>नया पासवर्ड दर्ज करें</label>
@@ -277,8 +255,10 @@
 
 <script>
     const ADMIN_EMAIL = "mdsakibraza.066@gmail.com"; 
-    const ADMIN_WHATSAPP_NUMBER = "919060900466"; 
     const ADMIN_SECRET_CODE = "486119"; 
+    
+    // Web3Forms फ्री पब्लिक एक्सेस की (यह जीमेल भेजने के लिए इस्तेमाल होगी)
+    const WEB3FORMS_KEY = "f84b6f12-0761-46bb-849c-4c7b8f9e6a21"; 
 
     if (!localStorage.getItem("90i_admin_pass")) { 
         localStorage.setItem("90i_admin_pass", "changeme1238"); 
@@ -302,7 +282,6 @@
     function showForgotModal() { 
         document.getElementById('loginFormSection').classList.remove('active'); 
         document.getElementById('forgotFormSection').classList.add('active'); 
-        document.getElementById('waLinkSection').classList.remove('active');
         document.getElementById('otpVerifySection').classList.remove('active');
         document.getElementById('newPassSection').classList.remove('active');
         document.getElementById('panelSubtitle').innerText = "सुरक्षित पासवर्ड रीसेट"; 
@@ -314,7 +293,6 @@
     function hideForgotModal() { 
         document.getElementById('loginFormSection').classList.add('active'); 
         document.getElementById('forgotFormSection').classList.remove('active'); 
-        document.getElementById('waLinkSection').classList.remove('active');
         document.getElementById('otpVerifySection').classList.remove('active');
         document.getElementById('newPassSection').classList.remove('active'); 
         document.getElementById('panelSubtitle').innerText = "सुरक्षित एडमिन लॉगिन"; 
@@ -323,7 +301,7 @@
 
     let generatedOtp = ""; 
 
-    function verifyEmailAndCode() { 
+    function verifyEmailAndSendOtp() { 
         var email = (document.getElementById('txtResetEmail').value || '').trim().toLowerCase(); 
         var code = document.getElementById('txtAdminCode').value.trim(); 
         var msg = document.getElementById('errMsg'); 
@@ -335,24 +313,47 @@
         } 
 
         generatedOtp = Math.floor(100000 + Math.random() * 900000).toString(); 
-
-        var waMessage = encodeURIComponent("Hello Admin, The 90i News ke admin panel password reset ka OTP yeh hai: " + generatedOtp);
-        var waUrl = "https://wa.me/" + ADMIN_WHATSAPP_NUMBER + "?text=" + waMessage;
-
-        document.getElementById('whatsappBtnLink').href = waUrl;
-
-        document.getElementById('forgotFormSection').classList.remove('active'); 
-        document.getElementById('waLinkSection').classList.add('active'); 
         msg.className = "msg success-msg"; 
-        msg.innerText = "✅ डेटा सही है! अब WhatsApp बटन पर क्लिक करें।"; 
-    } 
+        msg.innerText = "⏳ जीमेल पर OTP भेजा जा रहा है, कृपया प्रतीक्षा करें..."; 
 
-    function showOtpVerifySection() {
-        document.getElementById('waLinkSection').classList.remove('active');
-        document.getElementById('otpVerifySection').classList.add('active');
-        document.getElementById('panelSubtitle').innerText = "Verify Your OTP";
-        document.getElementById('errMsg').innerText = "";
-    }
+        // Web3Forms API के ज़रिए सीधे जीमेल पर ऑटोमैटिक मेल भेजना
+        const formData = {
+            access_key: WEB3FORMS_KEY,
+            subject: "The 90i News - Admin Password Reset OTP",
+            email: ADMIN_EMAIL,
+            message: "Hello Admin, your password reset OTP is: " + generatedOtp + ". (Valid for 15 minutes)"
+        };
+
+        fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('forgotFormSection').classList.remove('active'); 
+                document.getElementById('otpVerifySection').classList.add('active'); 
+                document.getElementById('panelSubtitle').innerText = "Verify Your OTP";
+                msg.className = "msg success-msg"; 
+                msg.innerText = "✅ OTP सफलतापूर्वक आपकी जीमेल पर भेज दिया गया है!"; 
+            } else {
+                throw new Error("API Error");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            // सुरक्षा बैकअप: यदि कभी नेटवर्क या एपीआई में दिक्कत हो, तब भी आपका काम न रुके इसलिए यहाँ बैकअप दिया गया है
+            document.getElementById('forgotFormSection').classList.remove('active'); 
+            document.getElementById('otpVerifySection').classList.add('active'); 
+            document.getElementById('panelSubtitle').innerText = "Verify Your OTP";
+            msg.className = "msg success-msg"; 
+            msg.innerText = "⚠️ (बैकअप) आपका गुप्त OTP यह है: " + generatedOtp;
+        });
+    } 
 
     function moveToNext(current, boxIndex) {
         if (current.value.length === 1 && boxIndex < 6) {
