@@ -219,13 +219,13 @@
             <label>एडमिन गुप्त कोड दर्ज करें</label>
             <input type="password" id="txtAdminCode" placeholder="गुप्त कोड दर्ज करें..." />
         </div>
-        <button type="button" class="btn" onclick="verifyEmailAndSendOtp()">📤 ईमेल पर OTP भेजें</button>
+        <button type="button" class="btn" onclick="verifyEmailAndSendOtp()">📤 टेलीग्राम पर OTP भेजें</button>
         <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">⬅️ वापस लॉगिन पर जाएं</button>
     </div>
 
     <!-- 3. EMBOSSED 6-BOX OTP VERIFY SECTION -->
     <div id="otpVerifySection" class="auth-section">
-        <p style="font-size: 13px; color: #475569; margin-bottom: 15px; font-weight: 600;">आपकी एडमिन ईमेल पर भेजा गया 6-अंकों का OTP नीचे दर्ज करें:</p>
+        <p style="font-size: 13px; color: #475569; margin-bottom: 15px; font-weight: 600;">आपके <b>@the90inews_auth_bot</b> टेलीग्राम पर भेजा गया 6-अंकों का OTP नीचे दर्ज करें:</p>
         
         <div class="otp-inputs" id="otpInputs">
             <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)" onkeydown="handleKeyDown(event, 1)" />
@@ -257,8 +257,11 @@
     const ADMIN_EMAIL = "mdsakibraza.066@gmail.com"; 
     const ADMIN_SECRET_CODE = "486119"; 
     
-    // Web3Forms फ्री पब्लिक एक्सेस की (यह जीमेल भेजने के लिए इस्तेमाल होगी)
-    const WEB3FORMS_KEY = "f84b6f12-0761-46bb-849c-4c7b8f9e6a21"; 
+    // आपके नए टेलीग्राम बोट की API कॉन्फ़िगरेशन
+    const TELEGRAM_BOT_TOKEN = "8663258783:AAHTnJVOPCAB4s2tLb6ou3tNUBPikP97tRg";
+    // नोट: यदि आपके पास अपना खुद का Telegram Chat ID है, तो यहाँ 'YOUR_CHAT_ID' की जगह अपना नंबर लिख दें 
+    // (जैसे: "123456789"). अगर नहीं पता, तो यह ऑटोमैटिक आपके बोट चैट पर सेव हो जाएगा।
+    const TELEGRAM_CHAT_ID = "YOUR_CHAT_ID"; 
 
     if (!localStorage.getItem("90i_admin_pass")) { 
         localStorage.setItem("90i_admin_pass", "changeme1238"); 
@@ -301,7 +304,7 @@
 
     let generatedOtp = ""; 
 
-    function verifyEmailAndSendOtp() { 
+    async function verifyEmailAndSendOtp() { 
         var email = (document.getElementById('txtResetEmail').value || '').trim().toLowerCase(); 
         var code = document.getElementById('txtAdminCode').value.trim(); 
         var msg = document.getElementById('errMsg'); 
@@ -314,45 +317,49 @@
 
         generatedOtp = Math.floor(100000 + Math.random() * 900000).toString(); 
         msg.className = "msg success-msg"; 
-        msg.innerText = "⏳ जीमेल पर OTP भेजा जा रहा है, कृपया प्रतीक्षा करें..."; 
+        msg.innerText = "⏳ आपके टेलीग्राम बोट पर OTP भेजा जा रहा है..."; 
 
-        // Web3Forms API के ज़रिए सीधे जीमेल पर ऑटोमैटिक मेल भेजना
-        const formData = {
-            access_key: WEB3FORMS_KEY,
-            subject: "The 90i News - Admin Password Reset OTP",
-            email: ADMIN_EMAIL,
-            message: "Hello Admin, your password reset OTP is: " + generatedOtp + ". (Valid for 15 minutes)"
-        };
+        // अगर Chat ID सेट नहीं है, तो पहले बोट पर आए मैसेज से Chat ID ढूंढने की कोशिश करें या अलर्ट दें
+        let targetChatId = TELEGRAM_CHAT_ID;
+        if (targetChatId === "YOUR_CHAT_ID") {
+            try {
+                let updatesRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`);
+                let updatesData = await updatesRes.json();
+                if (updatesData.ok && updatesData.result.length > 0) {
+                    // आखिरी मैसेज भेजने वाले की Chat ID स्वतः ले लेगा
+                    targetChatId = updatesData.result[updatesData.result.length - 1].message.chat.id;
+                }
+            } catch(e) {}
+        }
 
-        fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+        if (targetChatId === "YOUR_CHAT_ID") {
+            msg.className = "msg";
+            msg.innerText = "⚠️ कृपया पहले अपने बोट (t.me/the90inews_auth_bot) पर जाकर एक बार 'Start' दबाएं, फिर यहाँ दोबारा प्रयास करें!";
+            return;
+        }
+
+        // टेलीग्राम बोट API के ज़रिए सीधे आपके पर्सनल टेलीग्राम पर OTP भेजना
+        const textMessage = `🔐 *THE 90I NEWS - Password Reset OTP*\n\nआपका वन-टाइम पासवर्ड (OTP): *${generatedOtp}*\n\nयह कोड 15 मिनट के लिए मान्य है। किसी के साथ शेयर न करें!`;
+        const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${targetChatId}&text=${encodeURIComponent(textMessage)}&parse_mode=Markdown`;
+
+        try {
+            let response = await fetch(telegramApiUrl);
+            let data = await response.json();
+            
+            if (data.ok) {
                 document.getElementById('forgotFormSection').classList.remove('active'); 
                 document.getElementById('otpVerifySection').classList.add('active'); 
-                document.getElementById('panelSubtitle').innerText = "Verify Your OTP";
+                document.getElementById('panelSubtitle').innerText = "Verify Your Telegram OTP";
                 msg.className = "msg success-msg"; 
-                msg.innerText = "✅ OTP सफलतापूर्वक आपकी जीमेल पर भेज दिया गया है!"; 
+                msg.innerText = "✅ OTP सफलतापूर्वक आपके टेलीग्राम बोट पर भेज दिया गया है!"; 
             } else {
-                throw new Error("API Error");
+                throw new Error("Telegram API Error");
             }
-        })
-        .catch(error => {
+        } catch (error) {
             console.error("Error:", error);
-            // सुरक्षा बैकअप: यदि कभी नेटवर्क या एपीआई में दिक्कत हो, तब भी आपका काम न रुके इसलिए यहाँ बैकअप दिया गया है
-            document.getElementById('forgotFormSection').classList.remove('active'); 
-            document.getElementById('otpVerifySection').classList.add('active'); 
-            document.getElementById('panelSubtitle').innerText = "Verify Your OTP";
-            msg.className = "msg success-msg"; 
-            msg.innerText = "⚠️ (बैकअप) आपका गुप्त OTP यह है: " + generatedOtp;
-        });
+            msg.className = "msg";
+            msg.innerText = "❌ टेलीग्राम संदेश भेजने में विफल! सुनिश्चित करें कि आपने बोट को Start किया है।";
+        }
     } 
 
     function moveToNext(current, boxIndex) {
