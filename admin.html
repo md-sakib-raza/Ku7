@@ -381,13 +381,13 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 900;
+          var max_w = 1200;
           var scale = max_w / img.width;
           canvas.width = (img.width > max_w) ? max_w : img.width;
           canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.72);
+          var b64 = canvas.toDataURL("image/jpeg", 0.85);
           document.getElementById('newsImgBase64').value = b64;
           var p = document.getElementById('imgPreview'); p.src = b64; p.style.display = 'block';
         };
@@ -396,36 +396,48 @@
       reader.readAsDataURL(f);
     }
 
+    // Increased Quota handling for Ad Image
     function handleAdImg(e) {
       var f = e.target.files[0];
       if (!f) return;
       var reader = new FileReader();
       reader.onload = function(evt) {
-        var b64 = evt.target.result;
-        document.getElementById('adImgBase64').value = b64;
-        var p = document.getElementById('adImgPreview'); p.src = b64; p.style.display = 'block';
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement("canvas");
+          var max_w = 1400; // Larger width support
+          var scale = max_w / img.width;
+          canvas.width = (img.width > max_w) ? max_w : img.width;
+          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          var b64 = canvas.toDataURL("image/jpeg", 0.85); // High quality support
+          document.getElementById('adImgBase64').value = b64;
+          var p = document.getElementById('adImgPreview'); p.src = b64; p.style.display = 'block';
+        };
+        img.src = evt.target.result;
       };
       reader.readAsDataURL(f);
     }
 
+    // Increased Quota handling for Direct Video
     function handleDirectVideo(e) {
       var f = e.target.files[0];
       if (!f) return;
       var reader = new FileReader();
       reader.onload = function(evt) {
+        // Direct assignment without strict restriction
         document.getElementById('directVideoBase64').value = evt.target.result;
       };
       reader.readAsDataURL(f);
     }
 
-    // Fetch Database from Server / GitHub / LocalStorage
     async function fetchDatabaseFromServer() {
       try {
         var res = await fetch('data/90i-data.json?_t=' + Date.now());
         if (res.ok) {
           var data = await res.json();
           cachedDb = data;
-          localStorage.setItem("cached_db", JSON.stringify(data));
           return data;
         }
       } catch(e) {}
@@ -439,7 +451,7 @@
 
     async function loadExistingAdAndVideoSettings() {
       var db = await fetchDatabaseFromServer();
-      var ad = db.customAd || JSON.parse(localStorage.getItem("admin_custom_ad") || "null");
+      var ad = db.customAd;
       if (ad && ad.image) {
         document.getElementById('adImgBase64').value = ad.image;
         var p = document.getElementById('adImgPreview'); p.src = ad.image; p.style.display = 'block';
@@ -453,10 +465,10 @@
       try {
         var db = await fetchDatabaseFromServer();
         db.customAd = { image: img };
-        localStorage.setItem("admin_custom_ad", JSON.stringify(db.customAd));
-        localStorage.setItem("cached_db", JSON.stringify(db));
+        
+        // Bypassing localStorage limitation by syncing directly to GitHub & Server
+        await syncDb(db);
         alert("📢 विज्ञापन बैनर सफलतापूर्वक अपडेट हो गया!");
-        syncDb(db).catch(e => {});
       } catch(err) { alert("त्रुटि: " + err.message); }
     }
 
@@ -472,14 +484,12 @@
         db.directVideos.unshift({ title: title, videoUrl: vSrc, date: new Date().toISOString().split('T')[0] });
         if (db.directVideos.length > 2) db.directVideos = db.directVideos.slice(0, 2);
 
-        localStorage.setItem("admin_direct_videos", JSON.stringify(db.directVideos));
-        localStorage.setItem("cached_db", JSON.stringify(db));
+        await syncDb(db);
         alert("📹 वीडियो सफलतापूर्वक अपलोड और पब्लिश हो गया!");
         
         document.getElementById('directVideoTitle').value = '';
         document.getElementById('directVideoBase64').value = '';
         document.getElementById('directVideoFile').value = '';
-        syncDb(db).catch(e => {});
       } catch(err) { alert("त्रुटि: " + err.message); }
     }
 
@@ -528,12 +538,11 @@
 
         db["90i_news"] = newsList;
         db.news = newsList;
-        localStorage.setItem("cached_db", JSON.stringify(db));
+        await syncDb(db);
         alert("🎉 समाचार सफलतापूर्वक सेव हो गया!");
 
         resetForm();
         switchSection('list');
-        syncDb(db).catch(err => console.warn(err));
       } catch(err) {
         alert("त्रुटि: " + err.message);
       } finally {
@@ -580,9 +589,8 @@
 
           db["90i_news"] = list;
           db.news = list;
-          localStorage.setItem("cached_db", JSON.stringify(db));
+          await syncDb(db);
           alert("📰 ई-पेपर लेआउट सेव हो गया!");
-          syncDb(db).catch(e => {});
         }
       } catch(e) { alert("त्रुटि: " + e.message); }
     }
@@ -635,9 +643,8 @@
       var list = db["90i_news"] || db.news || [];
       db["90i_news"] = list.filter(x => String(x.id) !== String(id));
       db.news = db["90i_news"];
-      localStorage.setItem("cached_db", JSON.stringify(db));
+      await syncDb(db);
       loadNewsList();
-      syncDb(db).catch(e=>{});
     }
 
     async function loadInboxMessages() {
@@ -659,27 +666,28 @@
 
     async function deleteMessage(idx) {
       var db = await fetchDatabaseFromServer();
-      if (!db.messages) db.messages = JSON.parse(localStorage.getItem("site_contact_messages") || "[]");
+      if (!db.messages) db.messages = [];
       db.messages.splice(idx, 1);
-      localStorage.setItem("cached_db", JSON.stringify(db));
+      await syncDb(db);
       loadInboxMessages();
-      syncDb(db).catch(e => {});
     }
 
     async function syncDb(db) {
       var token = localStorage.getItem('90i_gh_token');
-      if (!token) return;
+      if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
       var owner = "md-sakib-raza", repo = "Ku7", path = "data/90i-data.json";
       var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
         headers: { 'Authorization': 'token ' + token.trim() }
       });
       var sha = getRes.ok ? (await getRes.json()).sha : null;
       var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
-      await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Admin Sync Update", content: contentB64, branch: "main", sha: sha })
+        body: JSON.stringify({ message: "CMS Fast Sync Update", content: contentB64, branch: "main", sha: sha })
       });
+      if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
+      localStorage.setItem("cached_db", JSON.stringify(db));
     }
 
     function saveToken() {
