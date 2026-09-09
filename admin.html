@@ -85,6 +85,24 @@
     .btn-action-edit { background: var(--blue); color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: 700; margin-right: 5px; }
     .btn-action-del { background: #dc2626; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: 700; }
 
+    /* Loading Progress Overlay Modal */
+    #loadingOverlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(11, 15, 25, 0.85); z-index: 9999;
+      display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    }
+    .loading-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 30px; width: 340px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .spinner {
+      width: 45px; height: 45px; border: 4px solid #334155; border-top: 4px solid var(--brand);
+      border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 15px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .loading-text { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    .loading-sub { font-size: 12.5px; color: var(--muted); }
+
     @media (max-width: 768px) {
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
       .tab-btn { flex-grow: 1; text-align: center; }
@@ -92,6 +110,15 @@
   </style>
 </head>
 <body>
+
+  <!-- LOADING PROGRESS POPUP OVERLAY -->
+  <div id="loadingOverlay">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div id="loadingTitle" class="loading-text">कृपया प्रतीक्षा करें...</div>
+      <div id="loadingDesc" class="loading-sub">डेटा GitHub पर सिंक हो रहा है...</div>
+    </div>
+  </div>
 
   <div class="panel-wrap">
     <!-- Panel Header -->
@@ -200,7 +227,7 @@
       <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Save & Publish</button>
     </div>
 
-    <!-- ================= 2. E-PAPER BROADSHEET EDITOR TAB (RESTORED) ================= -->
+    <!-- ================= 2. E-PAPER BROADSHEET EDITOR TAB ================= -->
     <div id="sec_epaper" class="card" style="display: none;">
       <h3 style="color:#818cf8; margin-bottom:6px;">📰 ई-पेपर ब्रॉडशीट कस्टमाइज़र (E-Paper Layout Editor)</h3>
       <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">यहाँ से आप किसी भी प्रकाशित खबर को चुनकर केवल ई-पेपर के लिए उसकी हेडलाइन, पैराग्राफ गैपिंग और पेज स्लॉट बदल सकते हैं।</p>
@@ -318,7 +345,7 @@
       </div>
       <button type="button" class="btn" style="max-width: 220px;" onclick="saveToken()">💾 Save Token</button>
       <div style="margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
-        <button type="button" onclick="generateAndSyncFullSitemap()" style="background:#059669; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; cursor:pointer;">🔄 Update Sitemap Now</button>
+        <button type="button" id="btnSyncSitemap" onclick="generateAndSyncFullSitemap()" style="background:#059669; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; cursor:pointer;">🔄 Update Sitemap Now</button>
       </div>
     </div>
   </div>
@@ -338,12 +365,28 @@
     let cachedDb = { "90i_news": [], "messages": [], "customAd": null, "directVideos": [] };
 
     window.onload = async function() {
-      document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
+      var savedToken = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
+      if (savedToken) {
+        document.getElementById('ghToken').value = savedToken;
+        localStorage.setItem('90i_gh_token', savedToken);
+      }
+      showLoading("डेटा लोड हो रहा है...", "सर्वर से ताज़ा डेटा प्राप्त किया जा रहा है...");
       await fetchDatabaseFromServer();
+      hideLoading();
       loadNewsList();
       loadInboxMessages();
       loadExistingAdAndVideoSettings();
     };
+
+    function showLoading(title, desc) {
+      document.getElementById('loadingTitle').innerText = title || "कृपया प्रतीक्षा करें...";
+      document.getElementById('loadingDesc').innerText = desc || "डेटा सिंक हो रहा है...";
+      document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').style.display = 'none';
+    }
 
     function switchSection(name) {
       ['compose', 'epaper', 'list', 'ad', 'video', 'inbox', 'token'].forEach(s => {
@@ -381,13 +424,13 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 1200;
+          var max_w = 1000;
           var scale = max_w / img.width;
           canvas.width = (img.width > max_w) ? max_w : img.width;
           canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.85);
+          var b64 = canvas.toDataURL("image/jpeg", 0.78);
           document.getElementById('newsImgBase64').value = b64;
           var p = document.getElementById('imgPreview'); p.src = b64; p.style.display = 'block';
         };
@@ -396,7 +439,6 @@
       reader.readAsDataURL(f);
     }
 
-    // Increased Quota handling for Ad Image
     function handleAdImg(e) {
       var f = e.target.files[0];
       if (!f) return;
@@ -405,13 +447,13 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 1400; // Larger width support
+          var max_w = 1200;
           var scale = max_w / img.width;
           canvas.width = (img.width > max_w) ? max_w : img.width;
           canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.85); // High quality support
+          var b64 = canvas.toDataURL("image/jpeg", 0.80);
           document.getElementById('adImgBase64').value = b64;
           var p = document.getElementById('adImgPreview'); p.src = b64; p.style.display = 'block';
         };
@@ -420,13 +462,11 @@
       reader.readAsDataURL(f);
     }
 
-    // Increased Quota handling for Direct Video
     function handleDirectVideo(e) {
       var f = e.target.files[0];
       if (!f) return;
       var reader = new FileReader();
       reader.onload = function(evt) {
-        // Direct assignment without strict restriction
         document.getElementById('directVideoBase64').value = evt.target.result;
       };
       reader.readAsDataURL(f);
@@ -434,10 +474,11 @@
 
     async function fetchDatabaseFromServer() {
       try {
-        var res = await fetch('data/90i-data.json?_t=' + Date.now());
+        var res = await fetch('data/90i-data.json?_t=' + Date.now(), { cache: "no-store" });
         if (res.ok) {
           var data = await res.json();
           cachedDb = data;
+          localStorage.setItem("cached_db", JSON.stringify(data));
           return data;
         }
       } catch(e) {}
@@ -462,14 +503,17 @@
       var img = document.getElementById('adImgBase64').value;
       if (!img) { alert("कृपया विज्ञापन बैनर की तस्वीर चुनें!"); return; }
 
+      showLoading("विज्ञापन अपडेट हो रहा है...", "बैनर को GitHub डेटाबेस पर अपलोड किया जा रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         db.customAd = { image: img };
-        
-        // Bypassing localStorage limitation by syncing directly to GitHub & Server
         await syncDb(db);
+        hideLoading();
         alert("📢 विज्ञापन बैनर सफलतापूर्वक अपडेट हो गया!");
-      } catch(err) { alert("त्रुटि: " + err.message); }
+      } catch(err) {
+        hideLoading();
+        alert("त्रुटि: " + err.message);
+      }
     }
 
     async function saveDirectVideoSettings() {
@@ -478,6 +522,7 @@
       if (!title) { alert("कृपया वीडियो का शीर्षक लिखें!"); return; }
       if (!vSrc) { alert("कृपया MP4 वीडियो फाइल चुनें!"); return; }
 
+      showLoading("वीडियो अपलोड हो रहा है...", "बड़ी वीडियो फ़ाइल GitHub पर सिंक की जा रही है, कृपया प्रतीक्षा करें...");
       try {
         var db = await fetchDatabaseFromServer();
         if (!Array.isArray(db.directVideos)) db.directVideos = [];
@@ -485,21 +530,23 @@
         if (db.directVideos.length > 2) db.directVideos = db.directVideos.slice(0, 2);
 
         await syncDb(db);
+        hideLoading();
         alert("📹 वीडियो सफलतापूर्वक अपलोड और पब्लिश हो गया!");
         
         document.getElementById('directVideoTitle').value = '';
         document.getElementById('directVideoBase64').value = '';
         document.getElementById('directVideoFile').value = '';
-      } catch(err) { alert("त्रुटि: " + err.message); }
+      } catch(err) {
+        hideLoading();
+        alert("त्रुटि: " + err.message);
+      }
     }
 
     async function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
 
-      var btn = document.getElementById('btnPublish');
-      btn.innerText = "⏳ Saving...";
-      btn.disabled = true;
+      showLoading("समाचार सेव हो रहा है...", "डेटाबेस अपडेट किया जा रहा है और GitHub पर सिंक हो रहा है...");
 
       try {
         var db = await fetchDatabaseFromServer();
@@ -539,15 +586,18 @@
         db["90i_news"] = newsList;
         db.news = newsList;
         await syncDb(db);
-        alert("🎉 समाचार सफलतापूर्वक सेव हो गया!");
+        
+        // Auto-update sitemap on every news publication/update
+        await generateAndSyncFullSitemapSilently();
+
+        hideLoading();
+        alert("🎉 समाचार सफलतापूर्वक सेव और इंडेक्सिंग के लिए सिंक हो गया!");
 
         resetForm();
         switchSection('list');
       } catch(err) {
+        hideLoading();
         alert("त्रुटि: " + err.message);
-      } finally {
-        btn.innerText = "🚀 Save & Publish";
-        btn.disabled = false;
       }
     }
 
@@ -577,6 +627,7 @@
       var id = document.getElementById('epaperTargetId').value;
       if (!id) { alert("कृपया समाचार चुनें!"); return; }
 
+      showLoading("ई-पेपर लेआउट सेव हो रहा है...", "लेआउट डेटा GitHub पर अपडेट किया जा रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         var list = db["90i_news"] || db.news || [];
@@ -590,9 +641,13 @@
           db["90i_news"] = list;
           db.news = list;
           await syncDb(db);
+          hideLoading();
           alert("📰 ई-पेपर लेआउट सेव हो गया!");
         }
-      } catch(e) { alert("त्रुटि: " + e.message); }
+      } catch(e) {
+        hideLoading();
+        alert("त्रुटि: " + e.message);
+      }
     }
 
     async function loadNewsList() {
@@ -639,11 +694,14 @@
 
     async function deleteNews(id) {
       if (!confirm("हटाना चाहते हैं?")) return;
+      showLoading("समाचार हटाया जा रहा है...", "डेटाबेस अपडेट हो रहा है...");
       var db = await fetchDatabaseFromServer();
       var list = db["90i_news"] || db.news || [];
       db["90i_news"] = list.filter(x => String(x.id) !== String(id));
       db.news = db["90i_news"];
       await syncDb(db);
+      await generateAndSyncFullSitemapSilently();
+      hideLoading();
       loadNewsList();
     }
 
@@ -668,12 +726,87 @@
       var db = await fetchDatabaseFromServer();
       if (!db.messages) db.messages = [];
       db.messages.splice(idx, 1);
+      showLoading("संदेश हटाया जा रहा है...", "डेटाबेस सिंक हो रहा है...");
       await syncDb(db);
+      hideLoading();
       loadInboxMessages();
     }
 
+    // 🔄 Fully Functional Sitemap Generator with Article Slugs Integration
+    async function generateAndSyncFullSitemap() {
+      var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
+      if (!token) {
+        alert("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।");
+        return;
+      }
+
+      showLoading("सिटमैप अपडेट हो रहा है...", "सभी समाचारों के Slugs और URLs को sitemap.xml में जोड़ा जा रहा है...");
+      try {
+        await executeSitemapSync(token);
+        hideLoading();
+        alert("🎉 साइटमैप (sitemap.xml) सफलतापूर्वक गिटहब पर अपडेट हो गया है!");
+      } catch(err) {
+        hideLoading();
+        alert("साइटमैप त्रुटि: " + err.message);
+      }
+    }
+
+    async function generateAndSyncFullSitemapSilently() {
+      var token = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
+      if (!token) return;
+      try {
+        await executeSitemapSync(token);
+      } catch(e) {}
+    }
+
+    async function executeSitemapSync(token) {
+      var db = await fetchDatabaseFromServer();
+      var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
+      
+      var domain = "https://90inews.me";
+      var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      
+      xml += '  <url><loc>' + domain + '/</loc><changefreq>always</changefreq><priority>1.0</priority></url>\n';
+      xml += '  <url><loc>' + domain + '/epaper.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n';
+
+      newsList.forEach(function(item) {
+        if (item.slug || item.id) {
+          var slugPath = item.slug ? ('article.html?slug=' + encodeURIComponent(item.slug)) : ('article.html?id=' + item.id);
+          var articleUrl = domain + '/' + slugPath;
+          var itemDate = item.date || new Date().toISOString().split('T')[0];
+          xml += '  <url>\n';
+          xml += '    <loc>' + articleUrl + '</loc>\n';
+          xml += '    <lastmod>' + itemDate + '</lastmod>\n';
+          xml += '    <changefreq>daily</changefreq>\n';
+          xml += '    <priority>0.8</priority>\n';
+          xml += '  </url>\n';
+        }
+      });
+
+      xml += '</urlset>';
+
+      var owner = "md-sakib-raza", repo = "Ku7", path = "sitemap.xml";
+      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
+        headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
+      });
+      var sha = getRes.ok ? (await getRes.json()).sha : null;
+      var contentB64 = window.btoa(unescape(encodeURIComponent(xml)));
+
+      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: "Auto-generate full sitemap with Slugs", content: contentB64, branch: "main", sha: sha })
+      });
+
+      if (!putRes.ok) {
+        var errData = await putRes.json().catch(() => ({}));
+        throw new Error(errData.message || "GitHub API Error (HTTP " + putRes.status + ")");
+      }
+    }
+
     async function syncDb(db) {
-      var token = localStorage.getItem('90i_gh_token');
+      var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
       var owner = "md-sakib-raza", repo = "Ku7", path = "data/90i-data.json";
       var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
@@ -688,13 +821,15 @@
       });
       if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
       localStorage.setItem("cached_db", JSON.stringify(db));
+      localStorage.setItem("90i_gh_token", token.trim());
     }
 
     function saveToken() {
       var t = document.getElementById('ghToken').value.trim();
-      if (!t) return;
+      if (!t) { alert("कृपया वैध टोकन दर्ज करें!"); return; }
       localStorage.setItem('90i_gh_token', t);
-      alert("✅ टोकन सेव हो गया!");
+      localStorage.setItem('gh_token', t);
+      alert("✅ GitHub टोकन सफलतापूर्वक सेव हो गया है!");
     }
 
     function esc(s) { return s ? String(s).replace(/</g, "&lt;").replace(/>/g, "&gt;") : ""; }
