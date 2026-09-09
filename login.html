@@ -219,13 +219,13 @@
             <label>एडमिन गुप्त कोड दर्ज करें</label>
             <input type="password" id="txtAdminCode" placeholder="गुप्त कोड दर्ज करें..." />
         </div>
-        <button type="button" class="btn" onclick="verifyEmailAndSendOtp()">📤 टेलीग्राम पर OTP भेजें</button>
+        <button type="button" class="btn" onclick="verifyEmailAndSendOtp()">📤 सुरक्षित OTP भेजें</button>
         <button type="button" class="btn btn-secondary" onclick="hideForgotModal()">⬅️ वापस लॉगिन पर जाएं</button>
     </div>
 
     <!-- 3. EMBOSSED 6-BOX OTP VERIFY SECTION -->
     <div id="otpVerifySection" class="auth-section">
-        <p style="font-size: 13px; color: #475569; margin-bottom: 15px; font-weight: 600;">आपके <b>@the90inews_auth_bot</b> टेलीग्राम पर भेजा गया 6-अंकों का OTP नीचे दर्ज करें:</p>
+        <p style="font-size: 13px; color: #475569; margin-bottom: 15px; font-weight: 600;">आपके सुरक्षित माध्यम पर भेजा गया 6-अंकों का OTP नीचे दर्ज करें:</p>
         
         <div class="otp-inputs" id="otpInputs">
             <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)" onkeydown="handleKeyDown(event, 1)" />
@@ -257,10 +257,7 @@
     const ADMIN_EMAIL = "mdsakibraza.066@gmail.com"; 
     const ADMIN_SECRET_CODE = "486119"; 
     
-    // आपके नए टेलीग्राम बोट की API कॉन्फ़िगरेशन
     const TELEGRAM_BOT_TOKEN = "8663258783:AAHTnJVOPCAB4s2tLb6ou3tNUBPikP97tRg";
-    // नोट: यदि आपके पास अपना खुद का Telegram Chat ID है, तो यहाँ 'YOUR_CHAT_ID' की जगह अपना नंबर लिख दें 
-    // (जैसे: "123456789"). अगर नहीं पता, तो यह ऑटोमैटिक आपके बोट चैट पर सेव हो जाएगा।
     const TELEGRAM_CHAT_ID = "YOUR_CHAT_ID"; 
 
     if (!localStorage.getItem("90i_admin_pass")) { 
@@ -317,16 +314,14 @@
 
         generatedOtp = Math.floor(100000 + Math.random() * 900000).toString(); 
         msg.className = "msg success-msg"; 
-        msg.innerText = "⏳ आपके टेलीग्राम बोट पर OTP भेजा जा रहा है..."; 
+        msg.innerText = "⏳ सुरक्षित रूप से OTP भेजा जा रहा है..."; 
 
-        // अगर Chat ID सेट नहीं है, तो पहले बोट पर आए मैसेज से Chat ID ढूंढने की कोशिश करें या अलर्ट दें
         let targetChatId = TELEGRAM_CHAT_ID;
         if (targetChatId === "YOUR_CHAT_ID") {
             try {
                 let updatesRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`);
                 let updatesData = await updatesRes.json();
                 if (updatesData.ok && updatesData.result.length > 0) {
-                    // आखिरी मैसेज भेजने वाले की Chat ID स्वतः ले लेगा
                     targetChatId = updatesData.result[updatesData.result.length - 1].message.chat.id;
                 }
             } catch(e) {}
@@ -334,11 +329,10 @@
 
         if (targetChatId === "YOUR_CHAT_ID") {
             msg.className = "msg";
-            msg.innerText = "⚠️ कृपया पहले अपने बोट (t.me/the90inews_auth_bot) पर जाकर एक बार 'Start' दबाएं, फिर यहाँ दोबारा प्रयास करें!";
+            msg.innerText = "⚠️ कॉन्फ़िगरेशन त्रुटि। कृपया एडमिन से संपर्क करें।";
             return;
         }
 
-        // टेलीग्राम बोट API के ज़रिए सीधे आपके पर्सनल टेलीग्राम पर OTP भेजना
         const textMessage = `🔐 *THE 90I NEWS - Password Reset OTP*\n\nआपका वन-टाइम पासवर्ड (OTP): *${generatedOtp}*\n\nयह कोड 15 मिनट के लिए मान्य है। किसी के साथ शेयर न करें!`;
         const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${targetChatId}&text=${encodeURIComponent(textMessage)}&parse_mode=Markdown`;
 
@@ -349,16 +343,16 @@
             if (data.ok) {
                 document.getElementById('forgotFormSection').classList.remove('active'); 
                 document.getElementById('otpVerifySection').classList.add('active'); 
-                document.getElementById('panelSubtitle').innerText = "Verify Your Telegram OTP";
+                document.getElementById('panelSubtitle').innerText = "Verify Your Security OTP";
                 msg.className = "msg success-msg"; 
-                msg.innerText = "✅ OTP सफलतापूर्वक आपके टेलीग्राम बोट पर भेज दिया गया है!"; 
+                msg.innerText = "✅ OTP सफलतापूर्वक आपके सुरक्षित माध्यम पर भेज दिया गया है!"; 
             } else {
                 throw new Error("Telegram API Error");
             }
         } catch (error) {
             console.error("Error:", error);
             msg.className = "msg";
-            msg.innerText = "❌ टेलीग्राम संदेश भेजने में विफल! सुनिश्चित करें कि आपने बोट को Start किया है।";
+            msg.innerText = "❌ OTP भेजने में विफल!";
         }
     } 
 
