@@ -85,7 +85,6 @@
     .btn-action-edit { background: var(--blue); color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: 700; margin-right: 5px; }
     .btn-action-del { background: #dc2626; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: 700; }
 
-    /* Loading Progress Overlay Modal */
     #loadingOverlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(11, 15, 25, 0.85); z-index: 9999;
@@ -111,7 +110,6 @@
 </head>
 <body>
 
-  <!-- LOADING PROGRESS POPUP OVERLAY -->
   <div id="loadingOverlay">
     <div class="loading-card">
       <div class="spinner"></div>
@@ -121,13 +119,11 @@
   </div>
 
   <div class="panel-wrap">
-    <!-- Panel Header -->
     <div class="panel-header">
       <h2>THE <span>90I</span> NEWS — CMS कंट्रोल पैनल</h2>
       <button type="button" onclick="logout()">🚪 Logout</button>
     </div>
 
-    <!-- Tab Bar Navigation -->
     <div class="tab-bar">
       <button type="button" class="tab-btn active" id="btn_compose" onclick="switchSection('compose')">➕ Add / Edit Article</button>
       <button type="button" class="tab-btn epaper-tab-btn" id="btn_epaper" onclick="switchSection('epaper')">📰 E-Paper Editor</button>
@@ -230,8 +226,6 @@
     <!-- ================= 2. E-PAPER BROADSHEET EDITOR TAB ================= -->
     <div id="sec_epaper" class="card" style="display: none;">
       <h3 style="color:#818cf8; margin-bottom:6px;">📰 ई-पेपर ब्रॉडशीट कस्टमाइज़र (E-Paper Layout Editor)</h3>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">यहाँ से आप किसी भी प्रकाशित खबर को चुनकर केवल ई-पेपर के लिए उसकी हेडलाइन, फोटो कैप्शन और पेज स्लॉट बदल सकते हैं।</p>
-
       <div class="form-group">
         <label>1. ई-पेपर में प्रदर्शित करने के लिए समाचार चुनें:</label>
         <select id="epaperSelectArticle" onchange="loadEpaperArticleData()">
@@ -264,23 +258,23 @@
       </div>
 
       <div class="form-group">
-        <label style="color:#a5b4fc;">ई-पेपर कस्टम शीर्षक (Optional Headline)</label>
-        <input type="text" id="epaperCustomTitle" placeholder="ई-पेपर के लिए छोटी या सटीक हेडलाइन..." style="background:#090d16;" />
+        <label style="color:#a5b4fc;">ई-पेपर कस्टम शीर्षक</label>
+        <input type="text" id="epaperCustomTitle" placeholder="ई-पेपर के लिए हेडलाइन..." style="background:#090d16;" />
       </div>
 
       <div class="form-group">
-        <label style="color:#a5b4fc;">ई-पेपर फोटो कैप्शन (Photo Caption - No Date)</label>
-        <input type="text" id="epaperCaption" placeholder="फोटो का असली कैप्शन या क्रेडिट यहाँ लिखें..." style="background:#090d16;" />
+        <label style="color:#a5b4fc;">ई-पेपर फोटो कैप्शन (No Date)</label>
+        <input type="text" id="epaperCaption" placeholder="फोटो का कैप्शन..." style="background:#090d16;" />
       </div>
 
       <div class="form-group">
-        <label style="color:#a5b4fc;">ई-पेपर विशेष कस्टमाइज्ड टेक्स्ट</label>
+        <label style="color:#a5b4fc;">ई-पेपर विशेष टेक्स्ट</label>
         <div class="editor-tools">
           <button type="button" onclick="formatEpaperText('bold')"><b>B</b></button>
           <button type="button" onclick="formatEpaperText('italic')"><i>I</i></button>
           <button type="button" onclick="formatEpaperText('underline')"><u>U</u></button>
         </div>
-        <div id="epaperBodyEditor" contenteditable="true" placeholder="ई-पेपर का टेक्स्ट यहाँ अपने हिसाब से सजाएं व गैप दें..."></div>
+        <div id="epaperBodyEditor" contenteditable="true" placeholder="टेक्स्ट यहाँ सजाएं..."></div>
       </div>
 
       <button type="button" class="btn btn-epaper" onclick="saveEpaperCustomization()">💾 Save E-Paper Layout Instantly</button>
@@ -300,41 +294,34 @@
 
     <!-- ================= 4. AD MANAGER TAB ================= -->
     <div id="sec_ad" class="card" style="display: none;">
-      <h3 style="color:#f43f5e; margin-bottom:12px;">📢 होमपेज कस्टम विज्ञापन बैनर (Custom Ad Banner)</h3>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">यहाँ से आप सीधे विज्ञापन बैनर की फोटो अपलोड कर सकते हैं जो होमस्क्रीन पर दिखाई देगा।</p>
-      
+      <h3 style="color:#f43f5e; margin-bottom:12px;">📢 होमपेज कस्टम विज्ञापन बैनर</h3>
       <div class="form-group">
-        <label>विज्ञापन बैनर इमेज चुनें (Banner Image File)</label>
+        <label>विज्ञापन बैनर इमेज चुनें</label>
         <input type="file" id="adFile" accept="image/*" onchange="handleAdImg(event)" />
         <input type="hidden" id="adImgBase64" />
         <img id="adImgPreview" class="img-preview" />
       </div>
-
       <button type="button" class="btn" style="background:#e11d48;" onclick="saveCustomAdSettings()">📢 Update Homepage Ad Banner Fast</button>
     </div>
 
     <!-- ================= 5. VIDEO MANAGER TAB ================= -->
     <div id="sec_video" class="card" style="display: none;">
-      <h3 style="color:#38bdf8; margin-bottom:12px;">📹 डायरेक्ट वीडियो बुलेटिन मैनेजर (Direct Video Upload)</h3>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">यहाँ से आप शीर्षक (Title) लिखकर सीधे MP4 वीडियो अपलोड कर सकते हैं, जो होमपेज पर सबसे ऊपर चलेंगे।</p>
-      
+      <h3 style="color:#38bdf8; margin-bottom:12px;">📹 डायरेक्ट वीडियो बुलेटिन मैनेजर</h3>
       <div class="form-group">
-        <label>वीडियो का शीर्षक (Video Title / Headline) *</label>
-        <input type="text" id="directVideoTitle" placeholder="वीडियो किस बारे में है, शीर्षक लिखें..." />
+        <label>वीडियो का शीर्षक *</label>
+        <input type="text" id="directVideoTitle" placeholder="शीर्षक लिखें..." />
       </div>
-
       <div class="form-group">
-        <label>वीडियो फाइल चुनें (MP4 Video File) *</label>
+        <label>वीडियो फाइल चुनें (MP4) *</label>
         <input type="file" id="directVideoFile" accept="video/mp4" onchange="handleDirectVideo(event)" />
         <input type="hidden" id="directVideoBase64" />
       </div>
-
       <button type="button" class="btn" style="background:#0284c7;" onclick="saveDirectVideoSettings()">📹 Upload & Publish Video Fast</button>
     </div>
 
     <!-- ================= 6. INBOX TAB ================= -->
     <div id="sec_inbox" class="card" style="display: none;">
-      <h3 style="color:#34d399; margin-bottom:15px;">📥 पाठक संदेश इनबॉक्स (Contact Form)</h3>
+      <h3 style="color:#34d399; margin-bottom:15px;">📥 पाठक संदेश इनबॉक्स</h3>
       <table>
         <thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th style="text-align:center;">Action</th></tr></thead>
         <tbody id="inboxTable"><tr><td colspan="5" style="text-align:center;">कोई संदेश नहीं।</td></tr></tbody>
@@ -367,23 +354,20 @@
       window.location.replace("login.html");
     }
 
-    let cachedDb = { "90i_news": [], "messages": [], "customAd": null, "directVideos": [] };
-
     window.onload = async function() {
       var savedToken = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (savedToken) {
         document.getElementById('ghToken').value = savedToken;
         localStorage.setItem('90i_gh_token', savedToken);
       }
-      await fetchDatabaseFromServer();
       loadNewsList();
       loadInboxMessages();
       loadExistingAdAndVideoSettings();
     };
 
     function showLoading(title, desc) {
-      document.getElementById('loadingTitle').innerText = title || "सुपर-फास्ट सिंक हो रहा है...";
-      document.getElementById('loadingDesc').innerText = desc || "कृपया कुछ सेकंड प्रतीक्षा करें...";
+      document.getElementById('loadingTitle').innerText = title || "सिंक हो रहा है...";
+      document.getElementById('loadingDesc').innerText = desc || "कृपया प्रतीक्षा करें...";
       document.getElementById('loadingOverlay').style.display = 'flex';
     }
 
@@ -427,13 +411,13 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 800; // Optimized size to prevent quota issues
+          var max_w = 700; // Ultra-optimized size
           var scale = max_w / img.width;
           canvas.width = (img.width > max_w) ? max_w : img.width;
           canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.70);
+          var b64 = canvas.toDataURL("image/jpeg", 0.68);
           document.getElementById('newsImgBase64').value = b64;
           var p = document.getElementById('imgPreview'); p.src = b64; p.style.display = 'block';
         };
@@ -450,13 +434,13 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 900;
+          var max_w = 800;
           var scale = max_w / img.width;
           canvas.width = (img.width > max_w) ? max_w : img.width;
           canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.72);
+          var b64 = canvas.toDataURL("image/jpeg", 0.70);
           document.getElementById('adImgBase64').value = b64;
           var p = document.getElementById('adImgPreview'); p.src = b64; p.style.display = 'block';
         };
@@ -468,9 +452,8 @@
     function handleDirectVideo(e) {
       var f = e.target.files[0];
       if (!f) return;
-      // Size check for video safety to prevent quota overflow
-      if (f.size > 8 * 1024 * 1024) {
-        alert("⚠️ कृपया 8MB से छोटी MP4 वीडियो फाइल चुनें ताकि वह बिना किसी कोटा एरर के तुरंत अपलोड हो सके!");
+      if (f.size > 5 * 1024 * 1024) {
+        alert("⚠️ कृपया 5MB से छोटी MP4 वीडियो फाइल चुनें ताकि वह बिना किसी कोटा समस्या के सीधे GitHub पर अपलोड हो सके!");
         document.getElementById('directVideoFile').value = '';
         return;
       }
@@ -485,18 +468,10 @@
       try {
         var res = await fetch('data/90i-data.json?_t=' + Date.now(), { cache: "no-store" });
         if (res.ok) {
-          var data = await res.json();
-          cachedDb = data;
-          localStorage.setItem("cached_db", JSON.stringify(data));
-          return data;
+          return await res.json();
         }
       } catch(e) {}
-
-      var cached = localStorage.getItem("cached_db");
-      if (cached) {
-        try { cachedDb = JSON.parse(cached); } catch(e) {}
-      }
-      return cachedDb;
+      return { "90i_news": [], "messages": [], "customAd": null, "directVideos": [] };
     }
 
     async function loadExistingAdAndVideoSettings() {
@@ -512,7 +487,7 @@
       var img = document.getElementById('adImgBase64').value;
       if (!img) { alert("कृपया विज्ञापन बैनर की तस्वीर चुनें!"); return; }
 
-      showLoading("विज्ञापन अपडेट हो रहा है...", "विज्ञापन बैनर सिंक किया जा रहा है...");
+      showLoading("विज्ञापन अपडेट हो रहा है...", "GitHub पर सिंक हो रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         db.customAd = { image: img };
@@ -531,7 +506,7 @@
       if (!title) { alert("कृपया वीडियो का शीर्षक लिखें!"); return; }
       if (!vSrc) { alert("कृपया MP4 वीडियो फाइल चुनें!"); return; }
 
-      showLoading("वीडियो पब्लिश हो रहा है...", "वीडियो गिटहब पर अपलोड हो रहा है...");
+      showLoading("वीडियो पब्लिश हो रहा है...", "GitHub पर अपलोड हो रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         if (!Array.isArray(db.directVideos)) db.directVideos = [];
@@ -555,7 +530,7 @@
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
 
-      showLoading("एक क्लिक में पब्लिश हो रहा है...", "डेटाबेस सेव और साइटमैप इंडेक्सिंग एक साथ चल रही है...");
+      showLoading("पब्लिश हो रहा है...", "डेटाबेस और साइटमैप सिंक हो रहे हैं...");
 
       try {
         var db = await fetchDatabaseFromServer();
@@ -599,12 +574,12 @@
         db.news = newsList;
         
         await Promise.all([
-          syncDbSilent(db),
+          syncDb(db),
           executeSitemapSyncSilent()
         ]);
 
         hideLoading();
-        alert("🎉 समाचार और साइटमैप इंडेक्सिंग एक क्लिक में सफलतापूर्वक अपडेट हो गई!");
+        alert("🎉 समाचार और साइटमैप सफलतापूर्वक अपडेट हो गए!");
 
         resetForm();
         switchSection('list');
@@ -641,7 +616,7 @@
       var id = document.getElementById('epaperTargetId').value;
       if (!id) { alert("कृपया समाचार चुनें!"); return; }
 
-      showLoading("ई-पेपर लेआउट सेव हो रहा है...", "तुरंत अपडेट किया जा रहा है...");
+      showLoading("ई-पेपर लेआउट सेव हो रहा है...", "सिंक हो रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         var list = db["90i_news"] || db.news || [];
@@ -710,7 +685,7 @@
 
     async function deleteNews(id) {
       if (!confirm("हटाना चाहते हैं?")) return;
-      showLoading("समाचार हटाया जा रहा है...", "डेटाबेस और साइटमैप अपडेट हो रहा है...");
+      showLoading("समाचार हटाया जा रहा है...", "सिंक हो रहा है...");
       var db = await fetchDatabaseFromServer();
       var list = db["90i_news"] || db.news || [];
       db["90i_news"] = list.filter(x => String(x.id) !== String(id));
@@ -722,7 +697,7 @@
 
     async function loadInboxMessages() {
       var db = await fetchDatabaseFromServer();
-      var msgs = db.messages || JSON.parse(localStorage.getItem("site_contact_messages") || "[]");
+      var msgs = db.messages || [];
       document.getElementById('inboxCountBadge').innerText = msgs.length;
       var tb = document.getElementById('inboxTable');
       if (!msgs.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;">कोई संदेश नहीं।</td></tr>'; return; }
@@ -754,11 +729,11 @@
         return;
       }
 
-      showLoading("सिटमैप अपडेट हो रहा है...", "सभी Slugs के साथ sitemap.xml जनरेट हो रहा है...");
+      showLoading("सिटमैप अपडेट हो रहा है...", "sitemap.xml जनरेट हो रहा है...");
       try {
         await executeSitemapSync(token);
         hideLoading();
-        alert("🎉 साइटमैप (sitemap.xml) और सभी नए आर्टिकल Slugs सफलतापूर्वक अपडेट हो गए हैं!");
+        alert("🎉 साइटमैप (sitemap.xml) सफलतापूर्वक अपडेट हो गया है!");
       } catch(err) {
         hideLoading();
         alert("साइटमैप त्रुटि: " + err.message);
@@ -810,7 +785,7 @@
       await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Lightning fast auto-sitemap update", content: contentB64, branch: "main", sha: sha })
+        body: JSON.stringify({ message: "Auto-sitemap update", content: contentB64, branch: "main", sha: sha })
       });
     }
 
@@ -826,15 +801,10 @@
       var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Super-fast CMS Sync Update", content: contentB64, branch: "main", sha: sha })
+        body: JSON.stringify({ message: "Direct GitHub Sync (Quota Free)", content: contentB64, branch: "main", sha: sha })
       });
       if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
-      localStorage.setItem("cached_db", JSON.stringify(db));
       localStorage.setItem("90i_gh_token", token.trim());
-    }
-
-    async function syncDbSilent(db) {
-      try { await syncDb(db); } catch(e) {}
     }
 
     function saveToken() {
