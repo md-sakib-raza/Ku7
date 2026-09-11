@@ -1751,6 +1751,9 @@
     document.addEventListener("DOMContentLoaded", function() {
       initPortal();
       
+      // Auto-refresh background poll every 10 seconds for instant live updates without reloading page
+      setInterval(backgroundDataPoll, 10000);
+
       const cookieConsent = localStorage.getItem("the90inews_cookie_accepted");
       if (!cookieConsent) {
         setTimeout(() => {
@@ -1781,8 +1784,9 @@
 
       highlightActiveNav(currentCategoryFilter);
 
+      // Instant Local Memory Load first
       try {
-        const storageKeys = ["cached_db", "90i_news", "news_data", "news", "articles"];
+        const storageKeys = ["fast_admin_db", "cached_db", "90i_news", "news_data", "news", "articles"];
         for (let k of storageKeys) {
           const cached = localStorage.getItem(k);
           if (cached) {
@@ -1799,6 +1803,11 @@
         }
       } catch(e) {}
 
+      // Fetch fresh server data immediately
+      await backgroundDataPoll();
+    }
+
+    async function backgroundDataPoll() {
       const possiblePaths = ["data/90i-data.json", "/data/90i-data.json", "90i-data.json", "data.json"];
       for (let p of possiblePaths) {
         try {
@@ -1807,9 +1816,15 @@
             const db = await res.json();
             const fresh = extractNewsArray(db);
             if (fresh && fresh.length > 0) {
-              globalNewsList = fresh.sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
-              try { localStorage.setItem("cached_db", JSON.stringify(db)); } catch(e) {}
-              renderPortalData(globalNewsList, currentCategoryFilter);
+              const sortedFresh = fresh.sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
+              
+              // Only re-render if data changed
+              if (JSON.stringify(sortedFresh) !== JSON.stringify(globalNewsList)) {
+                globalNewsList = sortedFresh;
+                try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
+                try { localStorage.setItem("cached_db", JSON.stringify(db)); } catch(e) {}
+                renderPortalData(globalNewsList, currentCategoryFilter);
+              }
               checkCustomAd(db);
               checkDirectVideos(db);
               break;
@@ -1826,7 +1841,9 @@
 
       const adSettings = db?.customAd || JSON.parse(localStorage.getItem("admin_custom_ad") || "null");
       if (adSettings && adSettings.image) {
-        adImg.src = adSettings.image;
+        if (adImg.src !== adSettings.image) {
+          adImg.src = adSettings.image;
+        }
         adBlock.style.display = "block";
       } else {
         adBlock.style.display = "none";
@@ -1841,7 +1858,7 @@
       const dVideos = db?.directVideos || JSON.parse(localStorage.getItem("admin_direct_videos") || "[]");
       if (dVideos.length > 0) {
         videoBlock.style.display = "block";
-        videoContainer.innerHTML = dVideos.map(v => `
+        const newHtml = dVideos.map(v => `
           <div class="home-direct-video-card">
             <video controls preload="metadata">
               <source src="${v.videoUrl}" type="video/mp4">
@@ -1850,6 +1867,9 @@
             <div class="home-vid-title">${esc(v.title)}</div>
           </div>
         `).join("");
+        if (videoContainer.innerHTML !== newHtml) {
+          videoContainer.innerHTML = newHtml;
+        }
       } else {
         videoBlock.style.display = "none";
       }
