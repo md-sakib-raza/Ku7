@@ -411,7 +411,7 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 700; // Ultra-optimized size
+          var max_w = 700;
           var scale = max_w / img.width;
           canvas.width = (img.width > max_w) ? max_w : img.width;
           canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
@@ -453,7 +453,7 @@
       var f = e.target.files[0];
       if (!f) return;
       if (f.size > 5 * 1024 * 1024) {
-        alert("⚠️ कृपया 5MB से छोटी MP4 वीडियो फाइल चुनें ताकि वह बिना किसी कोटा समस्या के सीधे GitHub पर अपलोड हो सके!");
+        alert("⚠️ कृपया 5MB से छोटी MP4 वीडियो फाइल चुनें ताकि वह बिना किसी त्रुटि के अपलोड हो सके!");
         document.getElementById('directVideoFile').value = '';
         return;
       }
@@ -530,7 +530,7 @@
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
 
-      showLoading("पब्लिश हो रहा है...", "डेटाबेस और साइटमैप सिंक हो रहे हैं...");
+      showLoading("पब्लिश हो रहा है...", "डेटाबेस सेव किया जा रहा है...");
 
       try {
         var db = await fetchDatabaseFromServer();
@@ -573,10 +573,12 @@
         db["90i_news"] = newsList;
         db.news = newsList;
         
-        await Promise.all([
-          syncDb(db),
-          executeSitemapSyncSilent()
-        ]);
+        // Step 1: Save DB first safely
+        await syncDb(db);
+
+        // Step 2: Update sitemap sequentially without conflict
+        document.getElementById('loadingDesc').innerText = "साइटमैप अपडेट हो रहा है...";
+        await executeSitemapSyncSilent();
 
         hideLoading();
         alert("🎉 समाचार और साइटमैप सफलतापूर्वक अपडेट हो गए!");
@@ -685,12 +687,15 @@
 
     async function deleteNews(id) {
       if (!confirm("हटाना चाहते हैं?")) return;
-      showLoading("समाचार हटाया जा रहा है...", "सिंक हो रहा है...");
+      showLoading("समाचार हटाया जा रहा है...", "डेटाबेस सिंक हो रहा है...");
       var db = await fetchDatabaseFromServer();
       var list = db["90i_news"] || db.news || [];
       db["90i_news"] = list.filter(x => String(x.id) !== String(id));
       db.news = db["90i_news"];
-      await Promise.all([syncDb(db), executeSitemapSyncSilent()]);
+      
+      await syncDb(db);
+      await executeSitemapSyncSilent();
+      
       hideLoading();
       loadNewsList();
     }
@@ -801,7 +806,7 @@
       var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Direct GitHub Sync (Quota Free)", content: contentB64, branch: "main", sha: sha })
+        body: JSON.stringify({ message: "Direct GitHub Sync (Conflict Free)", content: contentB64, branch: "main", sha: sha })
       });
       if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
       localStorage.setItem("90i_gh_token", token.trim());
