@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard | THE 90I NEWS</title>
+  <title>Admin Dashboard | THE 90I NEWS (Supabase Edition)</title>
+  <!-- Supabase JS Client Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg: #0b0f19;
@@ -120,7 +122,7 @@
 
   <div class="panel-wrap">
     <div class="panel-header">
-      <h2>THE <span>90I</span> NEWS — CMS कंट्रोल पैनल</h2>
+      <h2>THE <span>90I</span> NEWS — Supabase CMS</h2>
       <button type="button" onclick="logout()">🚪 Logout</button>
     </div>
 
@@ -131,7 +133,6 @@
       <button type="button" class="tab-btn" id="btn_ad" onclick="switchSection('ad')" style="background:#831843; color:#f43f5e; border-color:#9f1239;">📢 Ad Manager</button>
       <button type="button" class="tab-btn" id="btn_video" onclick="switchSection('video')" style="background:#1e3a8a; color:#38bdf8; border-color:#1d4ed8;">📹 Video Manager</button>
       <button type="button" class="tab-btn" id="btn_inbox" onclick="switchSection('inbox')" style="background:#065f46; color:#34d399; border-color:#059669;">📥 Inbox (<span id="inboxCountBadge">0</span>)</button>
-      <button type="button" class="tab-btn" id="btn_token" onclick="switchSection('token')">☁️ Config</button>
       <a href="index.html" target="_blank" style="padding:10px 14px; background:#1e293b; color:#cbd5e1; text-decoration:none; border-radius:8px; font-weight:700; font-size:13px; border:1px solid var(--border); margin-left:auto;">🌐 Live ↗</a>
     </div>
 
@@ -220,7 +221,7 @@
         <div id="newsBody" contenteditable="true" placeholder="पूरी खबर यहाँ विस्तार से लिखें..."></div>
       </div>
 
-      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Save, Publish & Sync Fast</button>
+      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Save & Publish to Supabase</button>
     </div>
 
     <!-- ================= 2. E-PAPER BROADSHEET EDITOR TAB ================= -->
@@ -301,7 +302,7 @@
         <input type="hidden" id="adImgBase64" />
         <img id="adImgPreview" class="img-preview" />
       </div>
-      <button type="button" class="btn" style="background:#e11d48;" onclick="saveCustomAdSettings()">📢 Update Homepage Ad Banner Fast</button>
+      <button type="button" class="btn" style="background:#e11d48;" onclick="saveCustomAdSettings()">📢 Update Ad Banner</button>
     </div>
 
     <!-- ================= 5. VIDEO MANAGER TAB ================= -->
@@ -316,7 +317,7 @@
         <input type="file" id="directVideoFile" accept="video/mp4" onchange="handleDirectVideo(event)" />
         <input type="hidden" id="directVideoBase64" />
       </div>
-      <button type="button" class="btn" style="background:#0284c7;" onclick="saveDirectVideoSettings()">📹 Upload & Publish Video Fast</button>
+      <button type="button" class="btn" style="background:#0284c7;" onclick="saveDirectVideoSettings()">📹 Upload & Publish Video</button>
     </div>
 
     <!-- ================= 6. INBOX TAB ================= -->
@@ -326,19 +327,6 @@
         <thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th style="text-align:center;">Action</th></tr></thead>
         <tbody id="inboxTable"><tr><td colspan="5" style="text-align:center;">कोई संदेश नहीं।</td></tr></tbody>
       </table>
-    </div>
-
-    <!-- ================= 7. CONFIG TAB ================= -->
-    <div id="sec_token" class="card" style="display: none;">
-      <h3 style="margin-bottom:12px;">GitHub Token Configuration</h3>
-      <div class="form-group" style="max-width: 500px;">
-        <label>Personal Access Token</label>
-        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxx" />
-      </div>
-      <button type="button" class="btn" style="max-width: 220px;" onclick="saveToken()">💾 Save Token</button>
-      <div style="margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
-        <button type="button" id="btnSyncSitemap" onclick="generateAndSyncFullSitemap()" style="background:#059669; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; cursor:pointer;">🔄 Update Sitemap & Slugs Now</button>
-      </div>
     </div>
   </div>
 
@@ -354,35 +342,26 @@
       window.location.replace("login.html");
     }
 
+    // Official Supabase Connection Credentials
+    const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
+    
+    // Initialize Supabase Client safely
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
     let cachedDb = { "90i_news": [], "messages": [], "customAd": null, "directVideos": [] };
-    try {
-      var localFastCache = localStorage.getItem("fast_admin_db");
-      if (localFastCache) {
-        cachedDb = JSON.parse(localFastCache);
-      }
-    } catch(e) {}
 
     window.onload = async function() {
-      var savedToken = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
-      if (savedToken) {
-        document.getElementById('ghToken').value = savedToken;
-        localStorage.setItem('90i_gh_token', savedToken);
-        localStorage.setItem('gh_token', savedToken);
-      }
-
-      updateCounters(cachedDb);
-      loadNewsListInternal(cachedDb);
-      loadInboxMessagesInternal(cachedDb);
-      loadExistingAdAndVideoSettingsInternal(cachedDb);
-
+      showLoading("डेटा लोड हो रहा है...", "Supabase से कनेक्ट किया जा रहा है...");
       var freshDb = await fetchDatabaseFromServer();
-      if (freshDb && (freshDb["90i_news"] || freshDb.news)) {
+      if (freshDb) {
         cachedDb = freshDb;
-        try { localStorage.setItem("fast_admin_db", JSON.stringify(freshDb)); } catch(e) {}
         updateCounters(freshDb);
         loadNewsListInternal(freshDb);
         loadInboxMessagesInternal(freshDb);
+        loadExistingAdAndVideoSettingsInternal(freshDb);
       }
+      hideLoading();
     };
 
     function updateCounters(db) {
@@ -403,7 +382,7 @@
     }
 
     function switchSection(name) {
-      ['compose', 'epaper', 'list', 'ad', 'video', 'inbox', 'token'].forEach(s => {
+      ['compose', 'epaper', 'list', 'ad', 'video', 'inbox'].forEach(s => {
         document.getElementById('sec_' + s).style.display = (s === name) ? 'block' : 'none';
         var btn = document.getElementById('btn_' + s);
         if (btn) btn.className = 'tab-btn' + (s === name ? ' active' : '') + (s === 'epaper' ? ' epaper-tab-btn' : '');
@@ -480,7 +459,7 @@
       var f = e.target.files[0];
       if (!f) return;
       if (f.size > 5 * 1024 * 1024) {
-        alert("⚠️ कृपया 5MB से छोटी MP4 वीडियो फाइल चुनें ताकि वह बिना किसी त्रुटि के अपलोड हो सके!");
+        alert("⚠️ कृपया 5MB से छोटी MP4 वीडियो फाइल चुनें!");
         document.getElementById('directVideoFile').value = '';
         return;
       }
@@ -493,12 +472,20 @@
 
     async function fetchDatabaseFromServer() {
       try {
-        var res = await fetch('data/90i-data.json?_t=' + Date.now(), { cache: "no-store" });
-        if (res.ok) {
-          return await res.json();
-        }
-      } catch(e) {}
-      return cachedDb;
+        let { data, error } = await supabaseClient.from('site_data').select('content').eq('id', 1).single();
+        if (error || !data) return cachedDb;
+        return data.content;
+      } catch(e) {
+        return cachedDb;
+      }
+    }
+
+    async function syncDb(dbContent) {
+      let { error } = await supabaseClient
+        .from('site_data')
+        .update({ content: dbContent, updated_at: new Date() })
+        .eq('id', 1);
+      if (error) throw new Error(error.message);
     }
 
     function loadExistingAdAndVideoSettingsInternal(db) {
@@ -513,13 +500,12 @@
       var img = document.getElementById('adImgBase64').value;
       if (!img) { alert("कृपया विज्ञापन बैनर की तस्वीर चुनें!"); return; }
 
-      showLoading("विज्ञापन अपडेट हो रहा है...", "GitHub पर सिंक हो रहा है...");
+      showLoading("विज्ञापन अपडेट हो रहा है...", "Supabase में सेव हो रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         db.customAd = { image: img };
         await syncDb(db);
         cachedDb = db;
-        try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
         hideLoading();
         alert("📢 विज्ञापन बैनर सफलतापूर्वक अपडेट हो गया!");
       } catch(err) {
@@ -534,7 +520,7 @@
       if (!title) { alert("कृपया वीडियो का शीर्षक लिखें!"); return; }
       if (!vSrc) { alert("कृपया MP4 वीडियो फाइल चुनें!"); return; }
 
-      showLoading("वीडियो पब्लिश हो रहा है...", "GitHub पर अपलोड हो रहा है...");
+      showLoading("वीडियो पब्लिश हो रहा है...", "Supabase में अपलोड हो रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         if (!Array.isArray(db.directVideos)) db.directVideos = [];
@@ -543,10 +529,8 @@
 
         await syncDb(db);
         cachedDb = db;
-        try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
         hideLoading();
         alert("📹 वीडियो सफलतापूर्वक अपलोड और पब्लिश हो गया!");
-        
         document.getElementById('directVideoTitle').value = '';
         document.getElementById('directVideoBase64').value = '';
         document.getElementById('directVideoFile').value = '';
@@ -560,7 +544,7 @@
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
 
-      showLoading("पब्लिश हो रहा है...", "डेटाबेस सेव किया जा रहा है...");
+      showLoading("पब्लिश हो रहा है...", "Supabase डेटाबेस सेव किया जा रहा है...");
 
       try {
         var db = await fetchDatabaseFromServer();
@@ -604,15 +588,10 @@
         db.news = newsList;
         
         await syncDb(db);
-
-        document.getElementById('loadingDesc').innerText = "साइटमैप अपडेट हो रहा है...";
-        await executeSitemapSyncSilent();
-
         cachedDb = db;
-        try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
 
         hideLoading();
-        alert("🎉 समाचार और साइटमैप सफलतापूर्वक अपडेट हो गए!");
+        alert("🎉 समाचार Supabase पर सफलतापूर्वक पब्लिश हो गया!");
 
         resetForm();
         switchSection('list');
@@ -664,9 +643,8 @@
           db.news = list;
           await syncDb(db);
           cachedDb = db;
-          try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
           hideLoading();
-          alert("📰 ई-पेपर लेआउट और कैप्शन सफलतापूर्वक सेव हो गया!");
+          alert("📰 ई-पेपर लेआउट सफलतापूर्वक सेव हो गया!");
         }
       } catch(e) {
         hideLoading();
@@ -731,11 +709,7 @@
       db.news = db["90i_news"];
       
       await syncDb(db);
-      await executeSitemapSyncSilent();
-      
       cachedDb = db;
-      try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
-
       hideLoading();
       loadNewsListInternal(db);
     }
@@ -756,12 +730,6 @@
       `).join('');
     }
 
-    async function loadInboxMessages() {
-      var db = await fetchDatabaseFromServer();
-      cachedDb = db;
-      loadInboxMessagesInternal(db);
-    }
-
     async function deleteMessage(idx) {
       var db = await fetchDatabaseFromServer();
       if (!db.messages) db.messages = [];
@@ -769,103 +737,8 @@
       showLoading("संदेश हटाया जा रहा है...", "सिंक हो रहा है...");
       await syncDb(db);
       cachedDb = db;
-      try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
       hideLoading();
       loadInboxMessagesInternal(db);
-    }
-
-    async function generateAndSyncFullSitemap() {
-      var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
-      if (!token) {
-        alert("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।");
-        return;
-      }
-
-      showLoading("सिटमैप अपडेट हो रहा है...", "sitemap.xml जनरेट हो रहा है...");
-      try {
-        await executeSitemapSync(token);
-        hideLoading();
-        alert("🎉 साइटमैप (sitemap.xml) सफलतापूर्वक अपडेट हो गया है!");
-      } catch(err) {
-        hideLoading();
-        alert("साइटमैप त्रुटि: " + err.message);
-      }
-    }
-
-    async function executeSitemapSyncSilent() {
-      var token = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
-      if (!token) return;
-      try {
-        await executeSitemapSync(token);
-      } catch(e) {}
-    }
-
-    async function executeSitemapSync(token) {
-      var db = await fetchDatabaseFromServer();
-      var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
-      
-      var domain = "https://90inews.me";
-      var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-      xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-      
-      xml += '  <url><loc>' + domain + '/</loc><changefreq>always</changefreq><priority>1.0</priority></url>\n';
-      xml += '  <url><loc>' + domain + '/epaper.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n';
-
-      newsList.forEach(function(item) {
-        if (item.slug || item.id) {
-          var slugPath = item.slug ? ('article.html?slug=' + encodeURIComponent(item.slug)) : ('article.html?id=' + item.id);
-          var articleUrl = domain + '/' + slugPath;
-          var itemDate = item.date || new Date().toISOString().split('T')[0];
-          xml += '  <url>\n';
-          xml += '    <loc>' + articleUrl + '</loc>\n';
-          xml += '    <lastmod>' + itemDate + '</lastmod>\n';
-          xml += '    <changefreq>daily</changefreq>\n';
-          xml += '    <priority>0.8</priority>\n';
-          xml += '  </url>\n';
-        }
-      });
-
-      xml += '</urlset>';
-
-      var owner = "md-sakib-raza", repo = "Ku7", path = "sitemap.xml";
-      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
-      });
-      var sha = getRes.ok ? (await getRes.json()).sha : null;
-      var contentB64 = window.btoa(unescape(encodeURIComponent(xml)));
-
-      await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Auto-sitemap update", content: contentB64, branch: "main", sha: sha })
-      });
-    }
-
-    async function syncDb(db) {
-      var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
-      if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
-      var owner = "md-sakib-raza", repo = "Ku7", path = "data/90i-data.json";
-      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + token.trim() }
-      });
-      var sha = getRes.ok ? (await getRes.json()).sha : null;
-      var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
-      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Direct GitHub Sync (Token Safe)", content: contentB64, branch: "main", sha: sha })
-      });
-      if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
-      localStorage.setItem("90i_gh_token", token.trim());
-      localStorage.setItem("gh_token", token.trim());
-    }
-
-    function saveToken() {
-      var t = document.getElementById('ghToken').value.trim();
-      if (!t) { alert("कृपया वैध टोकन दर्ज करें!"); return; }
-      localStorage.setItem('90i_gh_token', t);
-      localStorage.setItem('gh_token', t);
-      alert("✅ GitHub टोकन सुरक्षित रूप से सेव हो गया है! अब यह कभी डिलीट नहीं होगा।");
     }
 
     function esc(s) { return s ? String(s).replace(/</g, "&lt;").replace(/>/g, "&gt;") : ""; }
