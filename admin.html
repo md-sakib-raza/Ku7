@@ -354,16 +354,45 @@
       window.location.replace("login.html");
     }
 
+    // Instantly load from memory cache so counts never show 0 on refresh
+    let cachedDb = { "90i_news": [], "messages": [], "customAd": null, "directVideos": [] };
+    try {
+      var localFastCache = localStorage.getItem("fast_admin_db");
+      if (localFastCache) {
+        cachedDb = JSON.parse(localFastCache);
+      }
+    } catch(e) {}
+
     window.onload = async function() {
       var savedToken = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (savedToken) {
         document.getElementById('ghToken').value = savedToken;
         localStorage.setItem('90i_gh_token', savedToken);
       }
-      loadNewsList();
-      loadInboxMessages();
-      loadExistingAdAndVideoSettings();
+      
+      // Render immediately using local cache
+      updateCounters(cachedDb);
+      loadNewsListInternal(cachedDb);
+      loadInboxMessagesInternal(cachedDb);
+      loadExistingAdAndVideoSettingsInternal(cachedDb);
+
+      // Fetch fresh data from server in background
+      var freshDb = await fetchDatabaseFromServer();
+      if (freshDb && freshDb["90i_news"]) {
+        cachedDb = freshDb;
+        try { localStorage.setItem("fast_admin_db", JSON.stringify(freshDb)); } catch(e) {}
+        updateCounters(freshDb);
+        loadNewsListInternal(freshDb);
+        loadInboxMessagesInternal(freshDb);
+      }
     };
+
+    function updateCounters(db) {
+      var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
+      var msgs = db.messages || [];
+      document.getElementById('countBadge').innerText = newsList.length;
+      document.getElementById('inboxCountBadge').innerText = msgs.length;
+    }
 
     function showLoading(title, desc) {
       document.getElementById('loadingTitle').innerText = title || "सिंक हो रहा है...";
@@ -381,9 +410,9 @@
         var btn = document.getElementById('btn_' + s);
         if (btn) btn.className = 'tab-btn' + (s === name ? ' active' : '') + (s === 'epaper' ? ' epaper-tab-btn' : '');
       });
-      if (name === 'list') loadNewsList();
-      if (name === 'inbox') loadInboxMessages();
-      if (name === 'epaper') populateEpaperArticleDropdown();
+      if (name === 'list') loadNewsListInternal(cachedDb);
+      if (name === 'inbox') loadInboxMessagesInternal(cachedDb);
+      if (name === 'epaper') populateEpaperArticleDropdownInternal(cachedDb);
     }
 
     function switchMediaMode(type) {
@@ -471,11 +500,10 @@
           return await res.json();
         }
       } catch(e) {}
-      return { "90i_news": [], "messages": [], "customAd": null, "directVideos": [] };
+      return cachedDb;
     }
 
-    async function loadExistingAdAndVideoSettings() {
-      var db = await fetchDatabaseFromServer();
+    function loadExistingAdAndVideoSettingsInternal(db) {
       var ad = db.customAd;
       if (ad && ad.image) {
         document.getElementById('adImgBase64').value = ad.image;
@@ -492,6 +520,8 @@
         var db = await fetchDatabaseFromServer();
         db.customAd = { image: img };
         await syncDb(db);
+        cachedDb = db;
+        try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
         hideLoading();
         alert("📢 विज्ञापन बैनर सफलतापूर्वक अपडेट हो गया!");
       } catch(err) {
@@ -514,6 +544,8 @@
         if (db.directVideos.length > 2) db.directVideos = db.directVideos.slice(0, 2);
 
         await syncDb(db);
+        cachedDb = db;
+        try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
         hideLoading();
         alert("📹 वीडियो सफलतापूर्वक अपलोड और पब्लिश हो गया!");
         
@@ -573,12 +605,13 @@
         db["90i_news"] = newsList;
         db.news = newsList;
         
-        // Step 1: Save DB first safely
         await syncDb(db);
 
-        // Step 2: Update sitemap sequentially without conflict
         document.getElementById('loadingDesc').innerText = "साइटमैप अपडेट हो रहा है...";
         await executeSitemapSyncSilent();
+
+        cachedDb = db;
+        try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
 
         hideLoading();
         alert("🎉 समाचार और साइटमैप सफलतापूर्वक अपडेट हो गए!");
@@ -591,8 +624,7 @@
       }
     }
 
-    async function populateEpaperArticleDropdown() {
-      var db = await fetchDatabaseFromServer();
+    function populateEpaperArticleDropdownInternal(db) {
       var list = db["90i_news"] || db.news || [];
       var sel = document.getElementById('epaperSelectArticle');
       sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + list.map(n => `<option value="${n.id}">${n.title} (${n.date || ''})</option>`).join('');
@@ -633,6 +665,8 @@
           db["90i_news"] = list;
           db.news = list;
           await syncDb(db);
+          cachedDb = db;
+          try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
           hideLoading();
           alert("📰 ई-पेपर लेआउट और कैप्शन सफलतापूर्वक सेव हो गया!");
         }
@@ -642,8 +676,7 @@
       }
     }
 
-    async function loadNewsList() {
-      var db = await fetchDatabaseFromServer();
+    function loadNewsListInternal(db) {
       var list = db["90i_news"] || db.news || [];
       document.getElementById('countBadge').innerText = list.length;
       var tb = document.getElementById('newsTable');
@@ -659,6 +692,12 @@
           </td>
         </tr>
       `).join('');
+    }
+
+    async function loadNewsList() {
+      var db = await fetchDatabaseFromServer();
+      cachedDb = db;
+      loadNewsListInternal(db);
     }
 
     async function editNews(id) {
@@ -687,7 +726,7 @@
 
     async function deleteNews(id) {
       if (!confirm("हटाना चाहते हैं?")) return;
-      showLoading("समाचार हटाया जा रहा है...", "डेटाबेस सिंक हो रहा है...");
+      showLoading("समाचार हटाया जा रहा है...", "सिंक हो रहा है...");
       var db = await fetchDatabaseFromServer();
       var list = db["90i_news"] || db.news || [];
       db["90i_news"] = list.filter(x => String(x.id) !== String(id));
@@ -696,12 +735,14 @@
       await syncDb(db);
       await executeSitemapSyncSilent();
       
+      cachedDb = db;
+      try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
+
       hideLoading();
-      loadNewsList();
+      loadNewsListInternal(db);
     }
 
-    async function loadInboxMessages() {
-      var db = await fetchDatabaseFromServer();
+    function loadInboxMessagesInternal(db) {
       var msgs = db.messages || [];
       document.getElementById('inboxCountBadge').innerText = msgs.length;
       var tb = document.getElementById('inboxTable');
@@ -717,14 +758,22 @@
       `).join('');
     }
 
+    async function loadInboxMessages() {
+      var db = await fetchDatabaseFromServer();
+      cachedDb = db;
+      loadInboxMessagesInternal(db);
+    }
+
     async function deleteMessage(idx) {
       var db = await fetchDatabaseFromServer();
       if (!db.messages) db.messages = [];
       db.messages.splice(idx, 1);
       showLoading("संदेश हटाया जा रहा है...", "सिंक हो रहा है...");
       await syncDb(db);
+      cachedDb = db;
+      try { localStorage.setItem("fast_admin_db", JSON.stringify(db)); } catch(e) {}
       hideLoading();
-      loadInboxMessages();
+      loadInboxMessagesInternal(db);
     }
 
     async function generateAndSyncFullSitemap() {
@@ -806,7 +855,7 @@
       var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Direct GitHub Sync (Conflict Free)", content: contentB64, branch: "main", sha: sha })
+        body: JSON.stringify({ message: "Direct GitHub Sync (Instant Load)", content: contentB64, branch: "main", sha: sha })
       });
       if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
       localStorage.setItem("90i_gh_token", token.trim());
