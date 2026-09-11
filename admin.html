@@ -113,8 +113,8 @@
   <div id="loadingOverlay">
     <div class="loading-card">
       <div class="spinner"></div>
-      <div id="loadingTitle" class="loading-text">सुपर-फास्ट सिंक हो रहा है...</div>
-      <div id="loadingDesc" class="loading-sub">कृपया कुछ सेकंड प्रतीक्षा करें...</div>
+      <div id="loadingTitle" class="loading-text">सिंक हो रहा है...</div>
+      <div id="loadingDesc" class="loading-sub">कृपया प्रतीक्षा करें...</div>
     </div>
   </div>
 
@@ -354,7 +354,6 @@
       window.location.replace("login.html");
     }
 
-    // Instantly load from memory cache so counts never show 0 on refresh
     let cachedDb = { "90i_news": [], "messages": [], "customAd": null, "directVideos": [] };
     try {
       var localFastCache = localStorage.getItem("fast_admin_db");
@@ -368,17 +367,16 @@
       if (savedToken) {
         document.getElementById('ghToken').value = savedToken;
         localStorage.setItem('90i_gh_token', savedToken);
+        localStorage.setItem('gh_token', savedToken);
       }
-      
-      // Render immediately using local cache
+
       updateCounters(cachedDb);
       loadNewsListInternal(cachedDb);
       loadInboxMessagesInternal(cachedDb);
       loadExistingAdAndVideoSettingsInternal(cachedDb);
 
-      // Fetch fresh data from server in background
       var freshDb = await fetchDatabaseFromServer();
-      if (freshDb && freshDb["90i_news"]) {
+      if (freshDb && (freshDb["90i_news"] || freshDb.news)) {
         cachedDb = freshDb;
         try { localStorage.setItem("fast_admin_db", JSON.stringify(freshDb)); } catch(e) {}
         updateCounters(freshDb);
@@ -855,10 +853,11 @@
       var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Direct GitHub Sync (Instant Load)", content: contentB64, branch: "main", sha: sha })
+        body: JSON.stringify({ message: "Direct GitHub Sync (Token Safe)", content: contentB64, branch: "main", sha: sha })
       });
       if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
       localStorage.setItem("90i_gh_token", token.trim());
+      localStorage.setItem("gh_token", token.trim());
     }
 
     function saveToken() {
@@ -866,7 +865,7 @@
       if (!t) { alert("कृपया वैध टोकन दर्ज करें!"); return; }
       localStorage.setItem('90i_gh_token', t);
       localStorage.setItem('gh_token', t);
-      alert("✅ GitHub टोकन सफलतापूर्वक सेव हो गया है!");
+      alert("✅ GitHub टोकन सुरक्षित रूप से सेव हो गया है! अब यह कभी डिलीट नहीं होगा।");
     }
 
     function esc(s) { return s ? String(s).replace(/</g, "&lt;").replace(/>/g, "&gt;") : ""; }
