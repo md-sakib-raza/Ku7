@@ -156,11 +156,6 @@
       transition: background 0.2s;
     }
     .btn:hover { background: var(--brand-hover); }
-    .btn-secondary {
-      background: #334155;
-      margin-top: 10px;
-    }
-    .btn-secondary:hover { background: #475569; }
 
     /* Table Styles */
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -275,11 +270,11 @@
         <textarea id="newsSummary" rows="2" placeholder="पाठकों के लिए मुख्य बुलेटिन सारांश..."></textarea>
       </div>
 
-      <!-- MEDIA SECTION: IMAGE OR VIDEO -->
+      <!-- MEDIA SECTION: IMAGE OR VIDEO (OPTIONAL) -->
       <div class="media-type-box">
-        <label style="display:block; font-size:13px; color:#cbd5e1; margin-bottom:8px; font-weight:700;">Attachment Media (फ़ोटो या वीडियो चुनें):</label>
+        <label style="display:block; font-size:13px; color:#cbd5e1; margin-bottom:8px; font-weight:700;">Attachment Media (वैकल्पिक - फोटो या वीडियो):</label>
         <div class="media-tabs">
-          <button type="button" class="media-tab-btn active" id="tab_img" onclick="switchMediaMode('image')">🖼️ Photo Upload</button>
+          <button type="button" class="media-tab-btn active" id="tab_img" onclick="switchMediaMode('image')">🖼️ Photo Upload (Optional)</button>
           <button type="button" class="media-tab-btn" id="tab_vid" onclick="switchMediaMode('video')">📹 YouTube Video URL</button>
         </div>
 
@@ -292,15 +287,14 @@
               <img id="imgPreview" class="img-preview" />
             </div>
             <div>
-              <input type="text" id="newsCaption" placeholder="फ़ोटो का कैप्शन / क्रेडिट (उदा. 90I डेस्क)" />
+              <input type="text" id="newsCaption" placeholder="फ़ोटो का कैप्शन / क्रेडिट (वैकल्पिक)" />
             </div>
           </div>
         </div>
 
         <!-- Video Input -->
         <div id="media_vid_box" style="display:none;">
-          <input type="url" id="newsVideoUrl" placeholder="YouTube Video URL (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)" />
-          <p style="font-size:11.5px; color:var(--muted); margin-top:5px;">💡 अगर वीडियो लिंक डालेंगे तो आर्टिकल में ऑटोमैटिक वीडियो प्लेयर लोड होगा।</p>
+          <input type="url" id="newsVideoUrl" placeholder="YouTube Video URL (वैकल्पिक)" />
         </div>
       </div>
 
@@ -347,7 +341,7 @@
     <!-- 3. GITHUB CONFIG TAB -->
     <div id="sec_token" class="card" style="display: none;">
       <h3 style="margin-bottom:12px;">GitHub Token Configuration</h3>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:15px;">GitHub API के ज़रिए लाइव डेटा सेव करने के लिए आपका Personal Access Token आवश्यक है।</p>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:15px;">GitHub API के ज़रिए लाइव डेटा और साइटमैप सेव करने के लिए टोकन आवश्यक है।</p>
       
       <div class="form-group" style="max-width: 500px;">
         <label>GitHub Personal Access Token (Classic)</label>
@@ -360,7 +354,6 @@
   <script>
     "use strict";
 
-    // Authentication Guard
     if (localStorage.getItem("90i_admin_logged") !== "true") {
       window.location.replace("login.html");
     }
@@ -409,7 +402,7 @@
       document.getElementById('newsSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
     }
 
-    // Auto-compress heavy images to web-optimized dimensions
+    // Light compression option for optional images
     function handleImg(e) {
       var f = e.target.files[0];
       if (!f) return;
@@ -419,13 +412,13 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 900;
+          var max_w = 600;
           var scale = max_w / img.width;
           canvas.width = (img.width > max_w) ? max_w : img.width;
           canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var compressedBase64 = canvas.toDataURL("image/jpeg", 0.72);
+          var compressedBase64 = canvas.toDataURL("image/jpeg", 0.5);
 
           document.getElementById('newsImgBase64').value = compressedBase64;
           var p = document.getElementById('imgPreview');
@@ -476,9 +469,9 @@
         var section = document.getElementById('newsSection').value;
         var cat = document.getElementById('newsCategory').value;
         var summary = document.getElementById('newsSummary').value.trim();
-        var img = document.getElementById('newsImgBase64').value;
-        var caption = document.getElementById('newsCaption').value.trim();
-        var videoUrl = document.getElementById('newsVideoUrl').value.trim();
+        var img = document.getElementById('newsImgBase64').value || ""; // Optional image
+        var caption = document.getElementById('newsCaption').value.trim() || "";
+        var videoUrl = document.getElementById('newsVideoUrl').value.trim() || "";
         var body = document.getElementById('newsBody').innerHTML;
 
         var item = {
@@ -505,7 +498,6 @@
             newsList[idx] = item;
           }
         } else {
-          // New news item: spotlight and subleads go to the top
           if (section === 'spotlight' || section === 'sublead') {
             newsList.unshift(item);
           } else {
@@ -516,8 +508,13 @@
         db["90i_news"] = newsList;
         db.news = newsList;
 
-        await syncDb(db);
-        alert("🎉 समाचार सफलतापूर्वक लाइव प्रकाशित हो गया!");
+        // 1. Sync Database JSON
+        await syncGitHubFile("data/90i-data.json", JSON.stringify(db, null, 2), "CMS Article Update");
+
+        // 2. Automatically Generate & Sync Sitemap XML
+        await updateSitemapXML(newsList);
+
+        alert("🎉 समाचार सफलतापूर्वक लाइव प्रकाशित और साइटमैप अपडेट हो गया!");
         resetForm();
         switchSection('list');
       } catch(err) {
@@ -528,11 +525,10 @@
       }
     }
 
-    async function syncDb(db) {
+    async function syncGitHubFile(path, fileContent, commitMsg) {
       var token = localStorage.getItem('90i_gh_token');
       var owner = "md-sakib-raza";
       var repo = "Ku7";
-      var path = "data/90i-data.json";
 
       var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
         headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
@@ -543,18 +539,52 @@
       }
 
       var sha = getRes.ok ? (await getRes.json()).sha : null;
-      var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
+      var contentB64 = window.btoa(unescape(encodeURIComponent(fileContent)));
 
       var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "CMS Article Update", content: contentB64, branch: "main", sha: sha })
+        body: JSON.stringify({ message: commitMsg, content: contentB64, branch: "main", sha: sha })
       });
 
       if (!putRes.ok) {
         var errBody = await putRes.json().catch(function(){ return {}; });
         throw new Error(errBody.message || "GitHub Save HTTP " + putRes.status);
       }
+    }
+
+    async function updateSitemapXML(newsList) {
+      var baseUrl = "https://90inews.me";
+      var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      
+      // Static Pages
+      var staticPages = ["", "/about", "/contact", "/privacy"];
+      staticPages.forEach(function(page) {
+        xml += '  <url>\n';
+        xml += '    <loc>' + baseUrl + page + '</loc>\n';
+        xml += '    <changefreq>daily</changefreq>\n';
+        xml += '    <priority>0.8</priority>\n';
+        xml += '  </url>\n';
+      });
+
+      // Dynamic Article Pages based on slugs
+      newsList.forEach(function(n) {
+        if (n.slug) {
+          var lastMod = n.date || n.publishedAt || new Date().toISOString().split('T')[0];
+          xml += '  <url>\n';
+          xml += '    <loc>' + baseUrl + '/article.html?slug=' + encodeURIComponent(n.slug) + '</loc>\n';
+          xml += '    <lastmod>' + lastMod + '</lastmod>\n';
+          xml += '    <changefreq>weekly</changefreq>\n';
+          xml += '    <priority>0.7</priority>\n';
+          xml += '  </url>\n';
+        }
+      });
+
+      xml += '</urlset>';
+
+      // Push sitemap.xml to GitHub
+      await syncGitHubFile("sitemap.xml", xml, "Auto-update sitemap.xml via CMS");
     }
 
     async function loadNewsList() {
@@ -659,8 +689,13 @@
         db["90i_news"] = updatedList;
         db.news = updatedList;
 
-        await syncDb(db);
-        alert("🗑️ समाचार सफलतापूर्वक हटा दिया गया!");
+        // 1. Sync Database JSON
+        await syncGitHubFile("data/90i-data.json", JSON.stringify(db, null, 2), "CMS Article Delete");
+
+        // 2. Update Sitemap XML after deletion
+        await updateSitemapXML(updatedList);
+
+        alert("🗑️ समाचार सफलतापूर्वक हटा दिया गया और साइटमैप अपडेट हो गया!");
         loadNewsList();
       } catch(e) {
         alert("हटाने में त्रुटि: " + e.message);
