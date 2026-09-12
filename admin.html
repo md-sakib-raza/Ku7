@@ -16,7 +16,6 @@
       --brand-hover: #b91c1c;
       --success: #16a34a;
       --blue: #2563eb;
-      --indigo: #4f46e5;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -62,9 +61,6 @@
       transition: 0.2s;
     }
     .tab-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
-    .tab-btn.epaper-tab-btn { background: #312e81; color: #818cf8; border-color: #4f46e5; }
-    .tab-btn.epaper-tab-btn.active { background: #4f46e5; color: #fff; }
-
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -134,8 +130,8 @@
       font-size: 13px;
     }
     .editor-tools button:hover { background: #475569; }
-    #newsBody, #epaperBodyEditor {
-      min-height: 250px;
+    #newsBody {
+      min-height: 220px;
       background: #030712;
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -145,7 +141,7 @@
       line-height: 1.6;
       font-size: 14.5px;
     }
-    #newsBody:focus, #epaperBodyEditor:focus { border-color: var(--brand); }
+    #newsBody:focus { border-color: var(--brand); }
 
     .btn {
       width: 100%;
@@ -160,8 +156,11 @@
       transition: background 0.2s;
     }
     .btn:hover { background: var(--brand-hover); }
-    .btn-epaper { background: var(--indigo); }
-    .btn-epaper:hover { background: #4338ca; }
+    .btn-secondary {
+      background: #334155;
+      margin-top: 10px;
+    }
+    .btn-secondary:hover { background: #475569; }
 
     /* Table Styles */
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -214,7 +213,6 @@
     <!-- Tab Bar Navigation -->
     <div class="tab-bar">
       <button type="button" class="tab-btn active" id="btn_compose" onclick="switchSection('compose')">➕ Add / Edit Article</button>
-      <button type="button" class="tab-btn epaper-tab-btn" id="btn_epaper" onclick="switchSection('epaper')">📰 E-Paper Broadsheet Editor</button>
       <button type="button" class="tab-btn" id="btn_list" onclick="switchSection('list')">📑 Manage All News (<span id="countBadge">0</span>)</button>
       <button type="button" class="tab-btn" id="btn_token" onclick="switchSection('token')">☁️ GitHub Config</button>
       <a href="index.html" target="_blank" style="padding:10px 16px; background:#1e293b; color:#cbd5e1; text-decoration:none; border-radius:8px; font-weight:700; font-size:13.5px; border:1px solid var(--border); margin-left:auto;">🌐 Live Website ↗</a>
@@ -318,64 +316,10 @@
         <div id="newsBody" contenteditable="true" placeholder="पूरी खबर यहाँ विस्तार से लिखें..."></div>
       </div>
 
-      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Lightning Save & Publish (रॉकेट गति से सेव करें)</button>
+      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Cloud Publish (सेव करें)</button>
     </div>
 
-    <!-- ================= 2. E-PAPER DEDICATED CUSTOMIZER TAB ================= -->
-    <div id="sec_epaper" class="card" style="display: none;">
-      <h3 style="color:#818cf8; margin-bottom:6px;">📰 ई-पेपर ब्रॉडशीट कस्टमाइज़र (E-Paper Layout Editor)</h3>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">यहाँ से आप किसी भी प्रकाशित खबर को चुनकर केवल ई-पेपर के लिए उसकी हेडलाइन, पैराग्राफ गैपिंग और पेज स्लॉट बदल सकते हैं।</p>
-
-      <div class="form-group">
-        <label>1. ई-पेपर में प्रदर्शित करने के लिए समाचार चुनें:</label>
-        <select id="epaperSelectArticle" onchange="loadEpaperArticleData()">
-          <option value="">-- समाचार चुनें --</option>
-        </select>
-      </div>
-
-      <input type="hidden" id="epaperTargetId" value="" />
-
-      <div class="grid-2">
-        <div class="form-group">
-          <label style="color:#a5b4fc;">ई-पेपर पृष्ठ स्लॉट (Page Slot)</label>
-          <select id="epaperPageSlot">
-            <option value="1">📄 पृष्ठ 01 (मुख्य फ्रंट पेज)</option>
-            <option value="2">📄 पृष्ठ 02 (बिहार राज्य हलचल)</option>
-            <option value="3">📄 पृष्ठ 03 (सीमांचल व पूर्णिया ज़ोन)</option>
-            <option value="4">📄 पृष्ठ 04 (राष्ट्रीय एवं अंतर्राष्ट्रीय)</option>
-            <option value="5">📄 पृष्ठ 05 (शिक्षा, करियर व संपादकीय)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label style="color:#a5b4fc;">पैराग्राफ गैपिंग (Spacing Style)</label>
-          <select id="epaperGapStyle">
-            <option value="normal">सामान्य गैपिंग (Normal Spacing)</option>
-            <option value="compact" selected>संक्षिप्त और सघन (Compact Flow)</option>
-            <option value="spacious">खुला-खुला गैप (Spacious)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label style="color:#a5b4fc;">ई-पेपर कस्टम शीर्षक (Optional Headline)</label>
-        <input type="text" id="epaperCustomTitle" placeholder="ई-पेपर के लिए छोटी या सटीक हेडलाइन..." style="background:#090d16;" />
-      </div>
-
-      <div class="form-group">
-        <label style="color:#a5b4fc;">ई-पेपर विशेष कस्टमाइज्ड टेक्स्ट (यहाँ आप खुद पैराग्राफ और गैप सेट कर सकते हैं)</label>
-        <div class="editor-tools">
-          <button type="button" onclick="formatEpaperText('bold')"><b>B</b></button>
-          <button type="button" onclick="formatEpaperText('italic')"><i>I</i></button>
-          <button type="button" onclick="formatEpaperText('underline')"><u>U</u></button>
-        </div>
-        <div id="epaperBodyEditor" contenteditable="true" placeholder="ई-पेपर का टेक्स्ट यहाँ अपने हिसाब से सजाएं व गैप दें..."></div>
-      </div>
-
-      <button type="button" class="btn btn-epaper" id="btnSaveEpaper" onclick="saveEpaperCustomization()">💾 Save E-Paper Layout (तुरंत अपडेट करें)</button>
-    </div>
-
-    <!-- 3. MANAGE NEWS LIST TAB -->
+    <!-- 2. MANAGE NEWS LIST TAB -->
     <div id="sec_list" class="card" style="display: none;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
         <h3>प्रकाशित समाचार सूची</h3>
@@ -386,22 +330,21 @@
         <table>
           <thead>
             <tr>
-              <th style="width:35%;">Title</th>
+              <th style="width:40%;">Title</th>
               <th>Category</th>
               <th>Placement Section</th>
-              <th>E-Paper Slot</th>
               <th>Date</th>
               <th style="text-align:center;">Actions</th>
             </tr>
           </thead>
           <tbody id="newsTable">
-            <tr><td colspan="6" style="text-align:center; padding:20px;">लोड हो रहा है...</td></tr>
+            <tr><td colspan="5" style="text-align:center; padding:20px;">लोड हो रहा है...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- 4. GITHUB CONFIG TAB -->
+    <!-- 3. GITHUB CONFIG TAB -->
     <div id="sec_token" class="card" style="display: none;">
       <h3 style="margin-bottom:12px;">GitHub Token Configuration</h3>
       <p style="font-size:13px; color:var(--muted); margin-bottom:15px;">GitHub API के ज़रिए लाइव डेटा सेव करने के लिए आपका Personal Access Token आवश्यक है।</p>
@@ -417,6 +360,7 @@
   <script>
     "use strict";
 
+    // Authentication Guard
     if (localStorage.getItem("90i_admin_logged") !== "true") {
       window.location.replace("login.html");
     }
@@ -435,17 +379,14 @@
 
     function switchSection(name) {
       document.getElementById('sec_compose').style.display = (name === 'compose') ? 'block' : 'none';
-      document.getElementById('sec_epaper').style.display = (name === 'epaper') ? 'block' : 'none';
       document.getElementById('sec_list').style.display = (name === 'list') ? 'block' : 'none';
       document.getElementById('sec_token').style.display = (name === 'token') ? 'block' : 'none';
 
       document.getElementById('btn_compose').className = 'tab-btn' + (name === 'compose' ? ' active' : '');
-      document.getElementById('btn_epaper').className = 'tab-btn epaper-tab-btn' + (name === 'epaper' ? ' active' : '');
       document.getElementById('btn_list').className = 'tab-btn' + (name === 'list' ? ' active' : '');
       document.getElementById('btn_token').className = 'tab-btn' + (name === 'token' ? ' active' : '');
 
       if (name === 'list') loadNewsList();
-      if (name === 'epaper') populateEpaperArticleDropdown();
     }
 
     function switchMediaMode(type) {
@@ -461,11 +402,6 @@
       document.getElementById('newsBody').focus();
     }
 
-    function formatEpaperText(cmd) {
-      document.execCommand(cmd, false, null);
-      document.getElementById('epaperBodyEditor').focus();
-    }
-
     function generateSlug() {
       if (document.getElementById('editId').value) return;
       var t = document.getElementById('newsTitle').value;
@@ -473,6 +409,7 @@
       document.getElementById('newsSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
     }
 
+    // Auto-compress heavy images to web-optimized dimensions
     function handleImg(e) {
       var f = e.target.files[0];
       if (!f) return;
@@ -505,32 +442,29 @@
       if (!t) { alert("टोकन डालें!"); return; }
       localStorage.setItem('90i_gh_token', t);
       alert("✅ टोकन सुरक्षित हो गया!");
-      location.reload();
     }
 
     async function getDb() {
       try {
-        var cached = localStorage.getItem("cached_db");
-        if (cached) {
-          return JSON.parse(cached);
-        }
         var res = await fetch('data/90i-data.json?_t=' + Date.now());
-        if (res.ok) {
-          var data = await res.json();
-          localStorage.setItem("cached_db", JSON.stringify(data));
-          return data;
-        }
+        if (res.ok) return await res.json();
       } catch(e) {}
       return { "90i_news": [], "news": [], "videos": [] };
     }
 
-    // INSTANT LOCAL SAVE & BACKGROUND SYNC (Zero Lag / No Timeout)
     async function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक (Title) आवश्यक है!"); return; }
 
+      var token = localStorage.getItem('90i_gh_token');
+      if (!token) { 
+        alert("⚠️ पहले GitHub Config टैब में जाकर टोकन सेव करें!"); 
+        switchSection('token');
+        return; 
+      }
+
       var btn = document.getElementById('btnPublish');
-      btn.innerText = "⏳ Saving Instantly...";
+      btn.innerText = "⏳ Saving to GitHub Cloud...";
       btn.disabled = true;
 
       try {
@@ -561,133 +495,66 @@
           content: body,
           body: body,
           date: new Date().toISOString().split('T')[0],
-          publishedAt: new Date().toISOString().split('T')[0],
-          epaperPage: 1,
-          epaperGapStyle: "compact",
-          epaperTitle: "",
-          epaperCustomContent: ""
+          publishedAt: new Date().toISOString().split('T')[0]
         };
 
         if (editId) {
           var idx = newsList.findIndex(function(x) { return String(x.id) === String(editId); });
           if (idx !== -1) {
             item.date = newsList[idx].date || item.date;
-            item.epaperPage = newsList[idx].epaperPage || 1;
-            item.epaperGapStyle = newsList[idx].epaperGapStyle || "compact";
-            item.epaperTitle = newsList[idx].epaperTitle || "";
-            item.epaperCustomContent = newsList[idx].epaperCustomContent || "";
             newsList[idx] = item;
           }
         } else {
-          newsList.unshift(item);
+          // New news item: spotlight and subleads go to the top
+          if (section === 'spotlight' || section === 'sublead') {
+            newsList.unshift(item);
+          } else {
+            newsList.push(item);
+          }
         }
 
         db["90i_news"] = newsList;
         db.news = newsList;
 
-        // Instant Local Cache Update
-        localStorage.setItem("cached_db", JSON.stringify(db));
-        alert("🎉 समाचार सफलतापूर्वक सेव हो गया!");
-        
+        await syncDb(db);
+        alert("🎉 समाचार सफलतापूर्वक लाइव प्रकाशित हो गया!");
         resetForm();
         switchSection('list');
-
-        // Background Cloud Sync
-        syncDb(db).catch(function(err) {
-          console.warn("Background sync warning: ", err.message);
-        });
-
       } catch(err) {
         alert("त्रुटि: " + err.message);
       } finally {
-        btn.innerText = "🚀 Lightning Save & Publish (रॉकेट गति से सेव करें)";
-        btn.disabled = false;
-      }
-    }
-
-    async function populateEpaperArticleDropdown() {
-      var db = await getDb();
-      var list = db["90i_news"] || db.news || [];
-      var sel = document.getElementById('epaperSelectArticle');
-      
-      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + list.map(function(n) {
-        return '<option value="' + n.id + '">' + (n.title || '') + ' (' + (n.date || '') + ')</option>';
-      }).join('');
-    }
-
-    async function loadEpaperArticleData() {
-      var id = document.getElementById('epaperSelectArticle').value;
-      if (!id) return;
-
-      var db = await getDb();
-      var list = db["90i_news"] || db.news || [];
-      var n = list.find(function(x) { return String(x.id) === String(id); });
-      if (!n) return;
-
-      document.getElementById('epaperTargetId').value = n.id;
-      document.getElementById('epaperPageSlot').value = n.epaperPage ? String(n.epaperPage) : "1";
-      document.getElementById('epaperGapStyle').value = n.epaperGapStyle || "compact";
-      document.getElementById('epaperCustomTitle').value = n.epaperTitle || n.title || "";
-      document.getElementById('epaperBodyEditor').innerHTML = n.epaperCustomContent || n.content || n.body || "";
-    }
-
-    async function saveEpaperCustomization() {
-      var id = document.getElementById('epaperTargetId').value;
-      if (!id) { alert("कृपया सूची से कोई समाचार चुनें!"); return; }
-
-      var btn = document.getElementById('btnSaveEpaper');
-      btn.innerText = "⏳ Saving E-Paper Layout...";
-      btn.disabled = true;
-
-      try {
-        var db = await getDb();
-        var list = db["90i_news"] || db.news || [];
-        var idx = list.findIndex(function(x) { return String(x.id) === String(id); });
-
-        if (idx !== -1) {
-          list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
-          list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
-          list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
-          list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
-
-          db["90i_news"] = list;
-          db.news = list;
-
-          // Instant Local Save
-          localStorage.setItem("cached_db", JSON.stringify(db));
-          alert("📰 ई-पेपर लेआउट तुरंत अपडेट हो गया!");
-          
-          // Background Sync
-          syncDb(db).catch(function(err){ console.warn(err); });
-        }
-      } catch(e) {
-        alert("त्रुटि: " + e.message);
-      } finally {
-        btn.innerText = "💾 Save E-Paper Layout (तुरंत अपडेट करें)";
+        btn.innerText = "🚀 Cloud Publish (सेव करें)";
         btn.disabled = false;
       }
     }
 
     async function syncDb(db) {
       var token = localStorage.getItem('90i_gh_token');
-      if (!token) return;
-
       var owner = "md-sakib-raza";
       var repo = "Ku7";
       var path = "data/90i-data.json";
 
       var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
       });
       
+      if (getRes.status === 401 || getRes.status === 403) {
+        throw new Error("GitHub Token अमान्य (Invalid) या Expire हो गया है।");
+      }
+
       var sha = getRes.ok ? (await getRes.json()).sha : null;
       var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
 
-      await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
-        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "CMS Fast Sync Update", content: contentB64, branch: "main", sha: sha })
+        headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: "CMS Article Update", content: contentB64, branch: "main", sha: sha })
       });
+
+      if (!putRes.ok) {
+        var errBody = await putRes.json().catch(function(){ return {}; });
+        throw new Error(errBody.message || "GitHub Save HTTP " + putRes.status);
+      }
     }
 
     async function loadNewsList() {
@@ -700,18 +567,16 @@
     function renderTable(list) {
       var tb = document.getElementById('newsTable');
       if (!list.length) { 
-        tb.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">कोई प्रकाशित समाचार उपलब्ध नहीं है।</td></tr>'; 
+        tb.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--muted);">कोई प्रकाशित समाचार उपलब्ध नहीं है।</td></tr>'; 
         return; 
       }
 
       tb.innerHTML = list.map(function(n) {
         var secName = getSectionLabel(n.section);
-        var epaperPageNum = n.epaperPage ? '📄 पेज 0' + n.epaperPage : '📄 पेज 01 (ऑटो)';
         return '<tr>' +
           '<td><b style="color:#f8fafc;">' + (n.title || '') + '</b>' + (n.videoUrl ? ' <span style="font-size:11px; color:#ef4444;">📹 Video</span>' : '') + '</td>' +
           '<td><span class="badge-sec" style="background:#b91c1c;">' + (n.category || 'जनरल') + '</span></td>' +
           '<td><span class="badge-sec">' + secName + '</span></td>' +
-          '<td><span class="badge-sec" style="background:#4f46e5;">' + epaperPageNum + '</span></td>' +
           '<td>' + (n.date || n.publishedAt || '') + '</td>' +
           '<td style="text-align:center; white-space:nowrap;">' +
             '<button type="button" class="btn-action-edit" onclick="editNews(' + n.id + ')" title="Edit">✏️ Edit</button>' +
@@ -783,6 +648,9 @@
     async function deleteNews(id) {
       if (!confirm("क्या आप वाकई इस समाचार को हटाना (Delete) चाहते हैं?")) return;
 
+      var token = localStorage.getItem('90i_gh_token');
+      if (!token) { alert("⚠️ GitHub Token आवश्यक है!"); return; }
+
       try {
         var db = await getDb();
         var list = db["90i_news"] || db.news || [];
@@ -791,11 +659,9 @@
         db["90i_news"] = updatedList;
         db.news = updatedList;
 
-        localStorage.setItem("cached_db", JSON.stringify(db));
+        await syncDb(db);
         alert("🗑️ समाचार सफलतापूर्वक हटा दिया गया!");
         loadNewsList();
-
-        syncDb(db).catch(function(err){ console.warn(err); });
       } catch(e) {
         alert("हटाने में त्रुटि: " + e.message);
       }
