@@ -411,13 +411,6 @@
         <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
       </div>
       <button type="button" class="btn" style="max-width: 220px;" onclick="saveToken()">💾 Save Token</button>
-
-      <!-- 🔄 Auto Sitemap Update Button Integrated Here -->
-      <div style="margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
-        <h4 style="margin-bottom: 8px; color: #38bdf8;">Google Search Console Auto-Index (Sitemap Sync)</h4>
-        <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">इस बटन पर क्लिक करते ही आपके सभी आर्टिकल्स का डेटा सीधे साइटमैप (`sitemap.xml`) में अपडेट होकर GitHub पर सेव हो जाएगा।</p>
-        <button type="button" id="btnSyncSitemap" onclick="generateAndSyncFullSitemap()" style="background:#059669; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; cursor:pointer; font-size:14px;">🔄 Update Sitemap Now</button>
-      </div>
     </div>
   </div>
 
@@ -609,70 +602,6 @@
       } finally {
         btn.innerText = "🚀 Lightning Save & Publish (रॉकेट गति से सेव करें)";
         btn.disabled = false;
-      }
-    }
-
-    // 🔄 자동 Full Sitemap Generator Function (Added for Google Search Console)
-    async function generateAndSyncFullSitemap() {
-      var btn = document.getElementById('btnSyncSitemap');
-      if(btn) { btn.innerText = "⏳ Updating Sitemap..."; btn.disabled = true; }
-
-      try {
-        var db = await getDb();
-        var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
-        
-        var domain = "https://90inews.me";
-        var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-        
-        // मुख्य स्टैटिक पेजेस
-        xml += '  <url><loc>' + domain + '/</loc><changefreq>always</changefreq><priority>1.0</priority></url>\n';
-        xml += '  <url><loc>' + domain + '/epaper.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n';
-        xml += '  <url><loc>' + domain + '/about.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>\n';
-
-        // JSON डेटाबेस से सभी खबरों के स्लग को लूप चलाकर साइटमैप में जोड़ना
-        newsList.forEach(function(item) {
-          if (item.slug) {
-            var articleUrl = domain + '/' + item.slug;
-            var itemDate = item.date || item.publishedAt || new Date().toISOString().split('T')[0];
-            xml += '  <url>\n';
-            xml += '    <loc>' + articleUrl + '</loc>\n';
-            xml += '    <lastmod>' + itemDate + '</lastmod>\n';
-            xml += '    <changefreq>daily</changefreq>\n';
-            xml += '    <priority>0.8</priority>\n';
-            xml += '  </url>\n';
-          }
-        });
-
-        xml += '</urlset>';
-
-        var token = localStorage.getItem('90i_gh_token');
-        if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया GitHub Config टैब में पहले टोकन डालें।"); }
-
-        var owner = "md-sakib-raza";
-        var repo = "Ku7";
-        var path = "sitemap.xml";
-
-        var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
-          headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
-        });
-        var sha = getRes.ok ? (await getRes.json()).sha : null;
-        var contentB64 = window.btoa(unescape(encodeURIComponent(xml)));
-
-        var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
-          method: 'PUT',
-          headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: "Auto-generate full sitemap from all articles", content: contentB64, branch: "main", sha: sha })
-        });
-
-        if (!putRes.ok) { throw new Error("GitHub पर साइटमैप सेव करने में विफल (HTTP " + putRes.status + ")"); }
-
-        alert("🎉 आपका साइटमैप सफलतापूर्वक अपडेट हो गया है! सभी खबरें इसमें जुड़ चुकी हैं।");
-
-      } catch(err) {
-        alert("त्रुटि: " + err.message);
-      } finally {
-        if(btn) { btn.innerText = "🔄 Update Sitemap Now"; btn.disabled = false; }
       }
     }
 
