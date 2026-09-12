@@ -6,7 +6,6 @@
   <title id="pageTitle">THE 90I NEWS</title>
   <meta name="description" id="pageMetaDesc" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
 
-  <!-- SEO & AdSense Approval Fixes: Canonical & Open Graph / Twitter Meta Tags -->
   <link rel="canonical" id="pageCanonical" href="https://www.the90inews.com/" />
   <meta property="og:type" content="article" />
   <meta property="og:title" id="ogTitle" content="THE 90I NEWS" />
@@ -17,12 +16,10 @@
   <meta name="twitter:title" id="twTitle" content="THE 90I NEWS" />
   <meta name="twitter:description" id="twDesc" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
 
-  <!-- Content Security Policy (CSP) & Security Headers -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; media-src 'self' https:;" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9762787230045511" crossorigin="anonymous"></script>
 
-  <!-- Dynamic NewsArticle Schema Markup (SEO) -->
   <script type="application/ld+json" id="newsArticleSchema">
   {
     "@context": "https://schema.org",
@@ -73,11 +70,8 @@
       min-height: 100vh;
     }
 
-    .main-wrapper {
-      flex: 1 0 auto;
-    }
+    .main-wrapper { flex: 1 0 auto; }
 
-    /* Top Utility Bar */
     .top-bar {
       background: #ffffff;
       border-bottom: 1px solid var(--line);
@@ -93,7 +87,6 @@
       align-items: center;
     }
 
-    /* Main Branding Header */
     .header-main {
       background: #ffffff;
       padding: 16px 20px 12px;
@@ -134,12 +127,8 @@
       color: #334155;
       transition: 0.2s;
     }
-    .btn-search:hover {
-      background: #e2e8f0;
-      color: var(--brand);
-    }
+    .btn-search:hover { background: #e2e8f0; color: var(--brand); }
 
-    /* Navigation Bar */
     .main-nav {
       background: #ffffff;
       border-bottom: 2px solid var(--brand);
@@ -169,7 +158,6 @@
     .nav-scroll a:hover, .nav-scroll a.active { color: var(--brand); }
     .nav-scroll a.epaper-nav { color: var(--brand); }
 
-    /* Breaking Ticker */
     .ticker-wrap {
       background: #0f172a;
       color: #ffffff;
@@ -199,7 +187,6 @@
       width: 100%;
     }
 
-    /* 2-Column Content Layout */
     .layout-container {
       max-width: 1200px;
       margin: 15px auto 40px;
@@ -209,7 +196,6 @@
       gap: 28px;
     }
 
-    /* Article Card */
     .article-box {
       background: var(--card-bg);
       border: 1px solid var(--line);
@@ -281,7 +267,6 @@
       font-style: italic;
     }
 
-    /* Summary Box */
     .summary-card {
       background: var(--summary-bg);
       border-left: 4px solid var(--summary-border);
@@ -294,25 +279,13 @@
       font-weight: 600;
     }
 
-    /* Article Body with Drop-Cap */
     .article-text {
       font-size: 17px;
       line-height: 1.85;
       color: #1e293b;
     }
     .article-text p { margin-bottom: 16px; word-break: break-word; }
-    .article-text p:first-of-type::first-letter {
-      font-size: 52px;
-      line-height: 45px;
-      padding-top: 4px;
-      padding-right: 8px;
-      padding-left: 3px;
-      float: left;
-      color: var(--brand);
-      font-weight: 900;
-    }
 
-    /* ================= COMPACT LANDSCAPE RATING STRIP ================= */
     .rating-strip-landscape {
       background: #0f172a;
       color: #f8fafc;
@@ -335,12 +308,7 @@
       width: 4px;
       background: linear-gradient(180deg, #dc2626, #22c55e);
     }
-    .strip-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .strip-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .strip-score-badge {
       display: flex;
       align-items: baseline;
@@ -350,16 +318,8 @@
       border-radius: 6px;
       border: 1px solid #334155;
     }
-    .strip-num {
-      font-size: 17px;
-      font-weight: 900;
-      color: #f59e0b;
-    }
-    .strip-votes {
-      font-size: 11.5px;
-      color: #94a3b8;
-      font-weight: 600;
-    }
+    .strip-num { font-size: 17px; font-weight: 900; color: #f59e0b; }
+    .strip-votes { font-size: 11.5px; color: #94a3b8; font-weight: 600; }
     .strip-trust-pill {
       background: rgba(34, 197, 94, 0.15);
       color: #4ade80;
@@ -373,22 +333,9 @@
       gap: 5px;
       text-transform: uppercase;
     }
-    .strip-dot {
-      width: 6px;
-      height: 6px;
-      background: #4ade80;
-      border-radius: 50%;
-    }
-    .strip-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .strip-rate-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: #cbd5e1;
-    }
+    .strip-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; }
+    .strip-right { display: flex; align-items: center; gap: 8px; }
+    .strip-rate-label { font-size: 12px; font-weight: 700; color: #cbd5e1; }
     .strip-stars {
       display: inline-flex;
       gap: 4px;
@@ -398,14 +345,8 @@
       user-select: none;
       line-height: 1;
     }
-    .strip-star {
-      transition: transform 0.15s, color 0.15s;
-    }
-    .strip-star:hover,
-    .strip-star.active {
-      color: #f59e0b;
-      transform: scale(1.15);
-    }
+    .strip-star { transition: transform 0.15s, color 0.15s; }
+    .strip-star:hover, .strip-star.active { color: #f59e0b; transform: scale(1.15); }
     .strip-feedback-msg {
       width: 100%;
       font-size: 11.5px;
@@ -415,23 +356,13 @@
       display: none;
     }
 
-    /* Social Share Suite */
     .share-container {
       margin-top: 20px;
       padding-top: 15px;
       border-top: 1px solid var(--line);
     }
-    .share-container h4 {
-      font-size: 13.5px;
-      color: #475569;
-      margin-bottom: 10px;
-      font-weight: 800;
-    }
-    .share-btn-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    .share-container h4 { font-size: 13.5px; color: #475569; margin-bottom: 10px; font-weight: 800; }
+    .share-btn-group { display: flex; flex-wrap: wrap; gap: 8px; }
     .share-btn-group a, .share-btn-group button {
       border: none;
       padding: 8px 14px;
@@ -453,7 +384,6 @@
     .btn-copy { background: #475569; }
     .share-btn-group a:hover, .share-btn-group button:hover { opacity: 0.9; }
 
-    /* Sidebar */
     .sidebar-card {
       background: var(--card-bg);
       border: 1px solid var(--line);
@@ -488,18 +418,8 @@
       background: #e2e8f0;
       flex-shrink: 0;
     }
-    .side-detail {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      flex-grow: 1;
-    }
-    .side-cat-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
+    .side-detail { display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
+    .side-cat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
     .side-cat {
       background: var(--brand);
       color: #ffffff;
@@ -525,13 +445,8 @@
       transition: color 0.2s;
     }
     .side-item:hover .side-headline { color: var(--brand); }
-    .side-date {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+    .side-date { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-    /* Policy Modal Styles */
     .policy-modal {
       display: none;
       position: fixed;
@@ -574,7 +489,6 @@
     .policy-body h4 { color: #0f172a; margin: 16px 0 8px; font-size: 16px; font-weight: 800; }
     .policy-body p { margin-bottom: 12px; }
 
-    /* ================= COMPLETE BLACK FOOTER ================= */
     .main-footer {
       background: #090d16 !important;
       color: #cbd5e1 !important;
@@ -606,10 +520,8 @@
     .footer-col h3::after {
       content: '';
       position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 35px;
-      height: 2px;
+      left: 0; bottom: 0;
+      width: 35px; height: 2px;
       background: var(--brand);
     }
     .footer-logo {
@@ -621,12 +533,7 @@
       margin-bottom: 8px;
     }
     .footer-logo span { color: var(--brand); }
-    .footer-desc {
-      font-size: 13px;
-      color: #94a3b8;
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
+    .footer-desc { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 16px; }
     .footer-contact-info {
       list-style: none;
       font-size: 13px;
@@ -635,17 +542,9 @@
       flex-direction: column;
       gap: 8px;
     }
-    .footer-contact-info a {
-      color: #cbd5e1;
-      text-decoration: none;
-    }
+    .footer-contact-info a { color: #cbd5e1; text-decoration: none; }
     .footer-contact-info a:hover { color: var(--brand); }
-    .footer-links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
     .footer-links a {
       color: #94a3b8;
       text-decoration: none;
@@ -655,22 +554,10 @@
       gap: 6px;
       cursor: pointer;
     }
-    .footer-links a:hover {
-      color: #ffffff;
-      transform: translateX(3px);
-    }
-    .footer-links a::before {
-      content: '▸';
-      color: var(--brand);
-      font-size: 11px;
-    }
+    .footer-links a:hover { color: #ffffff; transform: translateX(3px); }
+    .footer-links a::before { content: '▸'; color: var(--brand); font-size: 11px; }
 
-    /* Contact Form */
-    .footer-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .footer-form { display: flex; flex-direction: column; gap: 10px; }
     .form-input, .form-textarea {
       width: 100%;
       background: #1e293b;
@@ -683,14 +570,8 @@
       outline: none;
       transition: border-color 0.2s, background 0.2s;
     }
-    .form-input:focus, .form-textarea:focus {
-      border-color: var(--brand);
-      background: #0f172a;
-    }
-    .form-textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--brand); background: #0f172a; }
+    .form-textarea { resize: vertical; min-height: 70px; }
     .btn-footer-submit {
       background: var(--brand);
       color: #ffffff;
@@ -706,16 +587,9 @@
       justify-content: center;
       gap: 6px;
     }
-    .btn-footer-submit:hover {
-      background: var(--brand-dark);
-    }
-    .form-status {
-      font-size: 12px;
-      margin-top: 4px;
-      display: none;
-    }
+    .btn-footer-submit:hover { background: var(--brand-dark); }
+    .form-status { font-size: 12px; margin-top: 4px; display: none; }
 
-    /* Bottom Bar */
     .footer-bottom {
       margin-top: 40px;
       border-top: 1px solid #1e293b;
@@ -813,7 +687,6 @@
           <p>समाचार सामग्री लोड हो रही है...</p>
         </section>
 
-        <!-- ================= SLEEK LANDSCAPE TRUST & RATING STRIP ================= -->
         <div class="rating-strip-landscape" id="newsRatingWidget">
           <div class="strip-left">
             <div class="strip-score-badge">
@@ -864,16 +737,13 @@
     </main>
   </div>
 
-  <!-- POLICY POPUP MODALS -->
   <div id="policyModal" class="policy-modal" onclick="closePolicyOnBg(event)">
     <div class="policy-box">
       <div class="policy-header">
         <h3 id="policyModalTitle">नीति विवरण</h3>
         <button style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;" onclick="closePolicyModal()">✕</button>
       </div>
-      <div class="policy-body" id="policyModalContent">
-        <!-- Content injected dynamically -->
-      </div>
+      <div class="policy-body" id="policyModalContent"></div>
     </div>
   </div>
 
@@ -882,9 +752,7 @@
       
       <div class="footer-col">
         <div class="footer-logo">THE <span>90I</span> NEWS</div>
-        <p class="footer-desc">
-          बिहार एवं राष्ट्र का अग्रणी डिजिटल न्यूज़ नेटवर्क। निष्पक्ष पत्रकारिता, सटीक विश्लेषण और ज़मीनी मुद्दों की निर्भीक आवाज़।
-        </p>
+        <p class="footer-desc">बिहार एवं राष्ट्र का अग्रणी डिजिटल न्यूज़ नेटवर्क। निष्पक्ष पत्रकारिता, सटीक विश्लेषण और ज़मीनी मुद्दों की निर्भीक आवाज़।</p>
         <ul class="footer-contact-info">
           <li>📍 <b>मुख्यालय:</b> पूर्णिया, बिहार, भारत</li>
           <li>✉️ <b>ईमेल:</b> <a href="mailto:office.mdsakibraza@gmail.com">office.mdsakibraza@gmail.com</a></li>
@@ -963,6 +831,7 @@
           newsList = extractNewsList(db);
           if (newsList && newsList.length) {
             displayMatchingArticle(newsList, slug, id);
+            return;
           }
         } catch (e) {}
       }
@@ -1000,9 +869,16 @@
 
     function displayMatchingArticle(newsList, slug, id) {
       let currentArticle = null;
-      if (slug) currentArticle = newsList.find(n => String(n.slug || "").trim().toLowerCase() === slug);
-      if (!currentArticle && id) currentArticle = newsList.find(n => String(n.id) === id);
-      if (!currentArticle && newsList.length > 0) currentArticle = newsList[0];
+
+      if (slug) {
+        currentArticle = newsList.find(n => String(n.slug || "").trim().toLowerCase() === slug);
+      }
+      if (!currentArticle && id) {
+        currentArticle = newsList.find(n => String(n.id || "") === id);
+      }
+      if (!currentArticle && newsList.length > 0) {
+        currentArticle = newsList[0];
+      }
 
       if (currentArticle) {
         currentArticleId = currentArticle.id || currentArticle.slug || "art_1";
@@ -1044,7 +920,6 @@
       const image = (a.image || "").trim();
       const caption = a.imageCaption || "";
 
-      // Update Dynamic SEO Meta Tags & Schema
       document.title = `${title} — THE 90I NEWS`;
       document.getElementById("pageMetaDesc").content = summary || title;
       
@@ -1057,7 +932,6 @@
       document.getElementById("twTitle").content = title;
       document.getElementById("twDesc").content = summary || title;
 
-      // Update JSON-LD NewsArticle Schema dynamically
       const schemaScript = document.getElementById("newsArticleSchema");
       if (schemaScript) {
         schemaScript.textContent = JSON.stringify({
@@ -1129,7 +1003,6 @@
 
     function initArticleRating(artKey) {
       const data = getRatingData(artKey);
-
       const avgEl = document.getElementById("avgRatingDisplay");
       const votesEl = document.getElementById("totalVotesDisplay");
       const metaRating = document.getElementById("artMetaRating");
@@ -1138,28 +1011,19 @@
       if (votesEl) votesEl.textContent = `(${data.total}+ वोट्स)`;
       if (metaRating) metaRating.textContent = `⭐ ${data.avg} (${data.total}+ पाठकों का भरोसा)`;
 
-      if (data.userRated) {
-        highlightStars(data.userStars || 5);
-      } else {
-        highlightStars(0);
-      }
+      highlightStars(data.userRated ? (data.userStars || 5) : 0);
     }
 
     function highlightStars(count) {
       const stars = document.querySelectorAll("#starBox .strip-star");
       stars.forEach((s, idx) => {
-        if (idx < count) {
-          s.classList.add("active");
-        } else {
-          s.classList.remove("active");
-        }
+        if (idx < count) s.classList.add("active");
+        else s.classList.remove("active");
       });
     }
 
     function submitNewsRating(score) {
-      const key = "rating_data_" + currentArticleId;
       let data = getRatingData(currentArticleId);
-
       if (data.userRated) {
         alert("आपने इस समाचार को पहले ही रेट कर दिया है। धन्यवाद!");
         return;
@@ -1168,7 +1032,7 @@
       data.total = (data.total || 100) + 1;
       data.userRated = true;
       data.userStars = score;
-      localStorage.setItem(key, JSON.stringify(data));
+      localStorage.setItem("rating_data_" + currentArticleId, JSON.stringify(data));
 
       highlightStars(score);
       
@@ -1225,12 +1089,8 @@
 
       document.getElementById("btnShareNative").onclick = async () => {
         if (navigator.share) {
-          try {
-            await navigator.share({ title: title, text: text, url: url });
-          } catch (_) {}
-        } else {
-          copyLink();
-        }
+          try { await navigator.share({ title: title, text: text, url: url }); } catch (_) {}
+        } else { copyLink(); }
       };
 
       document.getElementById("btnCopyLink").onclick = copyLink;
@@ -1240,9 +1100,7 @@
       const url = window.location.href;
       if (navigator.clipboard) {
         navigator.clipboard.writeText(url).then(() => alert("✅ लिंक कॉपी हो गया!"));
-      } else {
-        alert("✅ URL: " + url);
-      }
+      } else { alert("✅ URL: " + url); }
     }
 
     function handleFooterContact(event) {
@@ -1264,67 +1122,31 @@
       status.textContent = "धन्यवाद! आपका संदेश सफलतापूर्वक भेज दिया गया है।";
       document.getElementById("footerContactForm").reset();
 
-      setTimeout(() => {
-        status.style.display = "none";
-      }, 5000);
+      setTimeout(() => { status.style.display = "none"; }, 5000);
     }
 
     const policyData = {
       about: {
         title: "हमारे बारे में (About Us)",
-        content: `
-          <h4>THE 90I NEWS के बारे में</h4>
-          <p><b>THE 90I NEWS</b> बिहार एवं राष्ट्र का एक अग्रणी और स्वतंत्र डिजिटल न्यूज़ नेटवर्क है, जिसका मुख्यालय पूर्णिया, बिहार में स्थित है।</p>
-          <p>इस पोर्टल के संस्थापक और मुख्य संचालक पूर्णिया निवासी <b>Md Sakib Raza (सिंटू बाबू)</b> हैं। हमारा मुख्य उद्देश्य बिहार, सीमांचल और देश-विदेश की हर छोटी-बड़ी खबर को निष्पक्षता, सत्यता और पूरी प्रामाणिकता के साथ पाठकों तक पहुँचाना है।</p>
-          <h4>हमारा दृष्टिकोण</h4>
-          <p>हम ज़मीनी स्तर के मुद्दों, शिक्षा, रोजगार, राजनीति और प्रादेशिक विकास को प्रमुखता से उठाते हैं ताकि एक जागरूक समाज का निर्माण हो सके।</p>
-          <p><b>संपर्क ईमेल:</b> office.mdsakibraza@gmail.com</p>
-        `
+        content: `<h4>THE 90I NEWS के बारे में</h4><p><b>THE 90I NEWS</b> बिहार एवं राष्ट्र का एक अग्रणी और स्वतंत्र डिजिटल न्यूज़ नेटवर्क है, जिसका मुख्यालय पूर्णिया, बिहार में स्थित है।</p>`
       },
-      terms: {
-        title: "नियम और शर्तें (Terms & Conditions)",
-        content: `
-          <h4>1. परिचय</h4>
-          <p>THE 90I NEWS (www.the90inews.com) पर आपका स्वागत है। इस वेबसाइट का उपयोग करके आप हमारे सभी नियमों और शर्तों से बंधे होने की सहमति देते हैं।</p>
-        `
-      },
-      privacy: {
-        title: "गोपनीयता नीति (Privacy Policy)",
-        content: `
-          <h4>1. जानकारी का संग्रहण</h4>
-          <p>THE 90I NEWS आपके द्वारा दी गई जानकारी और कुकीज़ के माध्यम से विज़िटर्स का डेटा सुरक्षित रखता है।</p>
-        `
-      },
-      disclaimer: {
-        title: "अस्वीकरण (Disclaimer)",
-        content: `
-          <h4>1. समाचार सटीकता</h4>
-          <p>THE 90I NEWS पर प्रकाशित सभी खबरें पूरी प्रामाणिकता और जमीनी रिसर्च के बाद प्रस्तुत की जाती हैं।</p>
-        `
-      },
-      editorial: {
-        title: "संपादकीय नीति (Editorial Policy)",
-        content: `
-          <h4>1. निष्पक्षता और सत्यता</h4>
-          <p>THE 90I NEWS बिना किसी दबाव या पूर्वाग्रह के स्वतंत्र और सत्यपरक पत्रकारिता के लिए प्रतिबद्ध है।</p>
-        `
-      }
+      terms: { title: "नियम और शर्तें (Terms)", content: `<p>THE 90I NEWS पर आपका स्वागत है।</p>` },
+      privacy: { title: "गोपनीयता नीति (Privacy Policy)", content: `<p>THE 90I NEWS आपकी गोपनीयता का सम्मान करता है।</p>` },
+      disclaimer: { title: "अस्वीकरण (Disclaimer)", content: `<p>सभी खबरें प्रामाणिक स्रोतों से ली जाती हैं।</p>` },
+      editorial: { title: "संपादकीय नीति (Editorial Policy)", content: `<p>हम निष्पक्ष पत्रकारिता के लिए प्रतिबद्ध हैं।</p>` }
     };
 
     function openPolicy(type) {
       const modal = document.getElementById("policyModal");
-      const titleEl = document.getElementById("policyModalTitle");
-      const contentEl = document.getElementById("policyModalContent");
       if (policyData[type]) {
-        titleEl.textContent = policyData[type].title;
-        contentEl.innerHTML = policyData[type].content;
+        document.getElementById("policyModalTitle").textContent = policyData[type].title;
+        document.getElementById("policyModalContent").innerHTML = policyData[type].content;
         modal.style.display = "flex";
       }
     }
 
     function closePolicyModal() {
-      const modal = document.getElementById("policyModal");
-      if (modal) modal.style.display = "none";
+      document.getElementById("policyModal").style.display = "none";
     }
 
     function closePolicyOnBg(e) {
