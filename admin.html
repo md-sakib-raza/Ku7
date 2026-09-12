@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard | THE 90I NEWS (Supabase Edition)</title>
-  <!-- Supabase JS Client Library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Admin Dashboard | THE 90I NEWS</title>
   <style>
     :root {
       --bg: #0b0f19;
@@ -41,68 +39,162 @@
     }
     .panel-header h2 span { color: var(--brand); }
     .panel-header button {
-      background: #7f1d1d; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer;
+      background: #7f1d1d;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
     }
     .panel-header button:hover { background: #991b1b; }
-    .tab-bar { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+    .tab-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     .tab-btn {
-      background: #1e293b; color: #cbd5e1; border: 1px solid var(--border); padding: 10px 14px;
-      border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s;
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 13.5px;
+      transition: 0.2s;
     }
     .tab-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
     .tab-btn.epaper-tab-btn { background: #312e81; color: #818cf8; border-color: #4f46e5; }
     .tab-btn.epaper-tab-btn.active { background: #4f46e5; color: #fff; }
 
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 25px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 25px;
+    }
     .form-group { margin-bottom: 16px; text-align: left; }
     .form-group label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 6px; font-weight: 700; }
     .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 11px 14px; background: #030712; border: 1px solid var(--border); color: #fff; border-radius: 8px; outline: none; font-size: 14px;
+      width: 100%;
+      padding: 11px 14px;
+      background: #030712;
+      border: 1px solid var(--border);
+      color: #fff;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+      transition: border-color 0.2s;
     }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--brand); }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--brand);
+    }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
     
-    .media-type-box { background: var(--card-inner); border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 16px; }
-    .media-tabs { display: flex; gap: 12px; margin-bottom: 12px; }
-    .media-tab-btn { padding: 6px 14px; font-size: 12.5px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #0f172a; color: #94a3b8; cursor: pointer; }
-    .media-tab-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
-    .img-preview { max-height: 140px; border-radius: 8px; margin-top: 10px; display: none; object-fit: cover; border: 1px solid var(--border); }
-
-    .editor-tools { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
-    .editor-tools button { background: #334155; color: #fff; border: none; padding: 7px 14px; border-radius: 4px; cursor: pointer; font-weight: 800; font-size: 13px; }
-    #newsBody, #epaperBodyEditor {
-      min-height: 220px; background: #030712; border: 1px solid var(--border); border-radius: 8px; padding: 14px; color: #fff; outline: none; line-height: 1.6; font-size: 14px;
+    /* Media Type Switcher */
+    .media-type-box {
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 16px;
     }
+    .media-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .media-tab-btn {
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+    .media-tab-btn.active {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+    }
+    .img-preview { max-height: 160px; border-radius: 8px; margin-top: 10px; display: none; object-fit: cover; border: 1px solid var(--border); }
 
-    .btn { width: 100%; padding: 13px; background: var(--brand); color: #fff; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 15px; }
+    /* Rich Editor */
+    .editor-tools { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .editor-tools button {
+      background: #334155;
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .editor-tools button:hover { background: #475569; }
+    #newsBody, #epaperBodyEditor {
+      min-height: 250px;
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      color: #fff;
+      outline: none;
+      line-height: 1.6;
+      font-size: 14.5px;
+    }
+    #newsBody:focus, #epaperBodyEditor:focus { border-color: var(--brand); }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
     .btn:hover { background: var(--brand-hover); }
     .btn-epaper { background: var(--indigo); }
+    .btn-epaper:hover { background: #4338ca; }
 
+    /* Table Styles */
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
     th { background: #1e293b; color: #cbd5e1; font-weight: 800; }
     tr:hover { background: rgba(255,255,255,0.02); }
-    .badge-sec { background: #374151; padding: 3px 7px; border-radius: 4px; font-size: 11px; font-weight: 700; color: #e2e8f0; }
-    .btn-action-edit { background: var(--blue); color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: 700; margin-right: 5px; }
-    .btn-action-del { background: #dc2626; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: 700; }
-
-    #loadingOverlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(11, 15, 25, 0.85); z-index: 9999;
-      display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    .badge-sec {
+      background: #374151;
+      padding: 3px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #e2e8f0;
     }
-    .loading-card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-      padding: 30px; width: 340px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    .btn-action-edit {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 700;
+      margin-right: 5px;
     }
-    .spinner {
-      width: 45px; height: 45px; border: 4px solid #334155; border-top: 4px solid var(--brand);
-      border-radius: 50%; animation: spin 0.6s linear infinite; margin: 0 auto 15px;
+    .btn-action-del {
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 700;
     }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .loading-text { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 8px; }
-    .loading-sub { font-size: 12.5px; color: var(--muted); }
 
     @media (max-width: 768px) {
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
@@ -112,28 +204,20 @@
 </head>
 <body>
 
-  <div id="loadingOverlay">
-    <div class="loading-card">
-      <div class="spinner"></div>
-      <div id="loadingTitle" class="loading-text">सिंक हो रहा है...</div>
-      <div id="loadingDesc" class="loading-sub">कृपया प्रतीक्षा करें...</div>
-    </div>
-  </div>
-
   <div class="panel-wrap">
+    <!-- Panel Header -->
     <div class="panel-header">
-      <h2>THE <span>90I</span> NEWS — Supabase CMS</h2>
+      <h2>THE <span>90I</span> NEWS — CMS कंट्रोल पैनल</h2>
       <button type="button" onclick="logout()">🚪 Logout</button>
     </div>
 
+    <!-- Tab Bar Navigation -->
     <div class="tab-bar">
       <button type="button" class="tab-btn active" id="btn_compose" onclick="switchSection('compose')">➕ Add / Edit Article</button>
-      <button type="button" class="tab-btn epaper-tab-btn" id="btn_epaper" onclick="switchSection('epaper')">📰 E-Paper Editor</button>
-      <button type="button" class="tab-btn" id="btn_list" onclick="switchSection('list')">📑 All News (<span id="countBadge">0</span>)</button>
-      <button type="button" class="tab-btn" id="btn_ad" onclick="switchSection('ad')" style="background:#831843; color:#f43f5e; border-color:#9f1239;">📢 Ad Manager</button>
-      <button type="button" class="tab-btn" id="btn_video" onclick="switchSection('video')" style="background:#1e3a8a; color:#38bdf8; border-color:#1d4ed8;">📹 Video Manager</button>
-      <button type="button" class="tab-btn" id="btn_inbox" onclick="switchSection('inbox')" style="background:#065f46; color:#34d399; border-color:#059669;">📥 Inbox (<span id="inboxCountBadge">0</span>)</button>
-      <a href="index.html" target="_blank" style="padding:10px 14px; background:#1e293b; color:#cbd5e1; text-decoration:none; border-radius:8px; font-weight:700; font-size:13px; border:1px solid var(--border); margin-left:auto;">🌐 Live ↗</a>
+      <button type="button" class="tab-btn epaper-tab-btn" id="btn_epaper" onclick="switchSection('epaper')">📰 E-Paper Broadsheet Editor</button>
+      <button type="button" class="tab-btn" id="btn_list" onclick="switchSection('list')">📑 Manage All News (<span id="countBadge">0</span>)</button>
+      <button type="button" class="tab-btn" id="btn_token" onclick="switchSection('token')">☁️ GitHub Config</button>
+      <a href="index.html" target="_blank" style="padding:10px 16px; background:#1e293b; color:#cbd5e1; text-decoration:none; border-radius:8px; font-weight:700; font-size:13.5px; border:1px solid var(--border); margin-left:auto;">🌐 Live Website ↗</a>
     </div>
 
     <!-- 1. COMPOSE & EDIT TAB -->
@@ -150,21 +234,23 @@
       </div>
 
       <div class="grid-3">
+        <!-- Target Placement -->
         <div class="form-group">
-          <label>Target Section *</label>
+          <label>Target Section (कहाँ दिखाना है?) *</label>
           <select id="newsSection">
-            <option value="spotlight">🌟 Hero Spotlight</option>
-            <option value="sublead">🔥 Hero Sub-lead</option>
+            <option value="spotlight">🌟 Hero Spotlight (मुख्य लीड खबर)</option>
+            <option value="sublead">🔥 Hero Sub-lead (Spotlight के बगल में)</option>
             <option value="feed" selected>📰 मुख्य दैनिक बुलेटिन (General Feed)</option>
-            <option value="bihar">📍 बिहार बुलेटिन</option>
+            <option value="bihar">📍 बिहार बुलेटिन (State Special)</option>
             <option value="politics">🏛️ राजनीति व राष्ट्रीय</option>
             <option value="business">📈 व्यापार व तकनीक</option>
-            <option value="entertainment">🎭 मनोरंजन व खेल</option>
+            <option value="entertainment">🎭 मनोरंजन व खेल जगत</option>
           </select>
         </div>
 
+        <!-- News Category -->
         <div class="form-group">
-          <label>Category</label>
+          <label>Category (श्रेणी)</label>
           <select id="newsCategory">
             <option value="बिहार">बिहार</option>
             <option value="राजनीति">राजनीति</option>
@@ -174,26 +260,32 @@
             <option value="टेक्नोलॉजी">टेक्नोलॉजी</option>
             <option value="खेल">खेल</option>
             <option value="मनोरंजन">मनोरंजन</option>
+            <option value="क्राइम">क्राइम</option>
+            <option value="लाइफस्टाइल">लाइफस्टाइल</option>
           </select>
         </div>
 
+        <!-- Slug -->
         <div class="form-group">
           <label>Article Slug (URL Path)</label>
-          <input type="text" id="newsSlug" placeholder="news-slug-update" />
+          <input type="text" id="newsSlug" placeholder="purnia-news-update" />
         </div>
       </div>
 
       <div class="form-group">
-        <label>Summary / Excerpt</label>
-        <textarea id="newsSummary" rows="2" placeholder="संक्षिप्त 1-2 लाइन सारांश..."></textarea>
+        <label>Summary / Excerpt (संक्षिप्त 1-2 लाइन सारांश)</label>
+        <textarea id="newsSummary" rows="2" placeholder="पाठकों के लिए मुख्य बुलेटिन सारांश..."></textarea>
       </div>
 
+      <!-- MEDIA SECTION: IMAGE OR VIDEO -->
       <div class="media-type-box">
-        <label style="display:block; font-size:13px; color:#cbd5e1; margin-bottom:8px; font-weight:700;">Attachment Media:</label>
+        <label style="display:block; font-size:13px; color:#cbd5e1; margin-bottom:8px; font-weight:700;">Attachment Media (फ़ोटो या वीडियो चुनें):</label>
         <div class="media-tabs">
           <button type="button" class="media-tab-btn active" id="tab_img" onclick="switchMediaMode('image')">🖼️ Photo Upload</button>
-          <button type="button" class="media-tab-btn" id="tab_vid" onclick="switchMediaMode('video')">📹 YouTube URL</button>
+          <button type="button" class="media-tab-btn" id="tab_vid" onclick="switchMediaMode('video')">📹 YouTube Video URL</button>
         </div>
+
+        <!-- Image Input -->
         <div id="media_img_box">
           <div class="grid-2">
             <div>
@@ -202,31 +294,38 @@
               <img id="imgPreview" class="img-preview" />
             </div>
             <div>
-              <input type="text" id="newsCaption" placeholder="फ़ोटो का कैप्शन / क्रेडिट" />
+              <input type="text" id="newsCaption" placeholder="फ़ोटो का कैप्शन / क्रेडिट (उदा. 90I डेस्क)" />
             </div>
           </div>
         </div>
+
+        <!-- Video Input -->
         <div id="media_vid_box" style="display:none;">
-          <input type="url" id="newsVideoUrl" placeholder="YouTube Video URL..." />
+          <input type="url" id="newsVideoUrl" placeholder="YouTube Video URL (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)" />
+          <p style="font-size:11.5px; color:var(--muted); margin-top:5px;">💡 अगर वीडियो लिंक डालेंगे तो आर्टिकल में ऑटोमैटिक वीडियो प्लेयर लोड होगा।</p>
         </div>
       </div>
 
+      <!-- Rich Body Content -->
       <div class="form-group">
-        <label>Full Article Body</label>
+        <label>Full Article Body (पूरी खबर विस्तार से)</label>
         <div class="editor-tools">
           <button type="button" onclick="formatText('bold')"><b>B</b></button>
           <button type="button" onclick="formatText('italic')"><i>I</i></button>
           <button type="button" onclick="formatText('underline')"><u>U</u></button>
+          <button type="button" onclick="formatText('insertUnorderedList')">• Bullet List</button>
         </div>
         <div id="newsBody" contenteditable="true" placeholder="पूरी खबर यहाँ विस्तार से लिखें..."></div>
       </div>
 
-      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Save & Publish to Supabase</button>
+      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Lightning Save & Publish (रॉकेट गति से सेव करें)</button>
     </div>
 
-    <!-- ================= 2. E-PAPER BROADSHEET EDITOR TAB ================= -->
+    <!-- ================= 2. E-PAPER DEDICATED CUSTOMIZER TAB ================= -->
     <div id="sec_epaper" class="card" style="display: none;">
       <h3 style="color:#818cf8; margin-bottom:6px;">📰 ई-पेपर ब्रॉडशीट कस्टमाइज़र (E-Paper Layout Editor)</h3>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">यहाँ से आप किसी भी प्रकाशित खबर को चुनकर केवल ई-पेपर के लिए उसकी हेडलाइन, पैराग्राफ गैपिंग और पेज स्लॉट बदल सकते हैं।</p>
+
       <div class="form-group">
         <label>1. ई-पेपर में प्रदर्शित करने के लिए समाचार चुनें:</label>
         <select id="epaperSelectArticle" onchange="loadEpaperArticleData()">
@@ -259,74 +358,66 @@
       </div>
 
       <div class="form-group">
-        <label style="color:#a5b4fc;">ई-पेपर कस्टम शीर्षक</label>
-        <input type="text" id="epaperCustomTitle" placeholder="ई-पेपर के लिए हेडलाइन..." style="background:#090d16;" />
+        <label style="color:#a5b4fc;">ई-पेपर कस्टम शीर्षक (Optional Headline)</label>
+        <input type="text" id="epaperCustomTitle" placeholder="ई-पेपर के लिए छोटी या सटीक हेडलाइन..." style="background:#090d16;" />
       </div>
 
       <div class="form-group">
-        <label style="color:#a5b4fc;">ई-पेपर फोटो कैप्शन (No Date)</label>
-        <input type="text" id="epaperCaption" placeholder="फोटो का कैप्शन..." style="background:#090d16;" />
-      </div>
-
-      <div class="form-group">
-        <label style="color:#a5b4fc;">ई-पेपर विशेष टेक्स्ट</label>
+        <label style="color:#a5b4fc;">ई-पेपर विशेष कस्टमाइज्ड टेक्स्ट (यहाँ आप खुद पैराग्राफ और गैप सेट कर सकते हैं)</label>
         <div class="editor-tools">
           <button type="button" onclick="formatEpaperText('bold')"><b>B</b></button>
           <button type="button" onclick="formatEpaperText('italic')"><i>I</i></button>
           <button type="button" onclick="formatEpaperText('underline')"><u>U</u></button>
         </div>
-        <div id="epaperBodyEditor" contenteditable="true" placeholder="टेक्स्ट यहाँ सजाएं..."></div>
+        <div id="epaperBodyEditor" contenteditable="true" placeholder="ई-पेपर का टेक्स्ट यहाँ अपने हिसाब से सजाएं व गैप दें..."></div>
       </div>
 
-      <button type="button" class="btn btn-epaper" onclick="saveEpaperCustomization()">💾 Save E-Paper Layout Instantly</button>
+      <button type="button" class="btn btn-epaper" id="btnSaveEpaper" onclick="saveEpaperCustomization()">💾 Save E-Paper Layout (तुरंत अपडेट करें)</button>
     </div>
 
-    <!-- ================= 3. MANAGE NEWS LIST TAB ================= -->
+    <!-- 3. MANAGE NEWS LIST TAB -->
     <div id="sec_list" class="card" style="display: none;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
         <h3>प्रकाशित समाचार सूची</h3>
-        <button type="button" onclick="loadNewsList()" style="padding:6px 12px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:6px; cursor:pointer;">🔄 Refresh List</button>
+        <input type="text" id="tableFilter" placeholder="🔍 लिस्ट में खोजें..." oninput="filterTableList(this.value)" style="padding:7px 12px; background:#020617; border:1px solid var(--border); color:#fff; border-radius:6px; font-size:13px; max-width:260px;" />
       </div>
-      <table>
-        <thead><tr><th>Title</th><th>Category</th><th>Section</th><th style="text-align:center;">Actions</th></tr></thead>
-        <tbody id="newsTable"><tr><td colspan="4" style="text-align:center;">लोड हो रहा है...</td></tr></tbody>
-      </table>
+
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:35%;">Title</th>
+              <th>Category</th>
+              <th>Placement Section</th>
+              <th>E-Paper Slot</th>
+              <th>Date</th>
+              <th style="text-align:center;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="newsTable">
+            <tr><td colspan="6" style="text-align:center; padding:20px;">लोड हो रहा है...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- ================= 4. AD MANAGER TAB ================= -->
-    <div id="sec_ad" class="card" style="display: none;">
-      <h3 style="color:#f43f5e; margin-bottom:12px;">📢 होमपेज कस्टम विज्ञापन बैनर</h3>
-      <div class="form-group">
-        <label>विज्ञापन बैनर इमेज चुनें</label>
-        <input type="file" id="adFile" accept="image/*" onchange="handleAdImg(event)" />
-        <input type="hidden" id="adImgBase64" />
-        <img id="adImgPreview" class="img-preview" />
+    <!-- 4. GITHUB CONFIG TAB -->
+    <div id="sec_token" class="card" style="display: none;">
+      <h3 style="margin-bottom:12px;">GitHub Token Configuration</h3>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:15px;">GitHub API के ज़रिए लाइव डेटा सेव करने के लिए आपका Personal Access Token आवश्यक है।</p>
+      
+      <div class="form-group" style="max-width: 500px;">
+        <label>GitHub Personal Access Token (Classic)</label>
+        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
       </div>
-      <button type="button" class="btn" style="background:#e11d48;" onclick="saveCustomAdSettings()">📢 Update Ad Banner</button>
-    </div>
+      <button type="button" class="btn" style="max-width: 220px;" onclick="saveToken()">💾 Save Token</button>
 
-    <!-- ================= 5. VIDEO MANAGER TAB ================= -->
-    <div id="sec_video" class="card" style="display: none;">
-      <h3 style="color:#38bdf8; margin-bottom:12px;">📹 डायरेक्ट वीडियो बुलेटिन मैनेजर</h3>
-      <div class="form-group">
-        <label>वीडियो का शीर्षक *</label>
-        <input type="text" id="directVideoTitle" placeholder="शीर्षक लिखें..." />
+      <!-- 🔄 Auto Sitemap Update Button Integrated Here -->
+      <div style="margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
+        <h4 style="margin-bottom: 8px; color: #38bdf8;">Google Search Console Auto-Index (Sitemap Sync)</h4>
+        <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">इस बटन पर क्लिक करते ही आपके सभी आर्टिकल्स का डेटा सीधे साइटमैप (`sitemap.xml`) में अपडेट होकर GitHub पर सेव हो जाएगा।</p>
+        <button type="button" id="btnSyncSitemap" onclick="generateAndSyncFullSitemap()" style="background:#059669; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; cursor:pointer; font-size:14px;">🔄 Update Sitemap Now</button>
       </div>
-      <div class="form-group">
-        <label>वीडियो फाइल चुनें (MP4) *</label>
-        <input type="file" id="directVideoFile" accept="video/mp4" onchange="handleDirectVideo(event)" />
-        <input type="hidden" id="directVideoBase64" />
-      </div>
-      <button type="button" class="btn" style="background:#0284c7;" onclick="saveDirectVideoSettings()">📹 Upload & Publish Video</button>
-    </div>
-
-    <!-- ================= 6. INBOX TAB ================= -->
-    <div id="sec_inbox" class="card" style="display: none;">
-      <h3 style="color:#34d399; margin-bottom:15px;">📥 पाठक संदेश इनबॉक्स</h3>
-      <table>
-        <thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th style="text-align:center;">Action</th></tr></thead>
-        <tbody id="inboxTable"><tr><td colspan="5" style="text-align:center;">कोई संदेश नहीं।</td></tr></tbody>
-      </table>
     </div>
   </div>
 
@@ -342,54 +433,26 @@
       window.location.replace("login.html");
     }
 
-    // Official Supabase Connection Credentials
-    const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
-    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
-    
-    // Initialize Supabase Client safely
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    let cachedList = [];
 
-    let cachedDb = { "90i_news": [], "messages": [], "customAd": null, "directVideos": [] };
-
-    window.onload = async function() {
-      showLoading("डेटा लोड हो रहा है...", "Supabase से कनेक्ट किया जा रहा है...");
-      var freshDb = await fetchDatabaseFromServer();
-      if (freshDb) {
-        cachedDb = freshDb;
-        updateCounters(freshDb);
-        loadNewsListInternal(freshDb);
-        loadInboxMessagesInternal(freshDb);
-        loadExistingAdAndVideoSettingsInternal(freshDb);
-      }
-      hideLoading();
+    window.onload = function() {
+      document.getElementById('ghToken').value = localStorage.getItem('90i_gh_token') || '';
+      loadNewsList();
     };
 
-    function updateCounters(db) {
-      var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
-      var msgs = db.messages || [];
-      document.getElementById('countBadge').innerText = newsList.length;
-      document.getElementById('inboxCountBadge').innerText = msgs.length;
-    }
-
-    function showLoading(title, desc) {
-      document.getElementById('loadingTitle').innerText = title || "सिंक हो रहा है...";
-      document.getElementById('loadingDesc').innerText = desc || "कृपया प्रतीक्षा करें...";
-      document.getElementById('loadingOverlay').style.display = 'flex';
-    }
-
-    function hideLoading() {
-      document.getElementById('loadingOverlay').style.display = 'none';
-    }
-
     function switchSection(name) {
-      ['compose', 'epaper', 'list', 'ad', 'video', 'inbox'].forEach(s => {
-        document.getElementById('sec_' + s).style.display = (s === name) ? 'block' : 'none';
-        var btn = document.getElementById('btn_' + s);
-        if (btn) btn.className = 'tab-btn' + (s === name ? ' active' : '') + (s === 'epaper' ? ' epaper-tab-btn' : '');
-      });
-      if (name === 'list') loadNewsListInternal(cachedDb);
-      if (name === 'inbox') loadInboxMessagesInternal(cachedDb);
-      if (name === 'epaper') populateEpaperArticleDropdownInternal(cachedDb);
+      document.getElementById('sec_compose').style.display = (name === 'compose') ? 'block' : 'none';
+      document.getElementById('sec_epaper').style.display = (name === 'epaper') ? 'block' : 'none';
+      document.getElementById('sec_list').style.display = (name === 'list') ? 'block' : 'none';
+      document.getElementById('sec_token').style.display = (name === 'token') ? 'block' : 'none';
+
+      document.getElementById('btn_compose').className = 'tab-btn' + (name === 'compose' ? ' active' : '');
+      document.getElementById('btn_epaper').className = 'tab-btn epaper-tab-btn' + (name === 'epaper' ? ' active' : '');
+      document.getElementById('btn_list').className = 'tab-btn' + (name === 'list' ? ' active' : '');
+      document.getElementById('btn_token').className = 'tab-btn' + (name === 'token' ? ' active' : '');
+
+      if (name === 'list') loadNewsList();
+      if (name === 'epaper') populateEpaperArticleDropdown();
     }
 
     function switchMediaMode(type) {
@@ -400,10 +463,18 @@
       document.getElementById('tab_vid').className = 'media-tab-btn' + (!isImg ? ' active' : '');
     }
 
-    function formatText(cmd) { document.execCommand(cmd, false, null); }
-    function formatEpaperText(cmd) { document.execCommand(cmd, false, null); document.getElementById('epaperBodyEditor').focus(); }
+    function formatText(cmd) {
+      document.execCommand(cmd, false, null);
+      document.getElementById('newsBody').focus();
+    }
+
+    function formatEpaperText(cmd) {
+      document.execCommand(cmd, false, null);
+      document.getElementById('epaperBodyEditor').focus();
+    }
 
     function generateSlug() {
+      if (document.getElementById('editId').value) return;
       var t = document.getElementById('newsTitle').value;
       var s = t.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
       document.getElementById('newsSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
@@ -412,171 +483,105 @@
     function handleImg(e) {
       var f = e.target.files[0];
       if (!f) return;
+
       var reader = new FileReader();
       reader.onload = function(evt) {
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 700;
+          var max_w = 900;
           var scale = max_w / img.width;
           canvas.width = (img.width > max_w) ? max_w : img.width;
           canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.68);
-          document.getElementById('newsImgBase64').value = b64;
-          var p = document.getElementById('imgPreview'); p.src = b64; p.style.display = 'block';
+          var compressedBase64 = canvas.toDataURL("image/jpeg", 0.72);
+
+          document.getElementById('newsImgBase64').value = compressedBase64;
+          var p = document.getElementById('imgPreview');
+          p.src = compressedBase64;
+          p.style.display = 'block';
         };
         img.src = evt.target.result;
       };
       reader.readAsDataURL(f);
     }
 
-    function handleAdImg(e) {
-      var f = e.target.files[0];
-      if (!f) return;
-      var reader = new FileReader();
-      reader.onload = function(evt) {
-        var img = new Image();
-        img.onload = function() {
-          var canvas = document.createElement("canvas");
-          var max_w = 800;
-          var scale = max_w / img.width;
-          canvas.width = (img.width > max_w) ? max_w : img.width;
-          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.70);
-          document.getElementById('adImgBase64').value = b64;
-          var p = document.getElementById('adImgPreview'); p.src = b64; p.style.display = 'block';
-        };
-        img.src = evt.target.result;
-      };
-      reader.readAsDataURL(f);
+    function saveToken() {
+      var t = document.getElementById('ghToken').value.trim();
+      if (!t) { alert("टोकन डालें!"); return; }
+      localStorage.setItem('90i_gh_token', t);
+      alert("✅ टोकन सुरक्षित हो गया!");
+      location.reload();
     }
 
-    function handleDirectVideo(e) {
-      var f = e.target.files[0];
-      if (!f) return;
-      if (f.size > 5 * 1024 * 1024) {
-        alert("⚠️ कृपया 5MB से छोटी MP4 वीडियो फाइल चुनें!");
-        document.getElementById('directVideoFile').value = '';
-        return;
-      }
-      var reader = new FileReader();
-      reader.onload = function(evt) {
-        document.getElementById('directVideoBase64').value = evt.target.result;
-      };
-      reader.readAsDataURL(f);
-    }
-
-    async function fetchDatabaseFromServer() {
+    async function getDb() {
       try {
-        let { data, error } = await supabaseClient.from('site_data').select('content').eq('id', 1).single();
-        if (error || !data) return cachedDb;
-        return data.content;
-      } catch(e) {
-        return cachedDb;
-      }
+        var cached = localStorage.getItem("cached_db");
+        if (cached) {
+          return JSON.parse(cached);
+        }
+        var res = await fetch('data/90i-data.json?_t=' + Date.now());
+        if (res.ok) {
+          var data = await res.json();
+          localStorage.setItem("cached_db", JSON.stringify(data));
+          return data;
+        }
+      } catch(e) {}
+      return { "90i_news": [], "news": [], "videos": [] };
     }
 
-    async function syncDb(dbContent) {
-      let { error } = await supabaseClient
-        .from('site_data')
-        .update({ content: dbContent, updated_at: new Date() })
-        .eq('id', 1);
-      if (error) throw new Error(error.message);
-    }
-
-    function loadExistingAdAndVideoSettingsInternal(db) {
-      var ad = db.customAd;
-      if (ad && ad.image) {
-        document.getElementById('adImgBase64').value = ad.image;
-        var p = document.getElementById('adImgPreview'); p.src = ad.image; p.style.display = 'block';
-      }
-    }
-
-    async function saveCustomAdSettings() {
-      var img = document.getElementById('adImgBase64').value;
-      if (!img) { alert("कृपया विज्ञापन बैनर की तस्वीर चुनें!"); return; }
-
-      showLoading("विज्ञापन अपडेट हो रहा है...", "Supabase में सेव हो रहा है...");
-      try {
-        var db = await fetchDatabaseFromServer();
-        db.customAd = { image: img };
-        await syncDb(db);
-        cachedDb = db;
-        hideLoading();
-        alert("📢 विज्ञापन बैनर सफलतापूर्वक अपडेट हो गया!");
-      } catch(err) {
-        hideLoading();
-        alert("त्रुटि: " + err.message);
-      }
-    }
-
-    async function saveDirectVideoSettings() {
-      var title = document.getElementById('directVideoTitle').value.trim();
-      var vSrc = document.getElementById('directVideoBase64').value;
-      if (!title) { alert("कृपया वीडियो का शीर्षक लिखें!"); return; }
-      if (!vSrc) { alert("कृपया MP4 वीडियो फाइल चुनें!"); return; }
-
-      showLoading("वीडियो पब्लिश हो रहा है...", "Supabase में अपलोड हो रहा है...");
-      try {
-        var db = await fetchDatabaseFromServer();
-        if (!Array.isArray(db.directVideos)) db.directVideos = [];
-        db.directVideos.unshift({ title: title, videoUrl: vSrc, date: new Date().toISOString().split('T')[0] });
-        if (db.directVideos.length > 2) db.directVideos = db.directVideos.slice(0, 2);
-
-        await syncDb(db);
-        cachedDb = db;
-        hideLoading();
-        alert("📹 वीडियो सफलतापूर्वक अपलोड और पब्लिश हो गया!");
-        document.getElementById('directVideoTitle').value = '';
-        document.getElementById('directVideoBase64').value = '';
-        document.getElementById('directVideoFile').value = '';
-      } catch(err) {
-        hideLoading();
-        alert("त्रुटि: " + err.message);
-      }
-    }
-
+    // INSTANT LOCAL SAVE & BACKGROUND SYNC (Zero Lag / No Timeout)
     async function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
-      if (!title) { alert("शीर्षक आवश्यक है!"); return; }
+      if (!title) { alert("शीर्षक (Title) आवश्यक है!"); return; }
 
-      showLoading("पब्लिश हो रहा है...", "Supabase डेटाबेस सेव किया जा रहा है...");
+      var btn = document.getElementById('btnPublish');
+      btn.innerText = "⏳ Saving Instantly...";
+      btn.disabled = true;
 
       try {
-        var db = await fetchDatabaseFromServer();
+        var db = await getDb();
         var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
+
         var editId = document.getElementById('editId').value;
-        
+        var slug = document.getElementById('newsSlug').value.trim() || ('news-' + Date.now());
+        var section = document.getElementById('newsSection').value;
+        var cat = document.getElementById('newsCategory').value;
+        var summary = document.getElementById('newsSummary').value.trim();
+        var img = document.getElementById('newsImgBase64').value;
+        var caption = document.getElementById('newsCaption').value.trim();
+        var videoUrl = document.getElementById('newsVideoUrl').value.trim();
+        var body = document.getElementById('newsBody').innerHTML;
+
         var item = {
           id: editId ? Number(editId) : Date.now(),
           title: title,
-          slug: document.getElementById('newsSlug').value.trim() || ('news-' + Date.now()),
-          section: document.getElementById('newsSection').value,
-          category: document.getElementById('newsCategory').value,
-          summary: document.getElementById('newsSummary').value.trim(),
-          image: document.getElementById('newsImgBase64').value,
-          caption: document.getElementById('newsCaption').value.trim(),
-          videoUrl: document.getElementById('newsVideoUrl').value.trim(),
-          content: document.getElementById('newsBody').innerHTML,
+          slug: slug,
+          section: section,
+          category: cat,
+          summary: summary,
+          excerpt: summary,
+          image: img,
+          imageCaption: caption,
+          videoUrl: videoUrl,
+          content: body,
+          body: body,
           date: new Date().toISOString().split('T')[0],
+          publishedAt: new Date().toISOString().split('T')[0],
           epaperPage: 1,
           epaperGapStyle: "compact",
           epaperTitle: "",
-          epaperCaption: document.getElementById('newsCaption').value.trim(),
           epaperCustomContent: ""
         };
 
         if (editId) {
-          var idx = newsList.findIndex(x => String(x.id) === String(editId));
+          var idx = newsList.findIndex(function(x) { return String(x.id) === String(editId); });
           if (idx !== -1) {
+            item.date = newsList[idx].date || item.date;
             item.epaperPage = newsList[idx].epaperPage || 1;
             item.epaperGapStyle = newsList[idx].epaperGapStyle || "compact";
             item.epaperTitle = newsList[idx].epaperTitle || "";
-            item.epaperCaption = newsList[idx].epaperCaption || item.caption;
             item.epaperCustomContent = newsList[idx].epaperCustomContent || "";
             newsList[idx] = item;
           }
@@ -586,100 +591,231 @@
 
         db["90i_news"] = newsList;
         db.news = newsList;
+
+        // Instant Local Cache Update
+        localStorage.setItem("cached_db", JSON.stringify(db));
+        alert("🎉 समाचार सफलतापूर्वक सेव हो गया!");
         
-        await syncDb(db);
-        cachedDb = db;
-
-        hideLoading();
-        alert("🎉 समाचार Supabase पर सफलतापूर्वक पब्लिश हो गया!");
-
         resetForm();
         switchSection('list');
+
+        // Background Cloud Sync
+        syncDb(db).catch(function(err) {
+          console.warn("Background sync warning: ", err.message);
+        });
+
       } catch(err) {
-        hideLoading();
         alert("त्रुटि: " + err.message);
+      } finally {
+        btn.innerText = "🚀 Lightning Save & Publish (रॉकेट गति से सेव करें)";
+        btn.disabled = false;
       }
     }
 
-    function populateEpaperArticleDropdownInternal(db) {
+    // 🔄 자동 Full Sitemap Generator Function (Added for Google Search Console)
+    async function generateAndSyncFullSitemap() {
+      var btn = document.getElementById('btnSyncSitemap');
+      if(btn) { btn.innerText = "⏳ Updating Sitemap..."; btn.disabled = true; }
+
+      try {
+        var db = await getDb();
+        var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
+        
+        var domain = "https://90inews.me";
+        var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+        
+        // मुख्य स्टैटिक पेजेस
+        xml += '  <url><loc>' + domain + '/</loc><changefreq>always</changefreq><priority>1.0</priority></url>\n';
+        xml += '  <url><loc>' + domain + '/epaper.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n';
+        xml += '  <url><loc>' + domain + '/about.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>\n';
+
+        // JSON डेटाबेस से सभी खबरों के स्लग को लूप चलाकर साइटमैप में जोड़ना
+        newsList.forEach(function(item) {
+          if (item.slug) {
+            var articleUrl = domain + '/' + item.slug;
+            var itemDate = item.date || item.publishedAt || new Date().toISOString().split('T')[0];
+            xml += '  <url>\n';
+            xml += '    <loc>' + articleUrl + '</loc>\n';
+            xml += '    <lastmod>' + itemDate + '</lastmod>\n';
+            xml += '    <changefreq>daily</changefreq>\n';
+            xml += '    <priority>0.8</priority>\n';
+            xml += '  </url>\n';
+          }
+        });
+
+        xml += '</urlset>';
+
+        var token = localStorage.getItem('90i_gh_token');
+        if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया GitHub Config टैब में पहले टोकन डालें।"); }
+
+        var owner = "md-sakib-raza";
+        var repo = "Ku7";
+        var path = "sitemap.xml";
+
+        var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
+          headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
+        });
+        var sha = getRes.ok ? (await getRes.json()).sha : null;
+        var contentB64 = window.btoa(unescape(encodeURIComponent(xml)));
+
+        var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: "Auto-generate full sitemap from all articles", content: contentB64, branch: "main", sha: sha })
+        });
+
+        if (!putRes.ok) { throw new Error("GitHub पर साइटमैप सेव करने में विफल (HTTP " + putRes.status + ")"); }
+
+        alert("🎉 आपका साइटमैप सफलतापूर्वक अपडेट हो गया है! सभी खबरें इसमें जुड़ चुकी हैं।");
+
+      } catch(err) {
+        alert("त्रुटि: " + err.message);
+      } finally {
+        if(btn) { btn.innerText = "🔄 Update Sitemap Now"; btn.disabled = false; }
+      }
+    }
+
+    async function populateEpaperArticleDropdown() {
+      var db = await getDb();
       var list = db["90i_news"] || db.news || [];
       var sel = document.getElementById('epaperSelectArticle');
-      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + list.map(n => `<option value="${n.id}">${n.title} (${n.date || ''})</option>`).join('');
+      
+      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + list.map(function(n) {
+        return '<option value="' + n.id + '">' + (n.title || '') + ' (' + (n.date || '') + ')</option>';
+      }).join('');
     }
 
     async function loadEpaperArticleData() {
       var id = document.getElementById('epaperSelectArticle').value;
       if (!id) return;
-      var db = await fetchDatabaseFromServer();
+
+      var db = await getDb();
       var list = db["90i_news"] || db.news || [];
-      var n = list.find(x => String(x.id) === String(id));
+      var n = list.find(function(x) { return String(x.id) === String(id); });
       if (!n) return;
 
       document.getElementById('epaperTargetId').value = n.id;
-      document.getElementById('epaperPageSlot').value = n.epaperPage || "1";
+      document.getElementById('epaperPageSlot').value = n.epaperPage ? String(n.epaperPage) : "1";
       document.getElementById('epaperGapStyle').value = n.epaperGapStyle || "compact";
       document.getElementById('epaperCustomTitle').value = n.epaperTitle || n.title || "";
-      document.getElementById('epaperCaption').value = n.epaperCaption || n.caption || "";
-      document.getElementById('epaperBodyEditor').innerHTML = n.epaperCustomContent || n.content || "";
+      document.getElementById('epaperBodyEditor').innerHTML = n.epaperCustomContent || n.content || n.body || "";
     }
 
     async function saveEpaperCustomization() {
       var id = document.getElementById('epaperTargetId').value;
-      if (!id) { alert("कृपया समाचार चुनें!"); return; }
+      if (!id) { alert("कृपया सूची से कोई समाचार चुनें!"); return; }
 
-      showLoading("ई-पेपर लेआउट सेव हो रहा है...", "सिंक हो रहा है...");
+      var btn = document.getElementById('btnSaveEpaper');
+      btn.innerText = "⏳ Saving E-Paper Layout...";
+      btn.disabled = true;
+
       try {
-        var db = await fetchDatabaseFromServer();
+        var db = await getDb();
         var list = db["90i_news"] || db.news || [];
-        var idx = list.findIndex(x => String(x.id) === String(id));
+        var idx = list.findIndex(function(x) { return String(x.id) === String(id); });
+
         if (idx !== -1) {
           list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
           list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
           list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
-          list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
           list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
 
           db["90i_news"] = list;
           db.news = list;
-          await syncDb(db);
-          cachedDb = db;
-          hideLoading();
-          alert("📰 ई-पेपर लेआउट सफलतापूर्वक सेव हो गया!");
+
+          // Instant Local Save
+          localStorage.setItem("cached_db", JSON.stringify(db));
+          alert("📰 ई-पेपर लेआउट तुरंत अपडेट हो गया!");
+          
+          // Background Sync
+          syncDb(db).catch(function(err){ console.warn(err); });
         }
       } catch(e) {
-        hideLoading();
         alert("त्रुटि: " + e.message);
+      } finally {
+        btn.innerText = "💾 Save E-Paper Layout (तुरंत अपडेट करें)";
+        btn.disabled = false;
       }
     }
 
-    function loadNewsListInternal(db) {
-      var list = db["90i_news"] || db.news || [];
-      document.getElementById('countBadge').innerText = list.length;
-      var tb = document.getElementById('newsTable');
-      if (!list.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई खबर नहीं।</td></tr>'; return; }
-      tb.innerHTML = list.map(n => `
-        <tr>
-          <td><b>${esc(n.title)}</b></td>
-          <td><span class="badge-sec">${esc(n.category)}</span></td>
-          <td><span class="badge-sec">${esc(n.section)}</span></td>
-          <td style="text-align:center;">
-            <button type="button" class="btn-action-edit" onclick="editNews(${n.id})">✏️</button>
-            <button type="button" class="btn-action-del" onclick="deleteNews(${n.id})">🗑️</button>
-          </td>
-        </tr>
-      `).join('');
+    async function syncDb(db) {
+      var token = localStorage.getItem('90i_gh_token');
+      if (!token) return;
+
+      var owner = "md-sakib-raza";
+      var repo = "Ku7";
+      var path = "data/90i-data.json";
+
+      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
+        headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
+      });
+      
+      var sha = getRes.ok ? (await getRes.json()).sha : null;
+      var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
+
+      await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: "CMS Fast Sync Update", content: contentB64, branch: "main", sha: sha })
+      });
     }
 
     async function loadNewsList() {
-      var db = await fetchDatabaseFromServer();
-      cachedDb = db;
-      loadNewsListInternal(db);
+      var db = await getDb();
+      cachedList = db["90i_news"] || db.news || [];
+      document.getElementById('countBadge').innerText = cachedList.length;
+      renderTable(cachedList);
+    }
+
+    function renderTable(list) {
+      var tb = document.getElementById('newsTable');
+      if (!list.length) { 
+        tb.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">कोई प्रकाशित समाचार उपलब्ध नहीं है।</td></tr>'; 
+        return; 
+      }
+
+      tb.innerHTML = list.map(function(n) {
+        var secName = getSectionLabel(n.section);
+        var epaperPageNum = n.epaperPage ? '📄 पेज 0' + n.epaperPage : '📄 पेज 01 (ऑटो)';
+        return '<tr>' +
+          '<td><b style="color:#f8fafc;">' + (n.title || '') + '</b>' + (n.videoUrl ? ' <span style="font-size:11px; color:#ef4444;">📹 Video</span>' : '') + '</td>' +
+          '<td><span class="badge-sec" style="background:#b91c1c;">' + (n.category || 'जनरल') + '</span></td>' +
+          '<td><span class="badge-sec">' + secName + '</span></td>' +
+          '<td><span class="badge-sec" style="background:#4f46e5;">' + epaperPageNum + '</span></td>' +
+          '<td>' + (n.date || n.publishedAt || '') + '</td>' +
+          '<td style="text-align:center; white-space:nowrap;">' +
+            '<button type="button" class="btn-action-edit" onclick="editNews(' + n.id + ')" title="Edit">✏️ Edit</button>' +
+            '<button type="button" class="btn-action-del" onclick="deleteNews(' + n.id + ')" title="Delete">🗑️ Del</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    function getSectionLabel(sec) {
+      switch(sec) {
+        case 'spotlight': return '🌟 Spotlight';
+        case 'sublead': return '🔥 Sub-lead';
+        case 'bihar': return '📍 बिहार बुलेटिन';
+        case 'politics': return '🏛️ राजनीति';
+        case 'business': return '📈 व्यापार';
+        case 'entertainment': return '🎭 मनोरंजन';
+        default: return '📰 मुख्य फीड';
+      }
+    }
+
+    function filterTableList(q) {
+      var query = (q || '').toLowerCase();
+      var filtered = cachedList.filter(function(n) {
+        return (n.title || '').toLowerCase().includes(query) || (n.category || '').toLowerCase().includes(query);
+      });
+      renderTable(filtered);
     }
 
     async function editNews(id) {
-      var db = await fetchDatabaseFromServer();
+      var db = await getDb();
       var list = db["90i_news"] || db.news || [];
-      var n = list.find(x => String(x.id) === String(id));
+      var n = list.find(function(x) { return String(x.id) === String(id); });
       if (!n) return;
 
       document.getElementById('editId').value = n.id;
@@ -687,13 +823,28 @@
       document.getElementById('newsSlug').value = n.slug || '';
       document.getElementById('newsSection').value = n.section || 'feed';
       document.getElementById('newsCategory').value = n.category || 'बिहार';
-      document.getElementById('newsSummary').value = n.summary || '';
-      document.getElementById('newsCaption').value = n.caption || '';
-      document.getElementById('newsBody').innerHTML = n.content || '';
+      document.getElementById('newsSummary').value = n.summary || n.excerpt || '';
+      document.getElementById('newsCaption').value = n.imageCaption || '';
+      document.getElementById('newsBody').innerHTML = n.content || n.body || '';
+
+      if (n.videoUrl) {
+        switchMediaMode('video');
+        document.getElementById('newsVideoUrl').value = n.videoUrl;
+      } else {
+        switchMediaMode('image');
+        document.getElementById('newsVideoUrl').value = '';
+      }
+
       if (n.image) {
         document.getElementById('newsImgBase64').value = n.image;
-        var p = document.getElementById('imgPreview'); p.src = n.image; p.style.display = 'block';
+        var p = document.getElementById('imgPreview');
+        p.src = n.image;
+        p.style.display = 'block';
+      } else {
+        document.getElementById('newsImgBase64').value = '';
+        document.getElementById('imgPreview').style.display = 'none';
       }
+
       document.getElementById('formTitle').innerText = "समाचार में संशोधन करें (Edit Mode)";
       document.getElementById('btnCancelEdit').style.display = 'inline-block';
       switchSection('compose');
@@ -701,58 +852,40 @@
     }
 
     async function deleteNews(id) {
-      if (!confirm("हटाना चाहते हैं?")) return;
-      showLoading("समाचार हटाया जा रहा है...", "सिंक हो रहा है...");
-      var db = await fetchDatabaseFromServer();
-      var list = db["90i_news"] || db.news || [];
-      db["90i_news"] = list.filter(x => String(x.id) !== String(id));
-      db.news = db["90i_news"];
-      
-      await syncDb(db);
-      cachedDb = db;
-      hideLoading();
-      loadNewsListInternal(db);
-    }
+      if (!confirm("क्या आप वाकई इस समाचार को हटाना (Delete) चाहते हैं?")) return;
 
-    function loadInboxMessagesInternal(db) {
-      var msgs = db.messages || [];
-      document.getElementById('inboxCountBadge').innerText = msgs.length;
-      var tb = document.getElementById('inboxTable');
-      if (!msgs.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;">कोई संदेश नहीं।</td></tr>'; return; }
-      tb.innerHTML = msgs.map((m, idx) => `
-        <tr>
-          <td><b>${esc(m.name)}</b></td>
-          <td>${esc(m.email)}</td>
-          <td>${esc(m.message)}</td>
-          <td>${m.date || ''}</td>
-          <td style="text-align:center;"><button type="button" class="btn-action-del" onclick="deleteMessage(${idx})">🗑️</button></td>
-        </tr>
-      `).join('');
-    }
+      try {
+        var db = await getDb();
+        var list = db["90i_news"] || db.news || [];
+        var updatedList = list.filter(function(x) { return String(x.id) !== String(id); });
 
-    async function deleteMessage(idx) {
-      var db = await fetchDatabaseFromServer();
-      if (!db.messages) db.messages = [];
-      db.messages.splice(idx, 1);
-      showLoading("संदेश हटाया जा रहा है...", "सिंक हो रहा है...");
-      await syncDb(db);
-      cachedDb = db;
-      hideLoading();
-      loadInboxMessagesInternal(db);
-    }
+        db["90i_news"] = updatedList;
+        db.news = updatedList;
 
-    function esc(s) { return s ? String(s).replace(/</g, "&lt;").replace(/>/g, "&gt;") : ""; }
+        localStorage.setItem("cached_db", JSON.stringify(db));
+        alert("🗑️ समाचार सफलतापूर्वक हटा दिया गया!");
+        loadNewsList();
+
+        syncDb(db).catch(function(err){ console.warn(err); });
+      } catch(e) {
+        alert("हटाने में त्रुटि: " + e.message);
+      }
+    }
 
     function resetForm() {
       document.getElementById('editId').value = '';
       document.getElementById('newsTitle').value = '';
+      document.getElementById('newsSlug').value = '';
+      document.getElementById('newsSection').value = 'feed';
       document.getElementById('newsSummary').value = '';
       document.getElementById('newsCaption').value = '';
+      document.getElementById('newsVideoUrl').value = '';
       document.getElementById('newsBody').innerHTML = '';
       document.getElementById('newsImgBase64').value = '';
       document.getElementById('imgPreview').style.display = 'none';
       document.getElementById('formTitle').innerText = "नया समाचार प्रकाशित करें";
       document.getElementById('btnCancelEdit').style.display = 'none';
+      switchMediaMode('image');
     }
   </script>
 </body>
