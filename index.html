@@ -3,26 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>THE 90I न्यूज़ | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क</title>
+  <title>THE 90I NEWS | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क</title>
   <meta name="description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
-  
-  <link rel="canonical" href="https://www.the90inews.com/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="THE 90I न्यूज़ | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क" />
-  <meta property="og:description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
-  <meta property="og:url" content="https://www.the90inews.com/" />
-  <meta property="og:image" content="https://www.the90inews.com/logo.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="THE 90I न्यूज़ | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क" />
-  <meta name="twitter:description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
 
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; media-src 'self' https:;" />
-
-  <!-- Google AdSense Code -->
+  <!-- Google AdSense Code (बिल्कुल सुरक्षित) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9762787230045511" crossorigin="anonymous"></script>
 
-  <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Schema Markup (SEO के लिए) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "THE 90I NEWS",
+    "alternateName": "द 90आई न्यूज़",
+    "url": "https://www.the90inews.com",
+    "logo": "https://www.the90inews.com/logo.png",
+    "foundingLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Purnia",
+        "addressRegion": "Bihar",
+        "addressCountry": "IN"
+      }
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Md Sakib Raza"
+    },
+    "sameAs": [
+      "https://www.instagram.com/sakibraza___?igsi=MXg3Ymp1am52eW91dA==",
+      "https://www.facebook.com/share/1933vKJK8m/"
+    ]
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -55,6 +69,7 @@
     .main-wrapper { flex: 1 0 auto; }
     .container { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
 
+    /* Top Utility Bar */
     .top-bar {
       background: #ffffff;
       border-bottom: 1px solid var(--line);
@@ -91,6 +106,7 @@
       100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
     }
 
+    /* Main Header Branding */
     .header-main {
       background: #ffffff;
       border-bottom: 1px solid var(--line);
@@ -137,6 +153,7 @@
       color: var(--brand);
     }
 
+    /* Navigation Bar */
     .main-nav {
       background: #ffffff;
       border-bottom: 2px solid var(--brand);
@@ -166,6 +183,7 @@
       color: var(--brand);
     }
 
+    /* Breaking News Ticker */
     .ticker-wrap {
       background: #0f172a;
       color: #ffffff;
@@ -209,6 +227,7 @@
       100% { transform: translate3d(-100%, 0, 0); }
     }
 
+    /* Section Headers */
     .sec-header {
       display: flex;
       justify-content: space-between;
@@ -243,6 +262,7 @@
       text-decoration: none;
     }
 
+    /* Hero Section */
     .hero-section {
       margin: 18px 0 30px;
     }
@@ -326,27 +346,7 @@
       overflow: hidden;
     }
 
-    .btn-read-more {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--brand);
-      color: #ffffff;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 12.5px;
-      font-weight: 800;
-      text-decoration: none;
-      margin-top: 10px;
-      align-self: flex-start;
-      transition: background 0.2s, transform 0.2s;
-    }
-    .btn-read-more:hover {
-      background: var(--brand-dark);
-      transform: translateY(-2px);
-      color: #ffffff;
-    }
-
+    /* Rating Tag Styling */
     .rating-badge-card {
       background: #f1f5f9;
       color: #334155;
@@ -360,6 +360,7 @@
       white-space: nowrap;
     }
 
+    /* Subleads in Hero */
     .hero-subleads {
       display: flex;
       flex-direction: column;
@@ -424,6 +425,7 @@
       color: var(--text-muted);
     }
 
+    /* Main Layout */
     .main-body-layout {
       display: grid;
       grid-template-columns: 2.2fr 1fr;
@@ -431,6 +433,7 @@
       margin-bottom: 40px;
     }
 
+    /* News Cards Grid */
     .news-grid-3 {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -527,6 +530,7 @@
       gap: 4px;
     }
 
+    /* Sidebar Speed News */
     .sidebar-widget {
       background: #ffffff;
       border: 1px solid var(--line);
@@ -576,51 +580,7 @@
       justify-content: space-between;
     }
 
-    .homepage-custom-block {
-      background: #ffffff;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-      margin-bottom: 25px;
-    }
-    .homepage-custom-title {
-      font-size: 16px;
-      font-weight: 900;
-      color: #0f172a;
-      margin-bottom: 12px;
-      border-bottom: 2px solid var(--brand);
-      padding-bottom: 5px;
-    }
-    .home-custom-ad img {
-      width: 100%;
-      max-height: 180px;
-      object-fit: cover;
-      border-radius: 8px;
-      display: block;
-    }
-    .home-direct-video-card {
-      background: #0f172a;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-    .home-direct-video-card:last-child { margin-bottom: 0; }
-    .home-direct-video-card video {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      display: block;
-      background: #000;
-    }
-    .home-vid-title {
-      padding: 8px 12px;
-      font-size: 13.5px;
-      font-weight: 800;
-      color: #ffffff;
-      background: #0f172a;
-    }
-
+    /* White 3D Traffic Box */
     .sidebar-visitor-box {
       background: linear-gradient(145deg, #ffffff, #f8fafc) !important;
       border: 1px solid #e2e8f0 !important;
@@ -751,9 +711,11 @@
       font-weight: 700;
     }
 
+    /* Strips & Split Layout */
     .section-block { margin-bottom: 35px; }
     .split-category-row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 35px; }
 
+    /* Category Active Banner */
     .category-filter-banner {
       background: #ffffff;
       border: 1px solid var(--line);
@@ -780,6 +742,7 @@
       border-radius: 4px;
     }
 
+    /* Floating Chatbot */
     .ai-bot-toggle {
       position: fixed;
       bottom: 24px;
@@ -916,6 +879,7 @@
       font-size: 13px;
     }
 
+    /* Search Modal */
     .search-modal {
       display: none;
       position: fixed;
@@ -973,6 +937,7 @@
       width: 70px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;
     }
 
+    /* Policy Modal Styles */
     .policy-modal {
       display: none;
       position: fixed;
@@ -1015,6 +980,7 @@
     .policy-body h4 { color: #0f172a; margin: 16px 0 8px; font-size: 16px; font-weight: 800; }
     .policy-body p { margin-bottom: 12px; }
 
+    /* ================= COMPLETE BLACK FOOTER ================= */
     .main-footer {
       background: #090d16 !important;
       color: #cbd5e1 !important;
@@ -1105,35 +1071,7 @@
       font-size: 11px;
     }
 
-    .footer-search-box {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-    .footer-search-input {
-      flex: 1;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #ffffff;
-      padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 12.5px;
-      outline: none;
-    }
-    .footer-search-input:focus {
-      border-color: var(--brand);
-    }
-    .btn-footer-search {
-      background: var(--brand);
-      color: #ffffff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 12.5px;
-      cursor: pointer;
-    }
-
+    /* Contact Form */
     .footer-form {
       display: flex;
       flex-direction: column;
@@ -1183,6 +1121,7 @@
       display: none;
     }
 
+    /* Bottom Bar */
     .footer-bottom {
       margin-top: 40px;
       border-top: 1px solid #1e293b;
@@ -1216,6 +1155,7 @@
 <body>
 
   <div class="main-wrapper">
+    <!-- Top Utility -->
     <div class="top-bar">
       <div class="container top-bar-inner">
         <div class="top-live-badge">
@@ -1225,11 +1165,12 @@
       </div>
     </div>
 
+    <!-- Header -->
     <header class="header-main">
       <div class="container header-inner">
         <div class="logo-container">
           <a href="index.html">
-            <div class="logo-text">THE <span>90I</span> न्यूज़</div>
+            <div class="logo-text">THE <span>90I</span> NEWS</div>
             <div class="tagline">सच | सटीक | निर्भीक</div>
           </a>
         </div>
@@ -1239,6 +1180,7 @@
       </div>
     </header>
 
+    <!-- Navigation Menu with Full Category Filtering -->
     <nav class="main-nav">
       <div class="container nav-scroll" id="navScrollContainer">
         <a href="index.html" class="nav-btn active" data-cat="">होम</a>
@@ -1256,6 +1198,7 @@
     </nav>
 
     <div class="container">
+      <!-- Breaking Ticker -->
       <div class="ticker-wrap">
         <div class="ticker-badge">ब्रेकिंग</div>
         <div class="ticker-content-box">
@@ -1263,17 +1206,21 @@
         </div>
       </div>
 
+      <!-- Category Filter Active Banner -->
       <div id="categoryBanner" class="category-filter-banner" style="display:none;">
         <h2 id="categoryBannerTitle">श्रेणी: समाचार</h2>
         <a href="index.html" class="btn-reset-filter">सभी समाचार देखें ✕</a>
       </div>
 
+      <!-- ================= 1. HERO SECTION ================= -->
       <section class="hero-section" id="heroSection">
         <div class="hero-grid">
+          
+          <!-- Big Spotlight Lead Story -->
           <div id="heroSpotlightBox" class="hero-spotlight">
             <div class="spotlight-img-wrap">
               <span id="spotlightCat" class="spotlight-cat-tag">मुख्य सुर्खी</span>
-              <img id="spotlightImg" class="spotlight-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80" alt="Lead Story Image">
+              <img id="spotlightImg" class="spotlight-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80" alt="News Image">
             </div>
             <div class="spotlight-body">
               <h1 class="spotlight-title"><a id="spotlightLink" href="#">THE 90I NEWS - ताज़ा समाचार बुलेटिन</a></h1>
@@ -1284,69 +1231,83 @@
                 <span id="spotlightViews" class="view-count-tag">👁️ 240+ Views</span>
               </div>
               <p id="spotlightExcerpt" class="spotlight-excerpt">देश, दुनिया एवं बिहार की सभी महत्वपूर्ण खबरों का लाइव विश्लेषण।</p>
-              <a id="spotlightReadMoreBtn" href="#" class="btn-read-more" onclick="recordNewsClick('lead')">और पढ़ें ➔</a>
             </div>
           </div>
 
-          <div id="heroSubleadsBox" class="hero-subleads"></div>
+          <!-- Top Trending Subleads -->
+          <div id="heroSubleadsBox" class="hero-subleads">
+            <!-- Dynamically Populated -->
+          </div>
+
         </div>
       </section>
 
+      <!-- ================= 2. MAIN FEED + SPEED NEWS SIDEBAR ================= -->
       <div class="main-body-layout">
-        <main>
+        
+        <!-- Main Column -->
+        <div>
+          <!-- Dedicated Category Feed -->
           <div id="filteredCategoryBlock" class="section-block" style="display:none;">
             <div class="sec-header">
-              <h2 class="sec-title" id="filteredCategoryTitle">समाचार</h2>
+              <div class="sec-title" id="filteredCategoryTitle">समाचार</div>
               <span id="filteredCategoryCount" style="font-size:12px; font-weight:700; color:var(--text-muted);">0 खबरें</span>
             </div>
             <div id="filteredCategoryGrid" class="news-grid-3"></div>
           </div>
 
+          <!-- Normal Home Sections -->
           <div id="defaultHomeSections">
+            <!-- Section 1: Top Daily Bulletin -->
             <div class="section-block">
               <div class="sec-header">
-                <h2 class="sec-title">डिजिटल दैनिक संस्करण</h2>
+                <div class="sec-title">डिजिटल दैनिक संस्करण</div>
                 <span id="totalNewsCount" style="font-size:12px; font-weight:700; color:var(--text-muted);">कुल समाचार: 0</span>
               </div>
               <div id="epaperGrid" class="news-grid-3"></div>
             </div>
 
+            <!-- Section 2: Bihar Special Strip -->
             <div class="section-block">
               <div class="sec-header">
-                <h2 class="sec-title">बिहार बुलेटिन</h2>
+                <div class="sec-title">बिहार बुलेटिन</div>
                 <a href="index.html?cat=बिहार" class="sec-link">सभी देखें ➔</a>
               </div>
               <div id="biharGrid" class="news-grid-3"></div>
             </div>
 
+            <!-- Section 3: Dual Column (Politics & Business) -->
             <div class="split-category-row">
-              <section>
+              <div>
                 <div class="sec-header">
-                  <h2 class="sec-title">राजनीति व राष्ट्रीय</h2>
+                  <div class="sec-title">राजनीति व राष्ट्रीय</div>
                   <a href="index.html?cat=राजनीति" class="sec-link">और ➔</a>
                 </div>
                 <div id="politicsList" class="speed-news-list"></div>
-              </section>
-              <section>
+              </div>
+              <div>
                 <div class="sec-header">
-                  <h2 class="sec-title">व्यापार व तकनीक</h2>
+                  <div class="sec-title">व्यापार व तकनीक</div>
                   <a href="index.html?cat=व्यापार" class="sec-link">और ➔</a>
                 </div>
                 <div id="businessList" class="speed-news-list"></div>
-              </section>
+              </div>
             </div>
 
+            <!-- Section 4: Entertainment & Sports Strip -->
             <div class="section-block">
               <div class="sec-header">
-                <h2 class="sec-title">मनोरंजन व खेल जगत</h2>
+                <div class="sec-title">मनोरंजन व खेल जगत</div>
                 <a href="index.html?cat=मनोरंजन" class="sec-link">अधिक खबरें ➔</a>
               </div>
               <div id="entGrid" class="news-grid-3"></div>
             </div>
           </div>
-        </main>
+        </div>
 
+        <!-- Sidebar Column -->
         <aside>
+          <!-- Speed News Widget -->
           <div class="sidebar-widget">
             <div class="sidebar-widget-title">
               <span>फटाफट ताज़ा खबरें</span>
@@ -1356,18 +1317,7 @@
             </div>
           </div>
 
-          <div id="homepageVideoBlock" class="homepage-custom-block" style="display:none;">
-            <div class="homepage-custom-title">विशेष वीडियो बुलेटिन</div>
-            <div id="homepageVideoContainer"></div>
-          </div>
-
-          <div id="homepageAdBlock" class="homepage-custom-block" style="display:none;">
-            <div class="homepage-custom-title">विशेष विज्ञापन (Sponsored)</div>
-            <div class="home-custom-ad">
-              <img id="homepageAdImg" src="" alt="Advertisement Banner">
-            </div>
-          </div>
-
+          <!-- Category Quick Links (Trending Topic) -->
           <div class="sidebar-widget">
             <div class="sidebar-widget-title">
               <span>ट्रेंडिंग टॉपिक</span>
@@ -1382,6 +1332,7 @@
             </div>
           </div>
 
+          <!-- ================= LIVE 3D VISITOR STATS ================= -->
           <div class="sidebar-visitor-box">
             <div class="traffic-glow-line"></div>
             <div class="visitor-box-header">
@@ -1412,11 +1363,14 @@
               </div>
             </div>
           </div>
+
         </aside>
+
       </div>
     </div>
   </div>
 
+  <!-- Floating Chatbot -->
   <div class="ai-bot-toggle" onclick="toggleChatWidget()" title="90I AI असिस्टेंट">
     <span>AI</span>
     <div class="bot-status-dot"></div>
@@ -1443,6 +1397,7 @@
     </form>
   </div>
 
+  <!-- Search Modal -->
   <div id="searchModal" class="search-modal" onclick="closeSearchOnBg(event)">
     <div class="search-box">
       <div class="search-header">
@@ -1458,18 +1413,23 @@
     </div>
   </div>
 
+  <!-- POLICY POPUP MODALS -->
   <div id="policyModal" class="policy-modal" onclick="closePolicyOnBg(event)">
     <div class="policy-box">
       <div class="policy-header">
         <h3 id="policyModalTitle">नीति विवरण</h3>
         <button style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;" onclick="closePolicyModal()">✕</button>
       </div>
-      <div class="policy-body" id="policyModalContent"></div>
+      <div class="policy-body" id="policyModalContent">
+        <!-- Content injected dynamically -->
+      </div>
     </div>
   </div>
 
+  <!-- Complete Black Footer -->
   <footer class="main-footer">
     <div class="footer-container">
+      
       <div class="footer-col">
         <div class="footer-logo">THE <span>90I</span> NEWS</div>
         <p class="footer-desc">
@@ -1506,6 +1466,7 @@
         </ul>
       </div>
 
+      <!-- Social Media Links (सुरक्षित) -->
       <div class="footer-col">
         <h3>सोशल मीडिया</h3>
         <ul class="footer-links">
@@ -1515,21 +1476,18 @@
       </div>
 
       <div class="footer-col">
-        <h3>त्वरित खोज व संदेश</h3>
-        <div class="footer-search-box">
-          <input type="text" id="footerSearchInput" class="footer-search-input" placeholder="खबरें खोजें..." onkeydown="if(event.key==='Enter'){ openSearchModal(); document.getElementById('searchInput').value=this.value; handleLiveSearch(this.value); }" />
-          <button type="button" class="btn-footer-search" onclick="openSearchModal()">🔍</button>
-        </div>
+        <h3>संदेश भेजें / विज्ञापन</h3>
         <form id="footerContactForm" class="footer-form" onsubmit="handleFooterContact(event)">
           <input type="text" id="footerName" class="form-input" placeholder="आपका नाम" required />
           <input type="email" id="footerEmail" class="form-input" placeholder="ईमेल पता" required />
-          <textarea id="footerMessage" class="form-textarea" placeholder="अपना संदेश लिखें..." required></textarea>
+          <textarea id="footerMessage" class="form-textarea" placeholder="अपना संदेश / विज्ञापन विवरण लिखें..." required></textarea>
           <button type="submit" class="btn-footer-submit">
             <span>✉️ संदेश भेजें</span>
           </button>
           <div id="footerFormStatus" class="form-status"></div>
         </form>
       </div>
+
     </div>
 
     <div class="footer-bottom">
@@ -1540,7 +1498,8 @@
     </div>
   </footer>
 
-  <div id="cookieConsentBanner" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #f8fafc; border-top: 3px solid var(--brand); padding: 16px 20px; z-index: 9999; box-shadow: 0 -5px 25px rgba(0,0,0,0.3);">
+  <!-- COOKIE CONSENT BANNER (सक्रिय) -->
+  <div id="cookieConsentBanner" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #f8fafc; border-top: 3px solid var(--brand); padding: 16px 20px; z-index: 9999; box-shadow: 0 -5px 25px rgba(0,0,0,0.3); font-family: 'Yantramanav', sans-serif;">
     <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
       <div style="flex: 1; min-width: 280px;">
         <h4 style="font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 4px;">🍪 कुकीज़ (Cookies) और गोपनीयता नीति</h4>
@@ -1549,7 +1508,7 @@
         </p>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <button onclick="acceptCookies()" style="background: var(--brand); color: #ffffff; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 700; font-size: 13.5px; cursor: pointer;">स्वीकार करें (Accept)</button>
+        <button onclick="acceptCookies()" style="background: var(--brand); color: #ffffff; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 700; font-size: 13.5px; cursor: pointer; transition: background 0.2s;">स्वीकार करें (Accept)</button>
         <button onclick="rejectCookies()" style="background: #1e293b; color: #cbd5e1; border: 1px solid #334155; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 13.5px; cursor: pointer;">अस्वीकार</button>
       </div>
     </div>
@@ -1557,11 +1516,6 @@
 
   <script>
     "use strict";
-
-    // Supabase Configuration (Admin Panel के समान सटीक क्रेडेंशियल्स)
-    const SUPABASE_URL = "https://jaruhsujaekjcqagyms.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphcnVoc3VqYWVramNxYWd5bXMiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc0MDc1MTM5OCwiZXhwIjoyMDU2MzI3Mzk4fQ.aAcnk-J9Z0lPz6qVv5Z3xY7W8Q1e4R2t3Y5u6I7o8P9";
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let globalNewsList = [];
     let currentCategoryFilter = "";
@@ -1632,13 +1586,13 @@
       try { localStorage.setItem(key, count); } catch(e) {}
     }
 
-    function updateGrowingVisitorStats() {
+    function updateSidebarVisitorStats() {
       const totalKey = "site_total_visits_count";
       let totalVisits = localStorage.getItem(totalKey);
       if (!totalVisits) {
-        totalVisits = 14280;
+        totalVisits = 14250;
       } else {
-        totalVisits = parseInt(totalVisits, 10) + Math.floor(Math.random() * 3 + 1);
+        totalVisits = parseInt(totalVisits, 10) + Math.floor(Math.random() * 4 + 1);
       }
       try { localStorage.setItem(totalKey, totalVisits); } catch(e) {}
       
@@ -1664,9 +1618,8 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       initPortal();
-      setInterval(backgroundDataPoll, 10000);
-
-      const cookieConsent = localStorage.getItem("the90inews_cookie_accepted");
+      
+      const cookieConsent = sessionStorage.getItem("the90inews_cookie_accepted");
       if (!cookieConsent) {
         setTimeout(() => {
           const banner = document.getElementById("cookieConsentBanner");
@@ -1676,96 +1629,57 @@
     });
 
     function acceptCookies() {
-      localStorage.setItem("the90inews_cookie_accepted", "true");
+      sessionStorage.setItem("the90inews_cookie_accepted", "true");
       const banner = document.getElementById("cookieConsentBanner");
       if (banner) banner.style.display = "none";
     }
 
     function rejectCookies() {
-      localStorage.setItem("the90inews_cookie_accepted", "false");
+      sessionStorage.setItem("the90inews_cookie_accepted", "false");
       const banner = document.getElementById("cookieConsentBanner");
       if (banner) banner.style.display = "none";
     }
 
     async function initPortal() {
       renderDateHeaders();
-      updateGrowingVisitorStats();
+      updateSidebarVisitorStats();
 
       const params = new URLSearchParams(window.location.search);
       currentCategoryFilter = (params.get("cat") || "").trim();
 
       highlightActiveNav(currentCategoryFilter);
-      await backgroundDataPoll();
-    }
 
-    async function backgroundDataPoll() {
       try {
-        let { data, error } = await supabaseClient.from('site_data').select('content').limit(1).single();
-        if (!error && data && data.content) {
-          const db = data.content;
-          const fresh = extractNewsArray(db);
-          if (fresh && fresh.length > 0) {
-            const sortedFresh = fresh.sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
-            globalNewsList = sortedFresh;
-            renderPortalData(globalNewsList, currentCategoryFilter);
-            checkCustomAd(db);
-            checkDirectVideos(db);
-          }
-        }
-      } catch(e) {
-        // Fallback to localStorage if offline
-        try {
-          const cached = localStorage.getItem("fast_admin_db") || localStorage.getItem("cached_db");
+        const storageKeys = ["cached_db", "90i_news", "news_data", "news", "articles"];
+        for (let k of storageKeys) {
+          const cached = localStorage.getItem(k);
           if (cached) {
             const parsed = JSON.parse(cached);
             const fromCache = extractNewsArray(parsed);
-            if (fromCache.length > 0) {
+            if (fromCache && fromCache.length > 0) {
               globalNewsList = fromCache;
               renderPortalData(globalNewsList, currentCategoryFilter);
+              break;
             }
           }
-        } catch(err) {}
-      }
-    }
-
-    function checkCustomAd(db) {
-      const adBlock = document.getElementById("homepageAdBlock");
-      const adImg = document.getElementById("homepageAdImg");
-      if (!adBlock || !adImg) return;
-
-      const adSettings = db?.customAd;
-      if (adSettings && adSettings.image) {
-        if (adImg.src !== adSettings.image) {
-          adImg.src = adSettings.image;
         }
-        adBlock.style.display = "block";
-      } else {
-        adBlock.style.display = "none";
-      }
-    }
+      } catch(e) {}
 
-    function checkDirectVideos(db) {
-      const videoBlock = document.getElementById("homepageVideoBlock");
-      const videoContainer = document.getElementById("homepageVideoContainer");
-      if (!videoBlock || !videoContainer) return;
-
-      const dVideos = db?.directVideos || [];
-      if (dVideos.length > 0) {
-        videoBlock.style.display = "block";
-        const newHtml = dVideos.map(v => `
-          <div class="home-direct-video-card">
-            <video controls preload="metadata">
-              <source src="${v.videoUrl}" type="video/mp4">
-              आपका ब्राउज़र वीडियो टैग का समर्थन नहीं करता है।
-            </video>
-            <div class="home-vid-title">${esc(v.title)}</div>
-          </div>
-        `).join("");
-        if (videoContainer.innerHTML !== newHtml) {
-          videoContainer.innerHTML = newHtml;
-        }
-      } else {
-        videoBlock.style.display = "none";
+      const possiblePaths = ["data/90i-data.json", "/data/90i-data.json", "90i-data.json", "data.json"];
+      for (let p of possiblePaths) {
+        try {
+          const res = await fetch(p + "?_t=" + Date.now(), { cache: "no-store" });
+          if (res.ok) {
+            const db = await res.json();
+            const fresh = extractNewsArray(db);
+            if (fresh && fresh.length > 0) {
+              globalNewsList = fresh.sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
+              try { localStorage.setItem("cached_db", JSON.stringify(db)); } catch(e) {}
+              renderPortalData(globalNewsList, currentCategoryFilter);
+              break;
+            }
+          }
+        } catch(e) {}
       }
     }
 
@@ -1899,12 +1813,6 @@
         spotExcerpt.innerText = String(rawContent).replace(/<[^>]*>?/gm, '').substring(0, 130) + '...';
       }
 
-      const readMoreLead = document.getElementById("spotlightReadMoreBtn");
-      if (readMoreLead) {
-        readMoreLead.href = leadLink;
-        readMoreLead.onclick = () => recordNewsClick(rawId);
-      }
-
       const subContainer = document.getElementById("heroSubleadsBox");
       if (subContainer) {
         const subItems = items.slice(1, 4);
@@ -1921,10 +1829,7 @@
                   <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
                 </div>
                 <div class="sublead-headline">${esc(item?.title)}</div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
-                  <span class="sublead-meta">${esc(item?.date || "आज")} • 👁️ ${getArticleViews(sId)} Views</span>
-                  <span style="font-size: 12px; font-weight: 800; color: var(--brand);">और पढ़ें ➔</span>
-                </div>
+                <div class="sublead-meta">${esc(item?.date || "आज")} • 👁️ ${getArticleViews(sId)} Views</div>
               </div>
             </a>
           `;
@@ -1948,9 +1853,7 @@
       return `
         <article class="news-card">
           <div class="card-thumb-wrap">
-            <a href="${link}" onclick="recordNewsClick('${rawId}')">
-              <img class="card-thumb" loading="lazy" src="${attr(image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80')}" alt="${title}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80'">
-            </a>
+            <img class="card-thumb" loading="lazy" src="${attr(image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80')}" alt="${title}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80'">
           </div>
           <div class="card-body">
             <div class="card-header-row">
@@ -1959,7 +1862,6 @@
             </div>
             <h3 class="card-title"><a href="${link}" onclick="recordNewsClick('${rawId}')">${title}</a></h3>
             <p class="card-summary">${summary}</p>
-            <a href="${link}" class="btn-read-more" onclick="recordNewsClick('${rawId}')">और पढ़ें ➔</a>
           </div>
           <div class="card-footer">
             <span>${date}</span>
@@ -1985,12 +1887,13 @@
         const pSource = polItems.length ? polItems.slice(0, 4) : items.slice(0, 4);
         polList.innerHTML = pSource.map(item => {
           const rId = item?.id || item?.slug || "item";
+          const rating = getRatingData(rId);
           return `
-            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item" onclick="recordNewsClick('${rId}')">
+            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item">
               <div class="speed-headline">● ${esc(item?.title)}</div>
               <div class="speed-meta">
                 <span>${esc(item?.date || "आज")} • ${esc(item?.category || "राजनीति")}</span>
-                <span style="color:var(--brand); font-weight:800; font-size:11.5px;">और पढ़ें ➔</span>
+                <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
               </div>
             </a>
           `;
@@ -2003,12 +1906,13 @@
         const bSource = bizItems.length ? bizItems.slice(0, 4) : items.slice(0, 4);
         bizList.innerHTML = bSource.map(item => {
           const rId = item?.id || item?.slug || "item";
+          const rating = getRatingData(rId);
           return `
-            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item" onclick="recordNewsClick('${rId}')">
+            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item">
               <div class="speed-headline">● ${esc(item?.title)}</div>
               <div class="speed-meta">
                 <span>${esc(item?.date || "आज")} • ${esc(item?.category || "व्यापार")}</span>
-                <span style="color:var(--brand); font-weight:800; font-size:11.5px;">और पढ़ें ➔</span>
+                <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
               </div>
             </a>
           `;
@@ -2030,12 +1934,13 @@
       if (!container) return;
       container.innerHTML = items.slice(0, 6).map(item => {
         const rId = item?.id || item?.slug || 'item';
+        const rating = getRatingData(rId);
         return `
           <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item" onclick="recordNewsClick('${rId}')">
             <div class="speed-headline">${esc(item?.title)}</div>
             <div class="speed-meta">
               <span>${esc(item?.date || "आज")}</span>
-              <span style="color:var(--brand); font-weight:800; font-size:11.5px;">और पढ़ें ➔</span>
+              <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
             </div>
           </a>
         `;
@@ -2077,12 +1982,13 @@
 
       list.innerHTML = filtered.slice(0, 8).map(item => {
         const rId = item?.id || item?.slug || 'item';
+        const rating = getRatingData(rId);
         return `
-          <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="search-result-item" onclick="recordNewsClick('${rId}')">
+          <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="search-result-item">
             <img src="${attr(item?.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80')}" class="search-res-thumb" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80'">
             <div>
               <h4 style="font-size:13.5px; font-weight:700;">${esc(item?.title)}</h4>
-              <span style="font-size:11px; color:var(--brand); font-weight:700;">और पढ़ें ➔</span>
+              <span style="font-size:11px; color:var(--text-muted);">⭐ ${rating.total}+ रेटिंग • ${esc(item?.category || "खबर")} • ${esc(item?.date || "")}</span>
             </div>
           </a>
         `;
@@ -2135,13 +2041,16 @@
 
     function generateBotResponse(query) {
       const q = query.toLowerCase();
-      if (q.includes("password") || q.includes("पासवर्ड") || q.includes("secret") || q.includes("token")) {
+
+      if (q.includes("password") || q.includes("पासवर्ड") || q.includes("admin pass") || q.includes("secret") || q.includes("token")) {
         return "सुरक्षा कारणों से मेरे पास एडमिन या सिस्टम का कोई क्रेडेंशियल उपलब्ध नहीं है।";
       }
-      if (q.includes("owner") || q.includes("मालिक") || q.includes("founder")) {
+
+      if (q.includes("owner") || q.includes("मालिक") || q.includes("founder") || q.includes("संस्थापक")) {
         return "<b>THE 90I NEWS</b> एक स्वतंत्र डिजिटल न्यूज़ नेटवर्क है।";
       }
-      if (q.includes("ताज़ा") || q.includes("breaking") || q.includes("latest") || q.includes("खबर")) {
+
+      if (q.includes("ताज़ा") || q.includes("breaking") || q.includes("latest") || q.includes("खबर") || q.includes("news")) {
         if (globalNewsList && globalNewsList.length > 0) {
           const topN = globalNewsList[0];
           const link = topN?.slug ? `article.html?slug=${encodeURIComponent(topN.slug)}` : `article.html?id=${encodeURIComponent(topN?.id || 'item')}`;
@@ -2149,30 +2058,28 @@
         }
         return "इस समय बुलेटिन लोड हो रहा है, कृपया होमपेज चेक करें।";
       }
+
+      if (q.includes("bihar") || q.includes("बिहार")) {
+        return "बिहार राज्य और पूर्णिया प्रमंडल की सभी प्रमुख खबरें हमारे 'बिहार बुलेटिन' सेक्शन में उपलब्ध हैं।";
+      }
+
       return "मैं आपकी क्या सहायता कर सकता हूँ? आप ताज़ा समाचार, प्रमुख श्रेणी या पोर्टल के बारे में कोई भी सवाल पूछ सकते हैं।";
     }
 
     function handleFooterContact(e) {
       e.preventDefault();
-      const name = document.getElementById("footerName").value.trim();
-      const email = document.getElementById("footerEmail").value.trim();
-      const msg = document.getElementById("footerMessage").value.trim();
-      
-      const newMsg = { name: name, email: email, message: msg, date: new Date().toLocaleDateString() };
-      const localMsgs = JSON.parse(localStorage.getItem("site_contact_messages") || "[]");
-      localMsgs.unshift(newMsg);
-      localStorage.setItem("site_contact_messages", JSON.stringify(localMsgs));
-
       const status = document.getElementById("footerFormStatus");
       if (status) {
         status.style.display = "block";
         status.style.color = "#16a34a";
-        status.textContent = "धन्यवाद! आपका संदेश एडमिन इनबॉक्स में भेज दिया गया है।";
+        status.textContent = "धन्यवाद! आपका संदेश सफलतापूर्वक भेज दिया गया है।";
       }
-      document.getElementById("footerContactForm").reset();
+      const form = document.getElementById("footerContactForm");
+      if (form) form.reset();
       setTimeout(() => { if (status) status.style.display = "none"; }, 4000);
     }
 
+    /* POLICY POPUP ENGINE */
     const policyData = {
       about: {
         title: "हमारे बारे में (About Us)",
@@ -2187,19 +2094,31 @@
       },
       terms: {
         title: "नियम और शर्तें (Terms & Conditions)",
-        content: `<h4>1. परिचय</h4><p>THE 90I NEWS (www.the90inews.com) पर आपका स्वागत है। इस वेबसाइट का उपयोग करके आप हमारे सभी नियमों और शर्तों से बंधे होने की सहमति देते हैं।</p>`
+        content: `
+          <h4>1. परिचय</h4>
+          <p>THE 90I NEWS (www.the90inews.com) पर आपका स्वागत है। इस वेबसाइट का उपयोग करके आप हमारे सभी नियमों और शर्तों से बंधे होने की सहमति देते हैं।</p>
+        `
       },
       privacy: {
         title: "गोपनीयता नीति (Privacy Policy)",
-        content: `<h4>1. जानकारी का संग्रहण</h4><p>THE 90I NEWS आपके द्वारा दी गई जानकारी और कुकीज़ के माध्यम से विज़िटर्स का डेटा सुरक्षित रखता है।</p>`
+        content: `
+          <h4>1. जानकारी का संग्रहण</h4>
+          <p>THE 90I NEWS आपके द्वारा दी गई जानकारी और कुकीज़ के माध्यम से विज़िटर्स का डेटा सुरक्षित रखता है।</p>
+        `
       },
       disclaimer: {
         title: "अस्वीकरण (Disclaimer)",
-        content: `<h4>1. समाचार सटीकता</h4><p>THE 90I NEWS पर प्रकाशित सभी खबरें पूरी प्रामाणिकता और जमीनी रिसर्च के बाद प्रस्तुत की जाती हैं।</p>`
+        content: `
+          <h4>1. समाचार सटीकता</h4>
+          <p>THE 90I NEWS पर प्रकाशित सभी खबरें पूरी प्रामाणिकता और जमीनी रिसर्च के बाद प्रस्तुत की जाती हैं।</p>
+        `
       },
       editorial: {
         title: "संपादकीय नीति (Editorial Policy)",
-        content: `<h4>1. निष्पक्षता और सत्यता</h4><p>THE 90I NEWS बिना किसी दबाव या पूर्वाग्रह के स्वतंत्र और सत्यपरक पत्रकारिता के लिए प्रतिबद्ध है।</p>`
+        content: `
+          <h4>1. निष्पक्षता और सत्यता</h4>
+          <p>THE 90I NEWS बिना किसी दबाव या पूर्वाग्रह के स्वतंत्र और सत्यपरक पत्रकारिता के लिए प्रतिबद्ध है।</p>
+        `
       }
     };
 
