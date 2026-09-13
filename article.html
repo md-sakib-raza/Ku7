@@ -53,8 +53,6 @@
       justify-content: space-between;
       align-items: center;
     }
-    .top-links a { color: var(--muted); text-decoration: none; margin-left: 12px; font-weight: 600; }
-    .top-links a:hover { color: var(--brand); }
 
     /* Main Branding Header */
     .header-main {
@@ -494,6 +492,49 @@
       margin-top: 4px;
     }
 
+    /* Policy Modal Styles (Prevents 404 & Low-Quality) */
+    .policy-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .policy-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 750px;
+      max-height: 85vh;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .policy-header {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid var(--brand);
+    }
+    .policy-header h3 { font-size: 18px; font-weight: 800; }
+    .policy-body {
+      padding: 24px;
+      overflow-y: auto;
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.7;
+    }
+    .policy-body h4 { color: #0f172a; margin: 16px 0 8px; font-size: 16px; font-weight: 800; }
+    .policy-body p { margin-bottom: 12px; }
+
     /* ================= COMPLETE BLACK FOOTER ================= */
     .main-footer {
       background: #090d16 !important;
@@ -573,6 +614,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
     }
     .footer-links a:hover {
       color: #ffffff;
@@ -673,11 +715,6 @@
     <div class="top-bar">
       <div class="top-bar-inner">
         <div id="liveDateDisplay">दिनांक: आज</div>
-        <div class="top-links">
-          <a href="index.html">🏠 मुख्य पृष्ठ</a>
-          <a href="epaper.html">📰 ई-पेपर</a>
-          <a href="admin.html">🔐 CMS एडमिन</a>
-        </div>
       </div>
     </div>
 
@@ -722,7 +759,7 @@
         <span id="artCategory" class="cat-tag">बिहार</span>
         <h1 id="artHeadline" class="article-headline">लोड हो रहा है...</h1>
         <div id="artMeta" class="meta-line">
-          <span id="artMetaCore">लोड हो रहा है... • 90I डिजिटल डेस्क</span>
+          <span id="artMetaCore">लोड हो रहा है... • 90I डेस्क</span>
           <span id="artMetaRating" class="meta-rating-tag">⭐ 4.9 (184+ पाठकों का भरोसा)</span>
         </div>
 
@@ -788,6 +825,19 @@
     </main>
   </div>
 
+  <!-- POLICY POPUP MODALS (Ensures zero 404 broken links for AdSense) -->
+  <div id="policyModal" class="policy-modal" onclick="closePolicyOnBg(event)">
+    <div class="policy-box">
+      <div class="policy-header">
+        <h3 id="policyModalTitle">नीति विवरण</h3>
+        <button style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;" onclick="closePolicyModal()">✕</button>
+      </div>
+      <div class="policy-body" id="policyModalContent">
+        <!-- Content injected dynamically -->
+      </div>
+    </div>
+  </div>
+
   <footer class="main-footer">
     <div class="footer-container">
       
@@ -797,7 +847,7 @@
           बिहार एवं राष्ट्र का अग्रणी डिजिटल न्यूज़ नेटवर्क। निष्पक्ष पत्रकारिता, सटीक विश्लेषण और ज़मीनी मुद्दों की निर्भीक आवाज़।
         </p>
         <ul class="footer-contact-info">
-          <li>📍 <b>मुख्यालय:</b> बिहार, भारत</li>
+          <li>📍 <b>मुख्यालय:</b> पूर्णिया, बिहार, भारत</li>
           <li>✉️ <b>ईमेल:</b> <a href="mailto:office.mdsakibraza@gmail.com">office.mdsakibraza@gmail.com</a></li>
           <li>🌐 <b>वेबसाइट:</b> www.the90inews.com</li>
         </ul>
@@ -815,13 +865,15 @@
         </ul>
       </div>
 
+      <!-- Fixed Broken Links via Popups including About Us -->
       <div class="footer-col">
         <h3>नीति व नियम</h3>
         <ul class="footer-links">
-          <li><a href="terms.html">नियम और शर्तें (Terms)</a></li>
-          <li><a href="privacy.html">गोपनीयता नीति (Privacy Policy)</a></li>
-          <li><a href="disclaimer.html">अस्वीकरण (Disclaimer)</a></li>
-          <li><a href="editorial.html">संपादकीय नीति</a></li>
+          <li><a onclick="openPolicy('about')">हमारे बारे में (About Us)</a></li>
+          <li><a onclick="openPolicy('terms')">नियम और शर्तें (Terms)</a></li>
+          <li><a onclick="openPolicy('privacy')">गोपनीयता नीति (Privacy Policy)</a></li>
+          <li><a onclick="openPolicy('disclaimer')">अस्वीकरण (Disclaimer)</a></li>
+          <li><a onclick="openPolicy('editorial')">संपादकीय नीति (Editorial)</a></li>
           <li><a href="admin.html">संपादक लॉगिन (CMS)</a></li>
         </ul>
       </div>
@@ -948,7 +1000,7 @@
     function renderArticle(a) {
       const title = a.title || "शीर्षक उपलब्ध नहीं";
       const category = a.category || "बिहार";
-      const author = a.author || "90I डिजिटल डेस्क";
+      const author = "90i डेस्क";
       const date = a.date || a.publishedAt || "";
       const time = a.time || "";
       const summary = a.excerpt || a.summary || "";
@@ -1142,6 +1194,69 @@
       setTimeout(() => {
         status.style.display = "none";
       }, 5000);
+    }
+
+    /* POLICY POPUP ENGINE (Including About Us for Purnia Resident) */
+    const policyData = {
+      about: {
+        title: "हमारे बारे में (About Us)",
+        content: `
+          <h4>THE 90I NEWS के बारे में</h4>
+          <p><b>THE 90I NEWS</b> बिहार एवं राष्ट्र का एक अग्रणी और स्वतंत्र डिजिटल न्यूज़ नेटवर्क है, जिसका मुख्यालय पूर्णिया, बिहार में स्थित है।</p>
+          <p>इस पोर्टल के संस्थापक और मुख्य संचालक पूर्णिया निवासी <b>Md Sakib Raza (सिंटू बाबू)</b> हैं। हमारा मुख्य उद्देश्य बिहार, सीमांचल और देश-विदेश की हर छोटी-बड़ी खबर को निष्पक्षता, सत्यता और पूरी प्रामाणिकता के साथ पाठकों तक पहुँचाना है।</p>
+          <h4>हमारा दृष्टिकोण</h4>
+          <p>हम ज़मीनी स्तर के मुद्दों, शिक्षा, रोजगार, राजनीति और प्रादेशिक विकास को प्रमुखता से उठाते हैं ताकि एक जागरूक समाज का निर्माण हो सके।</p>
+          <p><b>संपर्क ईमेल:</b> office.mdsakibraza@gmail.com</p>
+        `
+      },
+      terms: {
+        title: "नियम और शर्तें (Terms & Conditions)",
+        content: `
+          <h4>1. परिचय</h4>
+          <p>THE 90I NEWS (www.the90inews.com) पर आपका स्वागत है। इस वेबसाइट का उपयोग करके आप हमारे सभी नियमों और शर्तों से बंधे होने की सहमति देते हैं।</p>
+        `
+      },
+      privacy: {
+        title: "गोपनीयता नीति (Privacy Policy)",
+        content: `
+          <h4>1. जानकारी का संग्रहण</h4>
+          <p>THE 90I NEWS आपके द्वारा दी गई जानकारी और कुकीज़ के माध्यम से विज़िटर्स का डेटा सुरक्षित रखता है।</p>
+        `
+      },
+      disclaimer: {
+        title: "अस्वीकरण (Disclaimer)",
+        content: `
+          <h4>1. समाचार सटीकता</h4>
+          <p>THE 90I NEWS पर प्रकाशित सभी खबरें पूरी प्रामाणिकता और जमीनी रिसर्च के बाद प्रस्तुत की जाती हैं।</p>
+        `
+      },
+      editorial: {
+        title: "संपादकीय नीति (Editorial Policy)",
+        content: `
+          <h4>1. निष्पक्षता और सत्यता</h4>
+          <p>THE 90I NEWS बिना किसी दबाव या पूर्वाग्रह के स्वतंत्र और सत्यपरक पत्रकारिता के लिए प्रतिबद्ध है।</p>
+        `
+      }
+    };
+
+    function openPolicy(type) {
+      const modal = document.getElementById("policyModal");
+      const titleEl = document.getElementById("policyModalTitle");
+      const contentEl = document.getElementById("policyModalContent");
+      if (policyData[type]) {
+        titleEl.textContent = policyData[type].title;
+        contentEl.innerHTML = policyData[type].content;
+        modal.style.display = "flex";
+      }
+    }
+
+    function closePolicyModal() {
+      const modal = document.getElementById("policyModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function closePolicyOnBg(e) {
+      if (e.target.id === "policyModal") closePolicyModal();
     }
   </script>
 </body>
