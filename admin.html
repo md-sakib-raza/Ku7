@@ -497,7 +497,7 @@
       showLoading("विज्ञापन अपडेट हो रहा है...", "GitHub पर सेव किया जा रहा है...");
       try {
         globalMainDb.customAd = { image: img };
-        await syncDb(globalMainDb, "data/90i-data.json");
+        await syncDbReliable(globalMainDb, "data/90i-data.json");
         hideLoading();
         alert("📢 विज्ञापन बैनर सफलतापूर्वक अपडेट हो गया!");
       } catch(err) {
@@ -518,7 +518,7 @@
         globalMainDb.directVideos.unshift({ title: title, videoUrl: vSrc, date: new Date().toISOString().split('T')[0] });
         if (globalMainDb.directVideos.length > 2) globalMainDb.directVideos = globalMainDb.directVideos.slice(0, 2);
 
-        await syncDb(globalMainDb, "data/90i-data.json");
+        await syncDbReliable(globalMainDb, "data/90i-data.json");
         hideLoading();
         alert("📹 वीडियो सफलतापूर्वक अपलोड और पब्लिश हो गया!");
         
@@ -531,7 +531,7 @@
       }
     }
 
-    // ================= 100% RELIABLE SAVE, EDIT & SYNC (MAIN + ARCHIVE) =================
+    // ================= 100% RELIABLE SAVE, EDIT & SYNC (WITH RETRY ENGINE) =================
     async function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
@@ -539,6 +539,7 @@
       showLoading("सेव हो रहा है...", "GitHub पर सिंक किया जा रहा है...");
 
       try {
+        await fetchAllDatabases(); // ताज़ा डेटा लाएँ ताकि कॉन्फ्लिक्ट न हो
         var editId = document.getElementById('editId').value;
         var editSource = document.getElementById('editSource').value;
         var imgBase64 = document.getElementById('newsImgBase64').value;
@@ -581,7 +582,7 @@
               archiveList[idx] = item;
             }
             globalArchiveDb.archive_news = archiveList;
-            await syncDb(globalArchiveDb, "data/archive-2026.json");
+            await syncDbReliable(globalArchiveDb, "data/archive-2026.json");
           } else {
             var newsList = Array.isArray(globalMainDb["90i_news"]) ? globalMainDb["90i_news"] : (Array.isArray(globalMainDb.news) ? globalMainDb.news : []);
             var idx = newsList.findIndex(x => String(x.id) === String(editId));
@@ -599,14 +600,14 @@
             }
             globalMainDb["90i_news"] = newsList;
             globalMainDb.news = newsList;
-            await syncDb(globalMainDb, "data/90i-data.json");
+            await syncDbReliable(globalMainDb, "data/90i-data.json");
           }
         } else {
           var newsList = Array.isArray(globalMainDb["90i_news"]) ? globalMainDb["90i_news"] : (Array.isArray(globalMainDb.news) ? globalMainDb.news : []);
           newsList.unshift(item);
           globalMainDb["90i_news"] = newsList;
           globalMainDb.news = newsList;
-          await syncDb(globalMainDb, "data/90i-data.json");
+          await syncDbReliable(globalMainDb, "data/90i-data.json");
         }
 
         executeSitemapSyncSilent();
@@ -659,6 +660,7 @@
 
       showLoading("ई-पेपर लेआउट सेव हो रहा है...", "GitHub पर सिंक किया जा रहा है...");
       try {
+        await fetchAllDatabases();
         if (source === 'archive') {
           var list = globalArchiveDb.archive_news || [];
           var idx = list.findIndex(x => String(x.id) === String(id));
@@ -669,7 +671,7 @@
             list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
             list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
             globalArchiveDb.archive_news = list;
-            await syncDb(globalArchiveDb, "data/archive-2026.json");
+            await syncDbReliable(globalArchiveDb, "data/archive-2026.json");
           }
         } else {
           var list = globalMainDb["90i_news"] || globalMainDb.news || [];
@@ -682,7 +684,7 @@
             list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
             globalMainDb["90i_news"] = list;
             globalMainDb.news = list;
-            await syncDb(globalMainDb, "data/90i-data.json");
+            await syncDbReliable(globalMainDb, "data/90i-data.json");
           }
         }
         hideLoading();
@@ -693,7 +695,6 @@
       }
     }
 
-    // ⭐ मुख्य और आर्काइव दोनों की खबरें All News लिस्ट में दिखेंगी और एडिट/डिलीट होंगी
     async function loadNewsList() {
       await fetchAllDatabases();
       var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
@@ -750,15 +751,16 @@
       if (!confirm("क्या आप वाकई इस खबर को हटाना चाहते हैं?")) return;
       showLoading("समाचार हटाया जा रहा है...", "GitHub पर सिंक हो रहा है...");
       try {
+        await fetchAllDatabases();
         if (source === 'archive') {
           var list = globalArchiveDb.archive_news || [];
           globalArchiveDb.archive_news = list.filter(x => String(x.id) !== String(id));
-          await syncDb(globalArchiveDb, "data/archive-2026.json");
+          await syncDbReliable(globalArchiveDb, "data/archive-2026.json");
         } else {
           var list = globalMainDb["90i_news"] || globalMainDb.news || [];
           globalMainDb["90i_news"] = list.filter(x => String(x.id) !== String(id));
           globalMainDb.news = globalMainDb["90i_news"];
-          await syncDb(globalMainDb, "data/90i-data.json");
+          await syncDbReliable(globalMainDb, "data/90i-data.json");
         }
         executeSitemapSyncSilent();
         hideLoading();
@@ -787,10 +789,11 @@
     }
 
     async function deleteMessage(idx) {
+      await fetchAllDatabases();
       if (!globalMainDb.messages) globalMainDb.messages = [];
       globalMainDb.messages.splice(idx, 1);
       showLoading("संदेश हटाया जा रहा है...", "सिंक हो रहा है...");
-      await syncDb(globalMainDb, "data/90i-data.json");
+      await syncDbReliable(globalMainDb, "data/90i-data.json");
       hideLoading();
       loadInboxMessages();
     }
@@ -822,6 +825,7 @@
     }
 
     async function executeSitemapSync(token) {
+      await fetchAllDatabases();
       var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
       var archiveList = globalArchiveDb.archive_news || [];
       var newsList = mainList.concat(archiveList);
@@ -863,29 +867,52 @@
       });
     }
 
-    async function syncDb(dbObj, filePath) {
+    // ⭐ मजबूत और सुरक्षित सिंक इंजन (Failed to fetch और Network Error को रोकने के लिए Auto-Retry के साथ)
+    async function syncDbReliable(dbObj, filePath) {
       var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
       var owner = "md-sakib-raza", repo = "Ku7";
       var path = filePath || "data/90i-data.json";
       
-      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + token.trim(), 'Cache-Control': 'no-cache' }
-      });
-      var sha = getRes.ok ? (await getRes.json()).sha : null;
+      let attempts = 0;
+      let success = false;
+      let lastError = "";
 
-      var jsonString = JSON.stringify(dbObj, null, 2);
-      var contentB64 = window.btoa(unescape(encodeURIComponent(jsonString)));
+      while (attempts < 3 && !success) {
+        attempts++;
+        try {
+          // 1. ताज़ा SHA प्राप्त करें
+          var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
+            headers: { 'Authorization': 'token ' + token.trim(), 'Cache-Control': 'no-cache' }
+          });
+          var sha = getRes.ok ? (await getRes.json()).sha : null;
 
-      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "CMS Verified Update", content: contentB64, branch: "main", sha: sha })
-      });
+          // 2. डेटा एनकोड करें
+          var jsonString = JSON.stringify(dbObj, null, 2);
+          var contentB64 = window.btoa(unescape(encodeURIComponent(jsonString)));
 
-      if (!putRes.ok) {
-        var errText = await putRes.text();
-        throw new Error("GitHub Sync Failed (HTTP " + putRes.status + "): " + errText);
+          // 3. PUT रिक्वेस्ट भेजें
+          var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+            method: 'PUT',
+            headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: "Robust CMS Update", content: contentB64, branch: "main", sha: sha })
+          });
+
+          if (putRes.ok) {
+            success = true;
+            break;
+          } else {
+            var errText = await putRes.text();
+            lastError = "HTTP " + putRes.status + ": " + errText;
+          }
+        } catch(netErr) {
+          lastError = netErr.message;
+          await new Promise(r => setTimeout(r, 1000)); // 1 सेकंड रुककर दोबारा कोशिश करें
+        }
+      }
+
+      if (!success) {
+        throw new Error("GitHub Sync Failed: " + lastError);
       }
       
       localStorage.setItem("90i_gh_token", token.trim());
