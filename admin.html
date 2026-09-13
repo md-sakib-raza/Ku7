@@ -379,8 +379,15 @@
 
       try {
         var res2 = await fetch('data/archive-2026.json?_t=' + Date.now(), { cache: "no-store" });
-        if (res2.ok) globalArchiveDb = await res2.json();
-      } catch(e) {}
+        if (res2.ok) {
+          globalArchiveDb = await res2.json();
+        } else {
+          // अगर आर्काइव फाइल नहीं मिली, तो डिफॉल्ट खाली ऑब्जेक्ट सेट करें ताकि एरर न आए
+          globalArchiveDb = { "archive_news": [] };
+        }
+      } catch(e) {
+        globalArchiveDb = { "archive_news": [] };
+      }
     }
 
     function showLoading(title, desc) {
@@ -531,7 +538,6 @@
       }
     }
 
-    // ================= 100% RELIABLE SAVE, EDIT & SYNC (WITH RETRY ENGINE) =================
     async function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
@@ -539,7 +545,7 @@
       showLoading("सेव हो रहा है...", "GitHub पर सिंक किया जा रहा है...");
 
       try {
-        await fetchAllDatabases(); // ताज़ा डेटा लाएँ ताकि कॉन्फ्लिक्ट न हो
+        await fetchAllDatabases();
         var editId = document.getElementById('editId').value;
         var editSource = document.getElementById('editSource').value;
         var imgBase64 = document.getElementById('newsImgBase64').value;
@@ -622,7 +628,7 @@
       }
     }
 
-    function populateEpaperArticleDropdown() {
+    async function populateEpaperArticleDropdown() {
       var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
       var archiveList = globalArchiveDb.archive_news || [];
       var combined = [];
@@ -867,7 +873,6 @@
       });
     }
 
-    // ⭐ मजबूत और सुरक्षित सिंक इंजन (Failed to fetch और Network Error को रोकने के लिए Auto-Retry के साथ)
     async function syncDbReliable(dbObj, filePath) {
       var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
@@ -881,17 +886,19 @@
       while (attempts < 3 && !success) {
         attempts++;
         try {
-          // 1. ताज़ा SHA प्राप्त करें
           var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
             headers: { 'Authorization': 'token ' + token.trim(), 'Cache-Control': 'no-cache' }
           });
-          var sha = getRes.ok ? (await getRes.json()).sha : null;
+          
+          let sha = null;
+          if (getRes.ok) {
+            var fileData = await getRes.json();
+            sha = fileData.sha;
+          }
 
-          // 2. डेटा एनकोड करें
           var jsonString = JSON.stringify(dbObj, null, 2);
           var contentB64 = window.btoa(unescape(encodeURIComponent(jsonString)));
 
-          // 3. PUT रिक्वेस्ट भेजें
           var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
             method: 'PUT',
             headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
@@ -907,7 +914,7 @@
           }
         } catch(netErr) {
           lastError = netErr.message;
-          await new Promise(r => setTimeout(r, 1000)); // 1 सेकंड रुककर दोबारा कोशिश करें
+          await new Promise(r => setTimeout(r, 1000));
         }
       }
 
