@@ -1,325 +1,918 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>THE 90I NEWS — Admin CMS</title>
-<style>
-:root{--bg:#080c14;--card:#111827;--inner:#0b1220;--line:#263244;--text:#f8fafc;--muted:#94a3b8;--red:#dc2626;--green:#16a34a;--blue:#2563eb;--purple:#4f46e5}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:14px}
-.wrap{max-width:1200px;margin:auto}.head{display:flex;gap:12px;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);padding:15px 18px;border-radius:12px;margin-bottom:12px}.head h2{margin:0;font-size:19px}.head span{color:var(--red)}
-.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tabs button,.live{border:1px solid var(--line);background:#1e293b;color:#cbd5e1;border-radius:8px;padding:10px 12px;font-weight:700;cursor:pointer}.tabs button.active{background:var(--red);color:#fff;border-color:var(--red)}.live{color:#fff;text-decoration:none;margin-left:auto}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:14px}h3{margin:0 0 16px}.grid2,.grid3{display:grid;gap:13px}.grid2{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:repeat(3,1fr)}
-label{display:block;color:#cbd5e1;font-size:13px;font-weight:700;margin-bottom:6px}.group{margin-bottom:14px}input,select,textarea{width:100%;background:#030712;color:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 12px;font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--red)}textarea{resize:vertical}.editor{min-height:240px;border:1px solid var(--line);background:#030712;border-radius:8px;padding:14px;line-height:1.7;outline:none}.tools{display:flex;gap:6px;margin-bottom:7px}.tools button{background:#334155;color:#fff;border:0;border-radius:5px;padding:7px 12px;font-weight:800;cursor:pointer}
-.btn{width:100%;border:0;border-radius:8px;padding:13px;background:var(--red);color:#fff;font-weight:800;font-size:15px;cursor:pointer}.btn.blue{background:var(--blue)}.btn.green{background:var(--green)}.btn.purple{background:var(--purple)}
-.smallbtn{border:0;border-radius:5px;padding:6px 9px;color:#fff;font-weight:700;cursor:pointer}.edit{background:var(--blue)}.del{background:var(--red)}
-.preview{max-width:240px;max-height:150px;display:none;margin-top:8px;border:1px solid var(--line);border-radius:7px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{background:#1e293b;color:#cbd5e1;position:sticky;top:0}.badge{background:#334155;border-radius:5px;padding:3px 7px;font-size:11px}.status{padding:10px 12px;border-radius:8px;background:#0f172a;border:1px solid var(--line);color:#cbd5e1;margin-bottom:12px}.ok{color:#86efac}.err{color:#fca5a5}.muted{color:var(--muted);font-size:12px}
-#loading{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:9999}.loadbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;text-align:center;width:min(350px,90vw)}.spin{width:40px;height:40px;border:4px solid #334155;border-top-color:var(--red);border-radius:50%;animation:sp .6s linear infinite;margin:auto auto 12px}@keyframes sp{to{transform:rotate(360deg)}}
-@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}.live{margin-left:0}.head{align-items:flex-start}.head h2{font-size:16px}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | THE 90I NEWS</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #111827;
+      --card-inner: #1f2937;
+      --border: #374151;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --brand: #dc2626;
+      --brand-hover: #b91c1c;
+      --success: #16a34a;
+      --blue: #2563eb;
+      --indigo: #4f46e5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 15px;
+    }
+    .panel-wrap { max-width: 1150px; margin: 0 auto; }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+    .panel-header h2 span { color: var(--brand); }
+    .panel-header button {
+      background: #7f1d1d; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer;
+    }
+    .panel-header button:hover { background: #991b1b; }
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+    .tab-btn {
+      background: #1e293b; color: #cbd5e1; border: 1px solid var(--border); padding: 10px 14px;
+      border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s;
+    }
+    .tab-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .tab-btn.epaper-tab-btn { background: #312e81; color: #818cf8; border-color: #4f46e5; }
+    .tab-btn.epaper-tab-btn.active { background: #4f46e5; color: #fff; }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 25px; }
+    .form-group { margin-bottom: 16px; text-align: left; }
+    .form-group label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 6px; font-weight: 700; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 11px 14px; background: #030712; border: 1px solid var(--border); color: #fff; border-radius: 8px; outline: none; font-size: 14px;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--brand); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    
+    .media-type-box { background: var(--card-inner); border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 16px; }
+    .media-tabs { display: flex; gap: 12px; margin-bottom: 12px; }
+    .media-tab-btn { padding: 6px 14px; font-size: 12.5px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #0f172a; color: #94a3b8; cursor: pointer; }
+    .media-tab-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .img-preview { max-height: 140px; border-radius: 8px; margin-top: 10px; display: none; object-fit: cover; border: 1px solid var(--border); }
+
+    .editor-tools { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .editor-tools button { background: #334155; color: #fff; border: none; padding: 7px 14px; border-radius: 4px; cursor: pointer; font-weight: 800; font-size: 13px; }
+    #newsBody, #epaperBodyEditor {
+      min-height: 220px; background: #030712; border: 1px solid var(--border); border-radius: 8px; padding: 14px; color: #fff; outline: none; line-height: 1.6; font-size: 14px;
+    }
+
+    .btn { width: 100%; padding: 13px; background: var(--brand); color: #fff; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 15px; }
+    .btn:hover { background: var(--brand-hover); }
+    .btn-epaper { background: var(--indigo); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+    th { background: #1e293b; color: #cbd5e1; font-weight: 800; }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    .badge-sec { background: #374151; padding: 3px 7px; border-radius: 4px; font-size: 11px; font-weight: 700; color: #e2e8f0; }
+    .btn-action-edit { background: var(--blue); color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: 700; margin-right: 5px; }
+    .btn-action-del { background: #dc2626; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: 700; }
+
+    #loadingOverlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(11, 15, 25, 0.85); z-index: 9999;
+      display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    }
+    .loading-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 30px; width: 340px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .spinner {
+      width: 45px; height: 45px; border: 4px solid #334155; border-top: 4px solid var(--brand);
+      border-radius: 50%; animation: spin 0.6s linear infinite; margin: 0 auto 15px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .loading-text { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    .loading-sub { font-size: 12.5px; color: var(--muted); }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .tab-btn { flex-grow: 1; text-align: center; }
+    }
+  </style>
 </head>
 <body>
-<div id="loading"><div class="loadbox"><div class="spin"></div><b id="loadTitle">सिंक हो रहा है...</b><div class="muted" id="loadDesc">कृपया प्रतीक्षा करें</div></div></div>
 
-<div class="wrap">
-<div class="head"><h2>THE <span>90I</span> NEWS — CMS</h2><button class="smallbtn del" onclick="logout()">Logout</button></div>
-<div id="status" class="status">☁️ GitHub CMS तैयार है।</div>
+  <div id="loadingOverlay">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div id="loadingTitle" class="loading-text">⚡ तुरंत पब्लिश हो रहा है...</div>
+      <div id="loadingDesc" class="loading-sub">बस एक सेकंड...</div>
+    </div>
+  </div>
 
-<div class="tabs">
-<button id="tab_compose" class="active" onclick="section('compose')">➕ Add / Edit</button>
-<button id="tab_list" onclick="section('list')">📑 All News (<span id="count">0</span>)</button>
-<button id="tab_epaper" onclick="section('epaper')">📰 E-Paper</button>
-<button id="tab_ad" onclick="section('ad')">📢 Ad</button>
-<button id="tab_video" onclick="section('video')">📹 Video</button>
-<button id="tab_inbox" onclick="section('inbox')">📥 Inbox (<span id="inboxCount">0</span>)</button>
-<button id="tab_config" onclick="section('config')">⚙️ Config</button>
-<a class="live" href="index.html" target="_blank">🌐 Live ↗</a>
-</div>
+  <div class="panel-wrap">
+    <div class="panel-header">
+      <h2>THE <span>90I</span> NEWS — CMS कंट्रोल पैनल</h2>
+      <button type="button" onclick="logout()">🚪 Logout</button>
+    </div>
 
-<section id="sec_compose" class="card">
-<h3 id="formTitle">नया समाचार प्रकाशित करें</h3>
-<input id="editId" type="hidden">
-<div class="group"><label>Headline *</label><input id="title" placeholder="बड़ी हेडलाइन..."></div>
-<div class="grid3">
-<div class="group"><label>Target Section</label><select id="sectionSelect">
-<option value="spotlight">🌟 Hero Spotlight</option><option value="sublead">🔥 Hero Sub-lead</option><option value="feed" selected>📰 General Feed</option><option value="bihar">📍 बिहार बुलेटिन</option><option value="politics">🏛️ राजनीति व राष्ट्रीय</option><option value="business">📈 व्यापार व तकनीक</option><option value="entertainment">🎭 मनोरंजन व खेल</option>
-</select></div>
-<div class="group"><label>Category</label><select id="category">
-<option>बिहार</option><option>राजनीति</option><option>राष्ट्रीय</option><option>शिक्षा</option><option>व्यापार</option><option>टेक्नोलॉजी</option><option>खेल</option><option>मनोरंजन</option>
-</select></div>
-<div class="group"><label>Slug</label><input id="slug" placeholder="news-slug"></div>
-</div>
-<div class="group"><label>Summary / Excerpt</label><textarea id="summary" rows="2"></textarea></div>
+    <div class="tab-bar">
+      <button type="button" class="tab-btn active" id="btn_compose" onclick="switchSection('compose')">➕ Add / Edit Article</button>
+      <button type="button" class="tab-btn epaper-tab-btn" id="btn_epaper" onclick="switchSection('epaper')">📰 E-Paper Editor</button>
+      <button type="button" class="tab-btn" id="btn_list" onclick="switchSection('list')">📑 All News (<span id="countBadge">0</span>)</button>
+      <button type="button" class="tab-btn" id="btn_ad" onclick="switchSection('ad')" style="background:#831843; color:#f43f5e; border-color:#9f1239;">📢 Ad Manager</button>
+      <button type="button" class="tab-btn" id="btn_video" onclick="switchSection('video')" style="background:#1e3a8a; color:#38bdf8; border-color:#1d4ed8;">📹 Video Manager</button>
+      <button type="button" class="tab-btn" id="btn_inbox" onclick="switchSection('inbox')" style="background:#065f46; color:#34d399; border-color:#059669;">📥 Inbox (<span id="inboxCountBadge">0</span>)</button>
+      <button type="button" class="tab-btn" id="btn_token" onclick="switchSection('token')">☁️ Config</button>
+      <a href="index.html" target="_blank" style="padding:10px 14px; background:#1e293b; color:#cbd5e1; text-decoration:none; border-radius:8px; font-weight:700; font-size:13px; border:1px solid var(--border); margin-left:auto;">🌐 Live ↗</a>
+    </div>
 
-<div class="grid2">
-<div class="group"><label>News Photo</label><input id="newsFile" type="file" accept="image/*"><input id="imageUrl" type="hidden"><img id="imgPreview" class="preview"></div>
-<div class="group"><label>Photo Caption</label><input id="caption" placeholder="फोटो कैप्शन / क्रेडिट"></div>
-</div>
-<div class="group"><label>YouTube URL (optional)</label><input id="videoUrl" type="url" placeholder="https://www.youtube.com/watch?v=..."></div>
-<div class="group"><label>Full Article</label><div class="tools"><button type="button" onclick="cmd('bold')"><b>B</b></button><button type="button" onclick="cmd('italic')"><i>I</i></button><button type="button" onclick="cmd('underline')"><u>U</u></button></div><div id="body" class="editor" contenteditable="true"></div></div>
-<div class="grid2"><button class="btn" id="publishBtn" onclick="saveNews()">⚡ Publish / Update</button><button class="btn blue" onclick="resetForm()">✕ Clear Form</button></div>
-</section>
+    <!-- 1. COMPOSE & EDIT TAB -->
+    <div id="sec_compose" class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px;">
+        <h3 id="formTitle">नया समाचार प्रकाशित करें</h3>
+        <button type="button" id="btnCancelEdit" style="display:none; background:#475569; color:#fff; border:none; padding:5px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:700;" onclick="resetForm()">✕ Cancel Edit</button>
+      </div>
+      <input type="hidden" id="editId" value="" />
+        
+      <div class="form-group">
+        <label>News Headline (शीर्षक) *</label>
+        <input type="text" id="newsTitle" placeholder="बड़ी हेडलाइन यहाँ लिखें..." oninput="generateSlug()" />
+      </div>
 
-<section id="sec_list" class="card" style="display:none">
-<h3>प्रकाशित समाचार</h3><button class="smallbtn edit" onclick="loadList()">🔄 Refresh</button>
-<div class="tablewrap"><table><thead><tr><th>Title</th><th>Category</th><th>Section</th><th>Date</th><th>Action</th></tr></thead><tbody id="newsTable"></tbody></table></div>
-</section>
+      <div class="grid-3">
+        <div class="form-group">
+          <label>Target Section *</label>
+          <select id="newsSection">
+            <option value="spotlight">🌟 Hero Spotlight</option>
+            <option value="sublead">🔥 Hero Sub-lead</option>
+            <option value="feed" selected>📰 मुख्य दैनिक बुलेटिन (General Feed)</option>
+            <option value="bihar">📍 बिहार बुलेटिन</option>
+            <option value="politics">🏛️ राजनीति व राष्ट्रीय</option>
+            <option value="business">📈 व्यापार व तकनीक</option>
+            <option value="entertainment">🎭 मनोरंजन व खेल</option>
+          </select>
+        </div>
 
-<section id="sec_epaper" class="card" style="display:none">
-<h3>📰 E-Paper Editor</h3>
-<div class="group"><label>समाचार चुनें</label><select id="epSelect" onchange="loadEpaper()"><option value="">-- चुनें --</option></select></div>
-<div class="grid2"><div class="group"><label>Page</label><select id="epPage"><option value="1">01 — Front</option><option value="2">02 — Bihar</option><option value="3">03 — Purnia/Seemanchal</option><option value="4">04 — National/International</option><option value="5">05 — Education/Editorial</option></select></div><div class="group"><label>Spacing</label><select id="epGap"><option value="compact">Compact</option><option value="normal">Normal</option><option value="spacious">Spacious</option></select></div></div>
-<div class="group"><label>Custom Title</label><input id="epTitle"></div><div class="group"><label>Photo Caption</label><input id="epCaption"></div>
-<div class="group"><label>Special Text</label><div class="tools"><button type="button" onclick="epcmd('bold')"><b>B</b></button><button type="button" onclick="epcmd('italic')"><i>I</i></button><button type="button" onclick="epcmd('underline')"><u>U</u></button></div><div id="epBody" class="editor" contenteditable="true"></div></div>
-<button class="btn purple" onclick="saveEpaper()">💾 Save E-Paper</button>
-</section>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="newsCategory">
+            <option value="बिहार">बिहार</option>
+            <option value="राजनीति">राजनीति</option>
+            <option value="राष्ट्रीय">राष्ट्रीय</option>
+            <option value="शिक्षा">शिक्षा व जॉब्स</option>
+            <option value="व्यापार">व्यापार</option>
+            <option value="टेक्नोलॉजी">टेक्नोलॉजी</option>
+            <option value="खेल">खेल</option>
+            <option value="मनोरंजन">मनोरंजन</option>
+          </select>
+        </div>
 
-<section id="sec_ad" class="card" style="display:none">
-<h3>📢 Homepage Ad</h3><div class="group"><label>Ad Image</label><input id="adFile" type="file" accept="image/*"><input id="adImage" type="hidden"><img id="adPreview" class="preview"></div><button class="btn" onclick="saveAd()">📢 Update Ad</button>
-</section>
+        <div class="form-group">
+          <label>Article Slug (URL Path)</label>
+          <input type="text" id="newsSlug" placeholder="news-slug-update" />
+        </div>
+      </div>
 
-<section id="sec_video" class="card" style="display:none">
-<h3>📹 Direct Video</h3><div class="group"><label>Title *</label><input id="directTitle"></div><div class="group"><label>MP4 (max 4 MB)</label><input id="directFile" type="file" accept="video/mp4"></div><button class="btn blue" onclick="saveVideo()">📹 Upload & Publish</button>
-<p class="muted">नोट: GitHub में MP4 को बार-बार JSON के अंदर रखने से CMS बहुत धीमा होता है। यह panel छोटे वीडियो के लिए ही रखता है।</p>
-</section>
+      <div class="form-group">
+        <label>Summary / Excerpt</label>
+        <textarea id="newsSummary" rows="2" placeholder="संक्षिप्त 1-2 लाइन सारांश..."></textarea>
+      </div>
 
-<section id="sec_inbox" class="card" style="display:none">
-<h3>📥 Reader Inbox</h3><div class="tablewrap"><table><thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th>Action</th></tr></thead><tbody id="inboxTable"></tbody></table></div>
-</section>
+      <div class="media-type-box">
+        <label style="display:block; font-size:13px; color:#cbd5e1; margin-bottom:8px; font-weight:700;">Attachment Media:</label>
+        <div class="media-tabs">
+          <button type="button" class="media-tab-btn active" id="tab_img" onclick="switchMediaMode('image')">🖼️ Photo Upload</button>
+          <button type="button" class="media-tab-btn" id="tab_vid" onclick="switchMediaMode('video')">📹 YouTube URL</button>
+        </div>
+        <div id="media_img_box">
+          <div class="grid-2">
+            <div>
+              <input type="file" id="newsFile" accept="image/*" onchange="handleImg(event)" />
+              <input type="hidden" id="newsImgBase64" />
+              <img id="imgPreview" class="img-preview" />
+            </div>
+            <div>
+              <input type="text" id="newsCaption" placeholder="फ़ोटो का कैप्शन / क्रेडिट" />
+            </div>
+          </div>
+        </div>
+        <div id="media_vid_box" style="display:none;">
+          <input type="url" id="newsVideoUrl" placeholder="YouTube Video URL..." />
+        </div>
+      </div>
 
-<section id="sec_config" class="card" style="display:none">
-<h3>⚙️ GitHub Configuration</h3>
-<div class="grid3">
-<div class="group"><label>GitHub Owner</label><input id="owner" value="md-sakib-raza"></div>
-<div class="group"><label>Repository</label><input id="repo" value="Ku7"></div>
-<div class="group"><label>Branch</label><input id="branch" value="main"></div>
-</div>
-<div class="group"><label>Data File</label><input id="dataPath" value="data/90i-data.json"></div>
-<div class="group"><label>GitHub Personal Access Token</label><input id="token" type="password" placeholder="github_pat_..."></div>
-<button class="btn green" onclick="saveConfig()">💾 Save Config & Test</button>
-<p class="muted" style="margin-top:12px">Fine-grained token में इसी repository के लिए <b>Contents: Read and write</b> permission दें। Token को HTML source में कभी hard-code न करें।</p>
-</section>
-</div>
+      <div class="form-group">
+        <label>Full Article Body</label>
+        <div class="editor-tools">
+          <button type="button" onclick="formatText('bold')"><b>B</b></button>
+          <button type="button" onclick="formatText('italic')"><i>I</i></button>
+          <button type="button" onclick="formatText('underline')"><u>U</u></button>
+        </div>
+        <div id="newsBody" contenteditable="true" placeholder="पूरी खबर यहाँ विस्तार से लिखें..."></div>
+      </div>
 
-<script>
-"use strict";
+      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">⚡ Instant Publish (तुरंत लाइव करें)</button>
+    </div>
 
-/* ====== LOGIN ====== */
-if(localStorage.getItem("90i_admin_logged")!=="true") location.replace("login.html");
-function logout(){localStorage.removeItem("90i_admin_logged");location.replace("login.html")}
+    <!-- ================= 2. E-PAPER BROADSHEET EDITOR TAB ================= -->
+    <div id="sec_epaper" class="card" style="display: none;">
+      <h3 style="color:#818cf8; margin-bottom:6px;">📰 ई-पेपर ब्रॉडशीट कस्टमाइज़र (E-Paper Layout Editor)</h3>
+      <div class="form-group">
+        <label>1. ई-पेपर में प्रदर्शित करने के लिए समाचार चुनें:</label>
+        <select id="epaperSelectArticle" onchange="loadEpaperArticleData()">
+          <option value="">-- समाचार चुनें --</option>
+        </select>
+      </div>
 
-/* ====== CONFIG ====== */
-const KEY="90i_cms_config";
-const DEFAULT={owner:"md-sakib-raza",repo:"Ku7",branch:"main",dataPath:"data/90i-data.json"};
-let cfg=Object.assign({},DEFAULT,JSON.parse(localStorage.getItem(KEY)||"{}"));
-let db={};
-let busy=false;
+      <input type="hidden" id="epaperTargetId" value="" />
 
-function $(id){return document.getElementById(id)}
-function setStatus(text,ok=true){$("status").innerHTML=(ok?"✅ ":"❌ ")+text;$("status").className="status "+(ok?"ok":"err")}
-function loading(on,title,desc){$("loading").style.display=on?"flex":"none";if(title)$("loadTitle").textContent=title;if(desc)$("loadDesc").textContent=desc}
-function section(name){
-["compose","list","epaper","ad","video","inbox","config"].forEach(x=>{ $("sec_"+x).style.display=x===name?"block":"none";$("tab_"+x).classList.toggle("active",x===name)});
-if(name==="list")loadList();if(name==="epaper")fillEpaper();if(name==="inbox")loadInbox();if(name==="ad")loadAd()
-}
-function cmd(c){document.execCommand(c,false,null);$("body").focus()}
-function epcmd(c){document.execCommand(c,false,null);$("epBody").focus()}
+      <div class="grid-2">
+        <div class="form-group">
+          <label style="color:#a5b4fc;">ई-पेपर पृष्ठ स्लॉट (Page Slot)</label>
+          <select id="epaperPageSlot">
+            <option value="1">📄 पृष्ठ 01 (मुख्य फ्रंट पेज)</option>
+            <option value="2">📄 पृष्ठ 02 (बिहार राज्य हलचल)</option>
+            <option value="3">📄 पृष्ठ 03 (सीमांचल व पूर्णिया ज़ोन)</option>
+            <option value="4">📄 पृष्ठ 04 (राष्ट्रीय एवं अंतर्राष्ट्रीय)</option>
+            <option value="5">📄 पृष्ठ 05 (शिक्षा, करियर व संपादकीय)</option>
+          </select>
+        </div>
 
-function readCfg(){
-cfg={owner:$("owner").value.trim(),repo:$("repo").value.trim(),branch:$("branch").value.trim()||"main",dataPath:$("dataPath").value.trim()};
-const t=$("token").value.trim();if(t)cfg.token=t;
-localStorage.setItem(KEY,JSON.stringify(cfg));return cfg;
-}
-function initCfg(){
-$("owner").value=cfg.owner;$("repo").value=cfg.repo;$("branch").value=cfg.branch;$("dataPath").value=cfg.dataPath;
-if(cfg.token)$("token").value=cfg.token;
-}
-function token(){return (cfg.token||$("token").value||"").trim()}
-function headers(){
-const t=token();if(!t)throw new Error("GitHub Token नहीं मिला। Config में token डालें।");
-return {"Authorization":"Bearer "+t,"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"};
-}
-function apiUrl(path){return "https://api.github.com/repos/"+encodeURIComponent(cfg.owner)+"/"+encodeURIComponent(cfg.repo)+"/contents/"+path.split("/").map(encodeURIComponent).join("/")}
+        <div class="form-group">
+          <label style="color:#a5b4fc;">पैराग्राफ गैपिंग (Spacing Style)</label>
+          <select id="epaperGapStyle">
+            <option value="normal">सामान्य गैपिंग (Normal Spacing)</option>
+            <option value="compact" selected>संक्षिप्त और सघन (Compact Flow)</option>
+            <option value="spacious">खुला-खुला गैप (Spacious)</option>
+          </select>
+        </div>
+      </div>
 
-/* ====== GITHUB ====== */
-async function githubFile(path){
-const u=apiUrl(path)+"?ref="+encodeURIComponent(cfg.branch)+"&_="+Date.now();
-const r=await fetch(u,{headers:headers(),cache:"no-store"});
-if(r.status===401)throw new Error("HTTP 401: Token invalid/expired/revoked या token को इस repository का access नहीं है.");
-if(r.status===403)throw new Error("HTTP 403: GitHub permission/rate-limit problem. Token में Contents Read/Write दें.");
-if(r.status===404)throw new Error("HTTP 404: Repository/branch/file नहीं मिला: "+cfg.owner+"/"+cfg.repo+" @ "+cfg.branch+" / "+path);
-if(!r.ok)throw new Error("GitHub GET failed (HTTP "+r.status+")");
-const j=await r.json();
-let raw=atob((j.content||"").replace(/\n/g,""));
-let bytes=Uint8Array.from(raw,c=>c.charCodeAt(0));
-let text=new TextDecoder().decode(bytes);
-return {sha:j.sha,text};
-}
-function b64(text){const bytes=new TextEncoder().encode(text);let s="";for(let i=0;i<bytes.length;i+=0x8000)s+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(s)}
-async function putFile(path,text,sha,message){
-const r=await fetch(apiUrl(path),{method:"PUT",headers:headers(),body:JSON.stringify({message,content:b64(text),branch:cfg.branch,sha:sha||undefined})});
-if(r.status===401)throw new Error("HTTP 401: GitHub token rejected.");
-if(r.status===403)throw new Error("HTTP 403: GitHub permission denied/rate limit.");
-if(r.status===409)throw Object.assign(new Error("CONFLICT"),{code:409});
-if(!r.ok){let x=await r.text();throw new Error("GitHub PUT failed (HTTP "+r.status+"): "+x.slice(0,180))}
-return r.json();
-}
+      <div class="form-group">
+        <label style="color:#a5b4fc;">ई-पेपर कस्टम शीर्षक</label>
+        <input type="text" id="epaperCustomTitle" placeholder="ई-पेपर के लिए हेडलाइन..." style="background:#090d16;" />
+      </div>
 
-/* ====== DATABASE ====== */
-function normalize(x){
-x=x&&typeof x==="object"?x:{};
-if(!Array.isArray(x["90i_news"])&&Array.isArray(x.news))x["90i_news"]=x.news;
-if(!Array.isArray(x["90i_news"]))x["90i_news"]=[];
-if(!Array.isArray(x.news))x.news=x["90i_news"];
-if(!Array.isArray(x.messages))x.messages=[];
-if(!Array.isArray(x.directVideos))x.directVideos=[];
-return x;
-}
-async function getDB(){const f=await githubFile(cfg.dataPath);try{return normalize(JSON.parse(f.text))}catch(e){throw new Error("data/90i-data.json valid JSON नहीं है.")}}
-async function mutateDB(mutator,message){
-if(busy)throw new Error("एक दूसरा GitHub operation चल रहा है।");
-busy=true;
-try{
-let lastErr;
-for(let attempt=1;attempt<=5;attempt++){
-const f=await githubFile(cfg.dataPath);
-const latest=normalize(JSON.parse(f.text));
-const next=await mutator(latest);
-try{
-await putFile(cfg.dataPath,JSON.stringify(normalize(next),null,2)+"\n",f.sha,message);
-db=next;return next;
-}catch(e){if(e.code===409){lastErr=e;await new Promise(r=>setTimeout(r,250*attempt));continue}throw e}
-}
-throw new Error("GitHub conflict बार-बार हुआ। दोबारा कोशिश करें।");
-}finally{busy=false}
-}
+      <div class="form-group">
+        <label style="color:#a5b4fc;">ई-पेपर फोटो कैप्शन (No Date)</label>
+        <input type="text" id="epaperCaption" placeholder="फोटो का कैप्शन..." style="background:#090d16;" />
+      </div>
 
-/* ====== IMAGE: keep image small and upload separately ====== */
-function compressImage(file,maxW=900,quality=.68){
-return new Promise((resolve,reject)=>{
-const rd=new FileReader();rd.onerror=()=>reject(new Error("Image read failed"));rd.onload=()=>{
-const im=new Image();im.onerror=()=>reject(new Error("Invalid image"));im.onload=()=>{
-const scale=Math.min(1,maxW/im.width),c=document.createElement("canvas");c.width=Math.round(im.width*scale);c.height=Math.round(im.height*scale);
-c.getContext("2d").drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL("image/jpeg",quality))
-};im.src=rd.result};rd.readAsDataURL(file)
-})}
-async function uploadImage(file,folder="assets/news"){
-if(!file)return "";
-const data=await compressImage(file);
-const name=Date.now()+"-"+Math.random().toString(36).slice(2,7)+".jpg";
-const path=folder+"/"+name;
-await putFile(path,data.split(",")[1],"", "CMS: upload image "+name);
-return "/"+path;
-}
-/* GitHub contents API accepts raw base64 for binary; above putFile would double encode the base64 text.
-   Use this binary uploader instead. */
-async function uploadBinary(file,folder="assets/news"){
-const data=await compressImage(file),name=Date.now()+"-"+Math.random().toString(36).slice(2,7)+".jpg",path=folder+"/"+name;
-const raw=data.split(",")[1];
-const r=await fetch(apiUrl(path),{method:"PUT",headers:headers(),body:JSON.stringify({message:"CMS: upload image "+name,content:raw,branch:cfg.branch})});
-if(!r.ok)throw new Error("Image upload failed (HTTP "+r.status+")");
-return "/"+path;
-}
+      <div class="form-group">
+        <label style="color:#a5b4fc;">ई-पेपर विशेष टेक्स्ट</label>
+        <div class="editor-tools">
+          <button type="button" onclick="formatEpaperText('bold')"><b>B</b></button>
+          <button type="button" onclick="formatEpaperText('italic')"><i>I</i></button>
+          <button type="button" onclick="formatEpaperText('underline')"><u>U</u></button>
+        </div>
+        <div id="epaperBodyEditor" contenteditable="true" placeholder="टेक्स्ट यहाँ सजाएं..."></div>
+      </div>
 
-/* ====== FORM ====== */
-$("newsFile").addEventListener("change",async e=>{
-const f=e.target.files[0];if(!f)return;try{$("imgPreview").src=await compressImage(f);$("imgPreview").style.display="block"}catch(x){alert(x.message)}
-});
-$("adFile").addEventListener("change",async e=>{
-const f=e.target.files[0];if(!f)return;try{$("adPreview").src=await compressImage(f,1000,.7);$("adPreview").style.display="block"}catch(x){alert(x.message)}
-});
-$("title").addEventListener("input",()=>{
-if(!$("editId").value){let s=$("title").value.toLowerCase().replace(/[^a-z0-9 ]/g,"").trim().replace(/\s+/g,"-");$("slug").value=s||("news-"+Date.now())}
-});
+      <button type="button" class="btn btn-epaper" onclick="saveEpaperCustomization()">💾 Save E-Paper Layout Instantly</button>
+    </div>
 
-function articleObject(old){
-const id=$("editId").value||String(Date.now());
-return Object.assign({},old||{},{
-id:isNaN(Number(id))?id:Number(id),
-title:$("title").value.trim(),slug:$("slug").value.trim()||("news-"+Date.now()),
-section:$("sectionSelect").value,category:$("category").value,summary:$("summary").value.trim(),
-image:$("imageUrl").value||((old&&old.image)||""),img:$("imageUrl").value||((old&&(old.image||old.img))||""),
-caption:$("caption").value.trim(),videoUrl:$("videoUrl").value.trim(),
-content:$("body").innerHTML,body:$("body").innerHTML,
-date:new Date().toISOString().slice(0,10),
-updatedAt:new Date().toISOString()
-})
-}
-async function saveNews(){
-if(!$("title").value.trim())return alert("Headline आवश्यक है!");
-if(busy)return;
-loading(true,"⚡ Publish हो रहा है...","GitHub में latest data सुरक्षित रूप से save हो रहा है");
-try{
-readCfg();let file=$("newsFile").files[0],existingId=$("editId").value;
-if(file){$("loadDesc").textContent="Photo compress/upload हो रही है...";$("imageUrl").value=await uploadBinary(file)}
-await mutateDB(latest=>{
-let list=latest["90i_news"],old=existingId?list.find(n=>String(n.id)===String(existingId)):null;
-let item=articleObject(old);
-if(existingId){const i=list.findIndex(n=>String(n.id)===String(existingId));if(i<0)throw new Error("Edit वाली खबर latest database में नहीं मिली।");list[i]=item}
-else list.unshift(item);
-latest["90i_news"]=list;latest.news=list;return latest
-},existingId?"CMS: update news":"CMS: publish news");
-hideFormImage();resetForm();await loadList(false);setStatus("समाचार GitHub में सफलतापूर्वक publish/update हो गया। अब सभी devices latest JSON पढ़ेंगे।");alert("🎉 समाचार सफलतापूर्वक publish/update हो गया!");
-}catch(e){setStatus(e.message,false);alert("त्रुटि: "+e.message)}finally{loading(false)}
-}
-function hideFormImage(){$("newsFile").value=""}
-function resetForm(){
-$("editId").value="";$("title").value="";$("slug").value="";$("summary").value="";$("caption").value="";$("videoUrl").value="";$("body").innerHTML="";$("imageUrl").value="";$("imgPreview").style.display="none";$("formTitle").textContent="नया समाचार प्रकाशित करें";$("publishBtn").textContent="⚡ Publish / Update";$("newsFile").value=""
-}
-async function editNews(id){
-loading(true,"लोड हो रहा है...","Latest GitHub data पढ़ा जा रहा है");
-try{const d=await getDB(),n=d["90i_news"].find(x=>String(x.id)===String(id));if(!n)throw new Error("News नहीं मिली");
-$("editId").value=n.id;$("title").value=n.title||"";$("slug").value=n.slug||"";$("sectionSelect").value=n.section||"feed";$("category").value=n.category||"बिहार";$("summary").value=n.summary||"";$("caption").value=n.caption||"";$("videoUrl").value=n.videoUrl||"";$("body").innerHTML=n.content||n.body||"";$("imageUrl").value=n.image||n.img||"";if($("imageUrl").value){$("imgPreview").src=$("imageUrl").value;$("imgPreview").style.display="block"}$("formTitle").textContent="समाचार संशोधित करें";$("publishBtn").textContent="✏️ Update News";section("compose");scrollTo({top:0,behavior:"smooth"})}catch(e){alert(e.message)}finally{loading(false)}
-}
-async function deleteNews(id){
-if(!confirm("क्या यह समाचार सभी devices से delete करना है?"))return;
-loading(true,"🗑️ Delete हो रहा है...","Latest GitHub version पर change किया जा रहा है");
-try{readCfg();await mutateDB(d=>{d["90i_news"]=d["90i_news"].filter(n=>String(n.id)!==String(id));d.news=d["90i_news"];return d},"CMS: delete news");await loadList(false);setStatus("समाचार GitHub database से delete हो गया।");}catch(e){setStatus(e.message,false);alert(e.message)}finally{loading(false)}
-}
+    <!-- ================= 3. MANAGE NEWS LIST TAB ================= -->
+    <div id="sec_list" class="card" style="display: none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3>प्रकाशित समाचार सूची</h3>
+        <button type="button" onclick="loadNewsList()" style="padding:6px 12px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:6px; cursor:pointer;">🔄 Refresh List</button>
+      </div>
+      <table>
+        <thead><tr><th>Title</th><th>Category</th><th>Section</th><th style="text-align:center;">Actions</th></tr></thead>
+        <tbody id="newsTable"><tr><td colspan="4" style="text-align:center;">लोड हो रहा है...</td></tr></tbody>
+      </table>
+    </div>
 
-/* ====== LIST / EPAPER ====== */
-async function loadList(showLoad=true){
-if(showLoad)loading(true,"News list","Latest data पढ़ा जा रहा है");
-try{db=await getDB();const l=db["90i_news"];$("count").textContent=l.length;$("newsTable").innerHTML=l.length?l.map(n=>`<tr><td><b>${esc(n.title)}</b></td><td><span class="badge">${esc(n.category)}</span></td><td>${esc(n.section)}</td><td>${esc(n.date||"")}</td><td><button class="smallbtn edit" onclick="editNews(${JSON.stringify(n.id)})">✏️</button> <button class="smallbtn del" onclick="deleteNews(${JSON.stringify(n.id)})">🗑️</button></td></tr>`).join(""):`<tr><td colspan="5">कोई खबर नहीं।</td></tr>`}catch(e){setStatus(e.message,false)}finally{if(showLoad)loading(false)}
-}
-async function fillEpaper(){try{const d=await getDB(),l=d["90i_news"];$("epSelect").innerHTML='<option value="">-- चुनें --</option>'+l.map(n=>`<option value="${esc(String(n.id))}">${esc(n.title)}</option>`).join("")}catch(e){setStatus(e.message,false)}}
-async function loadEpaper(){const id=$("epSelect").value;if(!id)return;try{const d=await getDB(),n=d["90i_news"].find(x=>String(x.id)===id);if(!n)return;$("epSelect").dataset.id=id;$("epPage").value=n.epaperPage||1;$("epGap").value=n.epaperGapStyle||"compact";$("epTitle").value=n.epaperTitle||n.title||"";$("epCaption").value=n.epaperCaption||n.caption||"";$("epBody").innerHTML=n.epaperCustomContent||n.content||n.body||""}catch(e){alert(e.message)}}
-async function saveEpaper(){
-const id=$("epSelect").value;if(!id)return alert("समाचार चुनें!");
-loading(true,"E-Paper save","Latest data update हो रहा है");
-try{await mutateDB(d=>{const n=d["90i_news"].find(x=>String(x.id)===id);if(!n)throw new Error("News नहीं मिली");n.epaperPage=Number($("epPage").value);n.epaperGapStyle=$("epGap").value;n.epaperTitle=$("epTitle").value.trim();n.epaperCaption=$("epCaption").value.trim();n.epaperCustomContent=$("epBody").innerHTML;n.updatedAt=new Date().toISOString();d.news=d["90i_news"];return d},"CMS: update epaper");alert("📰 E-Paper save हो गया!")}catch(e){alert(e.message)}finally{loading(false)}
-}
+    <!-- ================= 4. AD MANAGER TAB ================= -->
+    <div id="sec_ad" class="card" style="display: none;">
+      <h3 style="color:#f43f5e; margin-bottom:12px;">📢 होमपेज कस्टम विज्ञापन बैनर</h3>
+      <div class="form-group">
+        <label>विज्ञापन बैनर इमेज चुनें</label>
+        <input type="file" id="adFile" accept="image/*" onchange="handleAdImg(event)" />
+        <input type="hidden" id="adImgBase64" />
+        <img id="adImgPreview" class="img-preview" />
+      </div>
+      <button type="button" class="btn" style="background:#e11d48;" onclick="saveCustomAdSettings()">📢 Update Homepage Ad Banner Fast</button>
+    </div>
 
-/* ====== AD ====== */
-async function loadAd(){try{const d=await getDB(),a=d.customAd;if(a&&a.image){$("adImage").value=a.image;$("adPreview").src=a.image;$("adPreview").style.display="block"}}catch(e){setStatus(e.message,false)}}
-async function saveAd(){
-const f=$("adFile").files[0];if(!f&&!$("adImage").value)return alert("Ad image चुनें!");
-loading(true,"Ad update","Image upload और database update हो रहा है");
-try{readCfg();if(f)$("adImage").value=await uploadBinary(f,"assets/ads");await mutateDB(d=>{d.customAd={image:$("adImage").value,updatedAt:new Date().toISOString()};return d},"CMS: update ad");alert("📢 Ad update हो गया!")}catch(e){alert(e.message)}finally{loading(false)}
-}
+    <!-- ================= 5. VIDEO MANAGER TAB ================= -->
+    <div id="sec_video" class="card" style="display: none;">
+      <h3 style="color:#38bdf8; margin-bottom:12px;">📹 डायरेक्ट वीडियो बुलेटिन मैनेजर</h3>
+      <div class="form-group">
+        <label>वीडियो का शीर्षक *</label>
+        <input type="text" id="directVideoTitle" placeholder="शीर्षक लिखें..." />
+      </div>
+      <div class="form-group">
+        <label>वीडियो फाइल चुनें (MP4) *</label>
+        <input type="file" id="directVideoFile" accept="video/mp4" onchange="handleDirectVideo(event)" />
+        <input type="hidden" id="directVideoBase64" />
+      </div>
+      <button type="button" class="btn" style="background:#0284c7;" onclick="saveDirectVideoSettings()">📹 Upload & Publish Video Fast</button>
+    </div>
 
-/* ====== VIDEO ====== */
-async function saveVideo(){
-const title=$("directTitle").value.trim(),f=$("directFile").files[0];if(!title||!f)return alert("Title और MP4 दोनों दें!");if(f.size>4*1024*1024)return alert("MP4 4MB से छोटी रखें।");
-loading(true,"Video upload","Video GitHub में upload हो रहा है");
-try{readCfg();const data=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(new Error("Video read failed"));r.readAsDataURL(f)});const name=Date.now()+"-"+Math.random().toString(36).slice(2,6)+".mp4";const path="assets/videos/"+name;await putFile(path,data.split(",")[1],"","CMS: upload video "+name);await mutateDB(d=>{d.directVideos.unshift({id:Date.now(),title,videoUrl:"/"+path,date:new Date().toISOString().slice(0,10)});d.directVideos=d.directVideos.slice(0,2);return d},"CMS: publish video");$("directTitle").value="";$("directFile").value="";alert("📹 Video publish हो गया!")}catch(e){alert(e.message)}finally{loading(false)}
-}
+    <!-- ================= 6. INBOX TAB ================= -->
+    <div id="sec_inbox" class="card" style="display: none;">
+      <h3 style="color:#34d399; margin-bottom:15px;">📥 पाठक संदेश इनबॉक्स</h3>
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th style="text-align:center;">Action</th></tr></thead>
+        <tbody id="inboxTable"><tr><td colspan="5" style="text-align:center;">कोई संदेश नहीं।</td></tr></tbody>
+      </table>
+    </div>
 
-/* ====== INBOX ====== */
-async function loadInbox(){try{const d=await getDB(),m=d.messages||[];$("inboxCount").textContent=m.length;$("inboxTable").innerHTML=m.length?m.map((x,i)=>`<tr><td>${esc(x.name)}</td><td>${esc(x.email)}</td><td>${esc(x.message)}</td><td>${esc(x.date||"")}</td><td><button class="smallbtn del" onclick="deleteMessage(${i})">🗑️</button></td></tr>`).join(""):`<tr><td colspan="5">कोई संदेश नहीं।</td></tr>`}catch(e){setStatus(e.message,false)}}
-async function deleteMessage(i){if(!confirm("Message delete करें?"))return;loading(true,"Message delete","Latest database update हो रहा है");try{await mutateDB(d=>{d.messages.splice(i,1);return d},"CMS: delete message");await loadInbox();}catch(e){alert(e.message)}finally{loading(false)}}
+    <!-- ================= 7. CONFIG TAB ================= -->
+    <div id="sec_token" class="card" style="display: none;">
+      <h3 style="margin-bottom:12px;">GitHub Token Configuration</h3>
+      <div class="form-group" style="max-width: 500px;">
+        <label>Personal Access Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxx" />
+      </div>
+      <button type="button" class="btn" style="max-width: 220px;" onclick="saveToken()">💾 Save Token</button>
+      <div style="margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
+        <button type="button" id="btnSyncSitemap" onclick="generateAndSyncFullSitemap()" style="background:#059669; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; cursor:pointer;">🔄 Update Sitemap & Slugs Now</button>
+      </div>
+      
+      <!-- एक क्लिक में पुरानी सारी खबरें आर्काइव में भेजने और ओरिजिनल फाइल खाली करने का बटन -->
+      <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
+        <button type="button" onclick="migrateAllToArchive()" style="background:#7c3aed; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; cursor:pointer;">📦 Move All Existing News to Archive & Clear Main File</button>
+      </div>
+    </div>
+  </div>
 
-/* ====== CONFIG TEST ====== */
-async function saveConfig(){
-try{readCfg();await getDB();$("token").value=cfg.token||"";setStatus("GitHub connection सफल है: "+cfg.owner+"/"+cfg.repo+" @ "+cfg.branch);alert("✅ GitHub connection सफल है!")}catch(e){setStatus(e.message,false);alert(e.message)}
-}
-function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+  <script>
+    "use strict";
 
-/* ====== START ====== */
-(async function(){
-initCfg();
-try{readCfg();db=await getDB();setStatus("GitHub connected. Latest news: "+db["90i_news"].length);await loadList(false);await loadInbox()}catch(e){setStatus(e.message,false)}
-})();
-</script>
+    if (localStorage.getItem("90i_admin_logged") !== "true") {
+      window.location.replace("login.html");
+    }
+
+    function logout() {
+      localStorage.removeItem("90i_admin_logged");
+      window.location.replace("login.html");
+    }
+
+    window.onload = async function() {
+      var savedToken = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
+      if (savedToken) {
+        document.getElementById('ghToken').value = savedToken;
+        localStorage.setItem('90i_gh_token', savedToken);
+      }
+      loadNewsList();
+      loadInboxMessages();
+      loadExistingAdAndVideoSettings();
+    };
+
+    function showLoading(title, desc) {
+      document.getElementById('loadingTitle').innerText = title || "सिंक हो रहा है...";
+      document.getElementById('loadingDesc').innerText = desc || "कृपया प्रतीक्षा करें...";
+      document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    function switchSection(name) {
+      ['compose', 'epaper', 'list', 'ad', 'video', 'inbox', 'token'].forEach(s => {
+        document.getElementById('sec_' + s).style.display = (s === name) ? 'block' : 'none';
+        var btn = document.getElementById('btn_' + s);
+        if (btn) btn.className = 'tab-btn' + (s === name ? ' active' : '') + (s === 'epaper' ? ' epaper-tab-btn' : '');
+      });
+      if (name === 'list') loadNewsList();
+      if (name === 'inbox') loadInboxMessages();
+      if (name === 'epaper') populateEpaperArticleDropdown();
+    }
+
+    function switchMediaMode(type) {
+      const isImg = type === 'image';
+      document.getElementById('media_img_box').style.display = isImg ? 'block' : 'none';
+      document.getElementById('media_vid_box').style.display = isImg ? 'none' : 'block';
+      document.getElementById('tab_img').className = 'media-tab-btn' + (isImg ? ' active' : '');
+      document.getElementById('tab_vid').className = 'media-tab-btn' + (!isImg ? ' active' : '');
+    }
+
+    function formatText(cmd) { document.execCommand(cmd, false, null); }
+    function formatEpaperText(cmd) { document.execCommand(cmd, false, null); document.getElementById('epaperBodyEditor').focus(); }
+
+    function generateSlug() {
+      var t = document.getElementById('newsTitle').value;
+      var s = t.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
+      document.getElementById('newsSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
+    }
+
+    function handleImg(e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement("canvas");
+          var max_w = 600;
+          var scale = max_w / img.width;
+          canvas.width = (img.width > max_w) ? max_w : img.width;
+          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          var b64 = canvas.toDataURL("image/jpeg", 0.60);
+          document.getElementById('newsImgBase64').value = b64;
+          var p = document.getElementById('imgPreview'); p.src = b64; p.style.display = 'block';
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(f);
+    }
+
+    function handleAdImg(e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement("canvas");
+          var max_w = 700;
+          var scale = max_w / img.width;
+          canvas.width = (img.width > max_w) ? max_w : img.width;
+          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          var b64 = canvas.toDataURL("image/jpeg", 0.65);
+          document.getElementById('adImgBase64').value = b64;
+          var p = document.getElementById('adImgPreview'); p.src = b64; p.style.display = 'block';
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(f);
+    }
+
+    function handleDirectVideo(e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      if (f.size > 4 * 1024 * 1024) {
+        alert("⚠️ कृपया 4MB से छोटी MP4 वीडियो फाइल चुनें!");
+        document.getElementById('directVideoFile').value = '';
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        document.getElementById('directVideoBase64').value = evt.target.result;
+      };
+      reader.readAsDataURL(f);
+    }
+
+    async function fetchDatabaseFromServer() {
+      try {
+        var res = await fetch('data/90i-data.json?_t=' + Date.now(), { 
+          cache: "no-store",
+          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        });
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch(e) {}
+      return { "90i_news": [], "news": [], "messages": [], "customAd": null, "directVideos": [] };
+    }
+
+    async function fetchArchiveServer() {
+      try {
+        var res = await fetch('data/archive-2026.json?_t=' + Date.now(), { 
+          cache: "no-store",
+          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        });
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch(e) {}
+      return { "archive_news": [] };
+    }
+
+    async function loadExistingAdAndVideoSettings() {
+      var db = await fetchDatabaseFromServer();
+      var ad = db.customAd;
+      if (ad && ad.image) {
+        document.getElementById('adImgBase64').value = ad.image;
+        var p = document.getElementById('adImgPreview'); p.src = ad.image; p.style.display = 'block';
+      }
+    }
+
+    async function saveCustomAdSettings() {
+      var img = document.getElementById('adImgBase64').value;
+      if (!img) { alert("कृपया विज्ञापन बैनर की तस्वीर चुनें!"); return; }
+
+      showLoading("विज्ञापन अपडेट हो रहा है...", "तुरंत सिंक हो रहा है...");
+      try {
+        var db = await fetchDatabaseFromServer();
+        db.customAd = { image: img };
+        await syncDb(db, "data/90i-data.json");
+        hideLoading();
+        alert("📢 विज्ञापन बैनर सफलतापूर्वक अपडेट हो गया!");
+      } catch(err) {
+        hideLoading();
+        alert("त्रुटि: " + err.message);
+      }
+    }
+
+    async function saveDirectVideoSettings() {
+      var title = document.getElementById('directVideoTitle').value.trim();
+      var vSrc = document.getElementById('directVideoBase64').value;
+      if (!title) { alert("कृपया वीडियो का शीर्षक लिखें!"); return; }
+      if (!vSrc) { alert("कृपया MP4 वीडियो फाइल चुनें!"); return; }
+
+      showLoading("वीडियो पब्लिश हो रहा है...", "तुरंत अपलोड हो रहा है...");
+      try {
+        var db = await fetchDatabaseFromServer();
+        if (!Array.isArray(db.directVideos)) db.directVideos = [];
+        db.directVideos.unshift({ title: title, videoUrl: vSrc, date: new Date().toISOString().split('T')[0] });
+        if (db.directVideos.length > 2) db.directVideos = db.directVideos.slice(0, 2);
+
+        await syncDb(db, "data/90i-data.json");
+        hideLoading();
+        alert("📹 वीडियो सफलतापूर्वक अपलोड और पब्लिश हो गया!");
+        
+        document.getElementById('directVideoTitle').value = '';
+        document.getElementById('directVideoBase64').value = '';
+        document.getElementById('directVideoFile').value = '';
+      } catch(err) {
+        hideLoading();
+        alert("त्रुटि: " + err.message);
+      }
+    }
+
+    // ================= 1-SECOND INSTANT PUBLISH FUNCTION =================
+    async function saveAndSync() {
+      var title = document.getElementById('newsTitle').value.trim();
+      if (!title) { alert("शीर्षक आवश्यक है!"); return; }
+
+      showLoading("⚡ तुरंत पब्लिश हो रहा है...", "डेटाबेस सेव किया जा रहा है...");
+
+      try {
+        var db = await fetchDatabaseFromServer();
+        var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
+        var editId = document.getElementById('editId').value;
+        
+        var imgBase64 = document.getElementById('newsImgBase64').value;
+
+        var item = {
+          id: editId ? Number(editId) : Date.now(),
+          title: title,
+          slug: document.getElementById('newsSlug').value.trim() || ('news-' + Date.now()),
+          section: document.getElementById('newsSection').value,
+          category: document.getElementById('newsCategory').value,
+          summary: document.getElementById('newsSummary').value.trim(),
+          image: imgBase64,
+          img: imgBase64,
+          caption: document.getElementById('newsCaption').value.trim(),
+          videoUrl: document.getElementById('newsVideoUrl').value.trim(),
+          content: document.getElementById('newsBody').innerHTML,
+          body: document.getElementById('newsBody').innerHTML,
+          date: new Date().toISOString().split('T')[0],
+          epaperPage: 1,
+          epaperGapStyle: "compact",
+          epaperTitle: "",
+          epaperCaption: document.getElementById('newsCaption').value.trim(),
+          epaperCustomContent: ""
+        };
+
+        if (editId) {
+          var idx = newsList.findIndex(x => String(x.id) === String(editId));
+          if (idx !== -1) {
+            if (!imgBase64) {
+              item.image = newsList[idx].image || newsList[idx].img || "";
+              item.img = newsList[idx].image || newsList[idx].img || "";
+            }
+            item.epaperPage = newsList[idx].epaperPage || 1;
+            item.epaperGapStyle = newsList[idx].epaperGapStyle || "compact";
+            item.epaperTitle = newsList[idx].epaperTitle || "";
+            item.epaperCaption = newsList[idx].epaperCaption || item.caption;
+            item.epaperCustomContent = newsList[idx].epaperCustomContent || "";
+            newsList[idx] = item;
+          }
+        } else {
+          newsList.unshift(item);
+        }
+
+        db["90i_news"] = newsList;
+        db.news = newsList;
+        
+        await syncDb(db, "data/90i-data.json");
+        executeSitemapSyncSilent();
+
+        hideLoading();
+        alert("🎉 समाचार तुरंत लाइव हो गया!");
+
+        resetForm();
+        switchSection('list');
+      } catch(err) {
+        hideLoading();
+        alert("त्रुटि: " + err.message);
+      }
+    }
+
+    // ⭐ यह फंक्शन मौजूदा सारी खबरों को आर्काइव में भेजकर मेन फाइल को खाली कर देगा
+    async function migrateAllToArchive() {
+      var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
+      if (!token) { alert("कृपया पहले Config टैब में GitHub Token डालें!"); return; }
+
+      if (!confirm("क्या आप वाकई पुरानी सारी खबरों को archive-2026.json में भेजना चाहते हैं ताकि मुख्य फाइल खाली और सुपर-फास्ट हो जाए?")) return;
+
+      showLoading("माइग्रेशन हो रहा है...", "खबरें आर्काइव में शिफ्ट की जा रही हैं...");
+      try {
+        var mainDb = await fetchDatabaseFromServer();
+        var mainNews = mainDb["90i_news"] || mainDb.news || [];
+        
+        if (!mainNews.length) {
+          hideLoading();
+          alert("मुख्य फाइल में कोई खबर नहीं है!");
+          return;
+        }
+
+        var archiveDb = await fetchArchiveServer();
+        var archiveList = archiveDb.archive_news || [];
+
+        // पुरानी खबरों को आर्काइव में जोड़ें
+        archiveList = mainNews.concat(archiveList);
+        archiveDb.archive_news = archiveList;
+
+        // आर्काइव फाइल सेव करें
+        await syncDb(archiveDb, "data/archive-2026.json");
+
+        // मुख्य फाइल को खाली करें (केवल सेटिंग्स व मैसेज सुरक्षित रहेंगे)
+        mainDb["90i_news"] = [];
+        mainDb.news = [];
+        await syncDb(mainDb, "data/90i-data.json");
+
+        hideLoading();
+        alert("✨ सफलता! पुरानी सारी खबरें आर्काइव में सुरक्षित हो गईं और मुख्य फाइल एकदम खाली व सुपर-फास्ट हो गई है!");
+        loadNewsList();
+      } catch(err) {
+        hideLoading();
+        alert("त्रुटि: " + err.message);
+      }
+    }
+
+    async function populateEpaperArticleDropdown() {
+      var db = await fetchDatabaseFromServer();
+      var list = db["90i_news"] || db.news || [];
+      var sel = document.getElementById('epaperSelectArticle');
+      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + list.map(n => `<option value="${n.id}">${n.title} (${n.date || ''})</option>`).join('');
+    }
+
+    async function loadEpaperArticleData() {
+      var id = document.getElementById('epaperSelectArticle').value;
+      if (!id) return;
+      var db = await fetchDatabaseFromServer();
+      var list = db["90i_news"] || db.news || [];
+      var n = list.find(x => String(x.id) === String(id));
+      if (!n) return;
+
+      document.getElementById('epaperTargetId').value = n.id;
+      document.getElementById('epaperPageSlot').value = n.epaperPage || "1";
+      document.getElementById('epaperGapStyle').value = n.epaperGapStyle || "compact";
+      document.getElementById('epaperCustomTitle').value = n.epaperTitle || n.title || "";
+      document.getElementById('epaperCaption').value = n.epaperCaption || n.caption || "";
+      document.getElementById('epaperBodyEditor').innerHTML = n.epaperCustomContent || n.content || n.body || "";
+    }
+
+    async function saveEpaperCustomization() {
+      var id = document.getElementById('epaperTargetId').value;
+      if (!id) { alert("कृपया समाचार चुनें!"); return; }
+
+      showLoading("ई-पेपर लेआउट सेव हो रहा है...", "तुरंत सिंक हो रहा है...");
+      try {
+        var db = await fetchDatabaseFromServer();
+        var list = db["90i_news"] || db.news || [];
+        var idx = list.findIndex(x => String(x.id) === String(id));
+        if (idx !== -1) {
+          list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
+          list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
+          list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
+          list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
+          list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
+
+          db["90i_news"] = list;
+          db.news = list;
+          await syncDb(db, "data/90i-data.json");
+          hideLoading();
+          alert("📰 ई-पेपर लेआउट सफलतापूर्वक सेव हो गया!");
+        }
+      } catch(e) {
+        hideLoading();
+        alert("त्रुटि: " + e.message);
+      }
+    }
+
+    async function loadNewsList() {
+      var db = await fetchDatabaseFromServer();
+      var list = db["90i_news"] || db.news || [];
+      document.getElementById('countBadge').innerText = list.length;
+      var tb = document.getElementById('newsTable');
+      if (!list.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई ताज़ा खबर नहीं। (पुरानी खबरें आर्काइव में सुरक्षित हैं)</td></tr>'; return; }
+      tb.innerHTML = list.map(n => `
+        <tr>
+          <td><b>${esc(n.title)}</b></td>
+          <td><span class="badge-sec">${esc(n.category)}</span></td>
+          <td><span class="badge-sec">${esc(n.section)}</span></td>
+          <td style="text-align:center;">
+            <button type="button" class="btn-action-edit" onclick="editNews(${n.id})">✏️</button>
+            <button type="button" class="btn-action-del" onclick="deleteNews(${n.id})">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function editNews(id) {
+      var db = await fetchDatabaseFromServer();
+      var list = db["90i_news"] || db.news || [];
+      var n = list.find(x => String(x.id) === String(id));
+      if (!n) return;
+
+      document.getElementById('editId').value = n.id;
+      document.getElementById('newsTitle').value = n.title || '';
+      document.getElementById('newsSlug').value = n.slug || '';
+      document.getElementById('newsSection').value = n.section || 'feed';
+      document.getElementById('newsCategory').value = n.category || 'बिहार';
+      document.getElementById('newsSummary').value = n.summary || '';
+      document.getElementById('newsCaption').value = n.caption || '';
+      document.getElementById('newsBody').innerHTML = n.content || n.body || '';
+      
+      var img = n.image || n.img || '';
+      if (img) {
+        document.getElementById('newsImgBase64').value = img;
+        var p = document.getElementById('imgPreview'); p.src = img; p.style.display = 'block';
+      }
+      document.getElementById('formTitle').innerText = "समाचार में संशोधन करें (Edit Mode)";
+      document.getElementById('btnCancelEdit').style.display = 'inline-block';
+      switchSection('compose');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function deleteNews(id) {
+      if (!confirm("हटाना चाहते हैं?")) return;
+      showLoading("समाचार हटाया जा रहा है...", "तुरंत सिंक हो रहा है...");
+      var db = await fetchDatabaseFromServer();
+      var list = db["90i_news"] || db.news || [];
+      db["90i_news"] = list.filter(x => String(x.id) !== String(id));
+      db.news = db["90i_news"];
+      await syncDb(db, "data/90i-data.json");
+      executeSitemapSyncSilent();
+      hideLoading();
+      loadNewsList();
+    }
+
+    async function loadInboxMessages() {
+      var db = await fetchDatabaseFromServer();
+      var msgs = db.messages || [];
+      document.getElementById('inboxCountBadge').innerText = msgs.length;
+      var tb = document.getElementById('inboxTable');
+      if (!msgs.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;">कोई संदेश नहीं।</td></tr>'; return; }
+      tb.innerHTML = msgs.map((m, idx) => `
+        <tr>
+          <td><b>${esc(m.name)}</b></td>
+          <td>${esc(m.email)}</td>
+          <td>${esc(m.message)}</td>
+          <td>${m.date || ''}</td>
+          <td style="text-align:center;"><button type="button" class="btn-action-del" onclick="deleteMessage(${idx})">🗑️</button></td>
+        </tr>
+      `).join('');
+    }
+
+    async function deleteMessage(idx) {
+      var db = await fetchDatabaseFromServer();
+      if (!db.messages) db.messages = [];
+      db.messages.splice(idx, 1);
+      showLoading("संदेश हटाया जा रहा है...", "सिंक हो रहा है...");
+      await syncDb(db, "data/90i-data.json");
+      hideLoading();
+      loadInboxMessages();
+    }
+
+    async function generateAndSyncFullSitemap() {
+      var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
+      if (!token) {
+        alert("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।");
+        return;
+      }
+
+      showLoading("सिटमैप अपडेट हो रहा है...", "sitemap.xml जनरेट हो रहा है...");
+      try {
+        await executeSitemapSync(token);
+        hideLoading();
+        alert("🎉 साइटमैप (sitemap.xml) सफलतापूर्वक अपडेट हो गया है!");
+      } catch(err) {
+        hideLoading();
+        alert("साइटमैप त्रुटि: " + err.message);
+      }
+    }
+
+    async function executeSitemapSyncSilent() {
+      var token = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
+      if (!token) return;
+      try {
+        await executeSitemapSync(token);
+      } catch(e) {}
+    }
+
+    async function executeSitemapSync(token) {
+      var db = await fetchDatabaseFromServer();
+      var archiveDb = await fetchArchiveServer();
+      var newsList = (db["90i_news"] || db.news || []).concat(archiveDb.archive_news || []);
+      
+      var domain = "https://90inews.me";
+      var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      
+      xml += '  <url><loc>' + domain + '/</loc><changefreq>always</changefreq><priority>1.0</priority></url>\n';
+      xml += '  <url><loc>' + domain + '/epaper.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n';
+
+      newsList.forEach(function(item) {
+        if (item.slug || item.id) {
+          var slugPath = item.slug ? ('article.html?slug=' + encodeURIComponent(item.slug)) : ('article.html?id=' + item.id);
+          var articleUrl = domain + '/' + slugPath;
+          var itemDate = item.date || new Date().toISOString().split('T')[0];
+          xml += '  <url>\n';
+          xml += '    <loc>' + articleUrl + '</loc>\n';
+          xml += '    <lastmod>' + itemDate + '</lastmod>\n';
+          xml += '    <changefreq>daily</changefreq>\n';
+          xml += '    <priority>0.8</priority>\n';
+          xml += '  </url>\n';
+        }
+      });
+
+      xml += '</urlset>';
+
+      var owner = "md-sakib-raza", repo = "Ku7", path = "sitemap.xml";
+      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
+        headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
+      });
+      var sha = getRes.ok ? (await getRes.json()).sha : null;
+      var contentB64 = window.btoa(unescape(encodeURIComponent(xml)));
+
+      await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: "Auto-sitemap update", content: contentB64, branch: "main", sha: sha })
+      });
+    }
+
+    async function syncDb(db, filePath) {
+      var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
+      if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
+      var owner = "md-sakib-raza", repo = "Ku7";
+      
+      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + filePath + '?ref=main&_t=' + Date.now(), {
+        headers: { 'Authorization': 'token ' + token.trim() }
+      });
+      
+      if (getRes.status === 401) {
+        throw new Error("GitHub Sync Failed (HTTP 401): आपका GitHub Token अमान्य (Invalid) या एक्सपायर हो गया है। कृपया नया टोकन Config टैब में डालें।");
+      }
+
+      var sha = getRes.ok ? (await getRes.json()).sha : null;
+      var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
+      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + filePath, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: "Archive Sync & Clean", content: contentB64, branch: "main", sha: sha })
+      });
+
+      if (putRes.status === 401) {
+        throw new Error("GitHub Sync Failed (HTTP 401): टोकन अमान्य है।");
+      }
+      if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
+      
+      localStorage.setItem("90i_gh_token", token.trim());
+    }
+
+    function saveToken() {
+      var t = document.getElementById('ghToken').value.trim();
+      if (!t) { alert("कृपया वैध टोकन दर्ज करें!"); return; }
+      localStorage.setItem('90i_gh_token', t);
+      localStorage.setItem('gh_token', t);
+      alert("✅ GitHub टोकन सफलतापूर्वक सेव हो गया है!");
+    }
+
+    function esc(s) { return s ? String(s).replace(/</g, "&lt;").replace(/>/g, "&gt;") : ""; }
+
+    function resetForm() {
+      document.getElementById('editId').value = '';
+      document.getElementById('newsTitle').value = '';
+      document.getElementById('newsSummary').value = '';
+      document.getElementById('newsCaption').value = '';
+      document.getElementById('newsBody').innerHTML = '';
+      document.getElementById('newsImgBase64').value = '';
+      document.getElementById('imgPreview').style.display = 'none';
+      document.getElementById('formTitle').innerText = "नया समाचार प्रकाशित करें";
+      document.getElementById('btnCancelEdit').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
