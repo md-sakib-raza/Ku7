@@ -142,6 +142,7 @@
         <button type="button" id="btnCancelEdit" style="display:none; background:#475569; color:#fff; border:none; padding:5px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:700;" onclick="resetForm()">✕ Cancel Edit</button>
       </div>
       <input type="hidden" id="editId" value="" />
+      <input type="hidden" id="editSource" value="" />
         
       <div class="form-group">
         <label>News Headline (शीर्षक) *</label>
@@ -234,6 +235,7 @@
       </div>
 
       <input type="hidden" id="epaperTargetId" value="" />
+      <input type="hidden" id="epaperTargetSource" value="" />
 
       <div class="grid-2">
         <div class="form-group">
@@ -283,11 +285,11 @@
     <!-- ================= 3. MANAGE NEWS LIST TAB ================= -->
     <div id="sec_list" class="card" style="display: none;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h3>प्रकाशित समाचार सूची</h3>
+        <h3>प्रकाशित समाचार सूची (मुख्य + आर्काइव)</h3>
         <button type="button" onclick="loadNewsList()" style="padding:6px 12px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:6px; cursor:pointer;">🔄 Refresh List</button>
       </div>
       <table>
-        <thead><tr><th>Title</th><th>Category</th><th>Section</th><th style="text-align:center;">Actions</th></tr></thead>
+        <thead><tr><th>Title</th><th>Category</th><th>Source</th><th style="text-align:center;">Actions</th></tr></thead>
         <tbody id="newsTable"><tr><td colspan="4" style="text-align:center;">लोड हो रहा है...</td></tr></tbody>
       </table>
     </div>
@@ -368,19 +370,9 @@
         localStorage.setItem('90i_gh_token', savedToken);
       }
       fetchDatabaseFromServer().then(d => { if(d) localCacheDb = d; loadNewsList(); loadExistingAdAndVideoSettings(); });
-      fetchArchiveServer().then(a => { if(a) localCacheArchive = a; });
+      fetchArchiveServer().then(a => { if(a) localCacheArchive = a; loadNewsList(); });
       loadInboxMessages();
     };
-
-    function showLoading(title, desc) {
-      document.getElementById('loadingTitle').innerText = title || "तुरंत हो रहा है...";
-      document.getElementById('loadingDesc').innerText = desc || "बैकग्राउंड में सिंक जारी है...";
-      document.getElementById('loadingOverlay').style.display = 'flex';
-    }
-
-    function hideLoading() {
-      document.getElementById('loadingOverlay').style.display = 'none';
-    }
 
     function switchSection(name) {
       ['compose', 'epaper', 'list', 'ad', 'video', 'inbox', 'token'].forEach(s => {
@@ -523,12 +515,13 @@
       syncDbBackground(localCacheDb, "data/90i-data.json");
     }
 
+    // ================= 0-SECOND PUBLISH & EDIT (MAIN + ARCHIVE SUPPORT) =================
     function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
 
-      var newsList = Array.isArray(localCacheDb["90i_news"]) ? localCacheDb["90i_news"] : (Array.isArray(localCacheDb.news) ? localCacheDb.news : []);
       var editId = document.getElementById('editId').value;
+      var editSource = document.getElementById('editSource').value; // 'main' or 'archive'
       var imgBase64 = document.getElementById('newsImgBase64').value;
 
       var item = {
@@ -553,34 +546,56 @@
       };
 
       if (editId) {
-        var idx = newsList.findIndex(x => String(x.id) === String(editId));
-        if (idx !== -1) {
-          if (!imgBase64) {
-            item.image = newsList[idx].image || newsList[idx].img || "";
-            item.img = newsList[idx].image || newsList[idx].img || "";
+        if (editSource === 'archive') {
+          var archiveList = localCacheArchive.archive_news || [];
+          var idx = archiveList.findIndex(x => String(x.id) === String(editId));
+          if (idx !== -1) {
+            if (!imgBase64) {
+              item.image = archiveList[idx].image || archiveList[idx].img || "";
+              item.img = archiveList[idx].image || archiveList[idx].img || "";
+            }
+            item.epaperPage = archiveList[idx].epaperPage || 1;
+            item.epaperGapStyle = archiveList[idx].epaperGapStyle || "compact";
+            item.epaperTitle = archiveList[idx].epaperTitle || "";
+            item.epaperCaption = archiveList[idx].epaperCaption || item.caption;
+            item.epaperCustomContent = archiveList[idx].epaperCustomContent || "";
+            archiveList[idx] = item;
           }
-          item.epaperPage = newsList[idx].epaperPage || 1;
-          item.epaperGapStyle = newsList[idx].epaperGapStyle || "compact";
-          item.epaperTitle = newsList[idx].epaperTitle || "";
-          item.epaperCaption = newsList[idx].epaperCaption || item.caption;
-          item.epaperCustomContent = newsList[idx].epaperCustomContent || "";
-          newsList[idx] = item;
+          localCacheArchive.archive_news = archiveList;
+          syncDbBackground(localCacheArchive, "data/archive-2026.json");
+        } else {
+          var newsList = Array.isArray(localCacheDb["90i_news"]) ? localCacheDb["90i_news"] : (Array.isArray(localCacheDb.news) ? localCacheDb.news : []);
+          var idx = newsList.findIndex(x => String(x.id) === String(editId));
+          if (idx !== -1) {
+            if (!imgBase64) {
+              item.image = newsList[idx].image || newsList[idx].img || "";
+              item.img = newsList[idx].image || newsList[idx].img || "";
+            }
+            item.epaperPage = newsList[idx].epaperPage || 1;
+            item.epaperGapStyle = newsList[idx].epaperGapStyle || "compact";
+            item.epaperTitle = newsList[idx].epaperTitle || "";
+            item.epaperCaption = newsList[idx].epaperCaption || item.caption;
+            item.epaperCustomContent = newsList[idx].epaperCustomContent || "";
+            newsList[idx] = item;
+          }
+          localCacheDb["90i_news"] = newsList;
+          localCacheDb.news = newsList;
+          syncDbBackground(localCacheDb, "data/90i-data.json");
         }
       } else {
+        var newsList = Array.isArray(localCacheDb["90i_news"]) ? localCacheDb["90i_news"] : (Array.isArray(localCacheDb.news) ? localCacheDb.news : []);
         newsList.unshift(item);
+        localCacheDb["90i_news"] = newsList;
+        localCacheDb.news = newsList;
+        syncDbBackground(localCacheDb, "data/90i-data.json");
       }
-
-      localCacheDb["90i_news"] = newsList;
-      localCacheDb.news = newsList;
       
-      alert("🎉 समाचार तुरंत लाइव हो गया!");
+      alert("🎉 समाचार तुरंत अपडेट/लाइव हो गया!");
       resetForm();
       switchSection('list');
-
-      syncDbBackground(localCacheDb, "data/90i-data.json");
+      loadNewsList();
     }
 
-    // ⭐ आर्काइव माइग्रेशन अब पूरी तरह 0-सेकंड और सुपर-फास्ट है
     function migrateAllToArchive() {
       var mainNews = localCacheDb["90i_news"] || localCacheDb.news || [];
       if (!mainNews.length) { alert("मुख्य फाइल में कोई खबर नहीं है!"); return; }
@@ -591,63 +606,84 @@
       archiveList = mainNews.concat(archiveList);
       localCacheArchive.archive_news = archiveList;
 
-      // तुरंत यूजर को सफलता दिखाएं (बिना वेट किए)
       alert("✨ सारी खबरें आर्काइव में भेज दी गईं और मुख्य फाइल सुपर-फास्ट हो गई है!");
       
       localCacheDb["90i_news"] = [];
       localCacheDb.news = [];
       loadNewsList();
 
-      // बैकग्राउंड में दोनों फाइलें सिंक होंगी
       syncDbBackground(localCacheArchive, "data/archive-2026.json");
       syncDbBackground(localCacheDb, "data/90i-data.json");
     }
 
     function saveEpaperCustomization() {
       var id = document.getElementById('epaperTargetId').value;
+      var source = document.getElementById('epaperTargetSource').value;
       if (!id) { alert("कृपया समाचार चुनें!"); return; }
 
-      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
-      var idx = list.findIndex(x => String(x.id) === String(id));
-      if (idx !== -1) {
-        list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
-        list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
-        list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
-        list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
-        list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
-
-        localCacheDb["90i_news"] = list;
-        localCacheDb.news = list;
-
-        alert("📰 ई-पेपर लेआउट तुरंत सेव हो गया!");
-        syncDbBackground(localCacheDb, "data/90i-data.json");
+      if (source === 'archive') {
+        var list = localCacheArchive.archive_news || [];
+        var idx = list.findIndex(x => String(x.id) === String(id));
+        if (idx !== -1) {
+          list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
+          list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
+          list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
+          list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
+          list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
+          localCacheArchive.archive_news = list;
+          alert("📰 ई-पेपर लेआउट तुरंत सेव हो गया!");
+          syncDbBackground(localCacheArchive, "data/archive-2026.json");
+        }
+      } else {
+        var list = localCacheDb["90i_news"] || localCacheDb.news || [];
+        var idx = list.findIndex(x => String(x.id) === String(id));
+        if (idx !== -1) {
+          list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
+          list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
+          list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
+          list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
+          list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
+          localCacheDb["90i_news"] = list;
+          localCacheDb.news = list;
+          alert("📰 ई-पेपर लेआउट तुरंत सेव हो गया!");
+          syncDbBackground(localCacheDb, "data/90i-data.json");
+        }
       }
     }
 
+    // ⭐ मुख्य फाइल और आर्काइव दोनों की खबरें All News लिस्ट में दिखेंगी
     function loadNewsList() {
-      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
-      document.getElementById('countBadge').innerText = list.length;
+      var mainList = localCacheDb["90i_news"] || localCacheDb.news || [];
+      var archiveList = localCacheArchive.archive_news || [];
+      
+      var combined = [];
+      mainList.forEach(n => combined.push({ ...n, _source: 'main' }));
+      archiveList.forEach(n => combined.push({ ...n, _source: 'archive' }));
+
+      document.getElementById('countBadge').innerText = combined.length;
       var tb = document.getElementById('newsTable');
-      if (!list.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई ताज़ा खबर नहीं।</td></tr>'; return; }
-      tb.innerHTML = list.map(n => `
+      if (!combined.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई समाचार नहीं है।</td></tr>'; return; }
+      
+      tb.innerHTML = combined.map(n => `
         <tr>
           <td><b>${esc(n.title)}</b></td>
           <td><span class="badge-sec">${esc(n.category)}</span></td>
-          <td><span class="badge-sec">${esc(n.section)}</span></td>
+          <td><span class="badge-sec" style="background:${n._source === 'archive' ? '#312e81' : '#166534'};">${n._source === 'archive' ? '📦 Archive' : '⚡ Main'}</span></td>
           <td style="text-align:center;">
-            <button type="button" class="btn-action-edit" onclick="editNews(${n.id})">✏️</button>
-            <button type="button" class="btn-action-del" onclick="deleteNews(${n.id})">🗑️</button>
+            <button type="button" class="btn-action-edit" onclick="editNews('${n.id}', '${n._source}')">✏️</button>
+            <button type="button" class="btn-action-del" onclick="deleteNews('${n.id}', '${n._source}')">🗑️</button>
           </td>
         </tr>
       `).join('');
     }
 
-    function editNews(id) {
-      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
+    function editNews(id, source) {
+      var list = (source === 'archive') ? (localCacheArchive.archive_news || []) : (localCacheDb["90i_news"] || localCacheDb.news || []);
       var n = list.find(x => String(x.id) === String(id));
       if (!n) return;
 
       document.getElementById('editId').value = n.id;
+      document.getElementById('editSource').value = source;
       document.getElementById('newsTitle').value = n.title || '';
       document.getElementById('newsSlug').value = n.slug || '';
       document.getElementById('newsSection').value = n.section || 'feed';
@@ -661,21 +697,28 @@
         document.getElementById('newsImgBase64').value = img;
         var p = document.getElementById('imgPreview'); p.src = img; p.style.display = 'block';
       }
-      document.getElementById('formTitle').innerText = "समाचार में संशोधन करें (Edit Mode)";
+      document.getElementById('formTitle').innerText = "समाचार में संशोधन करें (" + (source === 'archive' ? 'Archive Mode' : 'Main Mode') + ")";
       document.getElementById('btnCancelEdit').style.display = 'inline-block';
       switchSection('compose');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function deleteNews(id) {
-      if (!confirm("हटाना चाहते हैं?")) return;
-      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
-      localCacheDb["90i_news"] = list.filter(x => String(x.id) !== String(id));
-      localCacheDb.news = localCacheDb["90i_news"];
+    function deleteNews(id, source) {
+      if (!confirm("क्या आप वाकई इस समाचार को हटाना चाहते हैं?")) return;
       
+      if (source === 'archive') {
+        var list = localCacheArchive.archive_news || [];
+        localCacheArchive.archive_news = list.filter(x => String(x.id) !== String(id));
+        syncDbBackground(localCacheArchive, "data/archive-2026.json");
+      } else {
+        var list = localCacheDb["90i_news"] || localCacheDb.news || [];
+        localCacheDb["90i_news"] = list.filter(x => String(x.id) !== String(id));
+        localCacheDb.news = localCacheDb["90i_news"];
+        syncDbBackground(localCacheDb, "data/90i-data.json");
+      }
+
       alert("🗑️ समाचार तुरंत हटा दिया गया!");
       loadNewsList();
-      syncDbBackground(localCacheDb, "data/90i-data.json");
     }
 
     function loadInboxMessages() {
@@ -703,19 +746,29 @@
     }
 
     function populateEpaperArticleDropdown() {
-      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
+      var mainList = localCacheDb["90i_news"] || localCacheDb.news || [];
+      var archiveList = localCacheArchive.archive_news || [];
+      var combined = [];
+      mainList.forEach(n => combined.push({ ...n, _source: 'main' }));
+      archiveList.forEach(n => combined.push({ ...n, _source: 'archive' }));
+
       var sel = document.getElementById('epaperSelectArticle');
-      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + list.map(n => `<option value="${n.id}">${n.title} (${n.date || ''})</option>`).join('');
+      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + combined.map(n => `<option value="${n.id}_${n._source}">${n.title} (${n.date || ''}) [${n._source}]</option>`).join('');
     }
 
     function loadEpaperArticleData() {
-      var id = document.getElementById('epaperSelectArticle').value;
-      if (!id) return;
-      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
+      var val = document.getElementById('epaperSelectArticle').value;
+      if (!val) return;
+      var parts = val.split('_');
+      var id = parts[0];
+      var source = parts[1];
+
+      var list = (source === 'archive') ? (localCacheArchive.archive_news || []) : (localCacheDb["90i_news"] || localCacheDb.news || []);
       var n = list.find(x => String(x.id) === String(id));
       if (!n) return;
 
       document.getElementById('epaperTargetId').value = n.id;
+      document.getElementById('epaperTargetSource').value = source;
       document.getElementById('epaperPageSlot').value = n.epaperPage || "1";
       document.getElementById('epaperGapStyle').value = n.epaperGapStyle || "compact";
       document.getElementById('epaperCustomTitle').value = n.epaperTitle || n.title || "";
@@ -790,6 +843,7 @@
 
     function resetForm() {
       document.getElementById('editId').value = '';
+      document.getElementById('editSource').value = '';
       document.getElementById('newsTitle').value = '';
       document.getElementById('newsSummary').value = '';
       document.getElementById('newsCaption').value = '';
