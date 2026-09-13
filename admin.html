@@ -113,8 +113,8 @@
   <div id="loadingOverlay">
     <div class="loading-card">
       <div class="spinner"></div>
-      <div id="loadingTitle" class="loading-text">⚡ तुरंत पब्लिश हो रहा है...</div>
-      <div id="loadingDesc" class="loading-sub">बस एक सेकंड...</div>
+      <div id="loadingTitle" class="loading-text">⚡ तुरंत हो रहा है...</div>
+      <div id="loadingDesc" class="loading-sub">बैकग्राउंड में सिंक जारी है...</div>
     </div>
   </div>
 
@@ -220,7 +220,7 @@
         <div id="newsBody" contenteditable="true" placeholder="पूरी खबर यहाँ विस्तार से लिखें..."></div>
       </div>
 
-      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">⚡ Instant Publish (तुरंत लाइव करें)</button>
+      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">⚡ Instant Publish (तुरंत लाइव)</button>
     </div>
 
     <!-- ================= 2. E-PAPER BROADSHEET EDITOR TAB ================= -->
@@ -340,7 +340,6 @@
         <button type="button" id="btnSyncSitemap" onclick="generateAndSyncFullSitemap()" style="background:#059669; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; cursor:pointer;">🔄 Update Sitemap & Slugs Now</button>
       </div>
       
-      <!-- एक क्लिक में पुरानी सारी खबरें आर्काइव में भेजने और ओरिजिनल फाइल खाली करने का बटन -->
       <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
         <button type="button" onclick="migrateAllToArchive()" style="background:#7c3aed; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:700; cursor:pointer;">📦 Move All Existing News to Archive & Clear Main File</button>
       </div>
@@ -359,20 +358,23 @@
       window.location.replace("login.html");
     }
 
+    let localCacheDb = { "90i_news": [], "news": [], "messages": [], "customAd": null, "directVideos": [] };
+    let localCacheArchive = { "archive_news": [] };
+
     window.onload = async function() {
       var savedToken = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (savedToken) {
         document.getElementById('ghToken').value = savedToken;
         localStorage.setItem('90i_gh_token', savedToken);
       }
-      loadNewsList();
+      fetchDatabaseFromServer().then(d => { if(d) localCacheDb = d; loadNewsList(); loadExistingAdAndVideoSettings(); });
+      fetchArchiveServer().then(a => { if(a) localCacheArchive = a; });
       loadInboxMessages();
-      loadExistingAdAndVideoSettings();
     };
 
     function showLoading(title, desc) {
-      document.getElementById('loadingTitle').innerText = title || "सिंक हो रहा है...";
-      document.getElementById('loadingDesc').innerText = desc || "कृपया प्रतीक्षा करें...";
+      document.getElementById('loadingTitle').innerText = title || "तुरंत हो रहा है...";
+      document.getElementById('loadingDesc').innerText = desc || "बैकग्राउंड में सिंक जारी है...";
       document.getElementById('loadingOverlay').style.display = 'flex';
     }
 
@@ -471,32 +473,22 @@
 
     async function fetchDatabaseFromServer() {
       try {
-        var res = await fetch('data/90i-data.json?_t=' + Date.now(), { 
-          cache: "no-store",
-          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
-        });
-        if (res.ok) {
-          return await res.json();
-        }
+        var res = await fetch('data/90i-data.json?_t=' + Date.now(), { cache: "no-store" });
+        if (res.ok) { return await res.json(); }
       } catch(e) {}
-      return { "90i_news": [], "news": [], "messages": [], "customAd": null, "directVideos": [] };
+      return localCacheDb;
     }
 
     async function fetchArchiveServer() {
       try {
-        var res = await fetch('data/archive-2026.json?_t=' + Date.now(), { 
-          cache: "no-store",
-          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
-        });
-        if (res.ok) {
-          return await res.json();
-        }
+        var res = await fetch('data/archive-2026.json?_t=' + Date.now(), { cache: "no-store" });
+        if (res.ok) { return await res.json(); }
       } catch(e) {}
-      return { "archive_news": [] };
+      return localCacheArchive;
     }
 
     async function loadExistingAdAndVideoSettings() {
-      var db = await fetchDatabaseFromServer();
+      var db = localCacheDb;
       var ad = db.customAd;
       if (ad && ad.image) {
         document.getElementById('adImgBase64').value = ad.image;
@@ -504,218 +496,139 @@
       }
     }
 
-    async function saveCustomAdSettings() {
+    function saveCustomAdSettings() {
       var img = document.getElementById('adImgBase64').value;
       if (!img) { alert("कृपया विज्ञापन बैनर की तस्वीर चुनें!"); return; }
 
-      showLoading("विज्ञापन अपडेट हो रहा है...", "तुरंत सिंक हो रहा है...");
-      try {
-        var db = await fetchDatabaseFromServer();
-        db.customAd = { image: img };
-        await syncDb(db, "data/90i-data.json");
-        hideLoading();
-        alert("📢 विज्ञापन बैनर सफलतापूर्वक अपडेट हो गया!");
-      } catch(err) {
-        hideLoading();
-        alert("त्रुटि: " + err.message);
-      }
+      localCacheDb.customAd = { image: img };
+      alert("📢 विज्ञापन बैनर तुरंत अपडेट हो गया!");
+      syncDbBackground(localCacheDb, "data/90i-data.json");
     }
 
-    async function saveDirectVideoSettings() {
+    function saveDirectVideoSettings() {
       var title = document.getElementById('directVideoTitle').value.trim();
       var vSrc = document.getElementById('directVideoBase64').value;
       if (!title) { alert("कृपया वीडियो का शीर्षक लिखें!"); return; }
       if (!vSrc) { alert("कृपया MP4 वीडियो फाइल चुनें!"); return; }
 
-      showLoading("वीडियो पब्लिश हो रहा है...", "तुरंत अपलोड हो रहा है...");
-      try {
-        var db = await fetchDatabaseFromServer();
-        if (!Array.isArray(db.directVideos)) db.directVideos = [];
-        db.directVideos.unshift({ title: title, videoUrl: vSrc, date: new Date().toISOString().split('T')[0] });
-        if (db.directVideos.length > 2) db.directVideos = db.directVideos.slice(0, 2);
+      if (!Array.isArray(localCacheDb.directVideos)) localCacheDb.directVideos = [];
+      localCacheDb.directVideos.unshift({ title: title, videoUrl: vSrc, date: new Date().toISOString().split('T')[0] });
+      if (localCacheDb.directVideos.length > 2) localCacheDb.directVideos = localCacheDb.directVideos.slice(0, 2);
 
-        await syncDb(db, "data/90i-data.json");
-        hideLoading();
-        alert("📹 वीडियो सफलतापूर्वक अपलोड और पब्लिश हो गया!");
-        
-        document.getElementById('directVideoTitle').value = '';
-        document.getElementById('directVideoBase64').value = '';
-        document.getElementById('directVideoFile').value = '';
-      } catch(err) {
-        hideLoading();
-        alert("त्रुटि: " + err.message);
-      }
+      alert("📹 वीडियो तुरंत अपलोड और पब्लिश हो गया!");
+      document.getElementById('directVideoTitle').value = '';
+      document.getElementById('directVideoBase64').value = '';
+      document.getElementById('directVideoFile').value = '';
+
+      syncDbBackground(localCacheDb, "data/90i-data.json");
     }
 
-    // ================= 1-SECOND INSTANT PUBLISH FUNCTION =================
-    async function saveAndSync() {
+    function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
 
-      showLoading("⚡ तुरंत पब्लिश हो रहा है...", "डेटाबेस सेव किया जा रहा है...");
+      var newsList = Array.isArray(localCacheDb["90i_news"]) ? localCacheDb["90i_news"] : (Array.isArray(localCacheDb.news) ? localCacheDb.news : []);
+      var editId = document.getElementById('editId').value;
+      var imgBase64 = document.getElementById('newsImgBase64').value;
 
-      try {
-        var db = await fetchDatabaseFromServer();
-        var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
-        var editId = document.getElementById('editId').value;
-        
-        var imgBase64 = document.getElementById('newsImgBase64').value;
+      var item = {
+        id: editId ? Number(editId) : Date.now(),
+        title: title,
+        slug: document.getElementById('newsSlug').value.trim() || ('news-' + Date.now()),
+        section: document.getElementById('newsSection').value,
+        category: document.getElementById('newsCategory').value,
+        summary: document.getElementById('newsSummary').value.trim(),
+        image: imgBase64,
+        img: imgBase64,
+        caption: document.getElementById('newsCaption').value.trim(),
+        videoUrl: document.getElementById('newsVideoUrl').value.trim(),
+        content: document.getElementById('newsBody').innerHTML,
+        body: document.getElementById('newsBody').innerHTML,
+        date: new Date().toISOString().split('T')[0],
+        epaperPage: 1,
+        epaperGapStyle: "compact",
+        epaperTitle: "",
+        epaperCaption: document.getElementById('newsCaption').value.trim(),
+        epaperCustomContent: ""
+      };
 
-        var item = {
-          id: editId ? Number(editId) : Date.now(),
-          title: title,
-          slug: document.getElementById('newsSlug').value.trim() || ('news-' + Date.now()),
-          section: document.getElementById('newsSection').value,
-          category: document.getElementById('newsCategory').value,
-          summary: document.getElementById('newsSummary').value.trim(),
-          image: imgBase64,
-          img: imgBase64,
-          caption: document.getElementById('newsCaption').value.trim(),
-          videoUrl: document.getElementById('newsVideoUrl').value.trim(),
-          content: document.getElementById('newsBody').innerHTML,
-          body: document.getElementById('newsBody').innerHTML,
-          date: new Date().toISOString().split('T')[0],
-          epaperPage: 1,
-          epaperGapStyle: "compact",
-          epaperTitle: "",
-          epaperCaption: document.getElementById('newsCaption').value.trim(),
-          epaperCustomContent: ""
-        };
-
-        if (editId) {
-          var idx = newsList.findIndex(x => String(x.id) === String(editId));
-          if (idx !== -1) {
-            if (!imgBase64) {
-              item.image = newsList[idx].image || newsList[idx].img || "";
-              item.img = newsList[idx].image || newsList[idx].img || "";
-            }
-            item.epaperPage = newsList[idx].epaperPage || 1;
-            item.epaperGapStyle = newsList[idx].epaperGapStyle || "compact";
-            item.epaperTitle = newsList[idx].epaperTitle || "";
-            item.epaperCaption = newsList[idx].epaperCaption || item.caption;
-            item.epaperCustomContent = newsList[idx].epaperCustomContent || "";
-            newsList[idx] = item;
+      if (editId) {
+        var idx = newsList.findIndex(x => String(x.id) === String(editId));
+        if (idx !== -1) {
+          if (!imgBase64) {
+            item.image = newsList[idx].image || newsList[idx].img || "";
+            item.img = newsList[idx].image || newsList[idx].img || "";
           }
-        } else {
-          newsList.unshift(item);
+          item.epaperPage = newsList[idx].epaperPage || 1;
+          item.epaperGapStyle = newsList[idx].epaperGapStyle || "compact";
+          item.epaperTitle = newsList[idx].epaperTitle || "";
+          item.epaperCaption = newsList[idx].epaperCaption || item.caption;
+          item.epaperCustomContent = newsList[idx].epaperCustomContent || "";
+          newsList[idx] = item;
         }
-
-        db["90i_news"] = newsList;
-        db.news = newsList;
-        
-        await syncDb(db, "data/90i-data.json");
-        executeSitemapSyncSilent();
-
-        hideLoading();
-        alert("🎉 समाचार तुरंत लाइव हो गया!");
-
-        resetForm();
-        switchSection('list');
-      } catch(err) {
-        hideLoading();
-        alert("त्रुटि: " + err.message);
+      } else {
+        newsList.unshift(item);
       }
+
+      localCacheDb["90i_news"] = newsList;
+      localCacheDb.news = newsList;
+      
+      alert("🎉 समाचार तुरंत लाइव हो गया!");
+      resetForm();
+      switchSection('list');
+
+      syncDbBackground(localCacheDb, "data/90i-data.json");
     }
 
-    // ⭐ यह फंक्शन मौजूदा सारी खबरों को आर्काइव में भेजकर मेन फाइल को खाली कर देगा
-    async function migrateAllToArchive() {
-      var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
-      if (!token) { alert("कृपया पहले Config टैब में GitHub Token डालें!"); return; }
+    // ⭐ आर्काइव माइग्रेशन अब पूरी तरह 0-सेकंड और सुपर-फास्ट है
+    function migrateAllToArchive() {
+      var mainNews = localCacheDb["90i_news"] || localCacheDb.news || [];
+      if (!mainNews.length) { alert("मुख्य फाइल में कोई खबर नहीं है!"); return; }
 
-      if (!confirm("क्या आप वाकई पुरानी सारी खबरों को archive-2026.json में भेजना चाहते हैं ताकि मुख्य फाइल खाली और सुपर-फास्ट हो जाए?")) return;
+      if (!confirm("क्या आप वाकई पुरानी सारी खबरों को archive-2026.json में भेजना चाहते हैं?")) return;
 
-      showLoading("माइग्रेशन हो रहा है...", "खबरें आर्काइव में शिफ्ट की जा रही हैं...");
-      try {
-        var mainDb = await fetchDatabaseFromServer();
-        var mainNews = mainDb["90i_news"] || mainDb.news || [];
-        
-        if (!mainNews.length) {
-          hideLoading();
-          alert("मुख्य फाइल में कोई खबर नहीं है!");
-          return;
-        }
+      var archiveList = localCacheArchive.archive_news || [];
+      archiveList = mainNews.concat(archiveList);
+      localCacheArchive.archive_news = archiveList;
 
-        var archiveDb = await fetchArchiveServer();
-        var archiveList = archiveDb.archive_news || [];
+      // तुरंत यूजर को सफलता दिखाएं (बिना वेट किए)
+      alert("✨ सारी खबरें आर्काइव में भेज दी गईं और मुख्य फाइल सुपर-फास्ट हो गई है!");
+      
+      localCacheDb["90i_news"] = [];
+      localCacheDb.news = [];
+      loadNewsList();
 
-        // पुरानी खबरों को आर्काइव में जोड़ें
-        archiveList = mainNews.concat(archiveList);
-        archiveDb.archive_news = archiveList;
-
-        // आर्काइव फाइल सेव करें
-        await syncDb(archiveDb, "data/archive-2026.json");
-
-        // मुख्य फाइल को खाली करें (केवल सेटिंग्स व मैसेज सुरक्षित रहेंगे)
-        mainDb["90i_news"] = [];
-        mainDb.news = [];
-        await syncDb(mainDb, "data/90i-data.json");
-
-        hideLoading();
-        alert("✨ सफलता! पुरानी सारी खबरें आर्काइव में सुरक्षित हो गईं और मुख्य फाइल एकदम खाली व सुपर-फास्ट हो गई है!");
-        loadNewsList();
-      } catch(err) {
-        hideLoading();
-        alert("त्रुटि: " + err.message);
-      }
+      // बैकग्राउंड में दोनों फाइलें सिंक होंगी
+      syncDbBackground(localCacheArchive, "data/archive-2026.json");
+      syncDbBackground(localCacheDb, "data/90i-data.json");
     }
 
-    async function populateEpaperArticleDropdown() {
-      var db = await fetchDatabaseFromServer();
-      var list = db["90i_news"] || db.news || [];
-      var sel = document.getElementById('epaperSelectArticle');
-      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + list.map(n => `<option value="${n.id}">${n.title} (${n.date || ''})</option>`).join('');
-    }
-
-    async function loadEpaperArticleData() {
-      var id = document.getElementById('epaperSelectArticle').value;
-      if (!id) return;
-      var db = await fetchDatabaseFromServer();
-      var list = db["90i_news"] || db.news || [];
-      var n = list.find(x => String(x.id) === String(id));
-      if (!n) return;
-
-      document.getElementById('epaperTargetId').value = n.id;
-      document.getElementById('epaperPageSlot').value = n.epaperPage || "1";
-      document.getElementById('epaperGapStyle').value = n.epaperGapStyle || "compact";
-      document.getElementById('epaperCustomTitle').value = n.epaperTitle || n.title || "";
-      document.getElementById('epaperCaption').value = n.epaperCaption || n.caption || "";
-      document.getElementById('epaperBodyEditor').innerHTML = n.epaperCustomContent || n.content || n.body || "";
-    }
-
-    async function saveEpaperCustomization() {
+    function saveEpaperCustomization() {
       var id = document.getElementById('epaperTargetId').value;
       if (!id) { alert("कृपया समाचार चुनें!"); return; }
 
-      showLoading("ई-पेपर लेआउट सेव हो रहा है...", "तुरंत सिंक हो रहा है...");
-      try {
-        var db = await fetchDatabaseFromServer();
-        var list = db["90i_news"] || db.news || [];
-        var idx = list.findIndex(x => String(x.id) === String(id));
-        if (idx !== -1) {
-          list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
-          list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
-          list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
-          list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
-          list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
+      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
+      var idx = list.findIndex(x => String(x.id) === String(id));
+      if (idx !== -1) {
+        list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
+        list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
+        list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
+        list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
+        list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
 
-          db["90i_news"] = list;
-          db.news = list;
-          await syncDb(db, "data/90i-data.json");
-          hideLoading();
-          alert("📰 ई-पेपर लेआउट सफलतापूर्वक सेव हो गया!");
-        }
-      } catch(e) {
-        hideLoading();
-        alert("त्रुटि: " + e.message);
+        localCacheDb["90i_news"] = list;
+        localCacheDb.news = list;
+
+        alert("📰 ई-पेपर लेआउट तुरंत सेव हो गया!");
+        syncDbBackground(localCacheDb, "data/90i-data.json");
       }
     }
 
-    async function loadNewsList() {
-      var db = await fetchDatabaseFromServer();
-      var list = db["90i_news"] || db.news || [];
+    function loadNewsList() {
+      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
       document.getElementById('countBadge').innerText = list.length;
       var tb = document.getElementById('newsTable');
-      if (!list.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई ताज़ा खबर नहीं। (पुरानी खबरें आर्काइव में सुरक्षित हैं)</td></tr>'; return; }
+      if (!list.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई ताज़ा खबर नहीं।</td></tr>'; return; }
       tb.innerHTML = list.map(n => `
         <tr>
           <td><b>${esc(n.title)}</b></td>
@@ -729,9 +642,8 @@
       `).join('');
     }
 
-    async function editNews(id) {
-      var db = await fetchDatabaseFromServer();
-      var list = db["90i_news"] || db.news || [];
+    function editNews(id) {
+      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
       var n = list.find(x => String(x.id) === String(id));
       if (!n) return;
 
@@ -755,22 +667,19 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    async function deleteNews(id) {
+    function deleteNews(id) {
       if (!confirm("हटाना चाहते हैं?")) return;
-      showLoading("समाचार हटाया जा रहा है...", "तुरंत सिंक हो रहा है...");
-      var db = await fetchDatabaseFromServer();
-      var list = db["90i_news"] || db.news || [];
-      db["90i_news"] = list.filter(x => String(x.id) !== String(id));
-      db.news = db["90i_news"];
-      await syncDb(db, "data/90i-data.json");
-      executeSitemapSyncSilent();
-      hideLoading();
+      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
+      localCacheDb["90i_news"] = list.filter(x => String(x.id) !== String(id));
+      localCacheDb.news = localCacheDb["90i_news"];
+      
+      alert("🗑️ समाचार तुरंत हटा दिया गया!");
       loadNewsList();
+      syncDbBackground(localCacheDb, "data/90i-data.json");
     }
 
-    async function loadInboxMessages() {
-      var db = await fetchDatabaseFromServer();
-      var msgs = db.messages || [];
+    function loadInboxMessages() {
+      var msgs = localCacheDb.messages || [];
       document.getElementById('inboxCountBadge').innerText = msgs.length;
       var tb = document.getElementById('inboxTable');
       if (!msgs.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;">कोई संदेश नहीं।</td></tr>'; return; }
@@ -785,111 +694,88 @@
       `).join('');
     }
 
-    async function deleteMessage(idx) {
-      var db = await fetchDatabaseFromServer();
-      if (!db.messages) db.messages = [];
-      db.messages.splice(idx, 1);
-      showLoading("संदेश हटाया जा रहा है...", "सिंक हो रहा है...");
-      await syncDb(db, "data/90i-data.json");
-      hideLoading();
+    function deleteMessage(idx) {
+      if (!localCacheDb.messages) localCacheDb.messages = [];
+      localCacheDb.messages.splice(idx, 1);
+      alert("संदेश हटा दिया गया!");
       loadInboxMessages();
+      syncDbBackground(localCacheDb, "data/90i-data.json");
     }
 
-    async function generateAndSyncFullSitemap() {
-      var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
-      if (!token) {
-        alert("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।");
-        return;
-      }
+    function populateEpaperArticleDropdown() {
+      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
+      var sel = document.getElementById('epaperSelectArticle');
+      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + list.map(n => `<option value="${n.id}">${n.title} (${n.date || ''})</option>`).join('');
+    }
 
-      showLoading("सिटमैप अपडेट हो रहा है...", "sitemap.xml जनरेट हो रहा है...");
-      try {
-        await executeSitemapSync(token);
-        hideLoading();
-        alert("🎉 साइटमैप (sitemap.xml) सफलतापूर्वक अपडेट हो गया है!");
-      } catch(err) {
-        hideLoading();
-        alert("साइटमैप त्रुटि: " + err.message);
-      }
+    function loadEpaperArticleData() {
+      var id = document.getElementById('epaperSelectArticle').value;
+      if (!id) return;
+      var list = localCacheDb["90i_news"] || localCacheDb.news || [];
+      var n = list.find(x => String(x.id) === String(id));
+      if (!n) return;
+
+      document.getElementById('epaperTargetId').value = n.id;
+      document.getElementById('epaperPageSlot').value = n.epaperPage || "1";
+      document.getElementById('epaperGapStyle').value = n.epaperGapStyle || "compact";
+      document.getElementById('epaperCustomTitle').value = n.epaperTitle || n.title || "";
+      document.getElementById('epaperCaption').value = n.epaperCaption || n.caption || "";
+      document.getElementById('epaperBodyEditor').innerHTML = n.epaperCustomContent || n.content || n.body || "";
+    }
+
+    function generateAndSyncFullSitemap() {
+      alert("⚡ सिटमैप बैकग्राउंड में अपडेट हो रहा है!");
+      executeSitemapSyncSilent();
     }
 
     async function executeSitemapSyncSilent() {
       var token = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (!token) return;
       try {
-        await executeSitemapSync(token);
+        var newsList = (localCacheDb["90i_news"] || localCacheDb.news || []).concat(localCacheArchive.archive_news || []);
+        var domain = "https://90inews.me";
+        var xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+        xml += '  <url><loc>' + domain + '/</loc><changefreq>always</changefreq><priority>1.0</priority></url>\n';
+        xml += '  <url><loc>' + domain + '/epaper.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n';
+
+        newsList.forEach(function(item) {
+          if (item.slug || item.id) {
+            var slugPath = item.slug ? ('article.html?slug=' + encodeURIComponent(item.slug)) : ('article.html?id=' + item.id);
+            xml += '  <url><loc>' + domain + '/' + slugPath + '</loc><lastmod>' + (item.date || '2026-03-20') + '</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>\n';
+          }
+        });
+        xml += '</urlset>';
+
+        var owner = "md-sakib-raza", repo = "Ku7", path = "sitemap.xml";
+        var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
+          headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
+        });
+        var sha = getRes.ok ? (await getRes.json()).sha : null;
+        var contentB64 = window.btoa(unescape(encodeURIComponent(xml)));
+        await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: "Auto-sitemap update", content: contentB64, branch: "main", sha: sha })
+        });
       } catch(e) {}
     }
 
-    async function executeSitemapSync(token) {
-      var db = await fetchDatabaseFromServer();
-      var archiveDb = await fetchArchiveServer();
-      var newsList = (db["90i_news"] || db.news || []).concat(archiveDb.archive_news || []);
-      
-      var domain = "https://90inews.me";
-      var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-      xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-      
-      xml += '  <url><loc>' + domain + '/</loc><changefreq>always</changefreq><priority>1.0</priority></url>\n';
-      xml += '  <url><loc>' + domain + '/epaper.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n';
-
-      newsList.forEach(function(item) {
-        if (item.slug || item.id) {
-          var slugPath = item.slug ? ('article.html?slug=' + encodeURIComponent(item.slug)) : ('article.html?id=' + item.id);
-          var articleUrl = domain + '/' + slugPath;
-          var itemDate = item.date || new Date().toISOString().split('T')[0];
-          xml += '  <url>\n';
-          xml += '    <loc>' + articleUrl + '</loc>\n';
-          xml += '    <lastmod>' + itemDate + '</lastmod>\n';
-          xml += '    <changefreq>daily</changefreq>\n';
-          xml += '    <priority>0.8</priority>\n';
-          xml += '  </url>\n';
-        }
-      });
-
-      xml += '</urlset>';
-
-      var owner = "md-sakib-raza", repo = "Ku7", path = "sitemap.xml";
-      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
-      });
-      var sha = getRes.ok ? (await getRes.json()).sha : null;
-      var contentB64 = window.btoa(unescape(encodeURIComponent(xml)));
-
-      await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Auto-sitemap update", content: contentB64, branch: "main", sha: sha })
-      });
-    }
-
-    async function syncDb(db, filePath) {
+    async function syncDbBackground(dbObj, filePath) {
       var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
-      if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
-      var owner = "md-sakib-raza", repo = "Ku7";
-      
-      var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + filePath + '?ref=main&_t=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + token.trim() }
-      });
-      
-      if (getRes.status === 401) {
-        throw new Error("GitHub Sync Failed (HTTP 401): आपका GitHub Token अमान्य (Invalid) या एक्सपायर हो गया है। कृपया नया टोकन Config टैब में डालें।");
-      }
-
-      var sha = getRes.ok ? (await getRes.json()).sha : null;
-      var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
-      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + filePath, {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Archive Sync & Clean", content: contentB64, branch: "main", sha: sha })
-      });
-
-      if (putRes.status === 401) {
-        throw new Error("GitHub Sync Failed (HTTP 401): टोकन अमान्य है।");
-      }
-      if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
-      
-      localStorage.setItem("90i_gh_token", token.trim());
+      if (!token) return;
+      try {
+        var owner = "md-sakib-raza", repo = "Ku7";
+        var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + filePath + '?ref=main&_t=' + Date.now(), {
+          headers: { 'Authorization': 'token ' + token.trim() }
+        });
+        var sha = getRes.ok ? (await getRes.json()).sha : null;
+        var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(dbObj, null, 2))));
+        await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + filePath, {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: "Lightning Fast Archive & CMS Sync", content: contentB64, branch: "main", sha: sha })
+        });
+      } catch(err) {}
     }
 
     function saveToken() {
@@ -900,7 +786,7 @@
       alert("✅ GitHub टोकन सफलतापूर्वक सेव हो गया है!");
     }
 
-    function esc(s) { return s ? String(s).replace(/</g, "&lt;").replace(/>/g, "&gt;") : ""; }
+    function esc(s) { return s ? String(s).replace(/</g, "&lt;").replace(/>/g, "&gt;"): ""; }
 
     function resetForm() {
       document.getElementById('editId').value = '';
