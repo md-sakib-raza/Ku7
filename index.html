@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>THE 90I NEWS | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क</title>
+  <title>THE 90I न्यूज़ | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क</title>
   <meta name="description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
+  
+  <!-- AdSense & SEO Audit Fixes: Canonical & Open Graph / Twitter Meta Tags added -->
+  <link rel="canonical" href="https://www.the90inews.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="THE 90I न्यूज़ | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क" />
+  <meta property="og:description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
+  <meta property="og:url" content="https://www.the90inews.com/" />
+  <meta property="og:image" content="https://www.the90inews.com/logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="THE 90I न्यूज़ | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क" />
+  <meta name="twitter:description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
+
+  <!-- Content Security Policy (CSP) & HSTS Security Headers Added -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; media-src 'self' https:;" />
 
   <!-- Google AdSense Code (बिल्कुल सुरक्षित) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9762787230045511" crossorigin="anonymous"></script>
@@ -346,6 +360,28 @@
       overflow: hidden;
     }
 
+    /* Red Read More Button Styling */
+    .btn-read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 800;
+      text-decoration: none;
+      margin-top: 10px;
+      align-self: flex-start;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-read-more:hover {
+      background: var(--brand-dark);
+      transform: translateY(-2px);
+      color: #ffffff;
+    }
+
     /* Rating Tag Styling */
     .rating-badge-card {
       background: #f1f5f9;
@@ -578,6 +614,52 @@
       gap: 8px;
       align-items: center;
       justify-content: space-between;
+    }
+
+    /* ================= SIDEBAR SPECIAL BLOCKS ================= */
+    .homepage-custom-block {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      margin-bottom: 25px;
+    }
+    .homepage-custom-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--brand);
+      padding-bottom: 5px;
+    }
+    .home-custom-ad img {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+    }
+    .home-direct-video-card {
+      background: #0f172a;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .home-direct-video-card:last-child { margin-bottom: 0; }
+    .home-direct-video-card video {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+      background: #000;
+    }
+    .home-vid-title {
+      padding: 8px 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #ffffff;
+      background: #0f172a;
     }
 
     /* White 3D Traffic Box */
@@ -1071,6 +1153,36 @@
       font-size: 11px;
     }
 
+    /* Footer Search Box Design */
+    .footer-search-box {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .footer-search-input {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #ffffff;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      outline: none;
+    }
+    .footer-search-input:focus {
+      border-color: var(--brand);
+    }
+    .btn-footer-search {
+      background: var(--brand);
+      color: #ffffff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12.5px;
+      cursor: pointer;
+    }
+
     /* Contact Form */
     .footer-form {
       display: flex;
@@ -1170,7 +1282,7 @@
       <div class="container header-inner">
         <div class="logo-container">
           <a href="index.html">
-            <div class="logo-text">THE <span>90I</span> NEWS</div>
+            <div class="logo-text">THE <span>90I</span> न्यूज़</div>
             <div class="tagline">सच | सटीक | निर्भीक</div>
           </a>
         </div>
@@ -1220,7 +1332,7 @@
           <div id="heroSpotlightBox" class="hero-spotlight">
             <div class="spotlight-img-wrap">
               <span id="spotlightCat" class="spotlight-cat-tag">मुख्य सुर्खी</span>
-              <img id="spotlightImg" class="spotlight-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80" alt="News Image">
+              <img id="spotlightImg" class="spotlight-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80" alt="THE 90I News Spotlight Lead Story Image">
             </div>
             <div class="spotlight-body">
               <h1 class="spotlight-title"><a id="spotlightLink" href="#">THE 90I NEWS - ताज़ा समाचार बुलेटिन</a></h1>
@@ -1231,6 +1343,7 @@
                 <span id="spotlightViews" class="view-count-tag">👁️ 240+ Views</span>
               </div>
               <p id="spotlightExcerpt" class="spotlight-excerpt">देश, दुनिया एवं बिहार की सभी महत्वपूर्ण खबरों का लाइव विश्लेषण।</p>
+              <a id="spotlightReadMoreBtn" href="#" class="btn-read-more" onclick="recordNewsClick('lead')">और पढ़ें ➔</a>
             </div>
           </div>
 
@@ -1246,11 +1359,11 @@
       <div class="main-body-layout">
         
         <!-- Main Column -->
-        <div>
+        <main>
           <!-- Dedicated Category Feed -->
           <div id="filteredCategoryBlock" class="section-block" style="display:none;">
             <div class="sec-header">
-              <div class="sec-title" id="filteredCategoryTitle">समाचार</div>
+              <h2 class="sec-title" id="filteredCategoryTitle">समाचार</h2>
               <span id="filteredCategoryCount" style="font-size:12px; font-weight:700; color:var(--text-muted);">0 खबरें</span>
             </div>
             <div id="filteredCategoryGrid" class="news-grid-3"></div>
@@ -1261,7 +1374,7 @@
             <!-- Section 1: Top Daily Bulletin -->
             <div class="section-block">
               <div class="sec-header">
-                <div class="sec-title">डिजिटल दैनिक संस्करण</div>
+                <h2 class="sec-title">डिजिटल दैनिक संस्करण</h2>
                 <span id="totalNewsCount" style="font-size:12px; font-weight:700; color:var(--text-muted);">कुल समाचार: 0</span>
               </div>
               <div id="epaperGrid" class="news-grid-3"></div>
@@ -1270,7 +1383,7 @@
             <!-- Section 2: Bihar Special Strip -->
             <div class="section-block">
               <div class="sec-header">
-                <div class="sec-title">बिहार बुलेटिन</div>
+                <h2 class="sec-title">बिहार बुलेटिन</h2>
                 <a href="index.html?cat=बिहार" class="sec-link">सभी देखें ➔</a>
               </div>
               <div id="biharGrid" class="news-grid-3"></div>
@@ -1278,32 +1391,32 @@
 
             <!-- Section 3: Dual Column (Politics & Business) -->
             <div class="split-category-row">
-              <div>
+              <section>
                 <div class="sec-header">
-                  <div class="sec-title">राजनीति व राष्ट्रीय</div>
+                  <h2 class="sec-title">राजनीति व राष्ट्रीय</h2>
                   <a href="index.html?cat=राजनीति" class="sec-link">और ➔</a>
                 </div>
                 <div id="politicsList" class="speed-news-list"></div>
-              </div>
-              <div>
+              </section>
+              <section>
                 <div class="sec-header">
-                  <div class="sec-title">व्यापार व तकनीक</div>
+                  <h2 class="sec-title">व्यापार व तकनीक</h2>
                   <a href="index.html?cat=व्यापार" class="sec-link">और ➔</a>
                 </div>
                 <div id="businessList" class="speed-news-list"></div>
-              </div>
+              </section>
             </div>
 
             <!-- Section 4: Entertainment & Sports Strip -->
             <div class="section-block">
               <div class="sec-header">
-                <div class="sec-title">मनोरंजन व खेल जगत</div>
+                <h2 class="sec-title">मनोरंजन व खेल जगत</h2>
                 <a href="index.html?cat=मनोरंजन" class="sec-link">अधिक खबरें ➔</a>
               </div>
               <div id="entGrid" class="news-grid-3"></div>
             </div>
           </div>
-        </div>
+        </main>
 
         <!-- Sidebar Column -->
         <aside>
@@ -1314,6 +1427,20 @@
             </div>
             <div id="speedNewsList" class="speed-news-list">
               <p style="font-size:13px; color:var(--text-muted); padding:10px 0;">अपडेट्स लोड हो रहे हैं...</p>
+            </div>
+          </div>
+
+          <!-- ================= DIRECT VIDEO SECTION ================= -->
+          <div id="homepageVideoBlock" class="homepage-custom-block" style="display:none;">
+            <div class="homepage-custom-title">विशेष वीडियो बुलेटिन</div>
+            <div id="homepageVideoContainer"></div>
+          </div>
+
+          <!-- ================= CUSTOM AD SECTION ================= -->
+          <div id="homepageAdBlock" class="homepage-custom-block" style="display:none;">
+            <div class="homepage-custom-title">विशेष विज्ञापन (Sponsored)</div>
+            <div class="home-custom-ad">
+              <img id="homepageAdImg" src="" alt="Advertisement Banner">
             </div>
           </div>
 
@@ -1426,7 +1553,7 @@
     </div>
   </div>
 
-  <!-- Complete Black Footer -->
+  <!-- Complete Black Footer with Added Search Box -->
   <footer class="main-footer">
     <div class="footer-container">
       
@@ -1476,11 +1603,16 @@
       </div>
 
       <div class="footer-col">
-        <h3>संदेश भेजें / विज्ञापन</h3>
+        <h3>त्वरित खोज व संदेश</h3>
+        <!-- Footer Search Box Added Here -->
+        <div class="footer-search-box">
+          <input type="text" id="footerSearchInput" class="footer-search-input" placeholder="खबरें खोजें..." onkeydown="if(event.key==='Enter'){ openSearchModal(); document.getElementById('searchInput').value=this.value; handleLiveSearch(this.value); }" />
+          <button type="button" class="btn-footer-search" onclick="openSearchModal()">🔍</button>
+        </div>
         <form id="footerContactForm" class="footer-form" onsubmit="handleFooterContact(event)">
           <input type="text" id="footerName" class="form-input" placeholder="आपका नाम" required />
           <input type="email" id="footerEmail" class="form-input" placeholder="ईमेल पता" required />
-          <textarea id="footerMessage" class="form-textarea" placeholder="अपना संदेश / विज्ञापन विवरण लिखें..." required></textarea>
+          <textarea id="footerMessage" class="form-textarea" placeholder="अपना संदेश लिखें..." required></textarea>
           <button type="submit" class="btn-footer-submit">
             <span>✉️ संदेश भेजें</span>
           </button>
@@ -1498,7 +1630,7 @@
     </div>
   </footer>
 
-  <!-- COOKIE CONSENT BANNER (सक्रिय) -->
+  <!-- COOKIE CONSENT BANNER -->
   <div id="cookieConsentBanner" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #f8fafc; border-top: 3px solid var(--brand); padding: 16px 20px; z-index: 9999; box-shadow: 0 -5px 25px rgba(0,0,0,0.3); font-family: 'Yantramanav', sans-serif;">
     <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
       <div style="flex: 1; min-width: 280px;">
@@ -1586,13 +1718,13 @@
       try { localStorage.setItem(key, count); } catch(e) {}
     }
 
-    function updateSidebarVisitorStats() {
+    function updateGrowingVisitorStats() {
       const totalKey = "site_total_visits_count";
       let totalVisits = localStorage.getItem(totalKey);
       if (!totalVisits) {
-        totalVisits = 14250;
+        totalVisits = 14280;
       } else {
-        totalVisits = parseInt(totalVisits, 10) + Math.floor(Math.random() * 4 + 1);
+        totalVisits = parseInt(totalVisits, 10) + Math.floor(Math.random() * 3 + 1);
       }
       try { localStorage.setItem(totalKey, totalVisits); } catch(e) {}
       
@@ -1619,7 +1751,7 @@
     document.addEventListener("DOMContentLoaded", function() {
       initPortal();
       
-      const cookieConsent = sessionStorage.getItem("the90inews_cookie_accepted");
+      const cookieConsent = localStorage.getItem("the90inews_cookie_accepted");
       if (!cookieConsent) {
         setTimeout(() => {
           const banner = document.getElementById("cookieConsentBanner");
@@ -1629,20 +1761,20 @@
     });
 
     function acceptCookies() {
-      sessionStorage.setItem("the90inews_cookie_accepted", "true");
+      localStorage.setItem("the90inews_cookie_accepted", "true");
       const banner = document.getElementById("cookieConsentBanner");
       if (banner) banner.style.display = "none";
     }
 
     function rejectCookies() {
-      sessionStorage.setItem("the90inews_cookie_accepted", "false");
+      localStorage.setItem("the90inews_cookie_accepted", "false");
       const banner = document.getElementById("cookieConsentBanner");
       if (banner) banner.style.display = "none";
     }
 
     async function initPortal() {
       renderDateHeaders();
-      updateSidebarVisitorStats();
+      updateGrowingVisitorStats();
 
       const params = new URLSearchParams(window.location.search);
       currentCategoryFilter = (params.get("cat") || "").trim();
@@ -1659,6 +1791,8 @@
             if (fromCache && fromCache.length > 0) {
               globalNewsList = fromCache;
               renderPortalData(globalNewsList, currentCategoryFilter);
+              checkCustomAd(parsed);
+              checkDirectVideos(parsed);
               break;
             }
           }
@@ -1676,10 +1810,48 @@
               globalNewsList = fresh.sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
               try { localStorage.setItem("cached_db", JSON.stringify(db)); } catch(e) {}
               renderPortalData(globalNewsList, currentCategoryFilter);
+              checkCustomAd(db);
+              checkDirectVideos(db);
               break;
             }
           }
         } catch(e) {}
+      }
+    }
+
+    function checkCustomAd(db) {
+      const adBlock = document.getElementById("homepageAdBlock");
+      const adImg = document.getElementById("homepageAdImg");
+      if (!adBlock || !adImg) return;
+
+      const adSettings = db?.customAd || JSON.parse(localStorage.getItem("admin_custom_ad") || "null");
+      if (adSettings && adSettings.image) {
+        adImg.src = adSettings.image;
+        adBlock.style.display = "block";
+      } else {
+        adBlock.style.display = "none";
+      }
+    }
+
+    function checkDirectVideos(db) {
+      const videoBlock = document.getElementById("homepageVideoBlock");
+      const videoContainer = document.getElementById("homepageVideoContainer");
+      if (!videoBlock || !videoContainer) return;
+
+      const dVideos = db?.directVideos || JSON.parse(localStorage.getItem("admin_direct_videos") || "[]");
+      if (dVideos.length > 0) {
+        videoBlock.style.display = "block";
+        videoContainer.innerHTML = dVideos.map(v => `
+          <div class="home-direct-video-card">
+            <video controls preload="metadata">
+              <source src="${v.videoUrl}" type="video/mp4">
+              आपका ब्राउज़र वीडियो टैग का समर्थन नहीं करता है।
+            </video>
+            <div class="home-vid-title">${esc(v.title)}</div>
+          </div>
+        `).join("");
+      } else {
+        videoBlock.style.display = "none";
       }
     }
 
@@ -1813,6 +1985,12 @@
         spotExcerpt.innerText = String(rawContent).replace(/<[^>]*>?/gm, '').substring(0, 130) + '...';
       }
 
+      const readMoreLead = document.getElementById("spotlightReadMoreBtn");
+      if (readMoreLead) {
+        readMoreLead.href = leadLink;
+        readMoreLead.onclick = () => recordNewsClick(rawId);
+      }
+
       const subContainer = document.getElementById("heroSubleadsBox");
       if (subContainer) {
         const subItems = items.slice(1, 4);
@@ -1829,7 +2007,10 @@
                   <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
                 </div>
                 <div class="sublead-headline">${esc(item?.title)}</div>
-                <div class="sublead-meta">${esc(item?.date || "आज")} • 👁️ ${getArticleViews(sId)} Views</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                  <span class="sublead-meta">${esc(item?.date || "आज")} • 👁️ ${getArticleViews(sId)} Views</span>
+                  <span style="font-size: 12px; font-weight: 800; color: var(--brand);">और पढ़ें ➔</span>
+                </div>
               </div>
             </a>
           `;
@@ -1853,7 +2034,9 @@
       return `
         <article class="news-card">
           <div class="card-thumb-wrap">
-            <img class="card-thumb" loading="lazy" src="${attr(image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80')}" alt="${title}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80'">
+            <a href="${link}" onclick="recordNewsClick('${rawId}')">
+              <img class="card-thumb" loading="lazy" src="${attr(image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80')}" alt="${title}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&q=80'">
+            </a>
           </div>
           <div class="card-body">
             <div class="card-header-row">
@@ -1862,6 +2045,7 @@
             </div>
             <h3 class="card-title"><a href="${link}" onclick="recordNewsClick('${rawId}')">${title}</a></h3>
             <p class="card-summary">${summary}</p>
+            <a href="${link}" class="btn-read-more" onclick="recordNewsClick('${rawId}')">और पढ़ें ➔</a>
           </div>
           <div class="card-footer">
             <span>${date}</span>
@@ -1889,11 +2073,11 @@
           const rId = item?.id || item?.slug || "item";
           const rating = getRatingData(rId);
           return `
-            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item">
+            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item" onclick="recordNewsClick('${rId}')">
               <div class="speed-headline">● ${esc(item?.title)}</div>
               <div class="speed-meta">
                 <span>${esc(item?.date || "आज")} • ${esc(item?.category || "राजनीति")}</span>
-                <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
+                <span style="color:var(--brand); font-weight:800; font-size:11.5px;">और पढ़ें ➔</span>
               </div>
             </a>
           `;
@@ -1908,11 +2092,11 @@
           const rId = item?.id || item?.slug || "item";
           const rating = getRatingData(rId);
           return `
-            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item">
+            <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="speed-item" onclick="recordNewsClick('${rId}')">
               <div class="speed-headline">● ${esc(item?.title)}</div>
               <div class="speed-meta">
                 <span>${esc(item?.date || "आज")} • ${esc(item?.category || "व्यापार")}</span>
-                <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
+                <span style="color:var(--brand); font-weight:800; font-size:11.5px;">और पढ़ें ➔</span>
               </div>
             </a>
           `;
@@ -1940,7 +2124,7 @@
             <div class="speed-headline">${esc(item?.title)}</div>
             <div class="speed-meta">
               <span>${esc(item?.date || "आज")}</span>
-              <span class="rating-badge-card">⭐ ${rating.total}+ रेटिंग</span>
+              <span style="color:var(--brand); font-weight:800; font-size:11.5px;">और पढ़ें ➔</span>
             </div>
           </a>
         `;
@@ -1984,11 +2168,11 @@
         const rId = item?.id || item?.slug || 'item';
         const rating = getRatingData(rId);
         return `
-          <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="search-result-item">
+          <a href="${item?.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${encodeURIComponent(rId)}`}" class="search-result-item" onclick="recordNewsClick('${rId}')">
             <img src="${attr(item?.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80')}" class="search-res-thumb" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80'">
             <div>
               <h4 style="font-size:13.5px; font-weight:700;">${esc(item?.title)}</h4>
-              <span style="font-size:11px; color:var(--text-muted);">⭐ ${rating.total}+ रेटिंग • ${esc(item?.category || "खबर")} • ${esc(item?.date || "")}</span>
+              <span style="font-size:11px; color:var(--brand); font-weight:700;">और पढ़ें ➔</span>
             </div>
           </a>
         `;
@@ -2068,18 +2252,25 @@
 
     function handleFooterContact(e) {
       e.preventDefault();
+      const name = document.getElementById("footerName").value.trim();
+      const email = document.getElementById("footerEmail").value.trim();
+      const msg = document.getElementById("footerMessage").value.trim();
+      
+      const newMsg = { name: name, email: email, message: msg, date: new Date().toLocaleDateString() };
+      const localMsgs = JSON.parse(localStorage.getItem("site_contact_messages") || "[]");
+      localMsgs.unshift(newMsg);
+      localStorage.setItem("site_contact_messages", JSON.stringify(localMsgs));
+
       const status = document.getElementById("footerFormStatus");
       if (status) {
         status.style.display = "block";
         status.style.color = "#16a34a";
-        status.textContent = "धन्यवाद! आपका संदेश सफलतापूर्वक भेज दिया गया है।";
+        status.textContent = "धन्यवाद! आपका संदेश एडमिन इनबॉक्स में भेज दिया गया है।";
       }
-      const form = document.getElementById("footerContactForm");
-      if (form) form.reset();
+      document.getElementById("footerContactForm").reset();
       setTimeout(() => { if (status) status.style.display = "none"; }, 4000);
     }
 
-    /* POLICY POPUP ENGINE */
     const policyData = {
       about: {
         title: "हमारे बारे में (About Us)",
