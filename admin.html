@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard | THE 90I NEWS</title>
-  <!-- Supabase JS Library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg: #0b0f19;
@@ -190,7 +188,7 @@
       </div>
 
       <div class="media-type-box">
-        <label style="display:block; font-size:13px; color:#cbd5e1; margin-bottom:8px; font-weight:700;">Attachment Media (Supabase Storage):</label>
+        <label style="display:block; font-size:13px; color:#cbd5e1; margin-bottom:8px; font-weight:700;">Attachment Media:</label>
         <div class="media-tabs">
           <button type="button" class="media-tab-btn active" id="tab_img" onclick="switchMediaMode('image')">🖼️ Photo Upload</button>
           <button type="button" class="media-tab-btn" id="tab_vid" onclick="switchMediaMode('video')">📹 YouTube URL</button>
@@ -198,8 +196,8 @@
         <div id="media_img_box">
           <div class="grid-2">
             <div>
-              <input type="file" id="newsFile" accept="image/*,video/*" onchange="handleSupabaseUpload(event)" />
-              <input type="hidden" id="newsImageUrl" />
+              <input type="file" id="newsFile" accept="image/*" onchange="handleImg(event)" />
+              <input type="hidden" id="newsImgBase64" />
               <img id="imgPreview" class="img-preview" />
             </div>
             <div>
@@ -298,9 +296,9 @@
     <div id="sec_ad" class="card" style="display: none;">
       <h3 style="color:#f43f5e; margin-bottom:12px;">📢 होमपेज कस्टम विज्ञापन बैनर</h3>
       <div class="form-group">
-        <label>विज्ञापन बैनर इमेज चुनें (Supabase)</label>
-        <input type="file" id="adFile" accept="image/*" onchange="handleAdSupabaseUpload(event)" />
-        <input type="hidden" id="adImgUrl" />
+        <label>विज्ञापन बैनर इमेज चुनें</label>
+        <input type="file" id="adFile" accept="image/*" onchange="handleAdImg(event)" />
+        <input type="hidden" id="adImgBase64" />
         <img id="adImgPreview" class="img-preview" />
       </div>
       <button type="button" class="btn" style="background:#e11d48;" onclick="saveCustomAdSettings()">📢 Update Homepage Ad Banner Fast</button>
@@ -314,9 +312,9 @@
         <input type="text" id="directVideoTitle" placeholder="शीर्षक लिखें..." />
       </div>
       <div class="form-group">
-        <label>वीडियो फाइल चुनें (Supabase) *</label>
-        <input type="file" id="directVideoFile" accept="video/mp4" onchange="handleVideoSupabaseUpload(event)" />
-        <input type="hidden" id="directVideoUrl" />
+        <label>वीडियो फाइल चुनें (MP4) *</label>
+        <input type="file" id="directVideoFile" accept="video/mp4" onchange="handleDirectVideo(event)" />
+        <input type="hidden" id="directVideoBase64" />
       </div>
       <button type="button" class="btn" style="background:#0284c7;" onclick="saveDirectVideoSettings()">📹 Upload & Publish Video Fast</button>
     </div>
@@ -355,12 +353,6 @@
       localStorage.removeItem("90i_admin_logged");
       window.location.replace("login.html");
     }
-
-    // ================= SUPABASE CONFIGURATION =================
-    const SUPABASE_URL = "https://jaruakuujaakjcqagymo.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    // ==========================================================
 
     window.onload = async function() {
       var savedToken = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
@@ -411,74 +403,66 @@
       document.getElementById('newsSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
     }
 
-    // Supabase Storage Upload Functions
-    async function handleSupabaseUpload(e) {
-      var file = e.target.files[0];
-      if (!file) return;
-
-      showLoading("फाइल अपलोड हो रही है...", "Supabase Storage पर भेजी जा रही है...");
-      try {
-        const fileName = "news_" + Date.now() + "_" + file.name.replace(/[^a-zA-Z0-9.]/g, "_");
-        const { data, error } = await supabaseClient.storage.from('news-images').upload(fileName, file);
-        if (error) throw error;
-
-        const { data: publicData } = supabaseClient.storage.from('news-images').getPublicUrl(fileName);
-        var fileUrl = publicData.publicUrl;
-
-        document.getElementById('newsImageUrl').value = fileUrl;
-        if (file.type.startsWith('image/')) {
-          var p = document.getElementById('imgPreview');
-          p.src = fileUrl;
-          p.style.display = 'block';
-        }
-        hideLoading();
-        alert("✅ फाइल सफलतापूर्वक Supabase पर अपलोड हो गई!");
-      } catch(err) {
-        hideLoading();
-        alert("अपलोड त्रुटि: " + err.message);
-      }
+    // सुपर-कम्प्रेस्ड इमेज हैंडलर (ताकि साइज बहुत छोटा रहे और साइट फास्ट चले)
+    function handleImg(e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement("canvas");
+          var max_w = 600; // अत्यधिक ऑप्टिमाइज्ड चौड़ाई
+          var scale = max_w / img.width;
+          canvas.width = (img.width > max_w) ? max_w : img.width;
+          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          var b64 = canvas.toDataURL("image/jpeg", 0.60); // हाई क्वालिटी + लो साइज
+          document.getElementById('newsImgBase64').value = b64;
+          var p = document.getElementById('imgPreview'); p.src = b64; p.style.display = 'block';
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(f);
     }
 
-    async function handleAdSupabaseUpload(e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      showLoading("विज्ञापन अपलोड हो रहा है...", "Supabase पर भेजा जा रहा है...");
-      try {
-        const fileName = "ad_" + Date.now() + "_" + file.name.replace(/[^a-zA-Z0-9.]/g, "_");
-        const { data, error } = await supabaseClient.storage.from('news-images').upload(fileName, file);
-        if (error) throw error;
-
-        const { data: publicData } = supabaseClient.storage.from('news-images').getPublicUrl(fileName);
-        var fileUrl = publicData.publicUrl;
-
-        document.getElementById('adImgUrl').value = fileUrl;
-        var p = document.getElementById('adImgPreview');
-        p.src = fileUrl;
-        p.style.display = 'block';
-        hideLoading();
-      } catch(err) {
-        hideLoading();
-        alert("त्रुटि: " + err.message);
-      }
+    function handleAdImg(e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement("canvas");
+          var max_w = 700;
+          var scale = max_w / img.width;
+          canvas.width = (img.width > max_w) ? max_w : img.width;
+          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          var b64 = canvas.toDataURL("image/jpeg", 0.65);
+          document.getElementById('adImgBase64').value = b64;
+          var p = document.getElementById('adImgPreview'); p.src = b64; p.style.display = 'block';
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(f);
     }
 
-    async function handleVideoSupabaseUpload(e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      showLoading("वीडियो अपलोड हो रहा है...", "Supabase Storage पर भेजा जा रहा है (बड़ा वीडियो भी संभव है)...");
-      try {
-        const fileName = "video_" + Date.now() + "_" + file.name.replace(/[^a-zA-Z0-9.]/g, "_");
-        const { data, error } = await supabaseClient.storage.from('news-images').upload(fileName, file);
-        if (error) throw error;
-
-        const { data: publicData } = supabaseClient.storage.from('news-images').getPublicUrl(fileName);
-        document.getElementById('directVideoUrl').value = publicData.publicUrl;
-        hideLoading();
-        alert("✅ वीडियो सफलतापूर्वक Supabase पर अपलोड हो गया!");
-      } catch(err) {
-        hideLoading();
-        alert("वीडियो अपलोड त्रुटि: " + err.message);
+    function handleDirectVideo(e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      if (f.size > 4 * 1024 * 1024) {
+        alert("⚠️ कृपया 4MB से छोटी MP4 वीडियो फाइल चुनें ताकि वेबसाइट पर कोई लोड न पड़े!");
+        document.getElementById('directVideoFile').value = '';
+        return;
       }
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        document.getElementById('directVideoBase64').value = evt.target.result;
+      };
+      reader.readAsDataURL(f);
     }
 
     async function fetchDatabaseFromServer() {
@@ -488,20 +472,20 @@
           return await res.json();
         }
       } catch(e) {}
-      return { "90i_news": [], "messages": [], "customAd": null, "directVideos": [] };
+      return { "90i_news": [], "news": [], "messages": [], "customAd": null, "directVideos": [] };
     }
 
     async function loadExistingAdAndVideoSettings() {
       var db = await fetchDatabaseFromServer();
       var ad = db.customAd;
       if (ad && ad.image) {
-        document.getElementById('adImgUrl').value = ad.image;
+        document.getElementById('adImgBase64').value = ad.image;
         var p = document.getElementById('adImgPreview'); p.src = ad.image; p.style.display = 'block';
       }
     }
 
     async function saveCustomAdSettings() {
-      var img = document.getElementById('adImgUrl').value;
+      var img = document.getElementById('adImgBase64').value;
       if (!img) { alert("कृपया विज्ञापन बैनर की तस्वीर चुनें!"); return; }
 
       showLoading("विज्ञापन अपडेट हो रहा है...", "GitHub पर सिंक हो रहा है...");
@@ -519,23 +503,23 @@
 
     async function saveDirectVideoSettings() {
       var title = document.getElementById('directVideoTitle').value.trim();
-      var vSrc = document.getElementById('directVideoUrl').value;
+      var vSrc = document.getElementById('directVideoBase64').value;
       if (!title) { alert("कृपया वीडियो का शीर्षक लिखें!"); return; }
-      if (!vSrc) { alert("कृपया वीडियो अपलोड करें!"); return; }
+      if (!vSrc) { alert("कृपया MP4 वीडियो फाइल चुनें!"); return; }
 
-      showLoading("वीडियो पब्लिश हो रहा है...", "GitHub पर सिंक हो रहा है...");
+      showLoading("वीडियो पब्लिश हो रहा है...", "GitHub पर अपलोड हो रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         if (!Array.isArray(db.directVideos)) db.directVideos = [];
         db.directVideos.unshift({ title: title, videoUrl: vSrc, date: new Date().toISOString().split('T')[0] });
-        if (db.directVideos.length > 5) db.directVideos = db.directVideos.slice(0, 5);
+        if (db.directVideos.length > 2) db.directVideos = db.directVideos.slice(0, 2);
 
         await syncDb(db);
         hideLoading();
-        alert("📹 वीडियो सफलतापूर्वक पब्लिश हो गया!");
+        alert("📹 वीडियो सफलतापूर्वक अपलोड और पब्लिश हो गया!");
         
         document.getElementById('directVideoTitle').value = '';
-        document.getElementById('directVideoUrl').value = '';
+        document.getElementById('directVideoBase64').value = '';
         document.getElementById('directVideoFile').value = '';
       } catch(err) {
         hideLoading();
@@ -554,7 +538,7 @@
         var newsList = Array.isArray(db["90i_news"]) ? db["90i_news"] : (Array.isArray(db.news) ? db.news : []);
         var editId = document.getElementById('editId').value;
         
-        var mediaUrl = document.getElementById('newsImageUrl').value;
+        var imgBase64 = document.getElementById('newsImgBase64').value;
 
         var item = {
           id: editId ? Number(editId) : Date.now(),
@@ -563,10 +547,12 @@
           section: document.getElementById('newsSection').value,
           category: document.getElementById('newsCategory').value,
           summary: document.getElementById('newsSummary').value.trim(),
-          image: mediaUrl, // Supabase URL यहां सुरक्षित रहेगा
+          image: imgBase64,
+          img: imgBase64, // Article page compatibility
           caption: document.getElementById('newsCaption').value.trim(),
           videoUrl: document.getElementById('newsVideoUrl').value.trim(),
           content: document.getElementById('newsBody').innerHTML,
+          body: document.getElementById('newsBody').innerHTML, // Article page compatibility
           date: new Date().toISOString().split('T')[0],
           epaperPage: 1,
           epaperGapStyle: "compact",
@@ -578,7 +564,10 @@
         if (editId) {
           var idx = newsList.findIndex(x => String(x.id) === String(editId));
           if (idx !== -1) {
-            if (!mediaUrl) item.image = newsList[idx].image; // अगर नई फोटो नहीं चुनी तो पुरानी सुरक्षित रहे
+            if (!imgBase64) {
+              item.image = newsList[idx].image || newsList[idx].img || "";
+              item.img = newsList[idx].image || newsList[idx].img || "";
+            }
             item.epaperPage = newsList[idx].epaperPage || 1;
             item.epaperGapStyle = newsList[idx].epaperGapStyle || "compact";
             item.epaperTitle = newsList[idx].epaperTitle || "";
@@ -629,7 +618,7 @@
       document.getElementById('epaperGapStyle').value = n.epaperGapStyle || "compact";
       document.getElementById('epaperCustomTitle').value = n.epaperTitle || n.title || "";
       document.getElementById('epaperCaption').value = n.epaperCaption || n.caption || "";
-      document.getElementById('epaperBodyEditor').innerHTML = n.epaperCustomContent || n.content || "";
+      document.getElementById('epaperBodyEditor').innerHTML = n.epaperCustomContent || n.content || n.body || "";
     }
 
     async function saveEpaperCustomization() {
@@ -692,10 +681,12 @@
       document.getElementById('newsCategory').value = n.category || 'बिहार';
       document.getElementById('newsSummary').value = n.summary || '';
       document.getElementById('newsCaption').value = n.caption || '';
-      document.getElementById('newsBody').innerHTML = n.content || '';
-      if (n.image) {
-        document.getElementById('newsImageUrl').value = n.image;
-        var p = document.getElementById('imgPreview'); p.src = n.image; p.style.display = 'block';
+      document.getElementById('newsBody').innerHTML = n.content || n.body || '';
+      
+      var img = n.image || n.img || '';
+      if (img) {
+        document.getElementById('newsImgBase64').value = img;
+        var p = document.getElementById('imgPreview'); p.src = img; p.style.display = 'block';
       }
       document.getElementById('formTitle').innerText = "समाचार में संशोधन करें (Edit Mode)";
       document.getElementById('btnCancelEdit').style.display = 'inline-block';
@@ -818,10 +809,10 @@
       });
       var sha = getRes.ok ? (await getRes.json()).sha : null;
       var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
-      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+      var putRes = acidFetch = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Direct GitHub Sync (Quota Free)", content: contentB64, branch: "main", sha: sha })
+        body: JSON.stringify({ message: "Optimized CMS Sync", content: contentB64, branch: "main", sha: sha })
       });
       if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
       localStorage.setItem("90i_gh_token", token.trim());
@@ -843,7 +834,7 @@
       document.getElementById('newsSummary').value = '';
       document.getElementById('newsCaption').value = '';
       document.getElementById('newsBody').innerHTML = '';
-      document.getElementById('newsImageUrl').value = '';
+      document.getElementById('newsImgBase64').value = '';
       document.getElementById('imgPreview').style.display = 'none';
       document.getElementById('formTitle').innerText = "नया समाचार प्रकाशित करें";
       document.getElementById('btnCancelEdit').style.display = 'none';
