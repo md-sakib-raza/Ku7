@@ -464,9 +464,13 @@
       reader.readAsDataURL(f);
     }
 
+    // Anti-cache fetch to ensure every phone loads exact same latest data
     async function fetchDatabaseFromServer() {
       try {
-        var res = await fetch('data/90i-data.json?_t=' + Date.now(), { cache: "no-store" });
+        var res = await fetch('data/90i-data.json?_t=' + Date.now(), { 
+          cache: "no-store",
+          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        });
         if (res.ok) {
           return await res.json();
         }
@@ -582,10 +586,10 @@
         db["90i_news"] = newsList;
         db.news = newsList;
         
-        // सीधे डेटाबेस सेव करें (बिना डिले के तुरंत)
+        // सीधे डेटाबेस सेव करें
         await syncDb(db);
 
-        // साइटमैप सिंक को बैकग्राउंड में भेज दें ताकि यूजर को 1 सेकंड भी इंतज़ार न करना पड़े
+        // साइटमैप सिंक बैकग्राउंड में
         executeSitemapSyncSilent();
 
         hideLoading();
@@ -806,9 +810,15 @@
       var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
       var owner = "md-sakib-raza", repo = "Ku7", path = "data/90i-data.json";
+      
       var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
         headers: { 'Authorization': 'token ' + token.trim() }
       });
+      
+      if (getRes.status === 401) {
+        throw new Error("GitHub Sync Failed (HTTP 401): आपका GitHub Token अमान्य (Invalid) या एक्सपायर हो गया है। कृपया GitHub पर नया Token जनरेट करें और Config टैब में दोबारा सेव करें।");
+      }
+
       var sha = getRes.ok ? (await getRes.json()).sha : null;
       var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
       var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
@@ -816,7 +826,12 @@
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: "Instant CMS Sync", content: contentB64, branch: "main", sha: sha })
       });
+
+      if (putRes.status === 401) {
+        throw new Error("GitHub Sync Failed (HTTP 401): टोकन में बदलाव या अनुमति नहीं है। नया टोकन डालें।");
+      }
       if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
+      
       localStorage.setItem("90i_gh_token", token.trim());
     }
 
