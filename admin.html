@@ -113,8 +113,8 @@
   <div id="loadingOverlay">
     <div class="loading-card">
       <div class="spinner"></div>
-      <div id="loadingTitle" class="loading-text">सुपर-फास्ट सिंक हो रहा है...</div>
-      <div id="loadingDesc" class="loading-sub">कृपया कुछ सेकंड प्रतीक्षा करें...</div>
+      <div id="loadingTitle" class="loading-text">⚡ तुरंत पब्लिश हो रहा है...</div>
+      <div id="loadingDesc" class="loading-sub">बस एक सेकंड...</div>
     </div>
   </div>
 
@@ -220,7 +220,7 @@
         <div id="newsBody" contenteditable="true" placeholder="पूरी खबर यहाँ विस्तार से लिखें..."></div>
       </div>
 
-      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">🚀 Save, Publish & Sync Fast</button>
+      <button type="button" class="btn" id="btnPublish" onclick="saveAndSync()">⚡ Instant Publish (तुरंत लाइव करें)</button>
     </div>
 
     <!-- ================= 2. E-PAPER BROADSHEET EDITOR TAB ================= -->
@@ -403,7 +403,6 @@
       document.getElementById('newsSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
     }
 
-    // सुपर-कम्प्रेस्ड इमेज हैंडलर (ताकि साइज बहुत छोटा रहे और साइट फास्ट चले)
     function handleImg(e) {
       var f = e.target.files[0];
       if (!f) return;
@@ -412,13 +411,13 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 600; // अत्यधिक ऑप्टिमाइज्ड चौड़ाई
+          var max_w = 600;
           var scale = max_w / img.width;
           canvas.width = (img.width > max_w) ? max_w : img.width;
           canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.60); // हाई क्वालिटी + लो साइज
+          var b64 = canvas.toDataURL("image/jpeg", 0.60);
           document.getElementById('newsImgBase64').value = b64;
           var p = document.getElementById('imgPreview'); p.src = b64; p.style.display = 'block';
         };
@@ -488,7 +487,7 @@
       var img = document.getElementById('adImgBase64').value;
       if (!img) { alert("कृपया विज्ञापन बैनर की तस्वीर चुनें!"); return; }
 
-      showLoading("विज्ञापन अपडेट हो रहा है...", "GitHub पर सिंक हो रहा है...");
+      showLoading("विज्ञापन अपडेट हो रहा है...", "तुरंत सिंक हो रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         db.customAd = { image: img };
@@ -507,7 +506,7 @@
       if (!title) { alert("कृपया वीडियो का शीर्षक लिखें!"); return; }
       if (!vSrc) { alert("कृपया MP4 वीडियो फाइल चुनें!"); return; }
 
-      showLoading("वीडियो पब्लिश हो रहा है...", "GitHub पर अपलोड हो रहा है...");
+      showLoading("वीडियो पब्लिश हो रहा है...", "तुरंत अपलोड हो रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         if (!Array.isArray(db.directVideos)) db.directVideos = [];
@@ -527,11 +526,12 @@
       }
     }
 
+    // ================= 1-SECOND INSTANT PUBLISH FUNCTION =================
     async function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
 
-      showLoading("पब्लिश हो रहा है...", "डेटाबेस और साइटमैप सिंक हो रहे हैं...");
+      showLoading("⚡ तुरंत पब्लिश हो रहा है...", "डेटाबेस सेव किया जा रहा है...");
 
       try {
         var db = await fetchDatabaseFromServer();
@@ -548,11 +548,11 @@
           category: document.getElementById('newsCategory').value,
           summary: document.getElementById('newsSummary').value.trim(),
           image: imgBase64,
-          img: imgBase64, // Article page compatibility
+          img: imgBase64,
           caption: document.getElementById('newsCaption').value.trim(),
           videoUrl: document.getElementById('newsVideoUrl').value.trim(),
           content: document.getElementById('newsBody').innerHTML,
-          body: document.getElementById('newsBody').innerHTML, // Article page compatibility
+          body: document.getElementById('newsBody').innerHTML,
           date: new Date().toISOString().split('T')[0],
           epaperPage: 1,
           epaperGapStyle: "compact",
@@ -582,13 +582,14 @@
         db["90i_news"] = newsList;
         db.news = newsList;
         
-        await Promise.all([
-          syncDb(db),
-          executeSitemapSyncSilent()
-        ]);
+        // सीधे डेटाबेस सेव करें (बिना डिले के तुरंत)
+        await syncDb(db);
+
+        // साइटमैप सिंक को बैकग्राउंड में भेज दें ताकि यूजर को 1 सेकंड भी इंतज़ार न करना पड़े
+        executeSitemapSyncSilent();
 
         hideLoading();
-        alert("🎉 समाचार और साइटमैप सफलतापूर्वक अपडेट हो गए!");
+        alert("🎉 समाचार तुरंत लाइव हो गया!");
 
         resetForm();
         switchSection('list');
@@ -625,7 +626,7 @@
       var id = document.getElementById('epaperTargetId').value;
       if (!id) { alert("कृपया समाचार चुनें!"); return; }
 
-      showLoading("ई-पेपर लेआउट सेव हो रहा है...", "सिंक हो रहा है...");
+      showLoading("ई-पेपर लेआउट सेव हो रहा है...", "तुरंत सिंक हो रहा है...");
       try {
         var db = await fetchDatabaseFromServer();
         var list = db["90i_news"] || db.news || [];
@@ -641,7 +642,7 @@
           db.news = list;
           await syncDb(db);
           hideLoading();
-          alert("📰 ई-पेपर लेआउट और कैप्शन सफलतापूर्वक सेव हो गया!");
+          alert("📰 ई-पेपर लेआउट सफलतापूर्वक सेव हो गया!");
         }
       } catch(e) {
         hideLoading();
@@ -696,12 +697,13 @@
 
     async function deleteNews(id) {
       if (!confirm("हटाना चाहते हैं?")) return;
-      showLoading("समाचार हटाया जा रहा है...", "सिंक हो रहा है...");
+      showLoading("समाचार हटाया जा रहा है...", "तुरंत सिंक हो रहा है...");
       var db = await fetchDatabaseFromServer();
       var list = db["90i_news"] || db.news || [];
       db["90i_news"] = list.filter(x => String(x.id) !== String(id));
       db.news = db["90i_news"];
-      await Promise.all([syncDb(db), executeSitemapSyncSilent()]);
+      await syncDb(db);
+      executeSitemapSyncSilent();
       hideLoading();
       loadNewsList();
     }
@@ -809,10 +811,10 @@
       });
       var sha = getRes.ok ? (await getRes.json()).sha : null;
       var contentB64 = window.btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
-      var putRes = acidFetch = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
+      var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "Optimized CMS Sync", content: contentB64, branch: "main", sha: sha })
+        body: JSON.stringify({ message: "Instant CMS Sync", content: contentB64, branch: "main", sha: sha })
       });
       if (!putRes.ok) { throw new Error("GitHub Sync Failed (HTTP " + putRes.status + ")"); }
       localStorage.setItem("90i_gh_token", token.trim());
