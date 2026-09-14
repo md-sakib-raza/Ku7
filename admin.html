@@ -363,6 +363,8 @@
 
     let globalMainDb = { "90i_news": [], "news": [], "messages": [], "customAd": null, "directVideos": [] };
     let globalArchiveDb = { "archive_news": [] };
+    const MAIN_DB_CACHE_KEY = "90i_cache_main_db_v1";
+    const ARCHIVE_DB_CACHE_KEY = "90i_cache_archive_db_v1";
 
     window.onload = async function() {
       var savedToken = localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
@@ -370,26 +372,81 @@
         document.getElementById('ghToken').value = savedToken;
         localStorage.setItem('90i_gh_token', savedToken);
       }
-      await fetchAllDatabases();
-      loadNewsList();
+
+      hydrateDatabasesFromCache();
+      loadNewsList(false);
       loadInboxMessages();
       loadExistingAdAndVideoSettings();
+
+      fetchAllDatabases().then(function() {
+        loadNewsList(false);
+        loadInboxMessages();
+        loadExistingAdAndVideoSettings();
+      });
     };
 
     async function fetchAllDatabases() {
-      try {
-        var res1 = await fetch('data/90i-data.json?_t=' + Date.now(), { cache: "no-store" });
-        if (res1.ok) globalMainDb = await res1.json();
-      } catch(e) {}
+      var results = await Promise.allSettled([
+        fetch('data/90i-data.json?_t=' + Date.now(), { cache: "no-store" }),
+        fetch('data/archive-2026.json?_t=' + Date.now(), { cache: "no-store" })
+      ]);
 
-      try {
-        var res2 = await fetch('data/archive-2026.json?_t=' + Date.now(), { cache: "no-store" });
-        if (res2.ok) {
-          globalArchiveDb = await res2.json();
-        } else {
-          globalArchiveDb = { "archive_news": [] };
+      var mainRes = results[0];
+      var archiveRes = results[1];
+
+      if (mainRes.status === "fulfilled" && mainRes.value.ok) {
+        try {
+          globalMainDb = await mainRes.value.json();
+          writeCache(MAIN_DB_CACHE_KEY, globalMainDb);
+          localStorage.setItem("cached_db", JSON.stringify(globalMainDb));
+        } catch(e) {}
+      }
+
+      if (archiveRes.status === "fulfilled" && archiveRes.value.ok) {
+        try {
+          globalArchiveDb = await archiveRes.value.json();
+          writeCache(ARCHIVE_DB_CACHE_KEY, globalArchiveDb);
+        } catch(e) {
+          globalArchiveDb = globalArchiveDb || { "archive_news": [] };
         }
-      } catch(e) {
+      } else {
+        globalArchiveDb = globalArchiveDb || { "archive_news": [] };
+      }
+    }
+
+    function readCache(key) {
+      try {
+        var raw = localStorage.getItem(key);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        return parsed && parsed.data ? parsed.data : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function writeCache(key, data) {
+      if (!data) return;
+      try {
+        localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data: data }));
+      } catch (e) {}
+    }
+
+    function hydrateDatabasesFromCache() {
+      var cachedMain = readCache(MAIN_DB_CACHE_KEY);
+      var cachedArchive = readCache(ARCHIVE_DB_CACHE_KEY);
+
+      if (cachedMain) globalMainDb = cachedMain;
+      if (cachedArchive) globalArchiveDb = cachedArchive;
+
+      if (!cachedMain) {
+        try {
+          var legacyMain = localStorage.getItem("cached_db");
+          if (legacyMain) globalMainDb = JSON.parse(legacyMain);
+        } catch (e) {}
+      }
+
+      if (!globalArchiveDb || !Array.isArray(globalArchiveDb.archive_news)) {
         globalArchiveDb = { "archive_news": [] };
       }
     }
@@ -747,8 +804,7 @@
       }
     }
 
-    async function loadNewsList() {
-      await fetchAllDatabases();
+    async function loadNewsList(shouldRefresh) {
       var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
       var archiveList = globalArchiveDb.archive_news || [];
       
@@ -758,19 +814,27 @@
 
       document.getElementById('countBadge').innerText = combined.length;
       var tb = document.getElementById('newsTable');
-      if (!combined.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई खबर नहीं है।</td></tr>'; return; }
-      
-      tb.innerHTML = combined.map(n => `
-        <tr>
-          <td><b>${esc(n.title)}</b></td>
-          <td><span class="badge-sec">${esc(n.category)}</span></td>
-          <td><span class="badge-sec" style="background:${n._source === 'archive' ? '#312e81' : '#166534'};">${n._source === 'archive' ? '📦 Archive' : '⚡ Main'}</span></td>
-          <td style="text-align:center;">
-            <button type="button" class="btn-action-edit" onclick="editNews('${n.id}', '${n._source}')">✏️</button>
-            <button type="button" class="btn-action-del" onclick="deleteNews('${n.id}', '${n._source}')">🗑️</button>
-          </td>
-        </tr>
-      `).join('');
+      if (!combined.length) {
+        tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई खबर नहीं है।</td></tr>';
+      } else {
+        tb.innerHTML = combined.map(n => `
+          <tr>
+            <td><b>${esc(n.title)}</b></td>
+            <td><span class="badge-sec">${esc(n.category)}</span></td>
+            <td><span class="badge-sec" style="background:${n._source === 'archive' ? '#312e81' : '#166534'};">${n._source === 'archive' ? '📦 Archive' : '⚡ Main'}</span></td>
+            <td style="text-align:center;">
+              <button type="button" class="btn-action-edit" onclick="editNews('${n.id}', '${n._source}')">✏️</button>
+              <button type="button" class="btn-action-del" onclick="deleteNews('${n.id}', '${n._source}')">🗑️</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      if (shouldRefresh === false) return;
+
+      fetchAllDatabases().then(function() {
+        loadNewsList(false);
+      });
     }
 
     function editNews(id, source) {
