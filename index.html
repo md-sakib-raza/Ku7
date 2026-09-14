@@ -1497,6 +1497,7 @@
       initPortal();
     });
 
+    // ⭐ ZERO-DELAY INSTANT RENDER & BACKGROUND SYNC ENGINE
     async function initPortal() {
       renderDateHeaders();
       updateGrowingVisitorStats();
@@ -1527,10 +1528,6 @@
         } catch(e) {}
       }
 
-      let mainNews = [];
-      let archiveNews = [];
-      let dbSettings = {};
-
       try {
         const res1 = await fetch("data/90i-data.json?_t=" + Date.now(), { 
           cache: "reload",
@@ -1538,37 +1535,34 @@
         });
         if (res1.ok) {
           const db1 = await res1.json();
-          dbSettings = db1;
-          mainNews = extractNewsArray(db1);
           localStorage.setItem("90inews_main_cache", JSON.stringify(db1));
+          
+          const res2 = await fetch("data/archive-2026.json?_t=" + Date.now(), { 
+            cache: "reload",
+            headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }
+          });
+          let archiveNews = [];
+          if (res2.ok) {
+            const db2 = await res2.json();
+            archiveNews = db2.archive_news && Array.isArray(db2.archive_news) ? db2.archive_news : extractNewsArray(db2);
+            localStorage.setItem("90inews_archive_cache", JSON.stringify(db2));
+          }
+
+          let combinedFresh = extractNewsArray(db1).concat(archiveNews);
+          if (combinedFresh.length > 0) {
+            let uniqueMapFresh = new Map();
+            combinedFresh.forEach(item => {
+              let key = item.id || item.slug || (item.title ? item.title.trim().toLowerCase() : Math.random());
+              if (!uniqueMapFresh.has(key)) uniqueMapFresh.set(key, item);
+            });
+
+            globalNewsList = Array.from(uniqueMapFresh.values()).sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
+            renderPortalData(globalNewsList, currentCategoryFilter);
+            checkCustomAd(db1);
+            checkDirectVideos(db1);
+          }
         }
       } catch(e) {}
-
-      try {
-        const res2 = await fetch("data/archive-2026.json?_t=" + Date.now(), { 
-          cache: "reload",
-          headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }
-        });
-        if (res2.ok) {
-          const db2 = await res2.json();
-          archiveNews = db2.archive_news && Array.isArray(db2.archive_news) ? db2.archive_news : extractNewsArray(db2);
-          localStorage.setItem("90inews_archive_cache", JSON.stringify(db2));
-        }
-      } catch(e) {}
-
-      let combinedFresh = mainNews.concat(archiveNews);
-      if (combinedFresh.length > 0) {
-        let uniqueMapFresh = new Map();
-        combinedFresh.forEach(item => {
-          let key = item.id || item.slug || (item.title ? item.title.trim().toLowerCase() : Math.random());
-          if (!uniqueMapFresh.has(key)) uniqueMapFresh.set(key, item);
-        });
-
-        globalNewsList = Array.from(uniqueMapFresh.values()).sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
-        renderPortalData(globalNewsList, currentCategoryFilter);
-        checkCustomAd(dbSettings);
-        checkDirectVideos(dbSettings);
-      }
     }
 
     function checkCustomAd(db) {
