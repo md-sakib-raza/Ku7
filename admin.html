@@ -377,12 +377,18 @@
 
     async function fetchAllDatabases() {
       try {
-        var res1 = await fetch('data/90i-data.json?_t=' + Date.now(), { cache: "no-store" });
+        var res1 = await fetch('data/90i-data.json?_t=' + Date.now(), { 
+          cache: "reload",
+          headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }
+        });
         if (res1.ok) globalMainDb = await res1.json();
       } catch(e) {}
 
       try {
-        var res2 = await fetch('data/archive-2026.json?_t=' + Date.now(), { cache: "no-store" });
+        var res2 = await fetch('data/archive-2026.json?_t=' + Date.now(), { 
+          cache: "reload",
+          headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }
+        });
         if (res2.ok) {
           globalArchiveDb = await res2.json();
         } else {
@@ -937,7 +943,6 @@
       });
     }
 
-    // ⭐ CORS-Fixed Safe Sync Engine
     async function syncDbSafe(dbObj, filePath) {
       var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
