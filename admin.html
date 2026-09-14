@@ -431,7 +431,6 @@
       document.getElementById('newsSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
     }
 
-    // ⭐ इमेज साइज बहुत छोटा (0.25 quality) कर दिया गया है ताकि नेटवर्क एरर न आए
     function handleImg(e) {
       var f = e.target.files[0];
       if (!f) return;
@@ -542,7 +541,6 @@
       }
     }
 
-    // ⭐ परफेक्ट सेव एंड सिंक (चाहे नई खबर हो या पुरानी एडिट)
     async function saveAndSync() {
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
@@ -774,7 +772,6 @@
       `).join('');
     }
 
-    // ⭐ एडिट करने के लिए दोनों डेटाबेस से खबर ढूंढकर फॉर्म में लोड करना
     function editNews(id, source) {
       var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
       var archiveList = globalArchiveDb.archive_news || [];
@@ -925,6 +922,8 @@
 
       var owner = "md-sakib-raza", repo = "Ku7", path = "sitemap.xml";
       var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
+        method: 'GET',
+        mode: 'cors',
         headers: { 'Authorization': 'token ' + token.trim(), 'Accept': 'application/vnd.github.v3+json' }
       });
       var sha = getRes.ok ? (await getRes.json()).sha : null;
@@ -932,12 +931,13 @@
 
       await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
         method: 'PUT',
+        mode: 'cors',
         headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: "Auto-sitemap update", content: contentB64, branch: "main", sha: sha })
       });
     }
 
-    // ⭐ सुपर सेफ सिंक इंजन जो रिट्राई के साथ 5 बार कोशिश करेगा ताकि 'Failed to fetch' न आए
+    // ⭐ CORS-Fixed Safe Sync Engine
     async function syncDbSafe(dbObj, filePath) {
       var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
@@ -948,11 +948,17 @@
       let success = false;
       let lastError = "";
 
-      while (attempts < 5 && !success) {
+      while (attempts < 3 && !success) {
         attempts++;
         try {
           var getRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now(), {
-            headers: { 'Authorization': 'token ' + token.trim(), 'Cache-Control': 'no-cache' }
+            method: 'GET',
+            mode: 'cors',
+            headers: { 
+              'Authorization': 'token ' + token.trim(), 
+              'Accept': 'application/vnd.github.v3+json',
+              'Cache-Control': 'no-cache' 
+            }
           });
           
           let sha = null;
@@ -961,13 +967,23 @@
             sha = fileData.sha;
           }
 
-          var jsonString = JSON.stringify(dbObj);
+          var jsonString = JSON.stringify(dbObj, null, 2);
           var contentB64 = window.btoa(unescape(encodeURIComponent(jsonString)));
 
           var putRes = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path, {
             method: 'PUT',
-            headers: { 'Authorization': 'token ' + token.trim(), 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Robust CMS Safe Sync Update", content: contentB64, branch: "main", sha: sha })
+            mode: 'cors',
+            headers: { 
+              'Authorization': 'token ' + token.trim(), 
+              'Content-Type': 'application/json',
+              'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify({ 
+              message: "Direct CORS Safe CMS Sync Update", 
+              content: contentB64, 
+              branch: "main", 
+              sha: sha 
+            })
           });
 
           if (putRes.ok) {
@@ -979,7 +995,7 @@
           }
         } catch(netErr) {
           lastError = netErr.message;
-          await new Promise(r => setTimeout(r, 2000));
+          await new Promise(r => setTimeout(r, 1500));
         }
       }
 
