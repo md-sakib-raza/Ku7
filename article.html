@@ -891,6 +891,8 @@
     "use strict";
 
     let currentArticleId = "default";
+    const MAIN_DB_CACHE_KEY = "90i_cache_main_db_v1";
+    const ARCHIVE_DB_CACHE_KEY = "90i_cache_archive_db_v1";
 
     document.addEventListener("DOMContentLoaded", initPage);
 
@@ -902,51 +904,81 @@
       const slug = (params.get("slug") || "").trim().toLowerCase();
       const id = (params.get("id") || "").trim();
 
-      let mainNews = [];
-      let archiveNews = [];
-
-      // 1. मुख्य फाइल (90i-data.json) फेच करें
-      try {
-        const res1 = await fetch("data/90i-data.json?_t=" + Date.now(), { cache: "no-store" });
-        if (res1.ok) {
-          const db1 = await res1.json();
-          mainNews = extractNewsList(db1);
-        }
-      } catch (e) {}
-
-      // 2. आर्काइव फाइल (archive-2026.json) फेच करें
-      try {
-        const res2 = await fetch("data/archive-2026.json?_t=" + Date.now(), { cache: "no-store" });
-        if (res2.ok) {
-          const db2 = await res2.json();
-          if (db2.archive_news && Array.isArray(db2.archive_news)) {
-            archiveNews = db2.archive_news;
-          } else {
-            archiveNews = extractNewsList(db2);
+      const cachedNews = getCombinedNewsFromSources(readCache(MAIN_DB_CACHE_KEY), readCache(ARCHIVE_DB_CACHE_KEY));
+      if (cachedNews.length > 0) {
+        displayMatchingArticle(cachedNews, slug, id);
+      } else {
+        try {
+          const legacyCached = localStorage.getItem("cached_db");
+          if (legacyCached) {
+            const db = JSON.parse(legacyCached);
+            const fallbackList = extractNewsList(db);
+            if (fallbackList.length) displayMatchingArticle(fallbackList, slug, id);
           }
-        }
+        } catch (e) {}
+      }
+
+      refreshArticleDataInBackground(slug, id);
+    }
+
+    function readCache(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed && parsed.data ? parsed.data : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function writeCache(key, data) {
+      if (!data) return;
+      try {
+        localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data: data }));
       } catch (e) {}
+    }
 
-      // दोनों फाइलों की खबरों को एक साथ मिला लें
-      let combinedNews = mainNews.concat(archiveNews);
+    function getCombinedNewsFromSources(mainDb, archiveDb) {
+      const mainNews = extractNewsList(mainDb);
+      const archiveNews = archiveDb && Array.isArray(archiveDb.archive_news) ? archiveDb.archive_news : extractNewsList(archiveDb);
+      return mainNews.concat(archiveNews);
+    }
 
+    function showArticleNotFound() {
+      document.getElementById("artHeadline").innerText = "समाचार उपलब्ध नहीं है";
+      document.getElementById("artBody").innerHTML = "<p>माफ कीजिए, यह समाचार मौजूद नहीं है या हटा दिया गया है।</p>";
+    }
+
+    async function refreshArticleDataInBackground(slug, id) {
+      const [mainResult, archiveResult] = await Promise.allSettled([
+        fetch("data/90i-data.json?_t=" + Date.now(), { cache: "no-store" }),
+        fetch("data/archive-2026.json?_t=" + Date.now(), { cache: "no-store" })
+      ]);
+
+      let mainDb = readCache(MAIN_DB_CACHE_KEY);
+      let archiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
+
+      if (mainResult.status === "fulfilled" && mainResult.value.ok) {
+        try {
+          mainDb = await mainResult.value.json();
+          writeCache(MAIN_DB_CACHE_KEY, mainDb);
+          localStorage.setItem("cached_db", JSON.stringify(mainDb));
+        } catch (e) {}
+      }
+
+      if (archiveResult.status === "fulfilled" && archiveResult.value.ok) {
+        try {
+          archiveDb = await archiveResult.value.json();
+          writeCache(ARCHIVE_DB_CACHE_KEY, archiveDb);
+        } catch (e) {}
+      }
+
+      const combinedNews = getCombinedNewsFromSources(mainDb, archiveDb);
       if (combinedNews.length > 0) {
         displayMatchingArticle(combinedNews, slug, id);
       } else {
-        // लोकल स्टोरेज फॉलबैक
-        const cached = localStorage.getItem("cached_db");
-        if (cached) {
-          try {
-            const db = JSON.parse(cached);
-            let fallbackList = extractNewsList(db);
-            if (fallbackList.length) {
-              displayMatchingArticle(fallbackList, slug, id);
-              return;
-            }
-          } catch(e) {}
-        }
-        document.getElementById("artHeadline").innerText = "समाचार उपलब्ध नहीं है";
-        document.getElementById("artBody").innerHTML = "<p>माफ कीजिए, यह समाचार मौजूद नहीं है या हटा दिया गया है।</p>";
+        showArticleNotFound();
       }
     }
 

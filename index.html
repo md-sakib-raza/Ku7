@@ -1558,6 +1558,8 @@
 
     let globalNewsList = [];
     let currentCategoryFilter = "";
+    const MAIN_DB_CACHE_KEY = "90i_cache_main_db_v1";
+    const ARCHIVE_DB_CACHE_KEY = "90i_cache_archive_db_v1";
 
     function parseDateToTimestamp(dateStr) {
       if (!dateStr) return 0;
@@ -1656,6 +1658,46 @@
       return [];
     }
 
+    function readCache(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed && parsed.data ? parsed.data : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function writeCache(key, data) {
+      if (!data) return;
+      try {
+        localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data: data }));
+      } catch (e) {}
+    }
+
+    function combineNews(mainNews, archiveNews) {
+      const combined = (mainNews || []).concat(archiveNews || []);
+      const uniqueMap = new Map();
+      combined.forEach(item => {
+        const key = item.id || item.slug || (item.title ? item.title.trim().toLowerCase() : Math.random());
+        if (!uniqueMap.has(key)) uniqueMap.set(key, item);
+      });
+      return Array.from(uniqueMap.values()).sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
+    }
+
+    function applyPortalData(mainDb, archiveDb) {
+      const mainNews = extractNewsArray(mainDb);
+      const archiveNews = archiveDb && Array.isArray(archiveDb.archive_news) ? archiveDb.archive_news : extractNewsArray(archiveDb);
+      const finalNewsList = combineNews(mainNews, archiveNews);
+      if (!finalNewsList.length) return false;
+      globalNewsList = finalNewsList;
+      renderPortalData(globalNewsList, currentCategoryFilter);
+      checkCustomAd(mainDb || {});
+      checkDirectVideos(mainDb || {});
+      return true;
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
       initPortal();
       
@@ -1690,60 +1732,47 @@
 
       highlightActiveNav(currentCategoryFilter);
 
-      let mainNews = [];
-      let archiveNews = [];
-      let dbSettings = {};
-
-      try {
-        const res1 = await fetch("data/90i-data.json?_t=" + Date.now(), { cache: "no-store" });
-        if (res1.ok) {
-          const db1 = await res1.json();
-          dbSettings = db1;
-          mainNews = extractNewsArray(db1);
-        }
-      } catch(e) {}
-
-      try {
-        const res2 = await fetch("data/archive-2026.json?_t=" + Date.now(), { cache: "no-store" });
-        if (res2.ok) {
-          const db2 = await res2.json();
-          if (db2.archive_news && Array.isArray(db2.archive_news)) {
-            archiveNews = db2.archive_news;
-          } else {
-            archiveNews = extractNewsArray(db2);
-          }
-        }
-      } catch(e) {}
-
-      // दोनों को मिलाएं
-      let combined = mainNews.concat(archiveNews);
-
-      // ⭐ डुप्लीकेट हटाने के लिए यूनिक मैप (ID या Title के आधार पर)
-      let uniqueMap = new Map();
-      combined.forEach(item => {
-        let key = item.id || item.slug || (item.title ? item.title.trim().toLowerCase() : Math.random());
-        if (!uniqueMap.has(key)) {
-          uniqueMap.set(key, item);
-        }
-      });
-
-      let finalNewsList = Array.from(uniqueMap.values());
-
-      if (finalNewsList.length > 0) {
-        globalNewsList = finalNewsList.sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
-        renderPortalData(globalNewsList, currentCategoryFilter);
-        checkCustomAd(dbSettings);
-        checkDirectVideos(dbSettings);
-      } else {
+      const cachedMainDb = readCache(MAIN_DB_CACHE_KEY);
+      const cachedArchiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
+      const rendered = applyPortalData(cachedMainDb, cachedArchiveDb);
+      if (!rendered) {
         try {
-          const cached = localStorage.getItem("cached_db");
-          if (cached) {
-            const parsed = JSON.parse(cached);
-            globalNewsList = extractNewsArray(parsed);
-            renderPortalData(globalNewsList, currentCategoryFilter);
+          const legacyCached = localStorage.getItem("cached_db");
+          if (legacyCached) {
+            const parsed = JSON.parse(legacyCached);
+            applyPortalData(parsed, cachedArchiveDb);
           }
-        } catch(e) {}
+        } catch (e) {}
       }
+
+      refreshPortalDataInBackground();
+    }
+
+    async function refreshPortalDataInBackground() {
+      const [mainResult, archiveResult] = await Promise.allSettled([
+        fetch("data/90i-data.json?_t=" + Date.now(), { cache: "no-store" }),
+        fetch("data/archive-2026.json?_t=" + Date.now(), { cache: "no-store" })
+      ]);
+
+      let mainDb = readCache(MAIN_DB_CACHE_KEY);
+      let archiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
+
+      if (mainResult.status === "fulfilled" && mainResult.value.ok) {
+        try {
+          mainDb = await mainResult.value.json();
+          writeCache(MAIN_DB_CACHE_KEY, mainDb);
+          localStorage.setItem("cached_db", JSON.stringify(mainDb));
+        } catch (e) {}
+      }
+
+      if (archiveResult.status === "fulfilled" && archiveResult.value.ok) {
+        try {
+          archiveDb = await archiveResult.value.json();
+          writeCache(ARCHIVE_DB_CACHE_KEY, archiveDb);
+        } catch (e) {}
+      }
+
+      applyPortalData(mainDb, archiveDb);
     }
 
     function checkCustomAd(db) {

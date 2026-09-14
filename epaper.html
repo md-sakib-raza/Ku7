@@ -1246,6 +1246,8 @@
     var totalPages = 5;
     var allNewsDatabase = [];
     var currentFilteredNews = [];
+    var MAIN_DB_CACHE_KEY = "90i_cache_main_db_v1";
+    var ARCHIVE_DB_CACHE_KEY = "90i_cache_archive_db_v1";
 
     var touchStartX = 0;
     var touchEndX = 0;
@@ -1376,41 +1378,57 @@
     window.addEventListener("load", autoScaleForMobile);
     document.addEventListener("DOMContentLoaded", initMultiPageEpaper);
 
-    async function initMultiPageEpaper() {
-      var newsList = [];
-      var paths = ["data/90i-data.json", "data.json", "90i-data.json"];
-      for (var p = 0; p < paths.length; p++) {
+    function initMultiPageEpaper() {
+      var newsList = getCombinedNewsFromCaches();
+      if (!newsList.length) {
+        newsList = getLegacyLocalNewsFallback();
+      }
+      applyEpaperNews(newsList);
+      refreshEpaperDataInBackground();
+    }
+
+    function readCache(key) {
+      try {
+        var raw = localStorage.getItem(key);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        return parsed && parsed.data ? parsed.data : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function writeCache(key, data) {
+      if (!data) return;
+      try {
+        localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data: data }));
+      } catch (e) {}
+    }
+
+    function getCombinedNewsFromCaches() {
+      var mainDb = readCache(MAIN_DB_CACHE_KEY);
+      var archiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
+      var mainNews = extractNewsList(mainDb);
+      var archiveNews = archiveDb && Array.isArray(archiveDb.archive_news) ? archiveDb.archive_news : extractNewsList(archiveDb);
+      return mainNews.concat(archiveNews);
+    }
+
+    function getLegacyLocalNewsFallback() {
+      var storageKeys = ["cached_db", "90i_news", "news_data", "news", "articles"];
+      for (var s = 0; s < storageKeys.length; s++) {
         try {
-          var res = await fetch(paths[p] + "?_t=" + Date.now(), { cache: "no-store" });
-          if (res.ok) {
-            var db = await res.json();
-            var extracted = extractNewsList(db);
-            if (extracted && extracted.length > 0) {
-              newsList = extracted;
-              try { localStorage.setItem("cached_db", JSON.stringify(db)); } catch(e) {}
-              break;
-            }
+          var raw = localStorage.getItem(storageKeys[s]);
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            var fromStore = extractNewsList(parsed);
+            if (fromStore && fromStore.length > 0) return fromStore;
           }
-        } catch(e) {}
+        } catch (e) {}
       }
+      return [];
+    }
 
-      if (!newsList || !newsList.length) {
-        var storageKeys = ["cached_db", "90i_news", "news_data", "news", "articles"];
-        for (let s = 0; s < storageKeys.length; s++) {
-          try {
-            var raw = localStorage.getItem(storageKeys[s]);
-            if (raw) {
-              var parsed = JSON.parse(raw);
-              var fromStore = extractNewsList(parsed);
-              if (fromStore && fromStore.length > 0) {
-                newsList = fromStore;
-                break;
-              }
-            }
-          } catch(e) {}
-        }
-      }
-
+    function applyEpaperNews(newsList) {
       allNewsDatabase = (newsList || []).sort(function(a, b) {
         return parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date);
       });
@@ -1423,6 +1441,36 @@
       if (dateInput) dateInput.value = yyyy + "-" + mm + "-" + dd;
 
       resetToToday();
+    }
+
+    async function refreshEpaperDataInBackground() {
+      var [mainResult, archiveResult] = await Promise.allSettled([
+        fetch("data/90i-data.json?_t=" + Date.now(), { cache: "no-store" }),
+        fetch("data/archive-2026.json?_t=" + Date.now(), { cache: "no-store" })
+      ]);
+
+      var mainDb = readCache(MAIN_DB_CACHE_KEY);
+      var archiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
+
+      if (mainResult.status === "fulfilled" && mainResult.value.ok) {
+        try {
+          mainDb = await mainResult.value.json();
+          writeCache(MAIN_DB_CACHE_KEY, mainDb);
+          localStorage.setItem("cached_db", JSON.stringify(mainDb));
+        } catch (e) {}
+      }
+
+      if (archiveResult.status === "fulfilled" && archiveResult.value.ok) {
+        try {
+          archiveDb = await archiveResult.value.json();
+          writeCache(ARCHIVE_DB_CACHE_KEY, archiveDb);
+        } catch (e) {}
+      }
+
+      var mergedNews = extractNewsList(mainDb).concat(
+        archiveDb && Array.isArray(archiveDb.archive_news) ? archiveDb.archive_news : extractNewsList(archiveDb)
+      );
+      if (mergedNews.length) applyEpaperNews(mergedNews);
     }
 
     function resetToToday() {
