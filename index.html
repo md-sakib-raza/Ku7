@@ -1556,6 +1556,10 @@
   <script>
     "use strict";
 
+    // Supabase Credentials
+    const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
+
     let globalNewsList = [];
     let currentCategoryFilter = "";
     const MAIN_DB_CACHE_KEY = "90i_cache_main_db_v1";
@@ -1676,8 +1680,9 @@
       } catch (e) {}
     }
 
-    function combineNews(mainNews, archiveNews) {
-      const combined = (mainNews || []).concat(archiveNews || []);
+    function combineNews(supabaseNews, mainNews, archiveNews) {
+      // Supabase का नया डेटा + पुरानी JSON/Archive फाइलें सबको मिलाकर एक जगह करना
+      const combined = (supabaseNews || []).concat(mainNews || []).concat(archiveNews || []);
       const uniqueMap = new Map();
       combined.forEach(item => {
         const key = item.id || item.slug || (item.title ? item.title.trim().toLowerCase() : Math.random());
@@ -1686,10 +1691,10 @@
       return Array.from(uniqueMap.values()).sort((a, b) => parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date));
     }
 
-    function applyPortalData(mainDb, archiveDb) {
+    async function applyPortalData(supabaseNews, mainDb, archiveDb) {
       const mainNews = extractNewsArray(mainDb);
       const archiveNews = archiveDb && Array.isArray(archiveDb.archive_news) ? archiveDb.archive_news : extractNewsArray(archiveDb);
-      const finalNewsList = combineNews(mainNews, archiveNews);
+      const finalNewsList = combineNews(supabaseNews, mainNews, archiveNews);
       if (!finalNewsList.length) return false;
       globalNewsList = finalNewsList;
       renderPortalData(globalNewsList, currentCategoryFilter);
@@ -1700,29 +1705,9 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       initPortal();
-      
-      const cookieConsent = localStorage.getItem("the90inews_cookie_accepted");
-      if (!cookieConsent) {
-        setTimeout(() => {
-          const banner = document.getElementById("cookieConsentBanner");
-          if (banner) banner.style.display = "block";
-        }, 800);
-      }
     });
 
-    function acceptCookies() {
-      localStorage.setItem("the90inews_cookie_accepted", "true");
-      const banner = document.getElementById("cookieConsentBanner");
-      if (banner) banner.style.display = "none";
-    }
-
-    function rejectCookies() {
-      localStorage.setItem("the90inews_cookie_accepted", "false");
-      const banner = document.getElementById("cookieConsentBanner");
-      if (banner) banner.style.display = "none";
-    }
-
-    // ⭐ मुख्य (90i-data.json) और आर्काइव (archive-2026.json) दोनों से डेटा लाकर डुप्लीकेट हटाने वाला इंजन
+    // ⭐ Supabase और पुरानी JSON फाइलों दोनों से डेटा लोड करने वाला हाइब्रिड इंजन
     async function initPortal() {
       renderDateHeaders();
       updateGrowingVisitorStats();
@@ -1732,36 +1717,45 @@
 
       highlightActiveNav(currentCategoryFilter);
 
-      const cachedMainDb = readCache(MAIN_DB_CACHE_KEY);
-      const cachedArchiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
-      const rendered = applyPortalData(cachedMainDb, cachedArchiveDb);
-      if (!rendered) {
-        try {
-          const legacyCached = localStorage.getItem("cached_db");
-          if (legacyCached) {
-            const parsed = JSON.parse(legacyCached);
-            applyPortalData(parsed, cachedArchiveDb);
-          }
-        } catch (e) {}
+      let supabaseCached = readCache("90i_supabase_news_cache");
+      let cachedMainDb = readCache(MAIN_DB_CACHE_KEY);
+      let cachedArchiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
+
+      if (supabaseCached || cachedMainDb) {
+        applyPortalData(supabaseCached || [], cachedMainDb, cachedArchiveDb);
       }
 
+      // बैकग्राउंड में Supabase और GitHub JSON दोनों से ताज़ा डेटा लाना
       refreshPortalDataInBackground();
     }
 
     async function refreshPortalDataInBackground() {
+      let supabaseNews = [];
+      let mainDb = readCache(MAIN_DB_CACHE_KEY);
+      let archiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
+
+      try {
+        const supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?select=*&order=id.desc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        if (supRes.ok) {
+          supabaseNews = await supRes.json();
+          writeCache("90i_supabase_news_cache", supabaseNews);
+        }
+      } catch(e) {}
+
       const [mainResult, archiveResult] = await Promise.allSettled([
         fetch("data/90i-data.json?_t=" + Date.now(), { cache: "no-store" }),
         fetch("data/archive-2026.json?_t=" + Date.now(), { cache: "no-store" })
       ]);
 
-      let mainDb = readCache(MAIN_DB_CACHE_KEY);
-      let archiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
-
       if (mainResult.status === "fulfilled" && mainResult.value.ok) {
         try {
           mainDb = await mainResult.value.json();
           writeCache(MAIN_DB_CACHE_KEY, mainDb);
-          localStorage.setItem("cached_db", JSON.stringify(mainDb));
         } catch (e) {}
       }
 
@@ -1772,7 +1766,7 @@
         } catch (e) {}
       }
 
-      applyPortalData(mainDb, archiveDb);
+      applyPortalData(supabaseNews, mainDb, archiveDb);
     }
 
     function checkCustomAd(db) {
@@ -1914,7 +1908,7 @@
       if (spotCat) spotCat.innerText = lead?.category || "मुख्य सुर्खी";
 
       const spotImg = document.getElementById("spotlightImg");
-      if (spotImg && lead?.image) spotImg.src = lead.image;
+      if (spotImg && (lead?.image || lead?.img)) spotImg.src = lead.image || lead.img;
 
       const sLink = document.getElementById("spotlightLink");
       if (sLink) {
@@ -1937,7 +1931,7 @@
 
       const spotExcerpt = document.getElementById("spotlightExcerpt");
       if (spotExcerpt) {
-        const rawContent = lead?.excerpt || lead?.summary || lead?.content || "";
+        const rawContent = lead?.excerpt || lead?.summary || lead?.content || lead?.body || "";
         spotExcerpt.innerText = String(rawContent).replace(/<[^>]*>?/gm, '').substring(0, 130) + '...';
       }
 
@@ -1956,7 +1950,7 @@
           const rating = getRatingData(sId);
           return `
             <a href="${link}" class="sublead-card" onclick="recordNewsClick('${sId}')">
-              <img class="sublead-thumb" src="${attr(item?.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&q=80')}" alt="${esc(item?.title)}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&q=80'">
+              <img class="sublead-thumb" src="${attr(item?.image || item?.img || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&q=80')}" alt="${esc(item?.title)}" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&q=80'">
               <div class="sublead-content">
                 <div class="sublead-cat-row">
                   <span class="sublead-cat">${esc(item?.category || "ताज़ा खबर")}</span>
@@ -1978,9 +1972,9 @@
       const title = esc(a?.title || "शीर्षक उपलब्ध नहीं");
       const category = esc(a?.category || "ताज़ा खबर");
       const date = esc(a?.date || "आज");
-      const rawSummary = a?.excerpt || a?.summary || (a?.content ? String(a.content).replace(/<[^>]*>?/gm, '').substring(0, 100) + '...' : '');
+      const rawSummary = a?.excerpt || a?.summary || (a?.content ? String(a.content).replace(/<[^>]*>?/gm, '').substring(0, 100) + '...' : (a?.body ? String(a.body).replace(/<[^>]*>?/gm, '').substring(0, 100) + '...' : ''));
       const summary = esc(rawSummary);
-      const image = String(a?.image || "").trim();
+      const image = String(a?.image || a?.img || "").trim();
       const rawId = a?.id || a?.slug || "item";
       const slug = encodeURIComponent(String(a?.slug || rawId));
       const link = a?.slug ? `article.html?slug=${slug}` : `article.html?id=${encodeURIComponent(rawId)}`;
