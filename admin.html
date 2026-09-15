@@ -285,7 +285,7 @@
     <!-- ================= 3. MANAGE NEWS LIST TAB ================= -->
     <div id="sec_list" class="card" style="display: none;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h3>प्रकाशित समाचार सूची (Main + Archive)</h3>
+        <h3>प्रकाशित समाचार सूची (Supabase + Main + Archive)</h3>
         <button type="button" onclick="loadNewsList()" style="padding:6px 12px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:6px; cursor:pointer;">🔄 Refresh List</button>
       </div>
       <table>
@@ -298,7 +298,7 @@
     <div id="sec_ad" class="card" style="display: none;">
       <h3 style="color:#f43f5e; margin-bottom:12px;">📢 होमपेज कस्टम विज्ञापन बैनर</h3>
       <div class="form-group">
-        <label>विज्ञापन बैनर इमेज चुनें</label>
+        <label>विज्ञापन बैनर इमेज चुनें (Supabase/JSON Sync)</label>
         <input type="file" id="adFile" accept="image/*" onchange="handleAdImg(event)" />
         <input type="hidden" id="adImgBase64" />
         <img id="adImgPreview" class="img-preview" />
@@ -367,6 +367,8 @@
 
     let globalMainDb = { "90i_news": [], "news": [], "messages": [], "customAd": null, "directVideos": [] };
     let globalArchiveDb = { "archive_news": [] };
+    let globalSupabaseNews = [];
+
     const MAIN_DB_CACHE_KEY = "90i_cache_main_db_v1";
     const ARCHIVE_DB_CACHE_KEY = "90i_cache_archive_db_v1";
 
@@ -382,12 +384,26 @@
       loadInboxMessages();
       loadExistingAdAndVideoSettings();
 
-      fetchAllDatabases().then(function() {
-        loadNewsList(false);
-        loadInboxMessages();
-        loadExistingAdAndVideoSettings();
-      });
+      await fetchAllDatabases();
+      await fetchSupabaseNews();
+      loadNewsList(false);
+      loadInboxMessages();
+      loadExistingAdAndVideoSettings();
     };
+
+    async function fetchSupabaseNews() {
+      try {
+        var supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?select=*&order=id.desc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        if (supRes.ok) {
+          globalSupabaseNews = await supRes.json();
+        }
+      } catch(e) {}
+    }
 
     async function fetchAllDatabases() {
       var results = await Promise.allSettled([
@@ -474,6 +490,7 @@
       if (name === 'list') loadNewsList();
       if (name === 'inbox') loadInboxMessages();
       if (name === 'epaper') populateEpaperArticleDropdown();
+      if (name === 'ad') loadExistingAdAndVideoSettings();
     }
 
     function switchMediaMode(type) {
@@ -621,7 +638,7 @@
 
       try {
         var editId = document.getElementById('editId').value;
-        var editSource = document.getElementById('editSource').value || 'main';
+        var editSource = document.getElementById('editSource').value || 'supabase';
         var imgBase64 = document.getElementById('newsImgBase64').value;
 
         var articleData = {
@@ -638,27 +655,41 @@
         };
 
         if (editId) {
-          await fetchAllDatabases();
-          if (editSource === 'archive') {
-            var archiveList = globalArchiveDb.archive_news || [];
-            var idx = archiveList.findIndex(x => String(x.id) === String(editId));
-            if (idx !== -1) {
-              if (!imgBase64) imgBase64 = archiveList[idx].image || archiveList[idx].img || "";
-              articleData.image = imgBase64;
-              archiveList[idx] = { ...archiveList[idx], ...articleData, img: imgBase64, body: articleData.content };
-              globalArchiveDb.archive_news = archiveList;
-              await syncDbSafe(globalArchiveDb, "data/archive-2026.json");
-            }
+          if (editSource === 'supabase') {
+            var supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?id=eq.${editId}`, {
+              method: 'PATCH',
+              headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+              },
+              body: JSON.stringify(articleData)
+            });
+            if (!supRes.ok) throw new Error("Supabase Update Failed");
           } else {
-            var newsList = Array.isArray(globalMainDb["90i_news"]) ? globalMainDb["90i_news"] : (Array.isArray(globalMainDb.news) ? globalMainDb.news : []);
-            var idx = newsList.findIndex(x => String(x.id) === String(editId));
-            if (idx !== -1) {
-              if (!imgBase64) imgBase64 = newsList[idx].image || newsList[idx].img || "";
-              articleData.image = imgBase64;
-              newsList[idx] = { ...newsList[idx], ...articleData, img: imgBase64, body: articleData.content };
-              globalMainDb["90i_news"] = newsList;
-              globalMainDb.news = newsList;
-              await syncDbSafe(globalMainDb, "data/90i-data.json");
+            await fetchAllDatabases();
+            if (editSource === 'archive') {
+              var archiveList = globalArchiveDb.archive_news || [];
+              var idx = archiveList.findIndex(x => String(x.id) === String(editId));
+              if (idx !== -1) {
+                if (!imgBase64) imgBase64 = archiveList[idx].image || archiveList[idx].img || "";
+                articleData.image = imgBase64;
+                archiveList[idx] = { ...archiveList[idx], ...articleData, img: imgBase64, body: articleData.content };
+                globalArchiveDb.archive_news = archiveList;
+                await syncDbSafe(globalArchiveDb, "data/archive-2026.json");
+              }
+            } else {
+              var newsList = Array.isArray(globalMainDb["90i_news"]) ? globalMainDb["90i_news"] : (Array.isArray(globalMainDb.news) ? globalMainDb.news : []);
+              var idx = newsList.findIndex(x => String(x.id) === String(editId));
+              if (idx !== -1) {
+                if (!imgBase64) imgBase64 = newsList[idx].image || newsList[idx].img || "";
+                articleData.image = imgBase64;
+                newsList[idx] = { ...newsList[idx], ...articleData, img: imgBase64, body: articleData.content };
+                globalMainDb["90i_news"] = newsList;
+                globalMainDb.news = newsList;
+                await syncDbSafe(globalMainDb, "data/90i-data.json");
+              }
             }
           }
         } else {
@@ -681,7 +712,7 @@
 
         executeSitemapSyncSilent();
         hideLoading();
-        alert("🎉 समाचार सफलतापूर्वक Supabase में पब्लिश हो गया!");
+        alert("🎉 समाचार सफलतापूर्वक Supabase में पब्लिश/अपडेट हो गया!");
 
         resetForm();
         switchSection('list');
@@ -720,24 +751,14 @@
     }
 
     async function populateEpaperArticleDropdown() {
-      var supabaseNews = [];
-      try {
-        var supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?select=*&order=id.desc`, {
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
-        });
-        if (supRes.ok) {
-          supabaseNews = await supRes.json();
-        }
-      } catch(e) {}
+      await fetchSupabaseNews();
+      await fetchAllDatabases();
 
       var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
       var archiveList = globalArchiveDb.archive_news || [];
       
       var combined = [];
-      supabaseNews.forEach(n => combined.push({ ...n, _source: 'supabase' }));
+      globalSupabaseNews.forEach(n => combined.push({ ...n, _source: 'supabase' }));
       mainList.forEach(n => combined.push({ ...n, _source: 'main' }));
       archiveList.forEach(n => combined.push({ ...n, _source: 'archive' }));
 
@@ -756,18 +777,7 @@
 
       var n = null;
       if (source === 'supabase') {
-        try {
-          var supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?id=eq.${id}&select=*`, {
-            headers: {
-              'apikey': SUPABASE_KEY,
-              'Authorization': `Bearer ${SUPABASE_KEY}`
-            }
-          });
-          if (supRes.ok) {
-            var data = await supRes.json();
-            if (data && data.length) n = data[0];
-          }
-        } catch(e) {}
+        n = globalSupabaseNews.find(x => String(x.id) === String(id));
       } else {
         var list = (source === 'archive') ? (globalArchiveDb.archive_news || []) : (globalMainDb["90i_news"] || globalMainDb.news || []);
         n = list.find(x => String(x.id) === String(id));
@@ -841,10 +851,14 @@
     }
 
     async function loadNewsList(shouldRefresh) {
+      await fetchSupabaseNews();
+      await fetchAllDatabases();
+
       var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
       var archiveList = globalArchiveDb.archive_news || [];
       
       var combined = [];
+      globalSupabaseNews.forEach(n => combined.push({ ...n, _source: 'supabase' }));
       mainList.forEach(n => combined.push({ ...n, _source: 'main' }));
       archiveList.forEach(n => combined.push({ ...n, _source: 'archive' }));
 
@@ -857,7 +871,7 @@
           <tr>
             <td><b>${esc(n.title)}</b></td>
             <td><span class="badge-sec">${esc(n.category)}</span></td>
-            <td><span class="badge-sec" style="background:${n._source === 'archive' ? '#312e81' : '#166534'};">${n._source === 'archive' ? '📦 Archive' : '⚡ Main'}</span></td>
+            <td><span class="badge-sec" style="background:${n._source === 'supabase' ? '#b91c1c' : (n._source === 'archive' ? '#312e81' : '#166534')};">${n._source.toUpperCase()}</span></td>
             <td style="text-align:center;">
               <button type="button" class="btn-action-edit" onclick="editNews('${n.id}', '${n._source}')">✏️</button>
               <button type="button" class="btn-action-del" onclick="deleteNews('${n.id}', '${n._source}')">🗑️</button>
@@ -867,31 +881,24 @@
       }
 
       if (shouldRefresh === false) return;
-
-      fetchAllDatabases().then(function() {
-        loadNewsList(false);
-      });
     }
 
-    function editNews(id, source) {
-      var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
-      var archiveList = globalArchiveDb.archive_news || [];
+    async function editNews(id, source) {
       var n = null;
 
-      if (source === 'archive') {
-        n = archiveList.find(x => String(x.id) === String(id));
+      if (source === 'supabase') {
+        n = globalSupabaseNews.find(x => String(x.id) === String(id));
+      } else if (source === 'archive') {
+        n = (globalArchiveDb.archive_news || []).find(x => String(x.id) === String(id));
       } else {
+        var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
         n = mainList.find(x => String(x.id) === String(id));
-        if (!n) {
-          n = archiveList.find(x => String(x.id) === String(id));
-          if (n) source = 'archive';
-        }
       }
 
       if (!n) { alert("⚠️ यह समाचार नहीं मिला!"); return; }
 
       document.getElementById('editId').value = n.id;
-      document.getElementById('editSource').value = source || 'main';
+      document.getElementById('editSource').value = source || 'supabase';
       document.getElementById('newsTitle').value = n.title || '';
       document.getElementById('newsSlug').value = n.slug || '';
       document.getElementById('newsSection').value = n.section || 'feed';
@@ -899,6 +906,7 @@
       document.getElementById('newsSummary').value = n.summary || '';
       document.getElementById('newsCaption').value = n.caption || '';
       document.getElementById('newsBody').innerHTML = n.content || n.body || '';
+      document.getElementById('newsVideoUrl').value = n.video || '';
       
       var img = n.image || n.img || '';
       if (img) {
@@ -909,7 +917,7 @@
         document.getElementById('imgPreview').style.display = 'none';
       }
 
-      document.getElementById('formTitle').innerText = "समाचार में संशोधन करें (" + (source === 'archive' ? '📦 Archive Mode' : '⚡ Main Mode') + ")";
+      document.getElementById('formTitle').innerText = "समाचार में संशोधन करें (" + source.toUpperCase() + " Mode)";
       document.getElementById('btnCancelEdit').style.display = 'inline-block';
       switchSection('compose');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -919,12 +927,22 @@
       if (!confirm("क्या आप वाकई इस खबर को हटाना चाहते हैं?")) return;
       showLoading("समाचार हटाया जा रहा है...", "सिंक हो रहा है...");
       try {
-        await fetchAllDatabases();
-        if (source === 'archive') {
+        if (source === 'supabase') {
+          var delRes = await fetch(`${SUPABASE_URL}/rest/v1/news?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+          });
+          if (!delRes.ok) throw new Error("Supabase Delete Failed");
+        } else if (source === 'archive') {
+          await fetchAllDatabases();
           var list = globalArchiveDb.archive_news || [];
           globalArchiveDb.archive_news = list.filter(x => String(x.id) !== String(id));
           await syncDbSafe(globalArchiveDb, "data/archive-2026.json");
         } else {
+          await fetchAllDatabases();
           var list = globalMainDb["90i_news"] || globalMainDb.news || [];
           globalMainDb["90i_news"] = list.filter(x => String(x.id) !== String(id));
           globalMainDb.news = globalMainDb["90i_news"];
@@ -993,10 +1011,11 @@
     }
 
     async function executeSitemapSync(token) {
+      await fetchSupabaseNews();
       await fetchAllDatabases();
       var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
       var archiveList = globalArchiveDb.archive_news || [];
-      var newsList = mainList.concat(archiveList);
+      var newsList = globalSupabaseNews.concat(mainList).concat(archiveList);
       
       var domain = "https://90inews.me";
       var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -1104,12 +1123,13 @@
 
     function resetForm() {
       document.getElementById('editId').value = '';
-      document.getElementById('editSource').value = 'main';
+      document.getElementById('editSource').value = 'supabase';
       document.getElementById('newsTitle').value = '';
       document.getElementById('newsSummary').value = '';
       document.getElementById('newsCaption').value = '';
       document.getElementById('newsBody').innerHTML = '';
       document.getElementById('newsImgBase64').value = '';
+      document.getElementById('newsVideoUrl').value = '';
       document.getElementById('imgPreview').style.display = 'none';
       document.getElementById('formTitle').innerText = "नया समाचार प्रकाशित करें";
       document.getElementById('btnCancelEdit').style.display = 'none';
