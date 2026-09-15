@@ -890,13 +890,17 @@
   <script>
     "use strict";
 
+    // Supabase Credentials
+    const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
+
     let currentArticleId = "default";
     const MAIN_DB_CACHE_KEY = "90i_cache_main_db_v1";
     const ARCHIVE_DB_CACHE_KEY = "90i_cache_archive_db_v1";
 
     document.addEventListener("DOMContentLoaded", initPage);
 
-    // ⭐ मुख्य फाइल और आर्काइव फाइल दोनों से डेटा लोड करके मर्ज करने वाला स्मार्ट फंक्शन
+    // ⭐ Supabase + JSON + Archive फाइलों को मिलाकर सही खबर दिखाने वाला स्मार्ट हाइब्रिड इंजन
     async function initPage() {
       renderDateHeader();
 
@@ -904,7 +908,11 @@
       const slug = (params.get("slug") || "").trim().toLowerCase();
       const id = (params.get("id") || "").trim();
 
-      const cachedNews = getCombinedNewsFromSources(readCache(MAIN_DB_CACHE_KEY), readCache(ARCHIVE_DB_CACHE_KEY));
+      let supabaseCached = readCache("90i_supabase_news_cache");
+      let cachedMain = readCache(MAIN_DB_CACHE_KEY);
+      let cachedArchive = readCache(ARCHIVE_DB_CACHE_KEY);
+
+      const cachedNews = getCombinedNewsFromSources(supabaseCached, cachedMain, cachedArchive);
       if (cachedNews.length > 0) {
         displayMatchingArticle(cachedNews, slug, id);
       } else {
@@ -939,10 +947,17 @@
       } catch (e) {}
     }
 
-    function getCombinedNewsFromSources(mainDb, archiveDb) {
+    function getCombinedNewsFromSources(supabaseNews, mainDb, archiveDb) {
       const mainNews = extractNewsList(mainDb);
       const archiveNews = archiveDb && Array.isArray(archiveDb.archive_news) ? archiveDb.archive_news : extractNewsList(archiveDb);
-      return mainNews.concat(archiveNews);
+      // Supabase + Main JSON + Archive सबका कॉम्बिनेशन
+      const combined = (supabaseNews || []).concat(mainNews).concat(archiveNews);
+      const uniqueMap = new Map();
+      combined.forEach(item => {
+        const key = item.id || item.slug || (item.title ? item.title.trim().toLowerCase() : Math.random());
+        if (!uniqueMap.has(key)) uniqueMap.set(key, item);
+      });
+      return Array.from(uniqueMap.values());
     }
 
     function showArticleNotFound() {
@@ -951,19 +966,32 @@
     }
 
     async function refreshArticleDataInBackground(slug, id) {
+      let supabaseNews = [];
+      let mainDb = readCache(MAIN_DB_CACHE_KEY);
+      let archiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
+
+      try {
+        const supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?select=*&order=id.desc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        if (supRes.ok) {
+          supabaseNews = await supRes.json();
+          writeCache("90i_supabase_news_cache", supabaseNews);
+        }
+      } catch(e) {}
+
       const [mainResult, archiveResult] = await Promise.allSettled([
         fetch("data/90i-data.json?_t=" + Date.now(), { cache: "no-store" }),
         fetch("data/archive-2026.json?_t=" + Date.now(), { cache: "no-store" })
       ]);
 
-      let mainDb = readCache(MAIN_DB_CACHE_KEY);
-      let archiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
-
       if (mainResult.status === "fulfilled" && mainResult.value.ok) {
         try {
           mainDb = await mainResult.value.json();
           writeCache(MAIN_DB_CACHE_KEY, mainDb);
-          localStorage.setItem("cached_db", JSON.stringify(mainDb));
         } catch (e) {}
       }
 
@@ -974,7 +1002,7 @@
         } catch (e) {}
       }
 
-      const combinedNews = getCombinedNewsFromSources(mainDb, archiveDb);
+      const combinedNews = getCombinedNewsFromSources(supabaseNews, mainDb, archiveDb);
       if (combinedNews.length > 0) {
         displayMatchingArticle(combinedNews, slug, id);
       } else {
@@ -1035,8 +1063,8 @@
       const time = a.time || "";
       const summary = a.excerpt || a.summary || "";
       const body = a.content || a.body || "<p>सामग्री उपलब्ध नहीं है।</p>";
-      const image = (a.image || "").trim();
-      const caption = a.imageCaption || "";
+      const image = (a.image || a.img || "").trim();
+      const caption = a.imageCaption || a.caption || "";
 
       document.title = `${title} — THE 90I NEWS`;
       document.getElementById("artCategory").innerText = category;
@@ -1151,7 +1179,7 @@
         const cat = item.category || "ताजा";
         const date = item.date || item.publishedAt || "";
         const link = item.slug ? `article.html?slug=${encodeURIComponent(item.slug)}` : `article.html?id=${item.id}`;
-        const thumb = item.image || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80";
+        const thumb = item.image || item.img || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=160&q=80";
         const itemRating = getRatingData(item.id || item.slug || "sub");
 
         return `
