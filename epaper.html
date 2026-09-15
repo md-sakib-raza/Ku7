@@ -1242,6 +1242,10 @@
   <script>
     "use strict";
 
+    // Supabase Credentials
+    const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
+
     var currentPage = 1;
     var totalPages = 5;
     var allNewsDatabase = [];
@@ -1378,8 +1382,12 @@
     window.addEventListener("load", autoScaleForMobile);
     document.addEventListener("DOMContentLoaded", initMultiPageEpaper);
 
-    function initMultiPageEpaper() {
-      var newsList = getCombinedNewsFromCaches();
+    async function initMultiPageEpaper() {
+      var supabaseCached = readCache("90i_supabase_epaper_cache");
+      var cachedMain = readCache(MAIN_DB_CACHE_KEY);
+      var cachedArchive = readCache(ARCHIVE_DB_CACHE_KEY);
+
+      var newsList = getCombinedNewsFromSources(supabaseCached, cachedMain, cachedArchive);
       if (!newsList.length) {
         newsList = getLegacyLocalNewsFallback();
       }
@@ -1405,12 +1413,16 @@
       } catch (e) {}
     }
 
-    function getCombinedNewsFromCaches() {
-      var mainDb = readCache(MAIN_DB_CACHE_KEY);
-      var archiveDb = readCache(ARCHIVE_DB_CACHE_KEY);
+    function getCombinedNewsFromSources(supabaseNews, mainDb, archiveDb) {
       var mainNews = extractNewsList(mainDb);
       var archiveNews = archiveDb && Array.isArray(archiveDb.archive_news) ? archiveDb.archive_news : extractNewsList(archiveDb);
-      return mainNews.concat(archiveNews);
+      var combined = (supabaseNews || []).concat(mainNews).concat(archiveNews);
+      var uniqueMap = new Map();
+      combined.forEach(function(item) {
+        var key = item.id || item.slug || (item.title ? item.title.trim().toLowerCase() : Math.random());
+        if (!uniqueMap.has(key)) uniqueMap.set(key, item);
+      });
+      return Array.from(uniqueMap.values());
     }
 
     function getLegacyLocalNewsFallback() {
@@ -1444,6 +1456,20 @@
     }
 
     async function refreshEpaperDataInBackground() {
+      var supabaseNews = [];
+      try {
+        var supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?select=*&order=id.desc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        if (supRes.ok) {
+          supabaseNews = await supRes.json();
+          writeCache("90i_supabase_epaper_cache", supabaseNews);
+        }
+      } catch(e) {}
+
       var [mainResult, archiveResult] = await Promise.allSettled([
         fetch("data/90i-data.json?_t=" + Date.now(), { cache: "no-store" }),
         fetch("data/archive-2026.json?_t=" + Date.now(), { cache: "no-store" })
@@ -1456,7 +1482,6 @@
         try {
           mainDb = await mainResult.value.json();
           writeCache(MAIN_DB_CACHE_KEY, mainDb);
-          localStorage.setItem("cached_db", JSON.stringify(mainDb));
         } catch (e) {}
       }
 
@@ -1467,9 +1492,7 @@
         } catch (e) {}
       }
 
-      var mergedNews = extractNewsList(mainDb).concat(
-        archiveDb && Array.isArray(archiveDb.archive_news) ? archiveDb.archive_news : extractNewsList(archiveDb)
-      );
+      var mergedNews = getCombinedNewsFromSources(supabaseNews, mainDb, archiveDb);
       if (mergedNews.length) applyEpaperNews(mergedNews);
     }
 
@@ -1566,7 +1589,6 @@
       if (elLeadTitle) elLeadTitle.textContent = lead.epaperTitle || lead.title || "";
       if (elLeadKicker) elLeadKicker.textContent = lead.category ? ("● " + lead.category) : ("● " + defaultCategory);
       
-      // Renders customized paragraphs and HTML tags saved directly from Admin E-Paper Editor
       if (elLeadBody) {
         if (lead.epaperCustomContent && String(lead.epaperCustomContent).trim().length > 5) {
           elLeadBody.innerHTML = lead.epaperCustomContent;
@@ -1661,11 +1683,6 @@
         '<div class="summary-box"><b>संक्षेप:</b> डिजिटल टीम द्वारा ग्राउंड रिपोर्ट संकलित की जा रही है।</div>' +
         '<div class="article-columns-text"><p>THE 90I न्यूज़ हर वर्ग और क्षेत्र की आवाज़ को प्रमुखता से स्थान देता है। ताज़ा खबरें आते ही यह कॉलम स्वतः अपडेट हो जाएगा।</p></div>' +
       '</article>';
-    }
-
-    function getUniqueSlice(list, startIndex, count) {
-      if (!list || list.length <= startIndex) return [];
-      return list.slice(startIndex, startIndex + count);
     }
 
     function extractNewsList(db) {
