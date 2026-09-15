@@ -501,13 +501,18 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 400;
+          var max_w = 1200; // HD Quality Width (1200px)
           var scale = max_w / img.width;
-          canvas.width = (img.width > max_w) ? max_w : img.width;
-          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
+          if (img.width > max_w) {
+            canvas.width = max_w;
+            canvas.height = img.height * scale;
+          } else {
+            canvas.width = img.width;
+            canvas.height = img.height;
+          }
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.20);
+          var b64 = canvas.toDataURL("image/jpeg", 0.85); // High Definition 85% Quality
           document.getElementById('newsImgBase64').value = b64;
           var p = document.getElementById('imgPreview'); p.src = b64; p.style.display = 'block';
         };
@@ -524,13 +529,18 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 400;
+          var max_w = 1200;
           var scale = max_w / img.width;
-          canvas.width = (img.width > max_w) ? max_w : img.width;
-          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
+          if (img.width > max_w) {
+            canvas.width = max_w;
+            canvas.height = img.height * scale;
+          } else {
+            canvas.width = img.width;
+            canvas.height = img.height;
+          }
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.25);
+          var b64 = canvas.toDataURL("image/jpeg", 0.85); // High Definition Ad Banner
           document.getElementById('adImgBase64').value = b64;
           var p = document.getElementById('adImgPreview'); p.src = b64; p.style.display = 'block';
         };
@@ -628,7 +638,6 @@
         };
 
         if (editId) {
-          // --- पुरानी खबर को एडिट करने का नियम (JSON/Archive से) ---
           await fetchAllDatabases();
           if (editSource === 'archive') {
             var archiveList = globalArchiveDb.archive_news || [];
@@ -653,7 +662,6 @@
             }
           }
         } else {
-          // --- नया समाचार: केवल Supabase में INSERT होगा, JSON एकदम सुरक्षित और untouched रहेगा! ---
           var supabaseRes = await fetch(`${SUPABASE_URL}/rest/v1/news`, {
             method: 'POST',
             headers: {
@@ -711,26 +719,60 @@
       }
     }
 
-    function populateEpaperArticleDropdown() {
+    async function populateEpaperArticleDropdown() {
+      var supabaseNews = [];
+      try {
+        var supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?select=*&order=id.desc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        if (supRes.ok) {
+          supabaseNews = await supRes.json();
+        }
+      } catch(e) {}
+
       var mainList = globalMainDb["90i_news"] || globalMainDb.news || [];
       var archiveList = globalArchiveDb.archive_news || [];
+      
       var combined = [];
+      supabaseNews.forEach(n => combined.push({ ...n, _source: 'supabase' }));
       mainList.forEach(n => combined.push({ ...n, _source: 'main' }));
       archiveList.forEach(n => combined.push({ ...n, _source: 'archive' }));
 
       var sel = document.getElementById('epaperSelectArticle');
-      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + combined.map(n => `<option value="${n.id}_${n._source}">${n.title} (${n.date || ''}) [${n._source}]</option>`).join('');
+      sel.innerHTML = '<option value="">-- समाचार चुनें --</option>' + combined.map(n => `
+        <option value="${n.id}_${n._source}">${n.title} (${n.date || ''}) [${n._source.toUpperCase()}]</option>
+      `).join('');
     }
 
-    function loadEpaperArticleData() {
+    async function loadEpaperArticleData() {
       var val = document.getElementById('epaperSelectArticle').value;
       if (!val) return;
       var parts = val.split('_');
       var id = parts[0];
       var source = parts[1];
 
-      var list = (source === 'archive') ? (globalArchiveDb.archive_news || []) : (globalMainDb["90i_news"] || globalMainDb.news || []);
-      var n = list.find(x => String(x.id) === String(id));
+      var n = null;
+      if (source === 'supabase') {
+        try {
+          var supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?id=eq.${id}&select=*`, {
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+          });
+          if (supRes.ok) {
+            var data = await supRes.json();
+            if (data && data.length) n = data[0];
+          }
+        } catch(e) {}
+      } else {
+        var list = (source === 'archive') ? (globalArchiveDb.archive_news || []) : (globalMainDb["90i_news"] || globalMainDb.news || []);
+        n = list.find(x => String(x.id) === String(id));
+      }
+
       if (!n) return;
 
       document.getElementById('epaperTargetId').value = n.id;
@@ -749,31 +791,45 @@
 
       showLoading("ई-पेपर लेआउट सेव हो रहा है...", "सिंक किया जा रहा है...");
       try {
-        await fetchAllDatabases();
-        if (source === 'archive') {
-          var list = globalArchiveDb.archive_news || [];
-          var idx = list.findIndex(x => String(x.id) === String(id));
-          if (idx !== -1) {
-            list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
-            list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
-            list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
-            list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
-            list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
-            globalArchiveDb.archive_news = list;
-            await syncDbSafe(globalArchiveDb, "data/archive-2026.json");
-          }
+        var epaperData = {
+          epaperPage: Number(document.getElementById('epaperPageSlot').value),
+          epaperGapStyle: document.getElementById('epaperGapStyle').value,
+          epaperTitle: document.getElementById('epaperCustomTitle').value.trim(),
+          epaperCaption: document.getElementById('epaperCaption').value.trim(),
+          epaperCustomContent: document.getElementById('epaperBodyEditor').innerHTML
+        };
+
+        if (source === 'supabase') {
+          var supRes = await fetch(`${SUPABASE_URL}/rest/v1/news?id=eq.${id}`, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(epaperData)
+          });
+          if (!supRes.ok) throw new Error("Supabase E-Paper Update Failed");
         } else {
-          var list = globalMainDb["90i_news"] || globalMainDb.news || [];
-          var idx = list.findIndex(x => String(x.id) === String(id));
-          if (idx !== -1) {
-            list[idx].epaperPage = Number(document.getElementById('epaperPageSlot').value);
-            list[idx].epaperGapStyle = document.getElementById('epaperGapStyle').value;
-            list[idx].epaperTitle = document.getElementById('epaperCustomTitle').value.trim();
-            list[idx].epaperCaption = document.getElementById('epaperCaption').value.trim();
-            list[idx].epaperCustomContent = document.getElementById('epaperBodyEditor').innerHTML;
-            globalMainDb["90i_news"] = list;
-            globalMainDb.news = list;
-            await syncDbSafe(globalMainDb, "data/90i-data.json");
+          await fetchAllDatabases();
+          if (source === 'archive') {
+            var list = globalArchiveDb.archive_news || [];
+            var idx = list.findIndex(x => String(x.id) === String(id));
+            if (idx !== -1) {
+              list[idx] = { ...list[idx], ...epaperData };
+              globalArchiveDb.archive_news = list;
+              await syncDbSafe(globalArchiveDb, "data/archive-2026.json");
+            }
+          } else {
+            var list = globalMainDb["90i_news"] || globalMainDb.news || [];
+            var idx = list.findIndex(x => String(x.id) === String(id));
+            if (idx !== -1) {
+              list[idx] = { ...list[idx], ...epaperData };
+              globalMainDb["90i_news"] = list;
+              globalMainDb.news = list;
+              await syncDbSafe(globalMainDb, "data/90i-data.json");
+            }
           }
         }
         hideLoading();
