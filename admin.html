@@ -142,7 +142,7 @@
         <button type="button" id="btnCancelEdit" style="display:none; background:#475569; color:#fff; border:none; padding:5px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:700;" onclick="resetForm()">✕ Cancel Edit</button>
       </div>
       <input type="hidden" id="editId" value="" />
-      <input type="hidden" id="editSource" value="main" />
+      <input type="hidden" id="editSource" value="supabase" />
         
       <div class="form-group">
         <label>News Headline (शीर्षक) *</label>
@@ -235,7 +235,7 @@
       </div>
 
       <input type="hidden" id="epaperTargetId" value="" />
-      <input type="hidden" id="epaperTargetSource" value="main" />
+      <input type="hidden" id="epaperTargetSource" value="supabase" />
 
       <div class="grid-2">
         <div class="form-group">
@@ -298,7 +298,7 @@
     <div id="sec_ad" class="card" style="display: none;">
       <h3 style="color:#f43f5e; margin-bottom:12px;">📢 होमपेज कस्टम विज्ञापन बैनर</h3>
       <div class="form-group">
-        <label>विज्ञापन बैनर इमेज चुनें (Supabase/JSON Sync)</label>
+        <label>विज्ञापन बैनर इमेज चुनें (HD Quality)</label>
         <input type="file" id="adFile" accept="image/*" onchange="handleAdImg(event)" />
         <input type="hidden" id="adImgBase64" />
         <img id="adImgPreview" class="img-preview" />
@@ -634,7 +634,7 @@
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
 
-      showLoading("सेव हो रहा है...", "Supabase में नया समाचार दर्ज किया जा रहा है...");
+      showLoading("सेव हो रहा है...", "डेटा सिंक किया जा रहा है...");
 
       try {
         var editId = document.getElementById('editId').value;
@@ -712,7 +712,7 @@
 
         executeSitemapSyncSilent();
         hideLoading();
-        alert("🎉 समाचार सफलतापूर्वक Supabase में पब्लिश/अपडेट हो गया!");
+        alert("🎉 समाचार सफलतापूर्वक सेव व अपडेट हो गया!");
 
         resetForm();
         switchSection('list');
