@@ -75,7 +75,7 @@
 
     .btn { width: 100%; padding: 13px; background: var(--brand); color: #fff; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 15px; }
     .btn:hover { background: var(--brand-hover); }
-    .btn-epaper { background: var(--indigo); }
+    .btn-epaper { background: #4f46e5; }
 
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
@@ -351,6 +351,10 @@
   <script>
     "use strict";
 
+    // Supabase Credentials
+    const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
+
     if (localStorage.getItem("90i_admin_logged") !== "true") {
       window.location.replace("login.html");
     }
@@ -603,36 +607,36 @@
       var title = document.getElementById('newsTitle').value.trim();
       if (!title) { alert("शीर्षक आवश्यक है!"); return; }
 
-      showLoading("सेव हो रहा है...", "GitHub पर सिंक किया जा रहा है...");
+      showLoading("सेव हो रहा है...", "Supabase में नया समाचार दर्ज किया जा रहा है...");
 
       try {
-        await fetchAllDatabases();
         var editId = document.getElementById('editId').value;
         var editSource = document.getElementById('editSource').value || 'main';
         var imgBase64 = document.getElementById('newsImgBase64').value;
 
+        var articleData = {
+          title: title,
+          slug: document.getElementById('newsSlug').value.trim() || ('news-' + Date.now()),
+          section: document.getElementById('newsSection').value,
+          category: document.getElementById('newsCategory').value,
+          summary: document.getElementById('newsSummary').value.trim(),
+          image: imgBase64,
+          caption: document.getElementById('newsCaption').value.trim(),
+          video: document.getElementById('newsVideoUrl').value.trim(),
+          content: document.getElementById('newsBody').innerHTML,
+          date: new Date().toISOString().split('T')[0]
+        };
+
         if (editId) {
+          // --- पुरानी खबर को एडिट करने का नियम (JSON/Archive से) ---
+          await fetchAllDatabases();
           if (editSource === 'archive') {
             var archiveList = globalArchiveDb.archive_news || [];
             var idx = archiveList.findIndex(x => String(x.id) === String(editId));
             if (idx !== -1) {
-              if (!imgBase64) {
-                imgBase64 = archiveList[idx].image || archiveList[idx].img || "";
-              }
-              archiveList[idx] = {
-                ...archiveList[idx],
-                title: title,
-                slug: document.getElementById('newsSlug').value.trim() || archiveList[idx].slug,
-                section: document.getElementById('newsSection').value,
-                category: document.getElementById('newsCategory').value,
-                summary: document.getElementById('newsSummary').value.trim(),
-                image: imgBase64,
-                img: imgBase64,
-                caption: document.getElementById('newsCaption').value.trim(),
-                videoUrl: document.getElementById('newsVideoUrl').value.trim(),
-                content: document.getElementById('newsBody').innerHTML,
-                body: document.getElementById('newsBody').innerHTML
-              };
+              if (!imgBase64) imgBase64 = archiveList[idx].image || archiveList[idx].img || "";
+              articleData.image = imgBase64;
+              archiveList[idx] = { ...archiveList[idx], ...articleData, img: imgBase64, body: articleData.content };
               globalArchiveDb.archive_news = archiveList;
               await syncDbSafe(globalArchiveDb, "data/archive-2026.json");
             }
@@ -640,60 +644,36 @@
             var newsList = Array.isArray(globalMainDb["90i_news"]) ? globalMainDb["90i_news"] : (Array.isArray(globalMainDb.news) ? globalMainDb.news : []);
             var idx = newsList.findIndex(x => String(x.id) === String(editId));
             if (idx !== -1) {
-              if (!imgBase64) {
-                imgBase64 = newsList[idx].image || newsList[idx].img || "";
-              }
-              newsList[idx] = {
-                ...newsList[idx],
-                title: title,
-                slug: document.getElementById('newsSlug').value.trim() || newsList[idx].slug,
-                section: document.getElementById('newsSection').value,
-                category: document.getElementById('newsCategory').value,
-                summary: document.getElementById('newsSummary').value.trim(),
-                image: imgBase64,
-                img: imgBase64,
-                caption: document.getElementById('newsCaption').value.trim(),
-                videoUrl: document.getElementById('newsVideoUrl').value.trim(),
-                content: document.getElementById('newsBody').innerHTML,
-                body: document.getElementById('newsBody').innerHTML
-              };
+              if (!imgBase64) imgBase64 = newsList[idx].image || newsList[idx].img || "";
+              articleData.image = imgBase64;
+              newsList[idx] = { ...newsList[idx], ...articleData, img: imgBase64, body: articleData.content };
               globalMainDb["90i_news"] = newsList;
               globalMainDb.news = newsList;
               await syncDbSafe(globalMainDb, "data/90i-data.json");
             }
           }
         } else {
-          var item = {
-            id: Date.now(),
-            title: title,
-            slug: document.getElementById('newsSlug').value.trim() || ('news-' + Date.now()),
-            section: document.getElementById('newsSection').value,
-            category: document.getElementById('newsCategory').value,
-            summary: document.getElementById('newsSummary').value.trim(),
-            image: imgBase64,
-            img: imgBase64,
-            caption: document.getElementById('newsCaption').value.trim(),
-            videoUrl: document.getElementById('newsVideoUrl').value.trim(),
-            content: document.getElementById('newsBody').innerHTML,
-            body: document.getElementById('newsBody').innerHTML,
-            date: new Date().toISOString().split('T')[0],
-            epaperPage: 1,
-            epaperGapStyle: "compact",
-            epaperTitle: "",
-            epaperCaption: document.getElementById('newsCaption').value.trim(),
-            epaperCustomContent: ""
-          };
+          // --- नया समाचार: केवल Supabase में INSERT होगा, JSON एकदम सुरक्षित और untouched रहेगा! ---
+          var supabaseRes = await fetch(`${SUPABASE_URL}/rest/v1/news`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(articleData)
+          });
 
-          var newsList = Array.isArray(globalMainDb["90i_news"]) ? globalMainDb["90i_news"] : (Array.isArray(globalMainDb.news) ? globalMainDb.news : []);
-          newsList.unshift(item);
-          globalMainDb["90i_news"] = newsList;
-          globalMainDb.news = newsList;
-          await syncDbSafe(globalMainDb, "data/90i-data.json");
+          if (!supabaseRes.ok) {
+            var errText = await supabaseRes.text();
+            throw new Error("Supabase Error: " + errText);
+          }
         }
 
         executeSitemapSyncSilent();
         hideLoading();
-        alert("🎉 समाचार सफलतापूर्वक सेव हो गया!");
+        alert("🎉 समाचार सफलतापूर्वक Supabase में पब्लिश हो गया!");
 
         resetForm();
         switchSection('list');
@@ -1000,14 +980,12 @@
       });
     }
 
-    // ⭐ 100% WORKING BYPASS PROXY SYNC ENGINE (ब्रूज़र की CORS एरर को खत्म करने के लिए)
     async function syncDbSafe(dbObj, filePath) {
       var token = document.getElementById('ghToken').value.trim() || localStorage.getItem('90i_gh_token') || localStorage.getItem('gh_token');
       if (!token) { throw new Error("GitHub Token नहीं मिला! कृपया Config टैब में पहले टोकन डालें।"); }
       var owner = "md-sakib-raza", repo = "Ku7";
       var path = filePath || "data/90i-data.json";
 
-      // GitHub API को डायरेक्ट कॉल करने के बजाय allorigins प्रॉक्सी का उपयोग ताकि ब्राउज़र ब्लॉक न करे
       var getApiUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=main&_t=' + Date.now();
       var proxyGetUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(getApiUrl);
 
@@ -1020,7 +998,6 @@
         }
       } catch(e) {}
 
-      // यदि प्रॉक्सी से SHA न मिले, तो डायरेक्ट गेट करने की कोशिश करें
       if (!sha) {
         try {
           var directGet = await fetch(getApiUrl, {
