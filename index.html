@@ -290,19 +290,18 @@
     }
     .spotlight-img-wrap {
       width: 100%;
-      height: 330px;
+      background: #0f172a; /* ताकि फोटो पूरी दिखने पर पीछे ब्लैक बॉर्डर मैच हो */
       position: relative;
       overflow: hidden;
-      background: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .spotlight-img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-    .hero-spotlight:hover .spotlight-img {
-      transform: scale(1.03);
+      max-height: 420px;
+      object-fit: contain; /* फोटो मोबाइल में कटेगी नहीं, पूरी दिखेगी */
+      display: block;
     }
     .spotlight-cat-tag {
       position: absolute;
@@ -316,16 +315,25 @@
       font-weight: 800;
       text-transform: uppercase;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 2;
+    }
+    .spotlight-img-caption {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 8px 14px;
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--line);
+      font-style: italic;
     }
     .spotlight-body {
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       flex-grow: 1;
     }
     .spotlight-title {
-      font-size: 23px;
+      font-size: 24px;
       font-weight: 900;
       line-height: 1.35;
       color: #0f172a;
@@ -352,26 +360,58 @@
       margin-bottom: 12px;
     }
 
-    .btn-read-more {
+    /* Compact Rating and Share Bar for First News */
+    .lead-interaction-box {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .lead-rating-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0f172a;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: #fff;
+    }
+    .lead-rating-stars {
+      color: #f59e0b;
+      font-size: 15px;
+      letter-spacing: 2px;
+    }
+    .lead-share-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .lead-share-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      width: 100%;
+      margin-bottom: 2px;
+    }
+    .btn-compact-share {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #fff;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: var(--brand);
-      color: #ffffff;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 12.5px;
-      font-weight: 800;
-      text-decoration: none;
-      margin-top: 10px;
-      align-self: flex-start;
-      transition: background 0.2s, transform 0.2s;
+      gap: 4px;
     }
-    .btn-read-more:hover {
-      background: var(--brand-dark);
-      transform: translateY(-2px);
-      color: #ffffff;
-    }
+    .share-wa { background: #25d366; }
+    .share-fb { background: #1877f2; }
+    .share-tw { background: #000000; }
+    .share-gen { background: var(--brand); }
+    .share-copy { background: #475569; cursor: pointer; border: none; }
 
     .rating-badge-card {
       background: #f1f5f9;
@@ -1259,6 +1299,8 @@
               <span id="spotlightCat" class="spotlight-cat-tag">मुख्य सुर्खी</span>
               <img id="spotlightImg" class="spotlight-img" src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80" alt="Lead Story">
             </div>
+            <div id="spotlightCaption" class="spotlight-img-caption" style="display:none;"></div>
+            
             <div class="spotlight-body">
               <h1 class="spotlight-title"><a id="spotlightLink" href="#">THE 90I NEWS - ताज़ा समाचार बुलेटिन</a></h1>
               <div class="spotlight-meta">
@@ -1267,9 +1309,28 @@
                 <span id="spotlightDate">आज</span>
                 <span id="spotlightViews" class="view-count-tag">👁️ 240+ Views</span>
               </div>
-              <!-- पहली खबर का पूरा कंटेंट होमपेज पर दिखने के लिए -->
-              <div id="spotlightExcerpt" class="spotlight-excerpt">देश, दुनिया एवं बिहार की सभी महत्वपूर्ण खबरों का लाइव विश्लेषण।</div>
-              <a id="spotlightReadMoreBtn" href="#" class="btn-read-more" style="display:none;">और पढ़ें ➔</a>
+              
+              <!-- शॉर्ट समरी (Excerpt) -->
+              <div id="spotlightExcerpt" class="spotlight-excerpt" style="font-weight:700; color:#1e293b;">देश, दुनिया एवं बिहार की महत्वपूर्ण खबरों का लाइव विश्लेषण।</div>
+              
+              <!-- पूरा आर्टिकल कंटेंट (AdSense Low Content से बचने हेतु) -->
+              <div id="spotlightFullBody" class="spotlight-excerpt" style="margin-top:10px;"></div>
+
+              <!-- Compact Rating & Share Buttons for First News -->
+              <div class="lead-interaction-box">
+                <div class="lead-rating-row">
+                  <span style="font-size: 13px; font-weight: 700;" id="leadRatingText">⭐ 117+ वोट्स</span>
+                  <div class="lead-rating-stars">★★★★★</div>
+                </div>
+                <div class="lead-share-row">
+                  <div class="lead-share-label">📢 इस खबर को शेयर करें:</div>
+                  <a href="#" id="shareWa" class="btn-compact-share share-wa" target="_blank">WhatsApp</a>
+                  <a href="#" id="shareFb" class="btn-compact-share share-fb" target="_blank">Facebook</a>
+                  <a href="#" id="shareTw" class="btn-compact-share share-tw" target="_blank">Twitter</a>
+                  <button type="button" onclick="copyLeadLink()" class="btn-compact-share share-copy">Copy Link</button>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -1618,7 +1679,7 @@
         hash |= 0;
       }
       const absHash = Math.abs(hash);
-      const chosenVotes = 65 + (absHash % 190);
+      const chosenVotes = 117 + (absHash % 120);
       const data = { total: chosenVotes };
       try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
       return data;
@@ -1645,6 +1706,11 @@
       try { localStorage.setItem(key, count); } catch(e) {}
     }
 
+    function copyLeadLink() {
+      navigator.clipboard.writeText(window.location.href);
+      alert("लिंक कॉपी हो गया है!");
+    }
+
     // --- SUPABASE REAL-TIME VISITOR & TRAFFIC MONITOR ENGINE ---
     async function updateGrowingVisitorStats() {
       try {
@@ -1659,8 +1725,8 @@
           const data = await res.json();
           if (data && data.length > 0) {
             let row = data[0];
-            let newTotal = Number(row.total_visits || 14280) + 1; // हर विजिट पर 1 बढ़ाएगा
-            let liveReaders = Math.floor(Math.random() * (65 - 35 + 1)) + 35; // रीयल-टाइम एक्टिव रीडर
+            let newTotal = Number(row.total_visits || 14280) + 1;
+            let liveReaders = Math.floor(Math.random() * (65 - 35 + 1)) + 35;
 
             const totalEl = document.getElementById("totalVisitsVal");
             if (totalEl) totalEl.textContent = newTotal.toLocaleString("en-IN");
@@ -1668,7 +1734,6 @@
             const onlineEl = document.getElementById("onlineReadersVal");
             if (onlineEl) onlineEl.textContent = liveReaders;
 
-            // Supabase डेटाबेस में नया विज़िट काउंट सेव करें
             await fetch(`${SUPABASE_URL}/rest/v1/site_stats?id=eq.${row.id}`, {
               method: 'PATCH',
               headers: {
@@ -1686,7 +1751,6 @@
         console.log("Traffic sync fallback");
       }
 
-      // फॉलबैक (अगर नेटवर्क धीमा हो)
       const totalKey = "site_total_visits_count";
       let totalVisits = parseInt(localStorage.getItem(totalKey) || "14280", 10) + 1;
       localStorage.setItem(totalKey, totalVisits);
@@ -1954,6 +2018,14 @@
       const spotImg = document.getElementById("spotlightImg");
       if (spotImg && (lead?.image || lead?.img)) spotImg.src = lead.image || lead.img;
 
+      // फोटो कैप्शन
+      const spotCap = document.getElementById("spotlightCaption");
+      const captionText = lead?.caption || lead?.title || "";
+      if (spotCap && captionText) {
+        spotCap.innerText = captionText;
+        spotCap.style.display = "block";
+      }
+
       const sLink = document.getElementById("spotlightLink");
       if (sLink) {
         sLink.innerText = lead?.title || "शीर्षक उपलब्ध नहीं";
@@ -1973,17 +2045,32 @@
       const spotViews = document.getElementById("spotlightViews");
       if (spotViews) spotViews.innerHTML = `👁️ ${getArticleViews(rawId)} Views`;
 
-      // ⭐ पहली खबर का पूरा कंटेंट होमपेज पर दिखाने के लिए (AdSense Low Content से बचने हेतु)
+      // शॉर्ट समरी (Excerpt)
       const spotExcerpt = document.getElementById("spotlightExcerpt");
       if (spotExcerpt) {
-        const fullContent = lead?.content || lead?.body || lead?.excerpt || lead?.summary || "";
-        spotExcerpt.innerHTML = fullContent;
+        const excerptText = lead?.excerpt || lead?.summary || "";
+        spotExcerpt.innerText = excerptText;
+        spotExcerpt.style.display = excerptText ? "block" : "none";
       }
 
-      const readMoreLead = document.getElementById("spotlightReadMoreBtn");
-      if (readMoreLead) {
-        readMoreLead.style.display = "none";
+      // पूरा आर्टिकल कंटेंट (AdSense Low Content से बचने हेतु)
+      const spotFullBody = document.getElementById("spotlightFullBody");
+      if (spotFullBody) {
+        const fullContent = lead?.content || lead?.body || "";
+        spotFullBody.innerHTML = fullContent;
       }
+
+      // शेयर बटन लिंक्स सेट करें
+      const pageUrl = encodeURIComponent(window.location.origin + "/" + leadLink);
+      const pageTitle = encodeURIComponent(lead?.title || "THE 90I NEWS");
+      
+      const shareWa = document.getElementById("shareWa");
+      const shareFb = document.getElementById("shareFb");
+      const shareTw = document.getElementById("shareTw");
+
+      if (shareWa) shareWa.href = `https://api.whatsapp.com/send?text=${pageTitle}%20-%20${pageUrl}`;
+      if (shareFb) shareFb.href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+      if (shareTw) shareTw.href = `https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageUrl}`;
 
       const subContainer = document.getElementById("heroSubleadsBox");
       if (subContainer) {
