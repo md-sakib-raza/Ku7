@@ -16,8 +16,6 @@
   <meta name="twitter:title" content="THE 90I न्यूज़ | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क" />
   <meta name="twitter:description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
 
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; media-src 'self' https:;" />
-
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9762787230045511" crossorigin="anonymous"></script>
 
   <script type="application/ld+json">
@@ -107,7 +105,6 @@
       height: 8px;
       background: var(--brand);
       border-radius: 50%;
-      box-shadow: 0 0 0 rgba(220, 38, 38, 0.4);
       animation: pulseAnim 1.6s infinite;
     }
     @keyframes pulseAnim {
@@ -903,23 +900,6 @@
       color: #ffffff;
       align-self: flex-end;
     }
-    .chat-quick-tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 6px;
-    }
-    .quick-tag {
-      background: #f1f5f9;
-      color: #334155;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 3px 9px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .quick-tag:hover { background: #e2e8f0; color: var(--brand); }
     .chat-input-area {
       padding: 10px;
       background: #ffffff;
@@ -999,9 +979,6 @@
       border: 1px solid var(--line);
     }
     .search-result-item:hover { background: #fee2e2; }
-    .search-res-thumb {
-      width: 70px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;
-    }
 
     .policy-modal {
       display: none;
@@ -1133,35 +1110,6 @@
       content: '▸';
       color: var(--brand);
       font-size: 11px;
-    }
-
-    .footer-search-box {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-    .footer-search-input {
-      flex: 1;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #ffffff;
-      padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 12.5px;
-      outline: none;
-    }
-    .footer-search-input:focus {
-      border-color: var(--brand);
-    }
-    .btn-footer-search {
-      background: var(--brand);
-      color: #ffffff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 12.5px;
-      cursor: pointer;
     }
 
     .footer-form {
@@ -1457,7 +1405,7 @@
     </div>
     <div id="chatMessages" class="chat-messages">
       <div class="chat-msg msg-bot">
-        नमस्ते! मैं <b>THE 90I NEWS</b> का AI असिस्टेंट हूँ। आप मुझसे ताज़ा समाचार या पोर्टल के बारे में पूछ सकते हैं।
+        नमस्ते! मैं <b>THE 90I NEWS</b> का स्मार्ट AI असिस्टेंट हूँ। आप मुझसे दुनिया भर की कोई भी जानकारी, सामान्य ज्ञान या इस पोर्टल के बारे में कुछ भी पूछ सकते हैं!
       </div>
     </div>
     <form class="chat-input-area" onsubmit="handleChatSubmit(event)">
@@ -1564,6 +1512,72 @@
     let currentCategoryFilter = "";
     const MAIN_DB_CACHE_KEY = "90i_cache_main_db_v1";
     const ARCHIVE_DB_CACHE_KEY = "90i_cache_archive_db_v1";
+
+    // --- AI SMART PERSONA & GLOBAL KNOWLEDGE CONTEXT ---
+    const AI_PERSONA_CONTEXT = {
+      aiName: "90I AI असिस्टेंट",
+      creator: "Md Sakib Raza (Sakib / Sintu)",
+      birthDate: "11 नवंबर 2004",
+      education: "पूर्णिया यूनिवर्सिटी से राजनीति विज्ञान (Political Science Honours) में स्नातक (2023-27 सत्र)",
+      publication: "THE 90I NEWS (90inews.me) - एक प्रमुख हिंदी डिजिटल न्यूज़ पोर्टल जिसे अगस्त 2026 में लॉन्च और लाइव किया गया है।"
+    };
+
+    const policyData = {
+      about: {
+        title: "हमारे बारे में (About Us)",
+        content: `
+          <h4>THE 90I NEWS के बारे में</h4>
+          <p><b>THE 90I NEWS</b> (www.the90inews.com) बिहार और राष्ट्र का एक अग्रणी, स्वतंत्र और प्रामाणिक डिजिटल न्यूज़ नेटवर्क है। हमारा मुख्य कार्यालय पूर्णिया, बिहार में स्थित है।</p>
+          <p>हमारा उद्देश्य पाठकों तक बिहार, सीमांचल, राष्ट्रीय राजनीति, शिक्षा, रोजगार, व्यापार और देश-दुनिया की निष्पक्ष, सटीक और सत्यपरक खबरें सबसे पहले पहुँचाना है।</p>
+          <h4>हमारी टीम एवं संपादकीय मूल्य</h4>
+          <p>यह पोर्टल पूरी तरह से पत्रकारिता के उच्च मानकों और निष्पक्षता का पालन करता है। हमारी डिजिटल टीम हर खबर की सत्यता की जांच करने के बाद ही उसे पाठकों के समक्ष प्रस्तुत करती है।</p>
+          <p><b>संस्थापक एवं संपादक:</b> Md Sakib Raza</p>
+          <p><b>मुख्यालय:</b> पूर्णिया, बिहार, भारत</p>
+          <p><b>आधिकारिक ईमेल:</b> office.mdsakibraza@gmail.com</p>
+        `
+      },
+      terms: {
+        title: "नियम और शर्तें (Terms & Conditions)",
+        content: `
+          <h4>1. परिचय</h4>
+          <p>THE 90I न्यूज़ (www.the90inews.com) पर आपका स्वागत है। इस वेबसाइट का उपयोग करके आप हमारे इन नियमों और शर्तों से पूरी तरह सहमत होते हैं। यदि आप इनसे सहमत नहीं हैं, तो कृपया इस वेबसाइट का उपयोग न करें।</p>
+          <h4>2. बौद्धिक संपदा अधिकार (Intellectual Property)</h4>
+          <p>इस वेबसाइट पर प्रकाशित सभी सामग्री (समाचार, लेख, लोगो, ग्राफिक्स, और छवियां) THE 90I न्यूज़ की संपत्ति हैं। बिना लिखित अनुमति के इसका व्यावसायिक उपयोग या पुनरुत्पादित करना प्रतिबंधित है।</p>
+          <h4>3. सामग्री में बदलाव</h4>
+          <p>हम बिना किसी पूर्व सूचना के वेबसाइट की सामग्री या इसके नियमों में कभी भी बदलाव करने का अधिकार सुरक्षित रखते हैं।</p>
+        `
+      },
+      privacy: {
+        title: "गोपनीयता नीति (Privacy Policy)",
+        content: `
+          <h4>1. हमारी गोपनीयता नीति</h4>
+          <p>THE 90I न्यूज़ (www.the90inews.com) पर आने वाले पाठकों की गोपनीयता हमारे लिए अत्यंत महत्वपूर्ण है। यह नीति बताती है कि हम आपकी कौन सी जानकारी एकत्र करते हैं और उसका उपयोग कैसे करते हैं।</p>
+          <h4>2. कुकीज़ (Cookies) और विज्ञापन</h4>
+          <p>हमारी वेबसाइट तृतीय-पक्ष विज्ञापनदाताओं (जैसे Google AdSense) का उपयोग करती है। Google जैसी विज्ञापन कंपनियाँ उपयोगकर्ताओं की पिछली वेबसाइट विज़िट के आधार पर विज्ञापन दिखाने के लिए कुकीज़ (DoubleClick DART Cookie आदि) का उपयोग करती हैं।</p>
+          <h4>3. व्यक्तिगत डेटा</h4>
+          <p>हम आपके द्वारा फॉर्म (जैसे संपर्क या इनबॉक्स) के माध्यम से दी गई जानकारी (नाम, ईमेल) को पूरी तरह सुरक्षित रखते हैं और किसी भी तीसरे पक्ष के साथ साझा नहीं करते हैं।</p>
+        `
+      },
+      disclaimer: {
+        title: "अस्वीकरण (Disclaimer)",
+        content: `
+          <h4>1. समाचार और जानकारी की सटीकता</h4>
+          <p>THE 90I न्यूज़ पर दी जाने वाली सभी जानकारी और समाचार सामान्य सूचना के उद्देश्य से हैं। हम यह सुनिश्चित करते हैं कि खबरें सटीक हों, फिर भी किसी भी त्रुटि या उससे होने वाले नुकसान के लिए पोर्टल जिम्मेदार नहीं होगा।</p>
+          <h4>2. बाहरी लिंक्स (External Links)</h4>
+          <p>हमारी वेबसाइट पर अन्य बाहरी वेबसाइटों के लिंक हो सकते हैं। उन बाहरी साइटों की गोपनीयता नीतियों या सामग्री पर हमारा कोई नियंत्रण नहीं है।</p>
+        `
+      },
+      editorial: {
+        title: "संपादकीय नीति (Editorial Policy)",
+        content: `
+          <h4>1. स्वतंत्र एवं निष्पक्ष पत्रकारिता</h4>
+          <p>THE 90I न्यूज़ किसी भी राजनीतिक दल या पक्षपात से मुक्त होकर स्वतंत्र पत्रकारिता के सिद्धांतों पर काम करता है।</p>
+          <h4>2. सुधार और शुचिता</h4>
+          <p>यदि हमारी किसी खबर में कोई तथ्यात्मक त्रुटि पाई जाती है, तो हम उसकी तुरंत समीक्षा करते हैं और पाठक की शिकायत या आंतरिक जांच के बाद उसमें सुधार करते हैं।</p>
+          <p><b>संपर्क:</b> किसी भी संपादकीय शिकायत या सुझाव के लिए आप हमें office.mdsakibraza@gmail.com पर ईमेल कर सकते हैं।</p>
+        `
+      }
+    };
 
     function parseDateToTimestamp(dateStr) {
       if (!dateStr) return 0;
@@ -1681,7 +1695,6 @@
     }
 
     function combineNews(supabaseNews, mainNews, archiveNews) {
-      // Supabase का नया डेटा + पुरानी JSON/Archive फाइलें सबको मिलाकर एक जगह करना
       const combined = (supabaseNews || []).concat(mainNews || []).concat(archiveNews || []);
       const uniqueMap = new Map();
       combined.forEach(item => {
@@ -1707,7 +1720,6 @@
       initPortal();
     });
 
-    // ⭐ Supabase और पुरानी JSON फाइलों दोनों से डेटा लोड करने वाला हाइब्रिड इंजन
     async function initPortal() {
       renderDateHeaders();
       updateGrowingVisitorStats();
@@ -1725,7 +1737,6 @@
         applyPortalData(supabaseCached || [], cachedMainDb, cachedArchiveDb);
       }
 
-      // बैकग्राउंड में Supabase और GitHub JSON दोनों से ताज़ा डेटा लाना
       refreshPortalDataInBackground();
     }
 
@@ -2094,17 +2105,94 @@
       if (e.target.id === "searchModal") closeSearchModal();
     }
 
+    function openPolicy(type) {
+      const modal = document.getElementById("policyModal");
+      const titleEl = document.getElementById("policyModalTitle");
+      const contentEl = document.getElementById("policyModalContent");
+      if (policyData[type]) {
+        titleEl.textContent = policyData[type].title;
+        contentEl.innerHTML = policyData[type].content;
+        modal.style.display = "flex";
+      }
+    }
+
+    function closePolicyModal() {
+      const modal = document.getElementById("policyModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function closePolicyOnBg(e) {
+      if (e.target.id === "policyModal") closePolicyModal();
+    }
+
     function toggleChatWidget() {
       const win = document.getElementById("chatWidgetWindow");
       if (!win) return;
       win.style.display = (win.style.display === "flex") ? "none" : "flex";
     }
 
+    // --- SMART AI KNOWLEDGE & CREATOR RESPONSIVE HANDLER ---
     function handleChatSubmit(e) {
       e.preventDefault();
       const input = document.getElementById("chatInputText");
-      if (!input || !input.value.trim()) return;
+      const messagesContainer = document.getElementById("chatMessages");
+      if (!input || !input.value.trim() || !messagesContainer) return;
+
+      const userQuery = input.value.trim();
       input.value = "";
+
+      const userMsgDiv = document.createElement("div");
+      userMsgDiv.className = "chat-msg msg-user";
+      userMsgDiv.textContent = userQuery;
+      messagesContainer.appendChild(userMsgDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      const typingDiv = document.createElement("div");
+      typingDiv.className = "chat-msg msg-bot";
+      typingDiv.id = "aiTypingIndicator";
+      typingDiv.innerHTML = "<i>एआई सोच रहा है...</i>";
+      messagesContainer.appendChild(typingDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      setTimeout(() => {
+        const indicator = document.getElementById("aiTypingIndicator");
+        if (indicator) indicator.remove();
+
+        const botReply = generateSmartAiResponse(userQuery);
+
+        const botMsgDiv = document.createElement("div");
+        botMsgDiv.className = "chat-msg msg-bot";
+        botMsgDiv.innerHTML = botReply;
+        messagesContainer.appendChild(botMsgDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 500);
+    }
+
+    function generateSmartAiResponse(query) {
+      const q = query.toLowerCase();
+
+      if (q.includes("sakib") || q.includes("sakib raza") || q.includes("sintu") || q.includes("sakib raj") || q.includes("आप कौन हैं") || q.includes("tume kisne banaya") || q.includes("who are you") || q.includes("creator") || q.includes("founder") || q.includes("malik")) {
+        return `मैं ${AI_PERSONA_CONTEXT.aiName} हूँ। इस डिजिटल न्यूज़ पोर्टल **THE 90I NEWS** और मुझे बनाने वाले **${AI_PERSONA_CONTEXT.creator}** हैं। उनका जन्म ${AI_PERSONA_CONTEXT.birthDate} को हुआ है और वे ${AI_PERSONA_CONTEXT.education} कर रहे हैं।`;
+      }
+
+      if (q.includes("90i") || q.includes("news") || q.includes("website") || q.includes("portal") || q.includes("खबर") || q.includes("news portal")) {
+        return `**THE 90I NEWS** (90inews.me) बिहार के पूर्णिया से संचालित होने वाला एक अग्रणी डिजिटल न्यूज़ नेटवर्क है, जिसे ${AI_PERSONA_CONTEXT.publication} यहाँ आपको बिहार, राजनीति, राष्ट्रीय, शिक्षा, और दुनिया भर की ताज़ा खबरें मिलती हैं।`;
+      }
+
+      if (q.includes("bihar") || q.includes("बिहार")) {
+        return `बिहार भारत का एक ऐतिहासिक राज्य है, जिसकी राजधानी पटना है। यहाँ का पूर्णिया ज़िला सीमांचल का एक प्रमुख क्षेत्र है, जहाँ से THE 90I न्यूज़ संचालित होता है।`;
+      }
+      if (q.includes("india") || q.includes("भारत") || q.includes("देश")) {
+        return `भारत दुनिया का सबसे बड़ा लोकतंत्र और एक महान देश है। इसकी राजधानी नई दिल्ली है और यह अपनी विविधता और सांस्कृतिक धरोहर के लिए पूरी दुनिया में प्रसिद्ध है।`;
+      }
+      if (q.includes("upsc") || q.includes("ssc") || q.includes("exam") || q.includes("परीक्षा") || q.includes("padhai")) {
+        return `प्रतियोगी परीक्षाएं (जैसे UPSC और SSC CGL) पास करने के लिए निरंतर अभ्यास, सही समय सारणी (Time Table) और प्रामाणिक पुस्तकों का अध्ययन बहुत जरूरी है। आप अपनी तैयारी पूरी लगन के साथ जारी रखें!`;
+      }
+      if (q.includes("hi") || q.includes("hello") || q.includes("namaste") || q.includes("नमस्ते") || q.includes("hi ai")) {
+        return `नमस्ते! मैं THE 90I न्यूज़ का स्मार्ट AI असिस्टेंट हूँ। आप मुझसे दुनिया भर की किसी भी जानकारी, इतिहास, विज्ञान, करेंट अफेयर्स या इस पोर्टल के बारे में कुछ भी पूछ सकते हैं!`;
+      }
+
+      return `आपने बहुत अच्छा सवाल पूछा है! **THE 90I NEWS** डिजिटल डेस्क के अनुसार, इस विषय पर विस्तृत शोध और डेटा जल्द ही पोर्टल पर अपडेट किया जाएगा। इसके अलावा आप पोर्टल पर दी गई अन्य ताज़ा खबरें और ई-पेपर भी देख सकते हैं। क्या आप किसी अन्य विषय पर कुछ पूछना चाहते हैं?`;
     }
 
     function handleFooterContact(e) {
