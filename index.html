@@ -14,7 +14,7 @@
   <meta property="og:image" content="https://90inews.me/logo.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="THE 90I न्यूज़ | निष्पक्ष और निर्भीक डिजिटल न्यूज़ नेटवर्क" />
-  <meta name="twitter:description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें。" />
+  <meta name="twitter:description" content="THE 90I NEWS - बिहार, राष्ट्रीय, राजनीति, शिक्षा, खेल एवं अंतर्राष्ट्रीय जगत की ताज़ा और प्रामाणिक खबरें।" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9762787230045511" crossorigin="anonymous"></script>
 
@@ -352,7 +352,6 @@
       flex-wrap: wrap;
     }
 
-    /* Red border summary box जैसा पहली इमेज में था */
     .spotlight-excerpt {
       background: #fff5f5;
       border-left: 4px solid var(--brand);
@@ -395,7 +394,6 @@
       color: #ffffff;
     }
 
-    /* Rating & Share Box for First News */
     .lead-interaction-box {
       margin-top: 15px;
       padding-top: 15px;
@@ -1103,6 +1101,60 @@
     .policy-body h4 { color: #0f172a; margin: 16px 0 8px; font-size: 16px; font-weight: 800; }
     .policy-body p { margin-bottom: 12px; }
 
+    /* Cookie Banner Styles */
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 16px 20px;
+      z-index: 9999;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+      border-top: 3px solid var(--brand);
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .cookie-text {
+      font-size: 13.5px;
+      line-height: 1.5;
+      flex: 1;
+      min-width: 280px;
+    }
+    .cookie-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn-cookie-accept {
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-cookie-accept:hover { background: var(--brand-dark); }
+    .btn-cookie-reject {
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #334155;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-cookie-reject:hover { background: #334155; color: #fff; }
+
     .main-footer {
       background: #090d16 !important;
       color: #cbd5e1 !important;
@@ -1193,28 +1245,6 @@
       font-size: 11px;
     }
 
-    .footer-social-icons {
-      display: flex;
-      gap: 12px;
-      margin-top: 14px;
-    }
-    .footer-social-icons a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: #1e293b;
-      color: #ffffff;
-      border-radius: 50%;
-      text-decoration: none;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
-    .footer-social-icons a:hover {
-      background: var(--brand);
-    }
-
     .footer-form {
       display: flex;
       flex-direction: column;
@@ -1282,36 +1312,6 @@
       gap: 10px;
     }
 
-    /* Cookie Consent Banner */
-    .cookie-banner {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: #0f172a;
-      color: #f8fafc;
-      padding: 16px 20px;
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-      border-top: 3px solid var(--brand);
-      font-size: 13.5px;
-    }
-    .cookie-banner button {
-      background: var(--brand);
-      color: #fff;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 6px;
-      font-weight: 800;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .cookie-banner button:hover {
-      background: var(--brand-dark);
-    }
-
     @media (max-width: 992px) {
       .footer-container { grid-template-columns: 1fr 1fr; gap: 30px; }
     }
@@ -1321,19 +1321,10 @@
       .split-category-row { grid-template-columns: 1fr; }
       .footer-container { grid-template-columns: 1fr; gap: 28px; }
       .footer-bottom-inner { flex-direction: column; text-align: center; }
-      .cookie-banner { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
 <body>
-
-  <!-- Cookie Consent Banner (Only Once Per Device) -->
-  <div id="cookieConsentBanner" class="cookie-banner">
-    <div>
-      हम हमारी वेबसाइट पर यूजर अनुभव को बेहतर बनाने और विज्ञापन दिखाने के लिए कुकीज़ (Cookies) का उपयोग करते हैं। वेबसाइट का उपयोग जारी रखकर आप हमारी गोपनीयता नीति से सहमत होते हैं।
-    </div>
-    <button type="button" onclick="acceptCookies()">स्वीकार करें (Accept)</button>
-  </div>
 
   <div class="main-wrapper">
     <!-- Top Utility -->
@@ -1413,13 +1404,10 @@
                 <span id="spotlightViews" class="view-count-tag">👁️ 240+ Views</span>
               </div>
               
-              <!-- लाल बॉर्डर वाला समरी बॉक्स -->
               <div id="spotlightExcerpt" class="spotlight-excerpt">देश, दुनिया एवं बिहार की महत्वपूर्ण खबरों का लाइव विश्लेषण।</div>
               
-              <!-- पूरा आर्टिकल कंटेंट -->
               <div id="spotlightFullBody" class="spotlight-full-content"></div>
 
-              <!-- Interactive Rating & Share Box -->
               <div class="lead-interaction-box">
                 <div class="lead-rating-row">
                   <span style="font-size: 13px; font-weight: 700;" id="leadRatingCountText">⭐ 117+ वोट्स</span>
@@ -1605,6 +1593,17 @@
     </div>
   </div>
 
+  <!-- Cookie Consent Banner -->
+  <div id="cookieConsentBanner" class="cookie-banner">
+    <div class="cookie-text">
+      हम आपके अनुभव को बेहतर बनाने के लिए कुकीज़ (Cookies) का उपयोग करते हैं। इस वेबसाइट का उपयोग जारी रखकर आप हमारी गोपनीयता नीति से सहमत होते हैं।
+    </div>
+    <div class="cookie-buttons">
+      <button type="button" class="btn-cookie-accept" onclick="handleCookieConsent('accept')">स्वीकार करें (Accept)</button>
+      <button type="button" class="btn-cookie-reject" onclick="handleCookieConsent('reject')">अस्वीकार करें (Reject)</button>
+    </div>
+  </div>
+
   <footer class="main-footer">
     <div class="footer-container">
       
@@ -1618,11 +1617,6 @@
           <li>✉️ <b>ईमेल:</b> <a href="mailto:office.mdsakibraza@gmail.com">office.mdsakibraza@gmail.com</a></li>
           <li>🌐 <b>वेबसाइट:</b> 90inews.me</li>
         </ul>
-        <!-- Social Media Icons in Footer -->
-        <div class="footer-social-icons">
-          <a href="https://www.facebook.com/share/1CGPiJBYdK/" target="_blank" title="Facebook">f</a>
-          <a href="https://www.instagram.com/sakibraza___?stkn=MXg3Ymp1am52eW91dA==" target="_blank" title="Instagram">📷</a>
-        </div>
       </div>
 
       <div class="footer-col">
@@ -1634,6 +1628,14 @@
           <li><a href="index.html?cat=शिक्षा">शिक्षा व रोजगार</a></li>
           <li><a href="index.html?cat=खेल">खेल जगत</a></li>
           <li><a href="epaper.html">दैनिक ई-पेपर</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>सोशल मीडिया</h3>
+        <ul class="footer-links">
+          <li><a href="https://www.facebook.com/share/1CGPiJBYdK/" target="_blank" rel="noopener">फेसबुक (Facebook)</a></li>
+          <li><a href="https://www.instagram.com/sakibraza___?stkn=MXg3Ymp1am52eW91dA==" target="_blank" rel="noopener">इंस्टाग्राम (Instagram)</a></li>
         </ul>
       </div>
 
@@ -1824,20 +1826,21 @@
       alert("खबर का लिंक कॉपी हो गया है!");
     }
 
-    // --- COOKIE CONSENT LOGIC (ONE TIME PER DEVICE) ---
-    document.addEventListener("DOMContentLoaded", function() {
-      const cookieAccepted = localStorage.getItem("90i_cookie_accepted");
+    // --- COOKIE CONSENT CHECK ---
+    function checkCookieConsent() {
+      const consent = localStorage.getItem("90i_cookie_consent");
       const banner = document.getElementById("cookieConsentBanner");
-      if (!cookieAccepted && banner) {
+      if (!consent && banner) {
         banner.style.display = "flex";
       }
-      initPortal();
-    });
+    }
 
-    function acceptCookies() {
-      localStorage.setItem("90i_cookie_accepted", "true");
+    function handleCookieConsent(choice) {
+      localStorage.setItem("90i_cookie_consent", choice);
       const banner = document.getElementById("cookieConsentBanner");
-      if (banner) banner.style.display = "none";
+      if (banner) {
+        banner.style.display = "none";
+      }
     }
 
     // --- SUPABASE REAL-TIME VISITOR & TRAFFIC MONITOR ENGINE ---
@@ -1942,9 +1945,14 @@
       return true;
     }
 
+    document.addEventListener("DOMContentLoaded", function() {
+      initPortal();
+    });
+
     async function initPortal() {
       renderDateHeaders();
       updateGrowingVisitorStats();
+      checkCookieConsent();
 
       const params = new URLSearchParams(window.location.search);
       currentCategoryFilter = (params.get("cat") || "").trim();
@@ -2144,7 +2152,6 @@
       const spotImg = document.getElementById("spotlightImg");
       if (spotImg && (lead?.image || lead?.img)) spotImg.src = lead.image || lead.img;
 
-      // फोटो कैप्शन
       const spotCap = document.getElementById("spotlightCaption");
       const captionText = lead?.caption || lead?.title || "";
       if (spotCap && captionText) {
@@ -2171,7 +2178,6 @@
       const spotViews = document.getElementById("spotlightViews");
       if (spotViews) spotViews.innerHTML = `👁️ ${getArticleViews(leadSlug)} Views`;
 
-      // लाल बॉर्डर वाला समरी बॉक्स
       const spotExcerpt = document.getElementById("spotlightExcerpt");
       if (spotExcerpt) {
         const excerptText = lead?.excerpt || lead?.summary || "";
@@ -2179,14 +2185,12 @@
         spotExcerpt.style.display = excerptText ? "block" : "none";
       }
 
-      // पूरा आर्टिकल कंटेंट (AdSense Low Content से बचने हेतु)
       const spotFullBody = document.getElementById("spotlightFullBody");
       if (spotFullBody) {
         const fullContent = lead?.content || lead?.body || "";
         spotFullBody.innerHTML = fullContent;
       }
 
-      // शेयर बटन लिंक्स सेट करें
       const pageUrl = encodeURIComponent(window.location.origin + "/" + leadLink);
       const pageTitle = encodeURIComponent(lead?.title || "THE 90I NEWS");
       
@@ -2354,7 +2358,6 @@
       win.style.display = (win.style.display === "flex") ? "none" : "flex";
     }
 
-    // --- SMART AI KNOWLEDGE & CREATOR RESPONSIVE HANDLER ---
     function handleChatSubmit(e) {
       e.preventDefault();
       const input = document.getElementById("chatInputText");
