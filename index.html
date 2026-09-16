@@ -344,13 +344,12 @@
       flex-wrap: wrap;
     }
     .spotlight-excerpt {
-      color: #475569;
-      font-size: 14.5px;
-      line-height: 1.6;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      color: #334155;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .spotlight-excerpt p {
+      margin-bottom: 12px;
     }
 
     .btn-read-more {
@@ -1268,8 +1267,9 @@
                 <span id="spotlightDate">आज</span>
                 <span id="spotlightViews" class="view-count-tag">👁️ 240+ Views</span>
               </div>
-              <p id="spotlightExcerpt" class="spotlight-excerpt">देश, दुनिया एवं बिहार की सभी महत्वपूर्ण खबरों का लाइव विश्लेषण।</p>
-              <a id="spotlightReadMoreBtn" href="#" class="btn-read-more">और पढ़ें ➔</a>
+              <!-- पहली खबर का पूरा कंटेंट होमपेज पर दिखने के लिए -->
+              <div id="spotlightExcerpt" class="spotlight-excerpt">देश, दुनिया एवं बिहार की सभी महत्वपूर्ण खबरों का लाइव विश्लेषण।</div>
+              <a id="spotlightReadMoreBtn" href="#" class="btn-read-more" style="display:none;">और पढ़ें ➔</a>
             </div>
           </div>
 
@@ -1973,16 +1973,16 @@
       const spotViews = document.getElementById("spotlightViews");
       if (spotViews) spotViews.innerHTML = `👁️ ${getArticleViews(rawId)} Views`;
 
+      // ⭐ पहली खबर का पूरा कंटेंट होमपेज पर दिखाने के लिए (AdSense Low Content से बचने हेतु)
       const spotExcerpt = document.getElementById("spotlightExcerpt");
       if (spotExcerpt) {
-        const rawContent = lead?.excerpt || lead?.summary || lead?.content || lead?.body || "";
-        spotExcerpt.innerText = String(rawContent).replace(/<[^>]*>?/gm, '').substring(0, 130) + '...';
+        const fullContent = lead?.content || lead?.body || lead?.excerpt || lead?.summary || "";
+        spotExcerpt.innerHTML = fullContent;
       }
 
       const readMoreLead = document.getElementById("spotlightReadMoreBtn");
       if (readMoreLead) {
-        readMoreLead.href = leadLink;
-        readMoreLead.onclick = () => recordNewsClick(rawId);
+        readMoreLead.style.display = "none";
       }
 
       const subContainer = document.getElementById("heroSubleadsBox");
