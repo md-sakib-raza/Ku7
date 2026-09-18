@@ -3,6 +3,12 @@
   <url><loc>https://90inews.me/</loc><changefreq>always</changefreq><priority>1.0</priority></url>
   <url><loc>https://90inews.me/epaper.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
   <url>
+    <loc>https://90inews.me/article.html?slug=purnia-bhawanipur-maniruddin-murder-case-four-arrested</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://90inews.me/article.html?slug=purnia-inter-caste-marriage-father-symbolic-funeral-daughter-riya</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>daily</changefreq>
