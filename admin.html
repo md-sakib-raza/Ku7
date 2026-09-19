@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard | THE 90I NEWS</title>
+  <title id="pageTitle">Admin Dashboard | THE 90I NEWS</title>
   <style>
     :root {
       --bg: #0b0f19;
@@ -306,6 +306,17 @@
 
       <div class="grid-2">
         <div class="form-group">
+          <label>राजनीतिक दल (Political Party - Optional)</label>
+          <input type="text" id="bioPoliticalParty" placeholder="उदा. छात्र राजद / निर्दलीय" />
+        </div>
+        <div class="form-group">
+          <label>क्षेत्र (Field)</label>
+          <input type="text" id="bioField" placeholder="राजनीति / शिक्षा / विज्ञान" />
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
           <label>जन्म तिथि (Date of Birth)</label>
           <input type="text" id="bioBirthDate" placeholder="15 अक्टूबर 1931" />
         </div>
@@ -316,10 +327,6 @@
       </div>
 
       <div class="grid-2">
-        <div class="form-group">
-          <label>कार्यक्षेत्र (Field)</label>
-          <input type="text" id="bioField" placeholder="राजनीति / शिक्षा / विज्ञान" />
-        </div>
         <div class="form-group">
           <label>वर्तमान पद (Current Position)</label>
           <input type="text" id="bioCurrentPos" placeholder="यदि कोई हो तो लिखें" />
@@ -333,29 +340,30 @@
         <img id="bioImgPreview" class="img-preview" />
       </div>
 
+      <!-- HTML Format Enabled for all circled sections -->
       <div class="form-group">
-        <label>शुरुआती परिचय (Intro Paragraph)</label>
-        <textarea id="bioIntro" rows="3" placeholder="हस्ती के बारे में संक्षिप्त परिचय..."></textarea>
+        <label>शुरुआती परिचय (Intro Paragraph - HTML / Links Supported)</label>
+        <textarea id="bioIntro" rows="3" placeholder="हस्ती के बारे में संक्षिप्त परिचय... (<a href='#'>लिंक</a> का उपयोग कर सकते हैं)"></textarea>
       </div>
 
       <div class="form-group">
-        <label>शिक्षा (Education)</label>
-        <textarea id="bioEdu" rows="3" placeholder="शिक्षा से जुड़ी जानकारी..."></textarea>
+        <label>शिक्षा (Education - HTML / Links Supported)</label>
+        <textarea id="bioEdu" rows="3" placeholder="शिक्षा से जुड़ी जानकारी... (<a href='#'>लिंक</a> का उपयोग कर सकते हैं)"></textarea>
       </div>
 
       <div class="form-group">
-        <label>राजनीतिक करियर (Political Career)</label>
-        <textarea id="bioPol" rows="3" placeholder="राजनीतिक सफर..."></textarea>
+        <label>राजनीतिक करियर (Political Career - HTML / Links Supported)</label>
+        <textarea id="bioPol" rows="3" placeholder="राजनीतिक सफर... (<a href='#'>लिंक</a> का उपयोग कर सकते हैं)"></textarea>
       </div>
 
       <div class="form-group">
-        <label>मुख्य उपलब्धियां / कार्य (Career & Achievements)</label>
-        <textarea id="bioWork" rows="3" placeholder="अन्य कार्य या उपलब्धियां..."></textarea>
+        <label>मुख्य उपलब्धियां / कार्य (Career & Achievements - HTML / Links Supported)</label>
+        <textarea id="bioWork" rows="3" placeholder="अन्य कार्य या उपलब्धियां... (<a href='#'>लिंक</a> का उपयोग कर सकते हैं)"></textarea>
       </div>
 
       <div class="form-group">
-        <label>विस्तृत इतिहास (Detailed HTML Content)</label>
-        <textarea id="bioContent" style="min-height:150px;" placeholder="पूरा विवरण या अन्य पैराग्राफ..."></textarea>
+        <label>विस्तृत इतिहास (Detailed HTML Content - विकिपीडिया स्टाइल नीले लिंक्स के लिए)</label>
+        <textarea id="bioContent" style="min-height:150px;" placeholder="यहाँ आप <a href='#'>नीले लिंक्स</a> के साथ HTML फॉर्मेट में लिख सकते हैं..."></textarea>
       </div>
 
       <div style="display:flex; gap:10px;">
@@ -441,7 +449,6 @@
   <script>
     "use strict";
 
-    // Supabase Credentials
     const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
     const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
 
@@ -780,6 +787,7 @@
           name: name,
           slug: document.getElementById('bioSlug').value.trim() || ('bio-' + Date.now()),
           title_tag: document.getElementById('bioTitleTag').value.trim(),
+          political_party: document.getElementById('bioPoliticalParty').value.trim(),
           birth_date: document.getElementById('bioBirthDate').value.trim(),
           birth_place: document.getElementById('bioBirthPlace').value.trim(),
           field: document.getElementById('bioField').value.trim(),
@@ -859,6 +867,7 @@
       document.getElementById('bioName').value = b.name || '';
       document.getElementById('bioSlug').value = b.slug || '';
       document.getElementById('bioTitleTag').value = b.title_tag || '';
+      document.getElementById('bioPoliticalParty').value = b.political_party || '';
       document.getElementById('bioBirthDate').value = b.birth_date || '';
       document.getElementById('bioBirthPlace').value = b.birth_place || '';
       document.getElementById('bioField').value = b.field || '';
@@ -886,6 +895,7 @@
       document.getElementById('bioName').value = '';
       document.getElementById('bioSlug').value = '';
       document.getElementById('bioTitleTag').value = '';
+      document.getElementById('bioPoliticalParty').value = '';
       document.getElementById('bioBirthDate').value = '';
       document.getElementById('bioBirthPlace').value = '';
       document.getElementById('bioField').value = '';
