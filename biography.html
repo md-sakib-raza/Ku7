@@ -321,7 +321,7 @@
           </div>
         `;
       } catch (err) {
-        container.innerHTML = "<p>डेटा लोड करने में तकनीकी त्रुटि हुई है।</p>";
+        container.innerHTML = `<p style="color:red; text-align:center;">डेटा लोड करने में त्रुटि: ${err.message}</p>`;
       }
     }
 
@@ -356,29 +356,7 @@
       );
       
       const grid = document.getElementById("bioGridContainer");
-      if (!grid) {
-        // Agar user article page par hai aur search kar raha hai, toh use directory view par redirect ya render kar sakte hain
-        if (q) {
-          const container = document.getElementById("dynamicBioContent");
-          // Create temporary grid view for search results
-          let searchView = document.createElement("div");
-          searchView.innerHTML = `
-            <h2 style="font-family: serif; margin: 20px 0 10px;">खोज परिणाम (${filtered.length})</h2>
-            <div class="bio-grid">
-              ${filtered.map(b => `
-                <a href="biography.html?slug=${b.slug}" class="bio-card">
-                  <img src="${b.image \vert{}\vert{} 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80'}" alt="${b.name}" />
-                  <div>
-                    <h4>${b.name}</h4>
-                    <p>${b.title_tag || 'जीवनी'}</p>
-                  </div>
-                </a>
-              `).join("")}
-            </div>
-          `;
-        }
-        return;
-      }
+      if (!grid) return;
 
       grid.innerHTML = filtered.map(b => `
         <a href="biography.html?slug=${b.slug}" class="bio-card">
