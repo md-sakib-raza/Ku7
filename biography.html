@@ -242,134 +242,184 @@
   </footer>
 
   <script>
-    const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    (function () {
+      const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
+      const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80";
+      const PAGE_TITLE_SUFFIX = " — बायोग्राफी | THE 90I NEWS";
+      let cachedBioList = [];
 
-    let cachedBioList = [];
+      function escapeHtml(value) {
+        return String(value == null ? "" : value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
 
-    async function initBiographyPage() {
-      const params = new URLSearchParams(window.location.search);
-      const slug = (params.get("slug") || "").trim().toLowerCase();
-      const container = document.getElementById("dynamicBioContent");
+      function safeImageUrl(value) {
+        const url = String(value || "").trim();
+        if (!url) return DEFAULT_IMAGE;
+        return /^(https?:)?\/\//i.test(url) || url.startsWith("/") ? url : DEFAULT_IMAGE;
+      }
 
-      try {
-        const { data: bioList, error } = await supabaseClient
-          .from('biographies')
-          .select('*')
-          .order('created_at', { ascending: false });
+      function cardMarkup(item) {
+        const name = escapeHtml(item.name || "अज्ञात");
+        const slug = encodeURIComponent(String(item.slug || "").trim());
+        const titleTag = escapeHtml(item.title_tag || "जीवनी");
+        const imageUrl = escapeHtml(safeImageUrl(item.image));
+        return `<a href="biography.html?slug=${slug}" class="bio-card">
+          <img src="${imageUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}'" />
+          <div>
+            <h4>${name}</h4>
+            <p>${titleTag}</p>
+          </div>
+        </a>`;
+      }
 
-        if (error) throw error;
-        cachedBioList = bioList || [];
+      function renderError(message) {
+        const container = document.getElementById("dynamicBioContent");
+        if (!container) return;
+        container.innerHTML = `<p style="color:red; text-align:center;">${escapeHtml(message)}</p>`;
+      }
 
-        if (!slug) {
-          renderBioDirectory(cachedBioList);
+      function renderBioDirectory(list) {
+        const container = document.getElementById("dynamicBioContent");
+        if (!container) return;
+        if (!Array.isArray(list) || !list.length) {
+          container.innerHTML = "<h2>फिलहाल कोई बायोग्राफी उपलब्ध नहीं है।</h2>";
           return;
         }
+        container.innerHTML = `
+          <h2 style="font-family: serif; border-bottom: 2px solid var(--wiki-border); padding-bottom: 6px; margin-bottom: 15px;">प्रमुख हस्तियाँ व बायोग्राफी डायरेक्टरी</h2>
+          <div class="bio-grid" id="bioGridContainer">${list.map(cardMarkup).join("")}</div>
+        `;
+      }
 
-        const person = cachedBioList.find(b => String(b.slug || "").toLowerCase() === slug);
+      function renderProfile(person, slug) {
+        const container = document.getElementById("dynamicBioContent");
+        if (!container) return;
         if (!person) {
-          container.innerHTML = `<h2>व्यक्ति विशेष की बायोग्राफी नहीं मिली।</h2><p><a href='biography.html'>सभी बायोग्राफी देखें</a></p>`;
+          container.innerHTML = "<h2>व्यक्ति विशेष की बायोग्राफी नहीं मिली।</h2><p><a href='biography.html'>सभी बायोग्राफी देखें</a></p>";
           return;
         }
 
-        document.title = person.name + " — बायोग्राफी | THE 90I NEWS";
+        const name = escapeHtml(person.name || "अज्ञात");
+        const titleTag = escapeHtml(person.title_tag || "विशिष्ट व्यक्तित्व");
+        const imageUrl = escapeHtml(safeImageUrl(person.image));
+        const birthDate = escapeHtml(person.birth_date || "उपलब्ध नहीं");
+        const birthPlace = escapeHtml(person.birth_place || "बिहार");
+        const field = escapeHtml(person.field || "विविध");
+        const currentPosition = escapeHtml(person.current_position || "लागू नहीं");
+        const intro = escapeHtml(person.intro || "");
+        const education = person.education ? `<h2>शिक्षा (Education)</h2><p>${escapeHtml(person.education)}</p>` : "";
+        const politicalCareer = person.political_career ? `<h2>राजनीतिक करियर (Political Career)</h2><p>${escapeHtml(person.political_career)}</p>` : "";
+        const careerWork = person.career_work ? `<h2>कार्य और उपलब्धियां (Career & Achievements)</h2><p>${escapeHtml(person.career_work)}</p>` : "";
+        const biography = person.content ? `<h2>जीवन परिचय (Biography)</h2><p>${escapeHtml(person.content)}</p>` : "";
+
+        document.title = `${name}${PAGE_TITLE_SUFFIX}`;
 
         container.innerHTML = `
-          <h1 class="bio-title">${person.name}</h1>
-          <div class="bio-subtitle">${person.title_tag || "विशिष्ट व्यक्तित्व"}</div>
-
+          <h1 class="bio-title">${name}</h1>
+          <div class="bio-subtitle">${titleTag}</div>
           <div class="wiki-infobox">
-            <h3>${person.name}</h3>
-            ${person.image ? `<img src="${person.image}" alt="${person.name}" />` : ''}
-            <div class="wiki-row"><div class="wiki-label">पूरा नाम</div><div class="wiki-value">${person.name}</div></div>
-            <div class="wiki-row"><div class="wiki-label">जन्म तिथि</div><div class="wiki-value">${person.birth_date || 'उपलब्ध नहीं'}</div></div>
-            <div class="wiki-row"><div class="wiki-label">जन्म स्थान</div><div class="wiki-value">${person.birth_place || 'बिहार'}</div></div>
-            <div class="wiki-row"><div class="wiki-label">क्षेत्र</div><div class="wiki-value">${person.field || 'विविध'}</div></div>
-            <div class="wiki-row"><div class="wiki-label">वर्तमान पद</div><div class="wiki-value">${person.current_position || 'लागू नहीं'}</div></div>
+            <h3>${name}</h3>
+            <img src="${imageUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}'" />
+            <div class="wiki-row"><div class="wiki-label">पूरा नाम</div><div class="wiki-value">${name}</div></div>
+            <div class="wiki-row"><div class="wiki-label">जन्म तिथि</div><div class="wiki-value">${birthDate}</div></div>
+            <div class="wiki-row"><div class="wiki-label">जन्म स्थान</div><div class="wiki-value">${birthPlace}</div></div>
+            <div class="wiki-row"><div class="wiki-label">क्षेत्र</div><div class="wiki-value">${field}</div></div>
+            <div class="wiki-row"><div class="wiki-label">वर्तमान पद</div><div class="wiki-value">${currentPosition}</div></div>
           </div>
-
           <div class="bio-content">
-            <p><b>परिचय:</b> ${person.intro || ''}</p>
-            ${person.education ? `<h2>शिक्षा (Education)</h2><p>${person.education}</p>` : ''}
-            ${person.political_career ? `<h2>राजनीतिक करियर (Political Career)</h2><p>${person.political_career}</p>` : ''}
-            ${person.career_work ? `<h2>कार्य और उपलब्धियां (Career & Achievements)</h2><p>${person.career_work}</p>` : ''}
-            ${person.content ? `<h2>जीवन परिचय (Biography)</h2>${person.content}` : ''}
+            <p><b>परिचय:</b> ${intro}</p>
+            ${education}
+            ${politicalCareer}
+            ${careerWork}
+            ${biography}
           </div>
-
           <div class="share-container">
             <span class="share-title">शेयर करें:</span>
-            <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(person.name + ' - ' + window.location.href)}" target="_blank" class="share-btn btn-wa">💬 WhatsApp</a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank" class="share-btn btn-fb">📘 Facebook</a>
-            <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(person.name)}&url=${encodeURIComponent(window.location.href)}" target="_blank" class="share-btn btn-tw">🐦 Twitter</a>
-            <button onclick="navigator.clipboard.writeText(window.location.href); alert('✅ लिंक कॉपी हो गया है!');" class="share-btn btn-cp" style="border:none; cursor:pointer;">🔗 Copy Link</button>
+            <a href="https://api.whatsapp.com/send?text=${encodeURIComponent((person.name || "बायोग्राफी") + " - " + window.location.href)}" target="_blank" rel="noopener" class="share-btn btn-wa">💬 WhatsApp</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank" rel="noopener" class="share-btn btn-fb">📘 Facebook</a>
+            <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(person.name || "बायोग्राफी")}&url=${encodeURIComponent(window.location.href)}" target="_blank" rel="noopener" class="share-btn btn-tw">🐦 Twitter</a>
+            <button id="copyLinkButton" class="share-btn btn-cp" style="border:none; cursor:pointer;">🔗 Copy Link</button>
           </div>
-
           <div style="margin-top: 40px; border-top: 2px solid var(--line); padding-top: 20px;">
             <h3 style="font-family:serif; margin-bottom:15px;">अन्य प्रमुख बायोग्राफी</h3>
             <div class="bio-grid" id="otherBioGrid">
-              ${cachedBioList.filter(b => b.slug !== slug).map(b => `
-                <a href="biography.html?slug=${b.slug}" class="bio-card">
-                  <img src="${b.image \vert{}\vert{} 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80'}" alt="${b.name}" />
-                  <div>
-                    <h4>${b.name}</h4>
-                    <p>${b.title_tag || 'जीवनी'}</p>
-                  </div>
-                </a>
-              `).join("")}
+              ${cachedBioList
+                .filter((item) => String(item.slug || "").trim().toLowerCase() !== slug)
+                .map(cardMarkup)
+                .join("")}
             </div>
           </div>
         `;
-      } catch (err) {
-        container.innerHTML = `<p style="color:red; text-align:center;">डेटा लोड करने में त्रुटि: ${err.message}</p>`;
+
+        const copyButton = document.getElementById("copyLinkButton");
+        if (copyButton) {
+          copyButton.addEventListener("click", function () {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(window.location.href).then(function () {
+                alert("✅ लिंक कॉपी हो गया है!");
+              }).catch(function () {
+                alert("⚠️ लिंक कॉपी नहीं हो सका।");
+              });
+            } else {
+              alert("⚠️ आपके ब्राउज़र में कॉपी सुविधा उपलब्ध नहीं है।");
+            }
+          });
+        }
       }
-    }
 
-    function renderBioDirectory(list) {
-      const container = document.getElementById("dynamicBioContent");
-      if (!list || !list.length) {
-        container.innerHTML = "<h2>फिलहाल कोई बायोग्राफी उपलब्ध नहीं है।</h2>";
-        return;
+      window.filterBioList = function (query) {
+        const q = String(query || "").toLowerCase().trim();
+        const filtered = cachedBioList.filter(function (item) {
+          return (item.name && String(item.name).toLowerCase().includes(q)) ||
+            (item.title_tag && String(item.title_tag).toLowerCase().includes(q)) ||
+            (item.field && String(item.field).toLowerCase().includes(q));
+        });
+        const grid = document.getElementById("bioGridContainer");
+        if (grid) {
+          grid.innerHTML = filtered.map(cardMarkup).join("");
+        }
+      };
+
+      async function initBiographyPage() {
+        if (!window.supabase || typeof window.supabase.createClient !== "function") {
+          renderError("Supabase library लोड नहीं हुई। कृपया पेज रिफ्रेश करें।");
+          return;
+        }
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const params = new URLSearchParams(window.location.search);
+        const slug = String(params.get("slug") || "").trim().toLowerCase();
+
+        try {
+          const response = await supabaseClient
+            .from("biographies")
+            .select("*")
+            .order("created_at", { ascending: false });
+          if (response.error) throw response.error;
+          cachedBioList = Array.isArray(response.data) ? response.data : [];
+
+          if (!slug) {
+            renderBioDirectory(cachedBioList);
+            return;
+          }
+
+          const person = cachedBioList.find(function (item) {
+            return String(item.slug || "").trim().toLowerCase() === slug;
+          });
+          renderProfile(person, slug);
+        } catch (error) {
+          renderError(`डेटा लोड करने में त्रुटि: ${error && error.message ? error.message : "Unknown error"}`);
+        }
       }
-      container.innerHTML = `
-        <h2 style="font-family: serif; border-bottom: 2px solid var(--wiki-border); padding-bottom: 6px; margin-bottom: 15px;">प्रमुख हस्तियाँ व बायोग्राफी डायरेक्टरी</h2>
-        <div class="bio-grid" id="bioGridContainer">
-          ${list.map(b => `
-            <a href="biography.html?slug=${b.slug}" class="bio-card">
-              <img src="${b.image \vert{}\vert{} 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80'}" alt="${b.name}" />
-              <div>
-                <h4>${b.name}</h4>
-                <p>${b.title_tag || 'जीवनी'}</p>
-              </div>
-            </a>
-          `).join("")}
-        </div>
-      `;
-    }
 
-    function filterBioList(query) {
-      const q = query.toLowerCase().trim();
-      const filtered = cachedBioList.filter(b => 
-        (b.name && b.name.toLowerCase().includes(q)) || 
-        (b.title_tag && b.title_tag.toLowerCase().includes(q)) ||
-        (b.field && b.field.toLowerCase().includes(q))
-      );
-      
-      const grid = document.getElementById("bioGridContainer");
-      if (!grid) return;
-
-      grid.innerHTML = filtered.map(b => `
-        <a href="biography.html?slug=${b.slug}" class="bio-card">
-          <img src="${b.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80'}" alt="${b.name}" />
-          <div>
-            <h4>${b.name}</h4>
-            <p>${b.title_tag || 'जीवनी'}</p>
-          </div>
-        </a>
-      `).join("");
-    }
-
-    initBiographyPage();
+      initBiographyPage();
+    })();
   </script>
 </body>
 </html>
