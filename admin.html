@@ -127,6 +127,7 @@
     <div class="tab-bar">
       <button type="button" class="tab-btn active" id="btn_compose" onclick="switchSection('compose')">➕ Add / Edit Article</button>
       <button type="button" class="tab-btn epaper-tab-btn" id="btn_epaper" onclick="switchSection('epaper')">📰 E-Paper Editor</button>
+      <button type="button" class="tab-btn" id="btn_bio" onclick="switchSection('bio')" style="background:#047857; color:#d1fae5; border-color:#059669;">📚 Biography Manager</button>
       <button type="button" class="tab-btn" id="btn_list" onclick="switchSection('list')">📑 All News (<span id="countBadge">0</span>)</button>
       <button type="button" class="tab-btn" id="btn_ad" onclick="switchSection('ad')" style="background:#831843; color:#f43f5e; border-color:#9f1239;">📢 Ad Manager</button>
       <button type="button" class="tab-btn" id="btn_video" onclick="switchSection('video')" style="background:#1e3a8a; color:#38bdf8; border-color:#1d4ed8;">📹 Video Manager</button>
@@ -282,7 +283,96 @@
       <button type="button" class="btn btn-epaper" onclick="saveEpaperCustomization()">💾 Save E-Paper Layout</button>
     </div>
 
-    <!-- ================= 3. MANAGE NEWS LIST TAB ================= -->
+    <!-- ================= 3. BIOGRAPHY MANAGER TAB ================= -->
+    <div id="sec_bio" class="card" style="display: none;">
+      <h3 style="color:#34d399; margin-bottom:12px;">📚 विकिपीडिया स्टाइल बायोग्राफी मैनेजर (Supabase)</h3>
+      <input type="hidden" id="bioEditId" value="" />
+
+      <div class="form-group" style="margin-top:15px;">
+        <label>हस्ती का नाम (Full Name) *</label>
+        <input type="text" id="bioName" placeholder="पूरा नाम दर्ज करें" oninput="generateBioSlug()" />
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>URL Slug (ऑटो जनरेट)</label>
+          <input type="text" id="bioSlug" placeholder="url-slug" />
+        </div>
+        <div class="form-group">
+          <label>पद / पहचान (Title Tag)</label>
+          <input type="text" id="bioTitleTag" placeholder="उदा. राजनेता / वैज्ञानिक" />
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>जन्म तिथि (Date of Birth)</label>
+          <input type="text" id="bioBirthDate" placeholder="15 अक्टूबर 1931" />
+        </div>
+        <div class="form-group">
+          <label>जन्म स्थान (Birth Place)</label>
+          <input type="text" id="bioBirthPlace" placeholder="स्थान, राज्य" />
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>कार्यक्षेत्र (Field)</label>
+          <input type="text" id="bioField" placeholder="राजनीति / शिक्षा / विज्ञान" />
+        </div>
+        <div class="form-group">
+          <label>वर्तमान पद (Current Position)</label>
+          <input type="text" id="bioCurrentPos" placeholder="यदि कोई हो तो लिखें" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>फोटो (Profile Image)</label>
+        <input type="file" accept="image/*" id="bioFile" onchange="handleBioImg(event)" />
+        <input type="hidden" id="bioImgBase64" />
+        <img id="bioImgPreview" class="img-preview" />
+      </div>
+
+      <div class="form-group">
+        <label>शुरुआती परिचय (Intro Paragraph)</label>
+        <textarea id="bioIntro" rows="3" placeholder="हस्ती के बारे में संक्षिप्त परिचय..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>शिक्षा (Education)</label>
+        <textarea id="bioEdu" rows="3" placeholder="शिक्षा से जुड़ी जानकारी..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>राजनीतिक करियर (Political Career)</label>
+        <textarea id="bioPol" rows="3" placeholder="राजनीतिक सफर..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>मुख्य उपलब्धियां / कार्य (Career & Achievements)</label>
+        <textarea id="bioWork" rows="3" placeholder="अन्य कार्य या उपलब्धियां..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>विस्तृत इतिहास (Detailed HTML Content)</label>
+        <textarea id="bioContent" style="min-height:150px;" placeholder="पूरा विवरण या अन्य पैराग्राफ..."></textarea>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn" style="background:#059669;" onclick="saveFullBioToSupabase()">🚀 Supabase पर बायोग्राफी सेव करें</button>
+        <button type="button" id="btnCancelBioEdit" style="display:none; background:#475569; color:#fff; border:none; padding:13px 20px; border-radius:8px; cursor:pointer; font-weight:700;" onclick="resetBioForm()">✕ Cancel</button>
+      </div>
+
+      <div style="margin-top: 35px; border-top: 1px solid var(--border); padding-top: 20px;">
+        <h4 style="margin-bottom: 12px; color:#cbd5e1;">📋 सहेजी गई बायोग्राफी सूची</h4>
+        <table>
+          <thead><tr><th>Name</th><th>Title / Tag</th><th>Field</th><th style="text-align:center;">Actions</th></tr></thead>
+          <tbody id="bioTable"><tr><td colspan="4" style="text-align:center;">लोड हो रहा है...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ================= 4. MANAGE NEWS LIST TAB ================= -->
     <div id="sec_list" class="card" style="display: none;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
         <h3>प्रकाशित समाचार सूची (Supabase + Main + Archive)</h3>
@@ -294,7 +384,7 @@
       </table>
     </div>
 
-    <!-- ================= 4. AD MANAGER TAB ================= -->
+    <!-- ================= 5. AD MANAGER TAB ================= -->
     <div id="sec_ad" class="card" style="display: none;">
       <h3 style="color:#f43f5e; margin-bottom:12px;">📢 होमपेज कस्टम विज्ञापन बैनर</h3>
       <div class="form-group">
@@ -306,7 +396,7 @@
       <button type="button" class="btn" style="background:#e11d48;" onclick="saveCustomAdSettings()">📢 Update Ad Banner</button>
     </div>
 
-    <!-- ================= 5. VIDEO MANAGER TAB ================= -->
+    <!-- ================= 6. VIDEO MANAGER TAB ================= -->
     <div id="sec_video" class="card" style="display: none;">
       <h3 style="color:#38bdf8; margin-bottom:12px;">📹 डायरेक्ट वीडियो बुलेटिन मैनेजर</h3>
       <div class="form-group">
@@ -321,7 +411,7 @@
       <button type="button" class="btn" style="background:#0284c7;" onclick="saveDirectVideoSettings()">📹 Upload & Publish Video</button>
     </div>
 
-    <!-- ================= 6. INBOX TAB ================= -->
+    <!-- ================= 7. INBOX TAB ================= -->
     <div id="sec_inbox" class="card" style="display: none;">
       <h3 style="color:#34d399; margin-bottom:15px;">📥 पाठक संदेश इनबॉक्स</h3>
       <table>
@@ -330,7 +420,7 @@
       </table>
     </div>
 
-    <!-- ================= 7. CONFIG TAB ================= -->
+    <!-- ================= 8. CONFIG TAB ================= -->
     <div id="sec_token" class="card" style="display: none;">
       <h3 style="margin-bottom:12px;">GitHub Token Configuration</h3>
       <div class="form-group" style="max-width: 500px;">
@@ -368,6 +458,7 @@
     let globalMainDb = { "90i_news": [], "news": [], "messages": [], "customAd": null, "directVideos": [] };
     let globalArchiveDb = { "archive_news": [] };
     let globalSupabaseNews = [];
+    let globalSupabaseBios = [];
 
     const MAIN_DB_CACHE_KEY = "90i_cache_main_db_v1";
     const ARCHIVE_DB_CACHE_KEY = "90i_cache_archive_db_v1";
@@ -386,9 +477,11 @@
 
       await fetchAllDatabases();
       await fetchSupabaseNews();
+      await fetchSupabaseBios();
       loadNewsList(false);
       loadInboxMessages();
       loadExistingAdAndVideoSettings();
+      loadBioList();
     };
 
     async function fetchSupabaseNews() {
@@ -401,6 +494,20 @@
         });
         if (supRes.ok) {
           globalSupabaseNews = await supRes.json();
+        }
+      } catch(e) {}
+    }
+
+    async function fetchSupabaseBios() {
+      try {
+        var bioRes = await fetch(`${SUPABASE_URL}/rest/v1/biographies?select=*&order=created_at.desc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        if (bioRes.ok) {
+          globalSupabaseBios = await bioRes.json();
         }
       } catch(e) {}
     }
@@ -482,7 +589,7 @@
     }
 
     function switchSection(name) {
-      ['compose', 'epaper', 'list', 'ad', 'video', 'inbox', 'token'].forEach(s => {
+      ['compose', 'epaper', 'bio', 'list', 'ad', 'video', 'inbox', 'token'].forEach(s => {
         document.getElementById('sec_' + s).style.display = (s === name) ? 'block' : 'none';
         var btn = document.getElementById('btn_' + s);
         if (btn) btn.className = 'tab-btn' + (s === name ? ' active' : '') + (s === 'epaper' ? ' epaper-tab-btn' : '');
@@ -491,6 +598,7 @@
       if (name === 'inbox') loadInboxMessages();
       if (name === 'epaper') populateEpaperArticleDropdown();
       if (name === 'ad') loadExistingAdAndVideoSettings();
+      if (name === 'bio') loadBioList();
     }
 
     function switchMediaMode(type) {
@@ -510,6 +618,12 @@
       document.getElementById('newsSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : 'news-' + Date.now().toString().slice(-6);
     }
 
+    function generateBioSlug() {
+      var t = document.getElementById('bioName').value;
+      var s = t.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '-');
+      document.getElementById('bioSlug').value = s ? s + '-' + Date.now().toString().slice(-4) : '';
+    }
+
     function handleImg(e) {
       var f = e.target.files[0];
       if (!f) return;
@@ -518,7 +632,7 @@
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement("canvas");
-          var max_w = 1200; // HD Quality Width (1200px)
+          var max_w = 1200;
           var scale = max_w / img.width;
           if (img.width > max_w) {
             canvas.width = max_w;
@@ -529,9 +643,32 @@
           }
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.85); // High Definition 85% Quality
+          var b64 = canvas.toDataURL("image/jpeg", 0.85);
           document.getElementById('newsImgBase64').value = b64;
           var p = document.getElementById('imgPreview'); p.src = b64; p.style.display = 'block';
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(f);
+    }
+
+    function handleBioImg(e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement("canvas");
+          var max_w = 400;
+          var scale = max_w / img.width;
+          canvas.width = (img.width > max_w) ? max_w : img.width;
+          canvas.height = (img.width > max_w) ? (img.height * scale) : img.height;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          var b64 = canvas.toDataURL("image/jpeg", 0.6);
+          document.getElementById('bioImgBase64').value = b64;
+          var p = document.getElementById('bioImgPreview'); p.src = b64; p.style.display = 'block';
         };
         img.src = evt.target.result;
       };
@@ -557,7 +694,7 @@
           }
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          var b64 = canvas.toDataURL("image/jpeg", 0.85); // High Definition Ad Banner
+          var b64 = canvas.toDataURL("image/jpeg", 0.85);
           document.getElementById('adImgBase64').value = b64;
           var p = document.getElementById('adImgPreview'); p.src = b64; p.style.display = 'block';
         };
@@ -624,6 +761,161 @@
         document.getElementById('directVideoTitle').value = '';
         document.getElementById('directVideoBase64').value = '';
         document.getElementById('directVideoFile').value = '';
+      } catch(err) {
+        hideLoading();
+        alert("त्रुटि: " + err.message);
+      }
+    }
+
+    async function saveFullBioToSupabase() {
+      var name = document.getElementById('bioName').value.trim();
+      if (!name) { alert("कृपया हस्ती का नाम दर्ज करें!"); return; }
+
+      showLoading("बायोग्राफी सेव हो रही है...", "Supabase में सिंक हो रहा है...");
+      try {
+        var bioId = document.getElementById('bioEditId').value;
+        var imgBase64 = document.getElementById('bioImgBase64').value;
+
+        var bioData = {
+          name: name,
+          slug: document.getElementById('bioSlug').value.trim() || ('bio-' + Date.now()),
+          title_tag: document.getElementById('bioTitleTag').value.trim(),
+          birth_date: document.getElementById('bioBirthDate').value.trim(),
+          birth_place: document.getElementById('bioBirthPlace').value.trim(),
+          field: document.getElementById('bioField').value.trim(),
+          current_position: document.getElementById('bioCurrentPos').value.trim(),
+          image: imgBase64,
+          intro: document.getElementById('bioIntro').value.trim(),
+          education: document.getElementById('bioEdu').value.trim(),
+          political_career: document.getElementById('bioPol').value.trim(),
+          career_work: document.getElementById('bioWork').value.trim(),
+          content: document.getElementById('bioContent').value.trim()
+        };
+
+        if (bioId) {
+          var supRes = await fetch(`${SUPABASE_URL}/rest/v1/biographies?id=eq.${bioId}`, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(bioData)
+          });
+          if (!supRes.ok) throw new Error("Supabase Biography Update Failed");
+        } else {
+          var supabaseRes = await fetch(`${SUPABASE_URL}/rest/v1/biographies`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(bioData)
+          });
+          if (!supabaseRes.ok) {
+            var errText = await supabaseRes.text();
+            throw new Error("Supabase Error: " + errText);
+          }
+        }
+
+        hideLoading();
+        alert("✅ बायोग्राफी Supabase में सफलतापूर्वक सेव हो गई!");
+        resetBioForm();
+        loadBioList();
+      } catch(err) {
+        hideLoading();
+        alert("त्रुटि: " + err.message);
+      }
+    }
+
+    async function loadBioList() {
+      await fetchSupabaseBios();
+      var tb = document.getElementById('bioTable');
+      if (!globalSupabaseBios.length) {
+        tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">कोई बायोग्राफी उपलब्ध नहीं है।</td></tr>';
+        return;
+      }
+      tb.innerHTML = globalSupabaseBios.map(b => `
+        <tr>
+          <td><b>${esc(b.name)}</b></td>
+          <td>${esc(b.title_tag || '-')}</td>
+          <td><span class="badge-sec">${esc(b.field || 'विविध')}</span></td>
+          <td style="text-align:center;">
+            <button type="button" class="btn-action-edit" onclick="editBio('${b.id}')">✏️</button>
+            <button type="button" class="btn-action-del" onclick="deleteBio('${b.id}')">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function editBio(id) {
+      var b = globalSupabaseBios.find(x => String(x.id) === String(id));
+      if (!b) { alert("⚠️ बायोग्राफी नहीं मिली!"); return; }
+
+      document.getElementById('bioEditId').value = b.id;
+      document.getElementById('bioName').value = b.name || '';
+      document.getElementById('bioSlug').value = b.slug || '';
+      document.getElementById('bioTitleTag').value = b.title_tag || '';
+      document.getElementById('bioBirthDate').value = b.birth_date || '';
+      document.getElementById('bioBirthPlace').value = b.birth_place || '';
+      document.getElementById('bioField').value = b.field || '';
+      document.getElementById('bioCurrentPos').value = b.current_position || '';
+      document.getElementById('bioIntro').value = b.intro || '';
+      document.getElementById('bioEdu').value = b.education || '';
+      document.getElementById('bioPol').value = b.political_career || '';
+      document.getElementById('bioWork').value = b.career_work || '';
+      document.getElementById('bioContent').value = b.content || '';
+
+      if (b.image) {
+        document.getElementById('bioImgBase64').value = b.image;
+        var p = document.getElementById('bioImgPreview'); p.src = b.image; p.style.display = 'block';
+      } else {
+        document.getElementById('bioImgBase64').value = '';
+        document.getElementById('bioImgPreview').style.display = 'none';
+      }
+
+      document.getElementById('btnCancelBioEdit').style.display = 'inline-block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetBioForm() {
+      document.getElementById('bioEditId').value = '';
+      document.getElementById('bioName').value = '';
+      document.getElementById('bioSlug').value = '';
+      document.getElementById('bioTitleTag').value = '';
+      document.getElementById('bioBirthDate').value = '';
+      document.getElementById('bioBirthPlace').value = '';
+      document.getElementById('bioField').value = '';
+      document.getElementById('bioCurrentPos').value = '';
+      document.getElementById('bioIntro').value = '';
+      document.getElementById('bioEdu').value = '';
+      document.getElementById('bioPol').value = '';
+      document.getElementById('bioWork').value = '';
+      document.getElementById('bioContent').value = '';
+      document.getElementById('bioImgBase64').value = '';
+      document.getElementById('bioImgPreview').style.display = 'none';
+      document.getElementById('btnCancelBioEdit').style.display = 'none';
+    }
+
+    async function deleteBio(id) {
+      if (!confirm("क्या आप वाकई इस बायोग्राफी को हटाना चाहते हैं?")) return;
+      showLoading("बायोग्राफी हटाई जा रही है...", "सिंक हो रहा है...");
+      try {
+        var delRes = await fetch(`${SUPABASE_URL}/rest/v1/biographies?id=eq.${id}`, {
+          method: 'DELETE',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        if (!delRes.ok) throw new Error("Supabase Biography Delete Failed");
+
+        hideLoading();
+        alert("🗑️ बायोग्राफी सफलतापूर्वक हटा दी गई!");
+        loadBioList();
       } catch(err) {
         hideLoading();
         alert("त्रुटि: " + err.message);
@@ -1023,6 +1315,7 @@
       
       xml += '  <url><loc>' + domain + '/</loc><changefreq>always</changefreq><priority>1.0</priority></url>\n';
       xml += '  <url><loc>' + domain + '/epaper.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n';
+      xml += '  <url><loc>' + domain + '/biography.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n';
 
       newsList.forEach(function(item) {
         if (item.slug || item.id) {
