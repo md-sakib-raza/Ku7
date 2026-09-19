@@ -261,14 +261,18 @@
       function safeImageUrl(value) {
         const url = String(value || "").trim();
         if (!url) return DEFAULT_IMAGE;
-        return /^(https?:)?\/\//i.test(url) || url.startsWith("/") ? url : DEFAULT_IMAGE;
+        // Accept normal HTTP/URLs, absolute/relative paths, and Base64 encoded images from CMS
+        if (url.startsWith("data:image/") || /^(https?:)?\/\//i.test(url) || url.startsWith("/")) {
+          return url;
+        }
+        return DEFAULT_IMAGE;
       }
 
       function cardMarkup(item) {
         const name = escapeHtml(item.name || "अज्ञात");
         const slug = encodeURIComponent(String(item.slug || "").trim());
         const titleTag = escapeHtml(item.title_tag || "जीवनी");
-        const imageUrl = escapeHtml(safeImageUrl(item.image));
+        const imageUrl = safeImageUrl(item.image); // Base64 strings should not be HTML-escaped via escapeHtml() as it breaks data URIs
         return `<a href="biography.html?slug=${slug}" class="bio-card">
           <img src="${imageUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}'" />
           <div>
@@ -307,7 +311,7 @@
 
         const name = escapeHtml(person.name || "अज्ञात");
         const titleTag = escapeHtml(person.title_tag || "विशिष्ट व्यक्तित्व");
-        const imageUrl = escapeHtml(safeImageUrl(person.image));
+        const imageUrl = safeImageUrl(person.image);
         const birthDate = escapeHtml(person.birth_date || "उपलब्ध नहीं");
         const birthPlace = escapeHtml(person.birth_place || "बिहार");
         const field = escapeHtml(person.field || "विविध");
