@@ -40,8 +40,8 @@
       "name": "Md Sakib Raza"
     },
     "sameAs": [
-      "https://www.instagram.com/sakibraza___?igsi=MXg3Ymp1am52eW91dA==",
-      "https://www.facebook.com/share/1933vKJK8m/"
+      "https://www.instagram.com/sakibraza___?stkn=MXg3Ymp1am52eW91dA==",
+      "https://www.facebook.com/share/1HUwFK6VkN/"
     ]
   }
   </script>
@@ -1101,6 +1101,67 @@
     .policy-body h4 { color: #0f172a; margin: 16px 0 8px; font-size: 16px; font-weight: 800; }
     .policy-body p { margin-bottom: 12px; }
 
+    /* Cookie Consent Banner (AdSense Compliance) */
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #090d16;
+      color: #cbd5e1;
+      border-top: 3px solid var(--brand);
+      padding: 16px 20px;
+      z-index: 9999;
+      display: none;
+      box-shadow: 0 -5px 25px rgba(0,0,0,0.4);
+    }
+    .cookie-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .cookie-text {
+      font-size: 13.5px;
+      line-height: 1.5;
+      flex: 1;
+      min-width: 280px;
+    }
+    .cookie-text a {
+      color: #ffffff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .cookie-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-cookie-accept {
+      background: var(--brand);
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-cookie-accept:hover { background: var(--brand-dark); }
+    .btn-cookie-reject {
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #334155;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-cookie-reject:hover { background: #334155; color: #fff; }
+
     .main-footer {
       background: #090d16 !important;
       color: #cbd5e1 !important;
@@ -1540,6 +1601,19 @@
     </div>
   </div>
 
+  <!-- Cookie Consent Banner (AdSense Compliant, once per device) -->
+  <div id="cookieConsentBanner" class="cookie-banner">
+    <div class="cookie-container">
+      <div class="cookie-text">
+        हम और हमारे विज्ञापन साझेदार (Google AdSense) बेहतर अनुभव और विज्ञापनों के लिए कुकीज़ का उपयोग करते हैं। वेबसाइट का उपयोग जारी रखकर आप हमारी <a onclick="openPolicy('privacy')">गोपनीयता नीति</a> से सहमत हैं।
+      </div>
+      <div class="cookie-buttons">
+        <button type="button" class="btn-cookie-accept" onclick="handleCookieChoice('accept')">स्वीकार करें (Accept)</button>
+        <button type="button" class="btn-cookie-reject" onclick="handleCookieChoice('reject')">अस्वीकार करें (Reject)</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="main-footer">
     <div class="footer-container">
       
@@ -1565,6 +1639,15 @@
           <li><a href="index.html?cat=खेल">खेल जगत</a></li>
           <li><a href="biography.html">बायोग्राफी सेक्शन</a></li>
           <li><a href="epaper.html">दैनिक ई-पेपर</a></li>
+        </ul>
+      </div>
+
+      <!-- सामाजिक मीडिया सेक्शन (Social Media Section added as requested) -->
+      <div class="footer-col">
+        <h3>सोशल मीडिया</h3>
+        <ul class="footer-links">
+          <li><a href="https://www.instagram.com/sakibraza___?stkn=MXg3Ymp1am52eW91dA==" target="_blank" rel="noopener">📸 Instagram Page</a></li>
+          <li><a href="https://www.facebook.com/share/1HUwFK6VkN/" target="_blank" rel="noopener">📘 Facebook Page</a></li>
         </ul>
       </div>
 
@@ -1652,8 +1735,8 @@
         content: `
           <h4>1. हमारी गोपनीयता नीति</h4>
           <p>THE 90I न्यूज़ (90inews.me) पर आने वाले पाठकों की गोपनीयता हमारे लिए अत्यंत महत्वपूर्ण है। यह नीति बताती है कि हम आपकी कौन सी जानकारी एकत्र करते हैं और उसका उपयोग कैसे करते हैं।</p>
-          <h4>2. कुकीज़ (Cookies) और विज्ञापन</h4>
-          <p>हमारी वेबसाइट तृतीय-पक्ष विज्ञापनदाताओं (जैसे Google AdSense) का उपयोग करती है। Google जैसी विज्ञापन कंपनियाँ उपयोगकर्ताओं की पिछली वेबसाइट विज़िट के आधार पर विज्ञापन दिखाने के लिए कुकीज़ (DoubleClick DART Cookie आदि) का उपयोग करती हैं।</p>
+          <h4>2. कुकीज़ (Cookies) और विज्ञापन (Google AdSense)</h4>
+          <p>हमारी वेबसाइट तृतीय-पक्ष विज्ञापनदाताओं और Google AdSense का उपयोग करती है। Google जैसी विज्ञापन कंपनियाँ उपयोगकर्ताओं की पिछली वेबसाइट विज़िट (DoubleClick DART Cookie सहित) के आधार पर विज्ञापन दिखाने के लिए कुकीज़ का उपयोग करती हैं।</p>
           <h4>3. व्यक्तिगत डेटा</h4>
           <p>हम आपके द्वारा फॉर्म (जैसे संपर्क या इनबॉक्स) के माध्यम से दी गई जानकारी (नाम, ईमेल) को पूरी तरह सुरक्षित रखते हैं और किसी भी तीसरे पक्ष के साथ साझा नहीं करते हैं।</p>
         `
@@ -1752,6 +1835,21 @@
     function copyLeadLink() {
       navigator.clipboard.writeText(window.location.href);
       alert("खबर का लिंक कॉपी हो गया है!");
+    }
+
+    // Cookie Consent Handler (Once per device)
+    function checkCookieConsent() {
+      const consent = localStorage.getItem("90i_cookie_consent_status");
+      const banner = document.getElementById("cookieConsentBanner");
+      if (!consent && banner) {
+        banner.style.display = "block";
+      }
+    }
+
+    function handleCookieChoice(choice) {
+      localStorage.setItem("90i_cookie_consent_status", choice);
+      const banner = document.getElementById("cookieConsentBanner");
+      if (banner) banner.style.display = "none";
     }
 
     async function updateGrowingVisitorStats() {
@@ -1860,6 +1958,7 @@
     async function initPortal() {
       renderDateHeaders();
       updateGrowingVisitorStats();
+      checkCookieConsent();
 
       const params = new URLSearchParams(window.location.search);
       currentCategoryFilter = (params.get("cat") || "").trim();
