@@ -8,7 +8,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yantramanav:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:ital,wght@0,400;0,700;1,400&family=Yantramanav:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --wiki-link: #0645ad;
@@ -17,7 +17,7 @@
       --text: #202122;
       --muted: #54595d;
       --brand: #dc2626;
-      --line: #e2e8f0;
+      --line: #eaecf0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Yantramanav', sans-serif; background: #ffffff; color: var(--text); line-height: 1.7; font-size: 16px; display: flex; flex-direction: column; min-height: 100vh; }
@@ -55,11 +55,12 @@
     }
     .bio-search-box input:focus { border-color: var(--wiki-link); }
 
-    .bio-title { font-size: 32px; font-weight: 400; font-family: serif; border-bottom: 1px solid var(--wiki-border); padding-bottom: 5px; margin-bottom: 8px; color: var(--text); }
+    .bio-title { font-size: 34px; font-weight: normal; font-family: 'Linux Libertine', Georgia, serif; border-bottom: 1px solid var(--wiki-border); padding-bottom: 4px; margin-bottom: 6px; color: var(--text); }
     .bio-subtitle { font-size: 14px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
     
-    .bio-content p { margin-bottom: 16px; font-size: 15.5px; text-align: justify; }
-    .bio-content h2 { font-size: 22px; font-family: serif; border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-top: 25px; margin-bottom: 12px; color: var(--text); }
+    .bio-content { font-family: 'Linux Libertine', Georgia, serif; font-size: 16.5px; }
+    .bio-content p { margin-bottom: 16px; text-align: justify; }
+    .bio-content h2 { font-size: 20px; font-family: 'Linux Libertine', Georgia, serif; border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-top: 25px; margin-bottom: 12px; color: var(--text); font-weight: bold; }
     .bio-content a { color: var(--wiki-link); text-decoration: none; }
     .bio-content a:hover { text-decoration: underline; }
 
@@ -69,20 +70,20 @@
       border: 1px solid var(--wiki-border);
       border-radius: 2px;
       padding: 6px;
-      font-size: 13.5px;
+      font-size: 13px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      margin: 20px 0;
-      max-width: 320px;
+      margin: 0 0 20px 20px;
+      width: 300px;
       float: right;
-      margin-left: 20px;
     }
-    @media(max-width: 768px) { .wiki-infobox { float: none; max-width: 100%; margin: 20px 0; } }
-    .wiki-infobox h3 { text-align: center; background: #eaecf0; color: var(--text); padding: 8px; font-size: 15px; font-weight: bold; border-bottom: 1px solid var(--wiki-border); margin-bottom: 8px; }
-    .wiki-infobox img { width: 100%; border-radius: 0; margin-bottom: 8px; object-fit: cover; max-height: 280px; border: 1px solid #c8ccd1; }
-    .wiki-row { display: flex; border-bottom: 1px solid #eaecf0; padding: 6px 4px; }
-    .wiki-label { font-weight: bold; width: 40%; color: var(--text); font-size: 13px; }
-    .wiki-value { width: 60%; color: var(--text); font-size: 13px; }
+    @media(max-width: 768px) { .wiki-infobox { float: none; width: 100%; margin: 20px 0; } }
+    .wiki-infobox h3 { text-align: center; background: #eaecf0; color: var(--text); padding: 8px; font-size: 15px; font-weight: bold; border-bottom: 1px solid var(--wiki-border); margin-bottom: 8px; font-family: sans-serif; }
+    .wiki-infobox img { width: 100%; border-radius: 0; margin-bottom: 8px; object-fit: cover; max-height: 320px; border: 1px solid #c8ccd1; }
+    .wiki-row { display: flex; border-bottom: 1px solid var(--line); padding: 6px 4px; }
+    .wiki-label { font-weight: bold; width: 42%; color: var(--text); font-family: sans-serif; }
+    .wiki-value { width: 58%; color: var(--text); }
     .wiki-value a { color: var(--wiki-link); text-decoration: none; }
+    .wiki-value a:hover { text-decoration: underline; }
 
     /* Bio List Grid */
     .bio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; }
@@ -125,7 +126,50 @@
     .btn-tw { background: #000000; }
     .btn-cp { background: #64748b; }
 
-    /* Professional Footer matching index.html */
+    /* Policy Modal */
+    .policy-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .policy-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 750px;
+      max-height: 85vh;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .policy-header {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid var(--brand);
+    }
+    .policy-header h3 { font-size: 18px; font-weight: 800; }
+    .policy-body {
+      padding: 24px;
+      overflow-y: auto;
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.7;
+    }
+    .policy-body h4 { color: #0f172a; margin: 16px 0 8px; font-size: 16px; font-weight: 800; }
+    .policy-body p { margin-bottom: 12px; }
+
+    /* Professional Footer */
     .main-footer {
       background: #090d16 !important;
       color: #cbd5e1 !important;
@@ -140,7 +184,7 @@
       margin: 0 auto;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr;
+      grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 1.2fr;
       gap: 25px;
     }
     .footer-col h3 {
@@ -165,10 +209,64 @@
     .footer-desc { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 16px; }
     .footer-contact-info { list-style: none; font-size: 13px; color: #94a3b8; display: flex; flex-direction: column; gap: 8px; }
     .footer-contact-info a { color: #cbd5e1; text-decoration: none; }
+    .footer-contact-info a:hover { color: var(--brand); }
     .footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .footer-links a { color: #94a3b8; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-    .footer-links a:hover { color: #ffffff; }
-    .footer-bottom { margin-top: 40px; border-top: 1px solid #1e293b; padding-top: 20px; font-size: 12px; color: #64748b; text-align: center; }
+    .footer-links a { color: #94a3b8; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: color 0.2s, transform 0.2s; }
+    .footer-links a:hover { color: #ffffff; transform: translateX(3px); }
+    .footer-links a::before { content: '▸'; color: var(--brand); font-size: 11px; }
+
+    .footer-form { display: flex; flex-direction: column; gap: 10px; }
+    .form-input, .form-textarea {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #ffffff;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--brand); background: #0f172a; }
+    .form-textarea { resize: vertical; min-height: 70px; }
+    .btn-footer-submit {
+      background: var(--brand);
+      color: #ffffff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+    .btn-footer-submit:hover { background: #b91c1c; }
+    .form-status { font-size: 12px; margin-top: 4px; display: none; }
+
+    .footer-bottom {
+      margin-top: 40px;
+      border-top: 1px solid #1e293b;
+      padding-top: 20px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .footer-bottom-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    @media (max-width: 992px) {
+      .footer-container { grid-template-columns: 1fr 1fr; gap: 30px; }
+    }
+    @media (max-width: 860px) {
+      .footer-container { grid-template-columns: 1fr; gap: 28px; }
+      .footer-bottom-inner { flex-direction: column; text-align: center; }
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -200,68 +298,194 @@
     </div>
   </main>
 
+  <!-- Policy Modal -->
+  <div id="policyModal" class="policy-modal" onclick="closePolicyOnBg(event)">
+    <div class="policy-box">
+      <div class="policy-header">
+        <h3 id="policyModalTitle">नीति विवरण</h3>
+        <button style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;" onclick="closePolicyModal()">✕</button>
+      </div>
+      <div class="policy-body" id="policyModalContent"></div>
+    </div>
+  </div>
+
   <footer class="main-footer">
     <div class="footer-container">
+      
       <div class="footer-col">
         <div class="footer-logo">THE <span>90I</span> NEWS</div>
-        <p class="footer-desc">बिहार एवं राष्ट्र का अग्रणी डिजिटल न्यूज़ नेटवर्क। निष्पक्ष पत्रकारिता और ज़मीनी मुद्दों की निर्भीक आवाज़।</p>
+        <p class="footer-desc">
+          बिहार एवं राष्ट्र का अग्रणी डिजिटल न्यूज़ नेटवर्क। निष्पक्ष पत्रकारिता, सटीक विश्लेषण और ज़मीनी मुद्दों की निर्भीक आवाज़।
+        </p>
         <ul class="footer-contact-info">
           <li>📍 <b>मुख्यालय:</b> पूर्णिया, बिहार, भारत</li>
-          <li>✉️ <b>ईमेल:</b> office.mdsakibraza@gmail.com</li>
+          <li>✉️ <b>ईमेल:</b> <a href="mailto:office.mdsakibraza@gmail.com">office.mdsakibraza@gmail.com</a></li>
+          <li>🌐 <b>वेबसाइट:</b> 90inews.me</li>
         </ul>
       </div>
+
       <div class="footer-col">
         <h3>प्रमुख श्रेणियां</h3>
         <ul class="footer-links">
           <li><a href="index.html?cat=बिहार">बिहार न्यूज़</a></li>
+          <li><a href="index.html?cat=राष्ट्रीय">राष्ट्रीय घटनाक्रम</a></li>
           <li><a href="index.html?cat=राजनीति">राजनीति विशेष</a></li>
           <li><a href="biography.html">बायोग्राफी सेक्शन</a></li>
           <li><a href="epaper.html">दैनिक ई-पेपर</a></li>
         </ul>
       </div>
+
+      <!-- सामाजिक मीडिया सेक्शन -->
+      <div class="footer-col">
+        <h3>सोशल मीडिया</h3>
+        <ul class="footer-links">
+          <li><a href="https://www.instagram.com/sakibraza___?stkn=MXg3Ymp1am52eW91dA==" target="_blank" rel="noopener">📸 Instagram Page</a></li>
+          <li><a href="https://www.facebook.com/share/1HUwFK6VkN/" target="_blank" rel="noopener">📘 Facebook Page</a></li>
+        </ul>
+      </div>
+
       <div class="footer-col">
         <h3>नीति व नियम</h3>
         <ul class="footer-links">
-          <li><a href="index.html">हमारे बारे में</a></li>
-          <li><a href="index.html">प्राइवेसी पॉलिसी</a></li>
-          <li><a href="index.html">नियम व शर्तें</a></li>
+          <li><a onclick="openPolicy('about')">हमारे बारे में (About Us)</a></li>
+          <li><a onclick="openPolicy('terms')">नियम और शर्तें (Terms)</a></li>
+          <li><a onclick="openPolicy('privacy')">गोपनीयता नीति (Privacy Policy)</a></li>
+          <li><a onclick="openPolicy('disclaimer')">अस्वीकरण (Disclaimer)</a></li>
+          <li><a onclick="openPolicy('editorial')">संपादकीय नीति (Editorial)</a></li>
           <li><a href="admin.html">संपादक लॉगिन (CMS)</a></li>
         </ul>
       </div>
+
       <div class="footer-col">
-        <h3>सहायता</h3>
-        <ul class="footer-links">
-          <li><a href="index.html">संपर्क करें</a></li>
-          <li><a href="epaper.html">डिजिटल संस्करण</a></li>
-        </ul>
+        <h3>संदेश भेजें / विज्ञापन</h3>
+        <form id="footerContactForm" class="footer-form" onsubmit="handleFooterContact(event)">
+          <input type="text" id="footerName" class="form-input" placeholder="आपका नाम" required />
+          <input type="email" id="footerEmail" class="form-input" placeholder="ईमेल पता" required />
+          <textarea id="footerMessage" class="form-textarea" placeholder="अपना संदेश लिखें..." required></textarea>
+          <button type="submit" class="btn-footer-submit">
+            <span>✉️ संदेश भेजें</span>
+          </button>
+          <div id="footerFormStatus" class="form-status"></div>
+        </form>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom-inner">
+        <div>© <span id="footerYear">2026</span> THE 90I NEWS. सर्वाधिकार सुरक्षित।</div>
+        <div>डिजिटल दैनिक संस्करण • सच | सटीक | निर्भीक</div>
       </div>
     </div>
-    <div class="footer-bottom">
-      &copy; 2026 THE 90I NEWS. All Rights Reserved.
-    </div>
   </footer>
+
+  <script>
+    const policyData = {
+      about: {
+        title: "हमारे बारे में (About Us)",
+        content: `
+          <h4>THE 90I NEWS के बारे में</h4>
+          <p><b>THE 90I NEWS</b> (90inews.me) बिहार और राष्ट्र का एक अग्रणी, स्वतंत्र और प्रामाणिक डिजिटल न्यूज़ नेटवर्क है। हमारा मुख्य कार्यालय पूर्णिया, बिहार में स्थित है।</p>
+          <p>हमारा उद्देश्य पाठकों तक बिहार, सीमांचल, राष्ट्रीय राजनीति, शिक्षा, रोजगार, व्यापार और देश-दुनिया की निष्पक्ष, सटीक और सत्यपरक खबरें सबसे पहले पहुँचाना है।</p>
+          <h4>हमारी टीम एवं संपादकीय मूल्य</h4>
+          <p>यह पोर्टल पूरी तरह से पत्रकारिता के उच्च मानकों और निष्पक्षता का पालन करता है। हमारी डिजिटल टीम हर खबर की सत्यता की जांच करने के बाद ही उसे पाठकों के समक्ष प्रस्तुत करती है।</p>
+          <p><b>संस्थापक एवं संपादक:</b> Md Sakib Raza</p>
+          <p><b>मुख्यालय:</b> पूर्णिया, बिहार, भारत</p>
+          <p><b>आधिकारिक ईमेल:</b> office.mdsakibraza@gmail.com</p>
+        `
+      },
+      terms: {
+        title: "नियम और शर्तें (Terms & Conditions)",
+        content: `
+          <h4>1. परिचय</h4>
+          <p>THE 90I न्यूज़ (90inews.me) पर आपका स्वागत है। इस वेबसाइट का उपयोग करके आप हमारे इन नियमों और शर्तों से पूरी तरह सहमत होते हैं। यदि आप इनसे सहमत नहीं हैं, तो कृपया इस वेबसाइट का उपयोग न करें।</p>
+          <h4>2. बौद्धिक संपदा अधिकार (Intellectual Property)</h4>
+          <p>इस वेबसाइट पर प्रकाशित सभी सामग्री (समाचार, लेख, लोगो, ग्राफिक्स, और छवियां) THE 90I न्यूज़ की संपत्ति हैं। बिना लिखित अनुमति के इसका व्यावसायिक उपयोग या पुनरुत्पादित करना प्रतिबंधित है।</p>
+          <h4>3. सामग्री में बदलाव</h4>
+          <p>हम बिना किसी पूर्व सूचना के वेबसाइट की सामग्री या इसके नियमों में कभी भी बदलाव करने का अधिकार सुरक्षित रखते हैं।</p>
+        `
+      },
+      privacy: {
+        title: "गोपनीयता नीति (Privacy Policy)",
+        content: `
+          <h4>1. हमारी गोपनीयता नीति</h4>
+          <p>THE 90I न्यूज़ (90inews.me) पर आने वाले पाठकों की गोपनीयता हमारे लिए अत्यंत महत्वपूर्ण है। यह नीति बताती है कि हम आपकी कौन सी जानकारी एकत्र करते हैं और उसका उपयोग कैसे करते हैं।</p>
+          <h4>2. कुकीज़ (Cookies) और विज्ञापन (Google AdSense)</h4>
+          <p>हमारी वेबसाइट तृतीय-पक्ष विज्ञापनदाताओं और Google AdSense का उपयोग करती है। Google जैसी विज्ञापन कंपनियाँ उपयोगकर्ताओं की पिछली वेबसाइट विज़िट (DoubleClick DART Cookie सहित) के आधार पर विज्ञापन दिखाने के लिए कुकीज़ का उपयोग करती हैं।</p>
+          <h4>3. व्यक्तिगत डेटा</h4>
+          <p>हम आपके द्वारा फॉर्म (जैसे संपर्क या इनबॉक्स) के माध्यम से दी गई जानकारी (नाम, ईमेल) को पूरी तरह सुरक्षित रखते हैं और किसी भी तीसरे पक्ष के साथ साझा नहीं करते हैं।</p>
+        `
+      },
+      disclaimer: {
+        title: "अस्वीकरण (Disclaimer)",
+        content: `
+          <h4>1. समाचार और जानकारी की सटीकता</h4>
+          <p>THE 90I न्यूज़ पर दी जाने वाली सभी जानकारी और समाचार सामान्य सूचना के उद्देश्य से हैं। हम यह सुनिश्चित करते हैं कि खबरें सटीक हों, फिर भी किसी भी त्रुटि या उससे होने वाले नुकसान के लिए पोर्टल जिम्मेदार नहीं होगा।</p>
+          <h4>2. बाहरी लिंक्स (External Links)</h4>
+          <p>हमारी वेबसाइट पर अन्य बाहरी वेबसाइटों के लिंक हो सकते हैं। उन बाहरी साइटों की गोपनीयता नीतियों या सामग्री पर हमारा कोई नियंत्रण नहीं है।</p>
+        `
+      },
+      editorial: {
+        title: "संपादकीय नीति (Editorial Policy)",
+        content: `
+          <h4>1. स्वतंत्र एवं निष्पक्ष पत्रकारिता</h4>
+          <p>THE 90I न्यूज़ किसी भी राजनीतिक दल या पक्षपात से मुक्त होकर स्वतंत्र पत्रकारिता के सिद्धांतों पर काम करता है।</p>
+          <h4>2. सुधार और शुचिता</h4>
+          <p>यदि हमारी किसी खबर में कोई तथ्यात्मक त्रुटि पाई जाती है, तो हम उसकी तुरंत समीक्षा करते हैं और पाठक की शिकायत या आंतरिक जांच के बाद उसमें सुधार करते हैं।</p>
+          <p><b>संपर्क:</b> किसी भी संपादकीय शिकायत या सुझाव के लिए आप हमें office.mdsakibraza@gmail.com पर ईमेल कर सकते हैं।</p>
+        `
+      }
+    };
+
+    function openPolicy(type) {
+      const modal = document.getElementById("policyModal");
+      const titleEl = document.getElementById("policyModalTitle");
+      const contentEl = document.getElementById("policyModalContent");
+      if (policyData[type]) {
+        titleEl.textContent = policyData[type].title;
+        contentEl.innerHTML = policyData[type].content;
+        modal.style.display = "flex";
+      }
+    }
+
+    function closePolicyModal() {
+      const modal = document.getElementById("policyModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function closePolicyOnBg(e) {
+      if (e.target.id === "policyModal") closePolicyModal();
+    }
+
+    function handleFooterContact(e) {
+      e.preventDefault();
+      const status = document.getElementById("footerFormStatus");
+      if (status) {
+        status.style.display = "block";
+        status.style.color = "#4ade80";
+        status.textContent = "धन्यवाद! आपका संदेश भेज दिया गया है।";
+      }
+      document.getElementById("footerContactForm").reset();
+      setTimeout(() => { if (status) status.style.display = "none"; }, 4000);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const footerYear = document.getElementById("footerYear");
+      if (footerYear) footerYear.textContent = new Date().getFullYear();
+    });
+  </script>
 
   <script>
     (function () {
       const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
       const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
       const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80";
-      const PAGE_TITLE_SUFFIX = " — बायोग्राफी | THE 90I NEWS";
+      const PAGE_TITLE_SUFFIX = " — विकिपीडिया, स्वतंत्र विश्वकोश";
       let cachedBioList = [];
-
-      function escapeHtml(value) {
-        return String(value == null ? "" : value)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#39;");
-      }
 
       function safeImageUrl(value) {
         const url = String(value || "").trim();
         if (!url) return DEFAULT_IMAGE;
-        // Accept normal HTTP/URLs, absolute/relative paths, and Base64 encoded images from CMS
         if (url.startsWith("data:image/") || /^(https?:)?\/\//i.test(url) || url.startsWith("/")) {
           return url;
         }
@@ -269,10 +493,10 @@
       }
 
       function cardMarkup(item) {
-        const name = escapeHtml(item.name || "अज्ञात");
+        const name = item.name || "अज्ञात";
         const slug = encodeURIComponent(String(item.slug || "").trim());
-        const titleTag = escapeHtml(item.title_tag || "जीवनी");
-        const imageUrl = safeImageUrl(item.image); // Base64 strings should not be HTML-escaped via escapeHtml() as it breaks data URIs
+        const titleTag = item.title_tag || "जीवनी";
+        const imageUrl = safeImageUrl(item.image);
         return `<a href="biography.html?slug=${slug}" class="bio-card">
           <img src="${imageUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}'" />
           <div>
@@ -285,7 +509,7 @@
       function renderError(message) {
         const container = document.getElementById("dynamicBioContent");
         if (!container) return;
-        container.innerHTML = `<p style="color:red; text-align:center;">${escapeHtml(message)}</p>`;
+        container.innerHTML = `<p style="color:red; text-align:center;">${message}</p>`;
       }
 
       function renderBioDirectory(list) {
@@ -309,33 +533,39 @@
           return;
         }
 
-        const name = escapeHtml(person.name || "अज्ञात");
-        const titleTag = escapeHtml(person.title_tag || "विशिष्ट व्यक्तित्व");
+        const name = person.name || "अज्ञात";
+        const titleTag = person.title_tag || "विशिष्ट व्यक्तित्व";
         const imageUrl = safeImageUrl(person.image);
-        const birthDate = escapeHtml(person.birth_date || "उपलब्ध नहीं");
-        const birthPlace = escapeHtml(person.birth_place || "बिहार");
-        const field = escapeHtml(person.field || "विविध");
-        const currentPosition = escapeHtml(person.current_position || "लागू नहीं");
-        const intro = escapeHtml(person.intro || "");
-        const education = person.education ? `<h2>शिक्षा (Education)</h2><p>${escapeHtml(person.education)}</p>` : "";
-        const politicalCareer = person.political_career ? `<h2>राजनीतिक करियर (Political Career)</h2><p>${escapeHtml(person.political_career)}</p>` : "";
-        const careerWork = person.career_work ? `<h2>कार्य और उपलब्धियां (Career & Achievements)</h2><p>${escapeHtml(person.career_work)}</p>` : "";
-        const biography = person.content ? `<h2>जीवन परिचय (Biography)</h2><p>${escapeHtml(person.content)}</p>` : "";
+        const birthDate = person.birth_date || "उपलब्ध नहीं";
+        const birthPlace = person.birth_place || "बिहार";
+        const field = person.field || "विविध";
+        const currentPosition = person.current_position || "लागू नहीं";
+        const politicalParty = person.political_party || person.party || "लागू नहीं";
+        const intro = person.intro || "";
+        
+        const education = person.education ? `<h2>शिक्षा (Education)</h2><p>${person.education}</p>` : "";
+        const politicalCareer = person.political_career ? `<h2>राजनीतिक करियर (Political Career)</h2><p>${person.political_career}</p>` : "";
+        const careerWork = person.career_work ? `<h2>कार्य और उपलब्धियां (Career & Achievements)</h2><p>${person.career_work}</p>` : "";
+        const biography = person.content ? `<h2>जीवन परिचय (Biography)</h2>${person.content}` : "";
 
         document.title = `${name}${PAGE_TITLE_SUFFIX}`;
 
         container.innerHTML = `
           <h1 class="bio-title">${name}</h1>
           <div class="bio-subtitle">${titleTag}</div>
+          
           <div class="wiki-infobox">
             <h3>${name}</h3>
             <img src="${imageUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}'" />
+            <div style="text-align: center; font-size: 12px; color: var(--muted); margin-bottom: 8px; font-style: italic;">${titleTag}</div>
             <div class="wiki-row"><div class="wiki-label">पूरा नाम</div><div class="wiki-value">${name}</div></div>
+            <div class="wiki-row"><div class="wiki-label">राजनीतिक दल</div><div class="wiki-value">${politicalParty}</div></div>
             <div class="wiki-row"><div class="wiki-label">जन्म तिथि</div><div class="wiki-value">${birthDate}</div></div>
             <div class="wiki-row"><div class="wiki-label">जन्म स्थान</div><div class="wiki-value">${birthPlace}</div></div>
             <div class="wiki-row"><div class="wiki-label">क्षेत्र</div><div class="wiki-value">${field}</div></div>
             <div class="wiki-row"><div class="wiki-label">वर्तमान पद</div><div class="wiki-value">${currentPosition}</div></div>
           </div>
+
           <div class="bio-content">
             <p><b>परिचय:</b> ${intro}</p>
             ${education}
@@ -343,6 +573,7 @@
             ${careerWork}
             ${biography}
           </div>
+
           <div class="share-container">
             <span class="share-title">शेयर करें:</span>
             <a href="https://api.whatsapp.com/send?text=${encodeURIComponent((person.name || "बायोग्राफी") + " - " + window.location.href)}" target="_blank" rel="noopener" class="share-btn btn-wa">💬 WhatsApp</a>
@@ -350,6 +581,7 @@
             <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(person.name || "बायोग्राफी")}&url=${encodeURIComponent(window.location.href)}" target="_blank" rel="noopener" class="share-btn btn-tw">🐦 Twitter</a>
             <button id="copyLinkButton" class="share-btn btn-cp" style="border:none; cursor:pointer;">🔗 Copy Link</button>
           </div>
+
           <div style="margin-top: 40px; border-top: 2px solid var(--line); padding-top: 20px;">
             <h3 style="font-family:serif; margin-bottom:15px;">अन्य प्रमुख बायोग्राफी</h3>
             <div class="bio-grid" id="otherBioGrid">
