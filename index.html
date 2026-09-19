@@ -300,7 +300,7 @@
     .spotlight-img {
       width: 100%;
       max-height: 420px;
-      object-fit: contain; /* फोटो मोबाइल में कटेगी नहीं */
+      object-fit: contain;
       display: block;
     }
     .spotlight-cat-tag {
@@ -352,7 +352,6 @@
       flex-wrap: wrap;
     }
 
-    /* Red border summary box जैसा पहली इमेज में था */
     .spotlight-excerpt {
       background: #fff5f5;
       border-left: 4px solid var(--brand);
@@ -395,7 +394,6 @@
       color: #ffffff;
     }
 
-    /* Rating & Share Box for First News */
     .lead-interaction-box {
       margin-top: 15px;
       padding-top: 15px;
@@ -1300,7 +1298,7 @@
       </div>
     </header>
 
-    <!-- Navigation Menu -->
+    <!-- Navigation Menu (Biography link added right beside E-Paper) -->
     <nav class="main-nav">
       <div class="container nav-scroll" id="navScrollContainer">
         <a href="index.html" class="nav-btn active" data-cat="">होम</a>
@@ -1313,6 +1311,7 @@
         <a href="index.html?cat=व्यापार" class="nav-btn" data-cat="व्यापार">व्यापार</a>
         <a href="index.html?cat=टेक्नोलॉजी" class="nav-btn" data-cat="टेक्नोलॉजी">टेक्नोलॉजी</a>
         <a href="shorts.html" style="color:#2563eb; font-weight:800;">60 शब्द Shorts</a>
+        <a href="biography.html" style="color:#059669; font-weight:800;">📚 बायोग्राफी</a>
         <a href="epaper.html" style="color:var(--brand); font-weight:800;">ई-पेपर</a>
       </div>
     </nav>
@@ -1352,13 +1351,10 @@
                 <span id="spotlightViews" class="view-count-tag">👁️ 240+ Views</span>
               </div>
               
-              <!-- लाल बॉर्डर के अंदर शॉर्ट समरी -->
               <div id="spotlightExcerpt" class="spotlight-excerpt">देश, दुनिया एवं बिहार की महत्वपूर्ण खबरों का लाइव विश्लेषण।</div>
               
-              <!-- पूरा आर्टिकल कंटेंट -->
               <div id="spotlightFullBody" class="spotlight-full-content"></div>
 
-              <!-- Interactive Rating & Share Box -->
               <div class="lead-interaction-box">
                 <div class="lead-rating-row">
                   <span style="font-size: 13px; font-weight: 700;" id="leadRatingCountText">⭐ 117+ वोट्स</span>
@@ -1567,6 +1563,7 @@
           <li><a href="index.html?cat=राजनीति">राजनीति विशेष</a></li>
           <li><a href="index.html?cat=शिक्षा">शिक्षा व रोजगार</a></li>
           <li><a href="index.html?cat=खेल">खेल जगत</a></li>
+          <li><a href="biography.html">बायोग्राफी सेक्शन</a></li>
           <li><a href="epaper.html">दैनिक ई-पेपर</a></li>
         </ul>
       </div>
@@ -1609,7 +1606,6 @@
   <script>
     "use strict";
 
-    // Supabase Credentials
     const SUPABASE_URL = "https://jaruakuujaekjcqagymo.supabase.co";
     const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
 
@@ -1758,7 +1754,6 @@
       alert("खबर का लिंक कॉपी हो गया है!");
     }
 
-    // --- SUPABASE REAL-TIME VISITOR & TRAFFIC MONITOR ENGINE ---
     async function updateGrowingVisitorStats() {
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/site_stats?select=*&limit=1`, {
@@ -1794,9 +1789,7 @@
             return;
           }
         }
-      } catch (err) {
-        console.log("Traffic sync fallback");
-      }
+      } catch (err) {}
 
       const totalKey = "site_total_visits_count";
       let totalVisits = parseInt(localStorage.getItem(totalKey) || "14280", 10) + 1;
@@ -2045,7 +2038,7 @@
 
       const days = ["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
       const months = ["जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"];
-      const formatted = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+      const formatted = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
       if (topDate) topDate.textContent = `दिनांक: ${formatted}`;
       if (footerYear) footerYear.textContent = now.getFullYear();
@@ -2066,7 +2059,6 @@
       const spotImg = document.getElementById("spotlightImg");
       if (spotImg && (lead?.image || lead?.img)) spotImg.src = lead.image || lead.img;
 
-      // फोटो कैप्शन
       const spotCap = document.getElementById("spotlightCaption");
       const captionText = lead?.caption || lead?.title || "";
       if (spotCap && captionText) {
@@ -2093,7 +2085,6 @@
       const spotViews = document.getElementById("spotlightViews");
       if (spotViews) spotViews.innerHTML = `👁️ ${getArticleViews(leadSlug)} Views`;
 
-      // लाल बॉर्डर वाली शॉर्ट समरी (Excerpt)
       const spotExcerpt = document.getElementById("spotlightExcerpt");
       if (spotExcerpt) {
         const excerptText = lead?.excerpt || lead?.summary || "";
@@ -2101,14 +2092,12 @@
         spotExcerpt.style.display = excerptText ? "block" : "none";
       }
 
-      // पूरा आर्टिकल कंटेंट (AdSense Low Content से बचने हेतु)
       const spotFullBody = document.getElementById("spotlightFullBody");
       if (spotFullBody) {
         const fullContent = lead?.content || lead?.body || "";
         spotFullBody.innerHTML = fullContent;
       }
 
-      // शेयर बटन लिंक्स सेट करें
       const pageUrl = encodeURIComponent(window.location.origin + "/" + leadLink);
       const pageTitle = encodeURIComponent(lead?.title || "THE 90I NEWS");
       
@@ -2276,7 +2265,6 @@
       win.style.display = (win.style.display === "flex") ? "none" : "flex";
     }
 
-    // --- SMART AI KNOWLEDGE & CREATOR RESPONSIVE HANDLER ---
     function handleChatSubmit(e) {
       e.preventDefault();
       const input = document.getElementById("chatInputText");
