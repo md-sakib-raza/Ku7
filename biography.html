@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="pageTitle">Biography — THE 90I NEWS</title>
+  <title id="pageTitle">Biography Directory — THE 90I NEWS</title>
   <meta name="description" id="pageMetaDesc" content="विशिष्ट व्यक्तित्वों की जीवन गाथा और बायोग्राफी - THE 90I NEWS" />
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Yantramanav:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yantramanav:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --wiki-link: #0645ad;
@@ -16,26 +16,50 @@
       --wiki-border: #a2a9b1;
       --text: #202122;
       --muted: #54595d;
+      --brand: #dc2626;
+      --line: #e2e8f0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Yantramanav', sans-serif; background: #ffffff; color: var(--text); line-height: 1.7; font-size: 16px; display: flex; flex-direction: column; min-height: 100vh; }
     
-    .header-main { background: #ffffff; padding: 14px 20px; border-bottom: 1px solid #eaecf0; text-align: center; }
-    .logo-text { font-size: 32px; font-weight: 900; font-family: serif; color: #202122; text-decoration: none; }
-    .logo-text span { color: #dc2626; }
+    .header-main { background: #ffffff; padding: 14px 20px; border-bottom: 1px solid var(--line); text-align: center; }
+    .logo-text { font-size: 32px; font-weight: 900; font-family: 'Rozha One', serif; color: #0f172a; text-decoration: none; }
+    .logo-text span { color: var(--brand); }
 
-    .main-nav { background: #f8f9fa; border-bottom: 1px solid #a2a9b1; position: sticky; top: 0; z-index: 100; }
-    .nav-scroll { max-width: 900px; margin: 0 auto; display: flex; overflow-x: auto; white-space: nowrap; }
-    .nav-scroll a { padding: 10px 16px; text-decoration: none; color: var(--wiki-link); font-weight: 600; font-size: 14.5px; }
-    .nav-scroll a:hover, .nav-scroll a.active { text-decoration: underline; }
+    .main-nav { background: #ffffff; border-bottom: 2px solid var(--brand); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .nav-scroll { max-width: 900px; margin: 0 auto; display: flex; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+    .nav-scroll::-webkit-scrollbar { display: none; }
+    .nav-scroll a { padding: 12px 18px; text-decoration: none; color: #334155; font-weight: 700; font-size: 15px; }
+    .nav-scroll a:hover, .nav-scroll a.active { color: var(--brand); }
 
-    .container { max-width: 850px; margin: 25px auto; padding: 0 15px; flex: 1; width: 100%; }
+    .container { max-width: 900px; margin: 25px auto; padding: 0 15px; flex: 1; width: 100%; }
     
-    .bio-title { font-size: 32px; font-weight: 400; font-family: serif; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-bottom: 8px; color: #202122; }
+    /* Search Bar Styling */
+    .bio-search-box {
+      background: #f1f5f9;
+      border: 1px solid var(--wiki-border);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      display: flex;
+      gap: 10px;
+    }
+    .bio-search-box input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--wiki-border);
+      border-radius: 6px;
+      font-size: 15px;
+      outline: none;
+      background: #ffffff;
+    }
+    .bio-search-box input:focus { border-color: var(--wiki-link); }
+
+    .bio-title { font-size: 32px; font-weight: 400; font-family: serif; border-bottom: 1px solid var(--wiki-border); padding-bottom: 5px; margin-bottom: 8px; color: var(--text); }
     .bio-subtitle { font-size: 14px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
     
     .bio-content p { margin-bottom: 16px; font-size: 15.5px; text-align: justify; }
-    .bio-content h2 { font-size: 22px; font-family: serif; border-bottom: 1px solid #eaecf0; padding-bottom: 4px; margin-top: 25px; margin-bottom: 12px; color: #202122; }
+    .bio-content h2 { font-size: 22px; font-family: serif; border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-top: 25px; margin-bottom: 12px; color: var(--text); }
     .bio-content a { color: var(--wiki-link); text-decoration: none; }
     .bio-content a:hover { text-decoration: underline; }
 
@@ -49,34 +73,37 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       margin: 20px 0;
       max-width: 320px;
+      float: right;
+      margin-left: 20px;
     }
-    .wiki-infobox h3 { text-align: center; background: #eaecf0; color: #202122; padding: 8px; font-size: 15px; font-weight: bold; border-bottom: 1px solid var(--wiki-border); margin-bottom: 8px; }
+    @media(max-width: 768px) { .wiki-infobox { float: none; max-width: 100%; margin: 20px 0; } }
+    .wiki-infobox h3 { text-align: center; background: #eaecf0; color: var(--text); padding: 8px; font-size: 15px; font-weight: bold; border-bottom: 1px solid var(--wiki-border); margin-bottom: 8px; }
     .wiki-infobox img { width: 100%; border-radius: 0; margin-bottom: 8px; object-fit: cover; max-height: 280px; border: 1px solid #c8ccd1; }
     .wiki-row { display: flex; border-bottom: 1px solid #eaecf0; padding: 6px 4px; }
-    .wiki-label { font-weight: bold; width: 40%; color: #202122; font-size: 13px; }
-    .wiki-value { width: 60%; color: #202122; font-size: 13px; }
+    .wiki-label { font-weight: bold; width: 40%; color: var(--text); font-size: 13px; }
+    .wiki-value { width: 60%; color: var(--text); font-size: 13px; }
     .wiki-value a { color: var(--wiki-link); text-decoration: none; }
-    .wiki-value a:hover { text-decoration: underline; }
 
-    /* Bio List Grid (When no slug is passed) */
+    /* Bio List Grid */
     .bio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; }
-    .bio-card { background: #f8f9fa; border: 1px solid #a2a9b1; border-radius: 4px; padding: 12px; text-decoration: none; color: inherit; display: flex; gap: 12px; align-items: center; }
-    .bio-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 1px solid #a2a9b1; }
+    .bio-card { background: var(--wiki-bg); border: 1px solid var(--wiki-border); border-radius: 4px; padding: 12px; text-decoration: none; color: inherit; display: flex; gap: 12px; align-items: center; transition: 0.2s; }
+    .bio-card:hover { border-color: var(--wiki-link); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .bio-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 1px solid var(--wiki-border); flex-shrink: 0; }
     .bio-card h4 { font-size: 15px; font-weight: bold; color: var(--wiki-link); }
-    .bio-card h4:hover { text-decoration: underline; }
     .bio-card p { font-size: 12.5px; color: var(--muted); }
 
     /* UI Animated Share Buttons */
     .share-container {
       margin: 30px 0 20px 0;
       padding: 15px;
-      background: #f8f9fa;
-      border: 1px solid #eaecf0;
+      background: var(--wiki-bg);
+      border: 1px solid var(--line);
       border-radius: 6px;
       display: flex;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
+      clear: both;
     }
     .share-title { font-size: 14px; font-weight: bold; color: var(--muted); margin-right: 5px; }
     .share-btn {
@@ -98,58 +125,118 @@
     .btn-tw { background: #000000; }
     .btn-cp { background: #64748b; }
 
-    /* Footer Design */
-    .site-footer {
-      background: #eaecf0;
-      border-top: 1px solid #a2a9b1;
-      padding: 20px 15px;
-      margin-top: 40px;
-      font-size: 13.5px;
-      color: #54595d;
-      text-align: center;
+    /* Professional Footer matching index.html */
+    .main-footer {
+      background: #090d16 !important;
+      color: #cbd5e1 !important;
+      border-top: 4px solid var(--brand);
+      padding: 50px 0 20px;
+      font-size: 14px;
+      width: 100%;
+      margin-top: auto;
     }
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px 20px;
-      margin-bottom: 10px;
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr;
+      gap: 25px;
     }
-    .footer-links a { color: var(--wiki-link); text-decoration: none; font-weight: 600; }
-    .footer-links a:hover { text-decoration: underline; }
-    .footer-copy { font-size: 12px; color: #54595d; margin-top: 8px; }
+    .footer-col h3 {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 18px;
+      position: relative;
+      padding-bottom: 8px;
+    }
+    .footer-col h3::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 35px;
+      height: 2px;
+      background: var(--brand);
+    }
+    .footer-logo { font-family: 'Rozha One', serif; font-size: 30px; font-weight: 900; color: #ffffff; line-height: 1; margin-bottom: 8px; }
+    .footer-logo span { color: var(--brand); }
+    .footer-desc { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 16px; }
+    .footer-contact-info { list-style: none; font-size: 13px; color: #94a3b8; display: flex; flex-direction: column; gap: 8px; }
+    .footer-contact-info a { color: #cbd5e1; text-decoration: none; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .footer-links a { color: #94a3b8; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .footer-links a:hover { color: #ffffff; }
+    .footer-bottom { margin-top: 40px; border-top: 1px solid #1e293b; padding-top: 20px; font-size: 12px; color: #64748b; text-align: center; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
   <header class="header-main">
-    <a href="index.html" class="logo-text">THE <span>90I</span> NEWS</a>
+    <a href="index.html" class="logo-text">THE <span>90I</span> न्यूज़</a>
   </header>
 
   <nav class="main-nav">
     <div class="nav-scroll">
       <a href="index.html">होम</a>
-      <a href="biography.html" class="active" style="text-decoration: underline;">📚 बायोग्राफी (Profiles)</a>
+      <a href="index.html?cat=बिहार">बिहार</a>
+      <a href="index.html?cat=राष्ट्रीय">राष्ट्रीय</a>
+      <a href="index.html?cat=राजनीति">राजनीति</a>
+      <a href="biography.html" class="active" style="color:var(--brand);">📚 बायोग्राफी</a>
       <a href="epaper.html">ई-पेपर</a>
     </div>
   </nav>
 
   <main class="container" id="mainContainer">
-    <p>लोड हो रहा है...</p>
+    <!-- Top Live Search Box -->
+    <div class="bio-search-box">
+      <input type="text" id="bioSearchInput" placeholder="🔍 किसी भी हस्ती की बायोग्राफी खोजें (नाम या क्षेत्र टाइप करें)..." oninput="filterBioList(this.value)" />
+    </div>
+
+    <div id="dynamicBioContent">
+      <p style="text-align:center; padding:30px;">बायोग्राफी डेटा लोड हो रहा है...</p>
+    </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-links">
-      <a href="index.html">होम</a>
-      <a href="biography.html">बायोग्राफी</a>
-      <a href="epaper.html">ई-पेपर</a>
-      <a href="about.html">हमारे बारे में</a>
-      <a href="privacy-policy.html">प्राइवेसी पॉलिसी</a>
-      <a href="terms.html">नियम व शर्तें</a>
-      <a href="contact.html">संपर्क करें</a>
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="footer-logo">THE <span>90I</span> NEWS</div>
+        <p class="footer-desc">बिहार एवं राष्ट्र का अग्रणी डिजिटल न्यूज़ नेटवर्क। निष्पक्ष पत्रकारिता और ज़मीनी मुद्दों की निर्भीक आवाज़।</p>
+        <ul class="footer-contact-info">
+          <li>📍 <b>मुख्यालय:</b> पूर्णिया, बिहार, भारत</li>
+          <li>✉️ <b>ईमेल:</b> office.mdsakibraza@gmail.com</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>प्रमुख श्रेणियां</h3>
+        <ul class="footer-links">
+          <li><a href="index.html?cat=बिहार">बिहार न्यूज़</a></li>
+          <li><a href="index.html?cat=राजनीति">राजनीति विशेष</a></li>
+          <li><a href="biography.html">बायोग्राफी सेक्शन</a></li>
+          <li><a href="epaper.html">दैनिक ई-पेपर</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>नीति व नियम</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">हमारे बारे में</a></li>
+          <li><a href="index.html">प्राइवेसी पॉलिसी</a></li>
+          <li><a href="index.html">नियम व शर्तें</a></li>
+          <li><a href="admin.html">संपादक लॉगिन (CMS)</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>सहायता</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">संपर्क करें</a></li>
+          <li><a href="epaper.html">डिजिटल संस्करण</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="footer-copy">
+    <div class="footer-bottom">
       &copy; 2026 THE 90I NEWS. All Rights Reserved.
     </div>
   </footer>
@@ -159,10 +246,12 @@
     const SUPABASE_KEY = "sb_publishable_l0X-6k1XsRBuJB0jqzue-w_qmdhqBaC";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function loadBiographyDetails() {
+    let cachedBioList = [];
+
+    async function initBiographyPage() {
       const params = new URLSearchParams(window.location.search);
       const slug = (params.get("slug") || "").trim().toLowerCase();
-      const container = document.getElementById("mainContainer");
+      const container = document.getElementById("dynamicBioContent");
 
       try {
         const { data: bioList, error } = await supabaseClient
@@ -171,32 +260,16 @@
           .order('created_at', { ascending: false });
 
         if (error) throw error;
+        cachedBioList = bioList || [];
 
         if (!slug) {
-          if (!bioList || !bioList.length) {
-            container.innerHTML = "<h2>फिलहाल कोई बायोग्राफी उपलब्ध नहीं है।</h2>";
-            return;
-          }
-          container.innerHTML = `
-            <h2 style="font-family: serif; border-bottom: 2px solid #a2a9b1; padding-bottom: 6px; margin-bottom: 15px;">प्रमुख हस्तियाँ व बायोग्राफी</h2>
-            <div class="bio-grid">
-              ${bioList.map(b => `
-                <a href="biography.html?slug=${b.slug}" class="bio-card">
-                  <img src="${b.image \vert{}\vert{} 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80'}" alt="${b.name}" />
-                  <div>
-                    <h4>${b.name}</h4>
-                    <p>${b.title_tag || 'जीवनी'}</p>
-                  </div>
-                </a>
-              `).join("")}
-            </div>
-          `;
+          renderBioDirectory(cachedBioList);
           return;
         }
 
-        const person = (bioList || []).find(b => String(b.slug || "").toLowerCase() === slug);
+        const person = cachedBioList.find(b => String(b.slug || "").toLowerCase() === slug);
         if (!person) {
-          container.innerHTML = "<h2>व्यक्ति विशेष की बायोग्राफी नहीं मिली।</h2><p><a href='biography.html'>सभी बायोग्राफी देखें</a></p>";
+          container.innerHTML = `<h2>व्यक्ति विशेष की बायोग्राफी नहीं मिली।</h2><p><a href='biography.html'>सभी बायोग्राफी देखें</a></p>`;
           return;
         }
 
@@ -205,10 +278,6 @@
         container.innerHTML = `
           <h1 class="bio-title">${person.name}</h1>
           <div class="bio-subtitle">${person.title_tag || "विशिष्ट व्यक्तित्व"}</div>
-
-          <div class="bio-content">
-            <p>${person.intro || ''}</p>
-          </div>
 
           <div class="wiki-infobox">
             <h3>${person.name}</h3>
@@ -221,6 +290,7 @@
           </div>
 
           <div class="bio-content">
+            <p><b>परिचय:</b> ${person.intro || ''}</p>
             ${person.education ? `<h2>शिक्षा (Education)</h2><p>${person.education}</p>` : ''}
             ${person.political_career ? `<h2>राजनीतिक करियर (Political Career)</h2><p>${person.political_career}</p>` : ''}
             ${person.career_work ? `<h2>कार्य और उपलब्धियां (Career & Achievements)</h2><p>${person.career_work}</p>` : ''}
@@ -234,13 +304,94 @@
             <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(person.name)}&url=${encodeURIComponent(window.location.href)}" target="_blank" class="share-btn btn-tw">🐦 Twitter</a>
             <button onclick="navigator.clipboard.writeText(window.location.href); alert('✅ लिंक कॉपी हो गया है!');" class="share-btn btn-cp" style="border:none; cursor:pointer;">🔗 Copy Link</button>
           </div>
+
+          <div style="margin-top: 40px; border-top: 2px solid var(--line); padding-top: 20px;">
+            <h3 style="font-family:serif; margin-bottom:15px;">अन्य प्रमुख बायोग्राफी</h3>
+            <div class="bio-grid" id="otherBioGrid">
+              ${cachedBioList.filter(b => b.slug !== slug).map(b => `
+                <a href="biography.html?slug=${b.slug}" class="bio-card">
+                  <img src="${b.image \vert{}\vert{} 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80'}" alt="${b.name}" />
+                  <div>
+                    <h4>${b.name}</h4>
+                    <p>${b.title_tag || 'जीवनी'}</p>
+                  </div>
+                </a>
+              `).join("")}
+            </div>
+          </div>
         `;
       } catch (err) {
         container.innerHTML = "<p>डेटा लोड करने में तकनीकी त्रुटि हुई है।</p>";
       }
     }
 
-    loadBiographyDetails();
+    function renderBioDirectory(list) {
+      const container = document.getElementById("dynamicBioContent");
+      if (!list || !list.length) {
+        container.innerHTML = "<h2>फिलहाल कोई बायोग्राफी उपलब्ध नहीं है।</h2>";
+        return;
+      }
+      container.innerHTML = `
+        <h2 style="font-family: serif; border-bottom: 2px solid var(--wiki-border); padding-bottom: 6px; margin-bottom: 15px;">प्रमुख हस्तियाँ व बायोग्राफी डायरेक्टरी</h2>
+        <div class="bio-grid" id="bioGridContainer">
+          ${list.map(b => `
+            <a href="biography.html?slug=${b.slug}" class="bio-card">
+              <img src="${b.image \vert{}\vert{} 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80'}" alt="${b.name}" />
+              <div>
+                <h4>${b.name}</h4>
+                <p>${b.title_tag || 'जीवनी'}</p>
+              </div>
+            </a>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function filterBioList(query) {
+      const q = query.toLowerCase().trim();
+      const filtered = cachedBioList.filter(b => 
+        (b.name && b.name.toLowerCase().includes(q)) || 
+        (b.title_tag && b.title_tag.toLowerCase().includes(q)) ||
+        (b.field && b.field.toLowerCase().includes(q))
+      );
+      
+      const grid = document.getElementById("bioGridContainer");
+      if (!grid) {
+        // Agar user article page par hai aur search kar raha hai, toh use directory view par redirect ya render kar sakte hain
+        if (q) {
+          const container = document.getElementById("dynamicBioContent");
+          // Create temporary grid view for search results
+          let searchView = document.createElement("div");
+          searchView.innerHTML = `
+            <h2 style="font-family: serif; margin: 20px 0 10px;">खोज परिणाम (${filtered.length})</h2>
+            <div class="bio-grid">
+              ${filtered.map(b => `
+                <a href="biography.html?slug=${b.slug}" class="bio-card">
+                  <img src="${b.image \vert{}\vert{} 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80'}" alt="${b.name}" />
+                  <div>
+                    <h4>${b.name}</h4>
+                    <p>${b.title_tag || 'जीवनी'}</p>
+                  </div>
+                </a>
+              `).join("")}
+            </div>
+          `;
+        }
+        return;
+      }
+
+      grid.innerHTML = filtered.map(b => `
+        <a href="biography.html?slug=${b.slug}" class="bio-card">
+          <img src="${b.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80'}" alt="${b.name}" />
+          <div>
+            <h4>${b.name}</h4>
+            <p>${b.title_tag || 'जीवनी'}</p>
+          </div>
+        </a>
+      `).join("");
+    }
+
+    initBiographyPage();
   </script>
 </body>
 </html>
